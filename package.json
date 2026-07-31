@@ -1,0 +1,9 @@
+{
+  "name": "attendance-system",
+  "private": true,
+  "scripts": {
+    "backend": "pnpm --dir backend dev",
+    "frontend": "pnpm --dir frontend dev",
+    "install:all": "pnpm install --recursive"
+  }
+}
