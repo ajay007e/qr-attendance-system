@@ -106,13 +106,29 @@ export class AuthService {
   }
 
   async login(data: LoginRequest) {
-    const user = await this.repository.findByEmail(data.email);
+    if (!data) {
+      throw new AppError("Request body is required", 400);
+    }
+
+    const email = data.email?.trim().toLowerCase();
+    const password = data.password;
+
+    // Required validation
+    if (!email) {
+      throw new AppError("Email is required", 400);
+    }
+
+    if (!password) {
+      throw new AppError("Password is required", 400);
+    }
+
+    const user = await this.repository.findByEmail(email);
 
     if (!user) {
       throw new AppError("Invalid email or password", 401);
     }
 
-    const valid = await bcrypt.compare(data.password, user.password);
+    const valid = await bcrypt.compare(password, user.password);
 
     if (!valid) {
       throw new AppError("Invalid email or password", 401);
@@ -125,13 +141,5 @@ export class AuthService {
       email: user.email,
       role: user.role,
     };
-  }
-
-  async logout() {
-    return true;
-  }
-
-  async me(id: number) {
-    return this.repository.findById(id);
   }
 }
