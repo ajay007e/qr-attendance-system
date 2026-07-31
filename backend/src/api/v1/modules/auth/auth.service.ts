@@ -1,11 +1,12 @@
-import { AuthRepository } from "./auth.repository";
+import { UserRepository } from "../users/user.repository";
 import { BootstrapRequest, LoginRequest } from "./auth.types";
-import bcrypt from "bcrypt";
 
 import { AppError } from "../../../../utils/app.error";
+import { comparePassword, hashPassword } from "../../../../utils/bcrypt";
+import { Role } from "../../../../utils/constants/roles";
 
 export class AuthService {
-  constructor(private readonly repository: AuthRepository) {}
+  constructor(private readonly repository: UserRepository) {}
 
   async bootstrap(data: BootstrapRequest) {
     // Validate request object
@@ -86,18 +87,16 @@ export class AuthService {
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await hashPassword(password);
 
     // Create Super Admin
-    await this.repository.createSuperAdmin(
-      {
-        firstName,
-        lastName,
-        email,
-        password,
-      },
-      hashedPassword,
-    );
+    await this.repository.create({
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      password,
+      role: Role.SUPER_ADMIN,
+    });
 
     return {
       success: true,
@@ -128,7 +127,11 @@ export class AuthService {
       throw new AppError("Invalid email or password", 401);
     }
 
-    const valid = await bcrypt.compare(password, user.password);
+    if (!user.is_active) {
+      throw new AppError("Account disabled", 403);
+    }
+
+    const valid = await comparePassword(password, user.password);
 
     if (!valid) {
       throw new AppError("Invalid email or password", 401);

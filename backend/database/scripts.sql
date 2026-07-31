@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS users (
 
     -- phone VARCHAR(20) DEFAULT NULL,
 
-    -- is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
     -- email_verified BOOLEAN NOT NULL DEFAULT FALSE,
 
     -- last_login_at TIMESTAMP NULL DEFAULT NULL,

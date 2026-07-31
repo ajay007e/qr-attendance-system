@@ -1,8 +1,8 @@
 import { AuthController } from "./auth.controller";
-import { AuthRepository } from "./auth.repository";
+import { UserRepository } from "../users/user.repository";
 import { AuthService } from "./auth.service";
 
-const repository = new AuthRepository();
+const repository = new UserRepository();
 const service = new AuthService(repository);
 const controller = new AuthController(service);
 

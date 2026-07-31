@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import { authRouter } from "./modules/auth/auth.routes";
+import { userRouter } from "./modules/users/user.routes";
 
 export const v1Router = Router();
 
@@ -12,3 +13,4 @@ v1Router.get("/", (_req, res) => {
 });
 
 v1Router.use("/auth", authRouter);
+v1Router.use("/users", userRouter);
