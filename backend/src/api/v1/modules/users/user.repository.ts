@@ -1,26 +1,90 @@
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 
 import { db } from "../../../../config/database";
-import { CreateUserData, UpdateUserRequest, User } from "./user.types";
+import {
+  CreateUserData,
+  PaginatedUsers,
+  UpdateUserRequest,
+  User,
+  UserQuery,
+} from "./user.types";
 
 export class UserRepository {
-  async findAll(): Promise<User[]> {
-    const [rows] = await db.execute<RowDataPacket[]>(`
-            SELECT
-                id,
-                first_name,
-                last_name,
-                email,
-                role,
-                is_active,
-                last_login_at,
-                created_at,
-                updated_at
-            FROM users
-            ORDER BY created_at DESC
-        `);
+  async findAll(query: UserQuery): Promise<PaginatedUsers> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const offset = (page - 1) * limit;
 
-    return rows as User[];
+    let where = `WHERE 1 = 1`;
+    const params: unknown[] = [];
+
+    if (query.search) {
+      where += `
+      AND (
+        first_name LIKE ?
+        OR last_name LIKE ?
+        OR email LIKE ?
+      )
+    `;
+
+      const keyword = `%${query.search}%`;
+      params.push(keyword, keyword, keyword);
+    }
+
+    if (query.role) {
+      where += ` AND role = ?`;
+      params.push(query.role);
+    }
+
+    if (query.status) {
+      where += ` AND is_active = ?`;
+      params.push(query.status === "ACTIVE");
+    }
+
+    // Count query
+    const [countRows] = await db.execute<RowDataPacket[]>(
+      `
+      SELECT COUNT(*) AS total
+      FROM users
+      ${where}
+    `,
+      params,
+    );
+
+    const total = Number(countRows[0].total);
+    // Data query
+    const [rows] = await db.query<RowDataPacket[]>(
+      `
+    SELECT
+      id,
+      first_name,
+      last_name,
+      email,
+      role,
+      is_active,
+      created_at,
+      updated_at
+    FROM users
+    ${where}
+    ORDER BY created_at DESC
+    LIMIT ${limit}
+    OFFSET ${offset}
+  `,
+      params,
+    );
+
+    return {
+      data: rows as User[],
+      pagination: {
+        page,
+        limit,
+        count: rows.length,
+        total,
+        totalPages: Math.ceil(total / limit),
+        hasPrevious: page > 1,
+        hasNext: page < Math.ceil(total / limit),
+      },
+    };
   }
 
   async findById(id: number): Promise<User | null> {
@@ -91,13 +155,13 @@ export class UserRepository {
                 last_name,
                 email,
                 password,
-                role,
+                role
             )
             VALUES (?, ?, ?, ?, ?)
             `,
       [
-        data.firstName,
-        data.lastName ?? null,
+        data.first_name,
+        data.last_name ?? null,
         data.email,
         data.password,
         data.role,
@@ -115,10 +179,10 @@ export class UserRepository {
                 first_name = ?,
                 last_name = ?,
                 email = ?,
-                role = ?,
+                role = ?
             WHERE id = ?
             `,
-      [data.firstName, data.lastName ?? null, data.email, data.role, id],
+      [data.first_name, data.last_name ?? null, data.email, data.role, id],
     );
   }
 

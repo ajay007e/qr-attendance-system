@@ -3,13 +3,19 @@ import { AppError } from "../../../../utils/app.error";
 import { hashPassword } from "../../../../utils/bcrypt";
 import { isValidRole } from "../../../../utils/roles";
 import { UserRepository } from "./user.repository";
-import { CreateUserRequest, UpdateUserRequest, User } from "./user.types";
+import {
+  CreateUserRequest,
+  PaginatedUsers,
+  UpdateUserRequest,
+  User,
+  UserQuery,
+} from "./user.types";
 
 export class UserService {
   constructor(private readonly repository: UserRepository) {}
 
-  async list(): Promise<User[]> {
-    return this.repository.findAll();
+  async list(query: UserQuery): Promise<PaginatedUsers> {
+    return this.repository.findAll(query);
   }
 
   async get(id: number): Promise<User> {

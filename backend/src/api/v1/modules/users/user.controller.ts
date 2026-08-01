@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
 import { UserService } from "./user.service";
+import { UserQuery } from "./user.types";
 
 export class UserController {
   constructor(private readonly service: UserService) {}
@@ -20,11 +21,30 @@ export class UserController {
 
   list = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const users = await this.service.list();
+      const query: UserQuery = {
+        page: Number(req.query.page) || 1,
+        limit: Number(req.query.limit) || 10,
+        search:
+          typeof req.query.search === "string"
+            ? req.query.search.trim()
+            : undefined,
+
+        role:
+          typeof req.query.role === "string"
+            ? (req.query.role as UserQuery["role"])
+            : undefined,
+
+        status:
+          typeof req.query.status === "string"
+            ? (req.query.status as UserQuery["status"])
+            : undefined,
+      };
+
+      const result = await this.service.list(query);
 
       res.json({
         success: true,
-        users,
+        ...result,
       });
     } catch (error) {
       next(error);

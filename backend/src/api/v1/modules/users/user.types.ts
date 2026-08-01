@@ -15,6 +15,19 @@ export interface User {
   updated_at: Date;
 }
 
+export interface PaginatedUsers {
+  data: User[];
+  pagination: {
+    page: number;
+    limit: number;
+    count: number;
+    total: number;
+    totalPages: number;
+    hasPrevious: boolean;
+    hasNext: boolean;
+  };
+}
+
 export interface CreateUserRequest {
   firstName: string;
   lastName?: string;
@@ -26,8 +39,8 @@ export interface CreateUserRequest {
 }
 
 export interface UpdateUserRequest {
-  firstName: string;
-  lastName?: string;
+  first_name: string;
+  last_name?: string;
 
   email: string;
 
@@ -43,11 +56,19 @@ export interface UpdatePasswordRequest {
 }
 
 export interface CreateUserData {
-  firstName: string;
-  lastName?: string;
+  first_name: string;
+  last_name?: string;
 
   email: string;
   password: string;
 
   role: string;
+}
+
+export interface UserQuery {
+  search?: string;
+  role?: "SUPER_ADMIN" | "ADMIN" | "LECTURER" | "STUDENT";
+  status?: "ACTIVE" | "INACTIVE";
+  page?: number;
+  limit?: number;
 }
