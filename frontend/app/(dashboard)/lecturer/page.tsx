@@ -4,7 +4,15 @@ import PageHeader from "@/components/layout/AdminPageHeader";
 
 export default function LecturerDashboardPage() {
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-6">
+    <div
+      className="
+        mx-auto
+        w-full
+        max-w-7xl
+        space-y-5
+        sm:space-y-6
+      "
+    >
       <PageHeader
         title="Lecturer Dashboard"
         subtitle="Manage your assigned courses, attendance sessions, and student records."
@@ -22,7 +30,7 @@ function LecturerDashboardComingSoon() {
     <div
       className="
         flex
-        min-h-[320px]
+        min-h-[240px]
         flex-col
         items-center
         justify-center
@@ -31,31 +39,38 @@ function LecturerDashboardComingSoon() {
         border-dashed
         border-gray-300
         bg-white
-        px-6
+        px-5
+        py-8
         text-center
+        sm:min-h-[320px]
+        sm:px-6
       "
     >
       <div
         className="
           flex
-          h-14
-          w-14
+          h-12
+          w-12
           items-center
           justify-center
           rounded-full
           bg-blue-50
           text-blue-600
+          sm:h-14
+          sm:w-14
         "
       >
-        <BookOpenCheck size={28} />
+        <BookOpenCheck size={24} className="sm:h-7 sm:w-7" />
       </div>
 
       <h2
         className="
-          mt-5
-          text-xl
+          mt-4
+          text-lg
           font-semibold
           text-gray-900
+          sm:mt-5
+          sm:text-xl
         "
       >
         Lecturer Dashboard Coming Soon
@@ -77,7 +92,7 @@ function LecturerDashboardComingSoon() {
 
       <span
         className="
-          mt-5
+          mt-4
           rounded-full
           bg-blue-50
           px-4
@@ -85,6 +100,7 @@ function LecturerDashboardComingSoon() {
           text-xs
           font-medium
           text-blue-600
+          sm:mt-5
         "
       >
         Under Development

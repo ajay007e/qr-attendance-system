@@ -20,7 +20,6 @@ export default function UserForm({ onSubmit }: UserFormProps) {
   const [role, setRole] = useState<UserRole>();
 
   const [loading, setLoading] = useState(false);
-
   const [error, setError] = useState("");
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -50,232 +49,71 @@ export default function UserForm({ onSubmit }: UserFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6" aria-busy={loading}>
+    <form onSubmit={handleSubmit} className="space-y-5" aria-busy={loading}>
+      {/* Error */}
       {error && (
         <div
           role="alert"
           className="
-              rounded-xl
-              border
-              border-red-200
-              bg-red-50
-              px-4
-              py-3
-              text-sm
-              text-red-700
-            "
+            rounded-xl
+            border
+            border-red-200
+            bg-red-50
+            px-4
+            py-3
+            text-sm
+            text-red-700
+          "
         >
           {error}
         </div>
       )}
 
       {/* Name */}
-
-      <div
-        className="
-          grid
-          grid-cols-1
-          gap-5
-
-          sm:grid-cols-2
-        "
-      >
-        <div>
-          <label
-            className="
-              mb-2
-              block
-              text-sm
-              font-medium
-              text-gray-700
-            "
-          >
-            First Name
-          </label>
-
-          <input
-            required
-            disabled={loading}
-            placeholder="Enter first name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            className="
-              w-full
-              rounded-xl
-              border
-              border-gray-300
-              bg-white
-              px-4
-              py-3
-              text-gray-900
-              placeholder:text-gray-400
-              shadow-sm
-              transition-all
-              duration-200
-              outline-none
-
-              focus:border-blue-600
-              focus:ring-4
-              focus:ring-blue-100
-
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-            "
-          />
-        </div>
-
-        <div>
-          <label
-            className="
-              mb-2
-              block
-              text-sm
-              font-medium
-              text-gray-700
-            "
-          >
-            Last Name
-          </label>
-
-          <input
-            disabled={loading}
-            placeholder="Enter last name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            className="
-              w-full
-              rounded-xl
-              border
-              border-gray-300
-              bg-white
-              px-4
-              py-3
-              text-gray-900
-              placeholder:text-gray-400
-              shadow-sm
-              transition-all
-              duration-200
-              outline-none
-
-              focus:border-blue-600
-              focus:ring-4
-              focus:ring-blue-100
-
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-            "
-          />
-        </div>
-      </div>
-
-      {/* Email */}
-
-      <div>
-        <label
-          className="
-            mb-2
-            block
-            text-sm
-            font-medium
-            text-gray-700
-          "
-        >
-          Email Address
-        </label>
-
-        <input
-          type="email"
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <Input
+          label="First Name"
           required
           disabled={loading}
-          autoComplete="email"
-          placeholder="Enter email address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="
-            w-full
-            rounded-xl
-            border
-            border-gray-300
-            bg-white
-            px-4
-            py-3
-            text-gray-900
-            placeholder:text-gray-400
-            shadow-sm
-            transition-all
-            duration-200
-            outline-none
+          placeholder="Enter first name"
+          value={firstName}
+          onChange={setFirstName}
+        />
 
-            focus:border-blue-600
-            focus:ring-4
-            focus:ring-blue-100
-
-            disabled:cursor-not-allowed
-            disabled:opacity-60
-          "
+        <Input
+          label="Last Name"
+          disabled={loading}
+          placeholder="Enter last name"
+          value={lastName}
+          onChange={setLastName}
         />
       </div>
 
-      {/* Password */}
+      <Input
+        label="Email Address"
+        type="email"
+        required
+        disabled={loading}
+        autoComplete="email"
+        placeholder="Enter email address"
+        value={email}
+        onChange={setEmail}
+      />
 
-      <div>
-        <label
-          className="
-            mb-2
-            block
-            text-sm
-            font-medium
-            text-gray-700
-          "
-        >
-          Password
-        </label>
-
-        <input
-          type="password"
-          required
-          disabled={loading}
-          autoComplete="new-password"
-          placeholder="Enter password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="
-            w-full
-            rounded-xl
-            border
-            border-gray-300
-            bg-white
-            px-4
-            py-3
-            text-gray-900
-            placeholder:text-gray-400
-            shadow-sm
-            transition-all
-            duration-200
-            outline-none
-
-            focus:border-blue-600
-            focus:ring-4
-            focus:ring-blue-100
-
-            disabled:cursor-not-allowed
-            disabled:opacity-60
-          "
-        />
-      </div>
+      <Input
+        label="Password"
+        type="password"
+        required
+        disabled={loading}
+        autoComplete="new-password"
+        placeholder="Enter password"
+        value={password}
+        onChange={setPassword}
+      />
 
       {/* Role */}
-
       <div>
-        <label
-          className="
-            mb-2
-            block
-            text-sm
-            font-medium
-            text-gray-700
-          "
-        >
+        <label className="mb-2 block text-sm font-medium text-gray-700">
           Role
         </label>
 
@@ -300,24 +138,23 @@ export default function UserForm({ onSubmit }: UserFormProps) {
         />
       </div>
 
+      {/* Submit */}
       <button
         type="submit"
         disabled={loading || !role}
-        aria-disabled={loading}
         className="
           mt-2
+          flex
+          h-12
           w-full
+          items-center
+          justify-center
           rounded-xl
           bg-blue-600
-          px-4
-          py-3
           text-sm
           font-semibold
           text-white
-          shadow-sm
-          transition-colors
-          duration-200
-
+          transition
           hover:bg-blue-700
 
           focus:outline-none
@@ -331,5 +168,63 @@ export default function UserForm({ onSubmit }: UserFormProps) {
         {loading ? "Creating User..." : "Create User"}
       </button>
     </form>
+  );
+}
+
+function Input({
+  label,
+  value,
+  onChange,
+  type = "text",
+  placeholder,
+  disabled,
+  required,
+  autoComplete,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  type?: string;
+  placeholder?: string;
+  disabled?: boolean;
+  required?: boolean;
+  autoComplete?: string;
+}) {
+  return (
+    <div>
+      <label className="mb-2 block text-sm font-medium text-gray-700">
+        {label}
+      </label>
+
+      <input
+        type={type}
+        required={required}
+        disabled={disabled}
+        autoComplete={autoComplete}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="
+          h-12
+          w-full
+          rounded-xl
+          border
+          border-gray-300
+          bg-white
+          px-4
+          text-gray-900
+          placeholder:text-gray-400
+          outline-none
+          transition
+
+          focus:border-blue-600
+          focus:ring-4
+          focus:ring-blue-100
+
+          disabled:cursor-not-allowed
+          disabled:opacity-60
+        "
+      />
+    </div>
   );
 }

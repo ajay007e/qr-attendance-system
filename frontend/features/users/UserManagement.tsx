@@ -68,7 +68,7 @@ export default function UserManagement() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-6">
+    <div className="mx-auto w-full max-w-7xl space-y-5 sm:space-y-6">
       <PageHeader
         title="User Management"
         subtitle="Manage administrators, lecturers, and student accounts."
@@ -87,7 +87,7 @@ export default function UserManagement() {
       {showEmptyState ? (
         <EmptyUserState onCreate={() => setShowCreateUser(true)} />
       ) : showNoResults ? (
-        <div className="rounded-2xl border border-dashed border-gray-300 bg-white py-20 text-center">
+        <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-5 py-15 text-center sm:py-20">
           <h3 className="text-lg font-semibold text-gray-900">
             No users found
           </h3>
@@ -109,39 +109,40 @@ export default function UserManagement() {
             {isFetching && (
               <div
                 className="
-          absolute
-          inset-0
-          z-20
-          flex
-          items-center
-          justify-center
-          rounded-2xl
-          bg-white/70
-          backdrop-blur-sm
-        "
+                  absolute
+                  inset-0
+                  z-20
+                  flex
+                  items-center
+                  justify-center
+                  rounded-2xl
+                  bg-white/70
+                  backdrop-blur-sm
+                "
               >
                 <div
                   className="
-            flex
-            items-center
-            gap-3
-            rounded-xl
-            bg-white
-            px-5
-            py-3
-            text-sm
-            font-medium
-            text-gray-700
-            shadow-lg
-          "
+                    flex
+                    items-center
+                    gap-3
+                    rounded-xl
+                    bg-white
+                    px-4
+                    py-3
+                    sm:px-5
+                    text-sm
+                    font-medium
+                    text-gray-700
+                    shadow-lg
+                  "
                 >
                   <svg
                     className="
-              h-5
-              w-5
-              animate-spin
-              text-blue-600
-            "
+                      h-5
+                      w-5
+                      animate-spin
+                      text-blue-600
+                    "
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"

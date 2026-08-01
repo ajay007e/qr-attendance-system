@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { useAuth } from "@/context/auth.context";
 import { getDashboardRoute } from "@/lib/routes";
@@ -19,6 +19,8 @@ export default function DashboardLayout({ children }: Props) {
 
   const { loading, user } = useAuth();
 
+  const expectedRoute = user ? getDashboardRoute(user.role) : null;
+
   useEffect(() => {
     if (loading) return;
 
@@ -27,22 +29,18 @@ export default function DashboardLayout({ children }: Props) {
       return;
     }
 
-    const expectedRoute = getDashboardRoute(user.role);
-
-    if (!pathname.startsWith(expectedRoute)) {
+    if (expectedRoute && !pathname.startsWith(expectedRoute)) {
       router.replace(expectedRoute);
     }
-  }, [loading, user, pathname, router]);
+  }, [loading, user, pathname, router, expectedRoute]);
 
   if (loading) {
     return <PageLoader message="Checking authentication..." />;
   }
 
-  if (!user) {
+  if (!user || !expectedRoute) {
     return null;
   }
-
-  const expectedRoute = getDashboardRoute(user.role);
 
   if (!pathname.startsWith(expectedRoute)) {
     return null;

@@ -29,87 +29,59 @@ export default function EditUserForm({
   const [activeTab, setActiveTab] = useState<Tab>("details");
 
   const [firstName, setFirstName] = useState(user.first_name);
-
   const [lastName, setLastName] = useState(user.last_name ?? "");
-
   const [email, setEmail] = useState(user.email);
-
   const [role, setRole] = useState(user.role);
 
   const [password, setPassword] = useState("");
-
   const [confirmPassword, setConfirmPassword] = useState("");
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Tabs */}
+      <div className="flex rounded-xl bg-gray-100 p-1">
+        {[
+          {
+            key: "details",
+            label: "Details",
+          },
+          {
+            key: "password",
+            label: "Password",
+          },
+          {
+            key: "delete",
+            label: "Delete",
+          },
+        ].map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key as Tab)}
+            className={`
+              flex-1
+              rounded-lg
+              px-2
+              py-2.5
+              text-xs
+              font-medium
+              transition
+              sm:text-sm
 
-      <div
-        className="
-flex
-rounded-xl
-bg-gray-100
-p-1
-"
-      >
-        <button
-          onClick={() => setActiveTab("details")}
-          className={`
-flex-1
-rounded-lg
-px-3
-py-2
-text-sm
-font-medium
-transition
-
-${
-  activeTab === "details" ? "bg-white text-blue-600 shadow-sm" : "text-gray-500"
-}
-`}
-        >
-          Update Details
-        </button>
-
-        <button
-          onClick={() => setActiveTab("password")}
-          className={`
-flex-1
-rounded-lg
-px-3
-py-2
-text-sm
-font-medium
-transition
-
-${
-  activeTab === "password"
-    ? "bg-white text-blue-600 shadow-sm"
-    : "text-gray-500"
-}
-`}
-        >
-          Change Password
-        </button>
-
-        <button
-          onClick={() => setActiveTab("delete")}
-          className={`
-flex-1
-rounded-lg
-px-3
-py-2
-text-sm
-font-medium
-transition
-
-${activeTab === "delete" ? "bg-white text-red-600 shadow-sm" : "text-gray-500"}
-`}
-        >
-          Delete
-        </button>
+              ${
+                activeTab === tab.key
+                  ? tab.key === "delete"
+                    ? "bg-white text-red-600 shadow-sm"
+                    : "bg-white text-blue-600 shadow-sm"
+                  : "text-gray-500"
+              }
+            `}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
+      {/* Details */}
       {activeTab === "details" && (
         <form
           onSubmit={(e) => {
@@ -123,7 +95,7 @@ ${activeTab === "delete" ? "bg-white text-red-600 shadow-sm" : "text-gray-500"}
               role,
             });
           }}
-          className="space-y-5"
+          className="space-y-4"
         >
           <Input label="First Name" value={firstName} onChange={setFirstName} />
 
@@ -132,15 +104,7 @@ ${activeTab === "delete" ? "bg-white text-red-600 shadow-sm" : "text-gray-500"}
           <Input label="Email" type="email" value={email} onChange={setEmail} />
 
           <div>
-            <label
-              className="
-mb-2
-block
-text-sm
-font-medium
-text-gray-700
-"
-            >
+            <label className="mb-2 block text-sm font-medium text-gray-700">
               Role
             </label>
 
@@ -164,23 +128,11 @@ text-gray-700
             />
           </div>
 
-          <button
-            className="
-w-full
-rounded-xl
-bg-blue-600
-py-3
-text-sm
-font-semibold
-text-white
-hover:bg-blue-700
-"
-          >
-            Save Changes
-          </button>
+          <SubmitButton>Save Changes</SubmitButton>
         </form>
       )}
 
+      {/* Password */}
       {activeTab === "password" && (
         <form
           onSubmit={(e) => {
@@ -191,7 +143,7 @@ hover:bg-blue-700
               password,
             });
           }}
-          className="space-y-5"
+          className="space-y-4"
         >
           <Input
             label="New Password"
@@ -207,74 +159,69 @@ hover:bg-blue-700
             onChange={setConfirmPassword}
           />
 
-          <button
-            disabled={password !== confirmPassword}
-            className="
-w-full
-rounded-xl
-bg-blue-600
-py-3
-text-sm
-font-semibold
-text-white
-
-disabled:opacity-50
-"
-          >
+          <SubmitButton disabled={password !== confirmPassword}>
             Change Password
-          </button>
+          </SubmitButton>
         </form>
       )}
 
+      {/* Delete */}
       {activeTab === "delete" && (
-        <div
-          className="
-space-y-5
-rounded-xl
-border
-border-red-200
-bg-red-50
-p-5
-"
-        >
-          <h3
-            className="
-font-semibold
-text-red-700
-"
-          >
-            Delete User
-          </h3>
+        <div className="space-y-4 rounded-xl border border-red-200 bg-red-50 p-5">
+          <h3 className="font-semibold text-red-700">Delete User</h3>
 
-          <p
-            className="
-text-sm
-text-red-600
-"
-          >
+          <p className="text-sm leading-relaxed text-red-600">
             This action cannot be undone. All user related data may be removed.
           </p>
 
           <button
-            onClick={() => {
-              onStatusChange(false);
-            }}
+            onClick={() => onStatusChange(false)}
             className="
-w-full
-rounded-xl
-bg-red-600
-py-3
-text-sm
-font-semibold
-text-white
-hover:bg-red-700
-"
+              w-full
+              rounded-xl
+              bg-red-600
+              py-3
+              text-sm
+              font-semibold
+              text-white
+              transition
+              hover:bg-red-700
+            "
           >
             Delete User
           </button>
         </div>
       )}
     </div>
+  );
+}
+
+function SubmitButton({
+  children,
+  disabled = false,
+}: {
+  children: React.ReactNode;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      disabled={disabled}
+      className="
+        w-full
+        rounded-xl
+        bg-blue-600
+        py-3
+        text-sm
+        font-semibold
+        text-white
+        transition
+        hover:bg-blue-700
+        disabled:cursor-not-allowed
+        disabled:opacity-50
+      "
+    >
+      {children}
+    </button>
   );
 }
 
@@ -291,15 +238,7 @@ function Input({
 }) {
   return (
     <div>
-      <label
-        className="
-mb-2
-block
-text-sm
-font-medium
-text-gray-700
-"
-      >
+      <label className="mb-2 block text-sm font-medium text-gray-700">
         {label}
       </label>
 
@@ -308,21 +247,21 @@ text-gray-700
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="
-w-full
-rounded-xl
-border
-border-gray-300
-bg-white
-px-4
-py-3
-text-gray-900
-shadow-sm
-outline-none
+          h-12
+          w-full
+          rounded-xl
+          border
+          border-gray-300
+          bg-white
+          px-4
+          text-gray-900
+          outline-none
+          transition
 
-focus:border-blue-600
-focus:ring-4
-focus:ring-blue-100
-"
+          focus:border-blue-600
+          focus:ring-4
+          focus:ring-blue-100
+        "
       />
     </div>
   );

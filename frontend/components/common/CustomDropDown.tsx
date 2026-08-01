@@ -9,7 +9,7 @@ interface Option {
 }
 
 interface CustomDropdownProps {
-  value: string;
+  value?: string;
   options: Option[];
   onChange: (value: string) => void;
   placeholder?: string;
@@ -23,29 +23,61 @@ export default function CustomDropdown({
 }: CustomDropdownProps) {
   const [open, setOpen] = useState(false);
 
+  const [position, setPosition] = useState({
+    top: 0,
+    left: 0,
+    width: 0,
+    direction: "down",
+  });
+
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function close(event: MouseEvent) {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         setOpen(false);
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", close);
 
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", close);
+    };
   }, []);
 
-  const selected = options.find((option) => option.value === value)?.label;
+  function toggleDropdown() {
+    if (!open && ref.current) {
+      const rect = ref.current.getBoundingClientRect();
+
+      const dropdownHeight = Math.min(options.length * 48, 240);
+
+      const spaceBelow = window.innerHeight - rect.bottom;
+
+      const shouldOpenUp =
+        spaceBelow < dropdownHeight && rect.top > dropdownHeight;
+
+      setPosition({
+        left: rect.left,
+        width: rect.width,
+        top: shouldOpenUp ? rect.top - dropdownHeight - 8 : rect.bottom + 8,
+        direction: shouldOpenUp ? "up" : "down",
+      });
+    }
+
+    setOpen(!open);
+  }
+
+  const selected = options.find((item) => item.value === value)?.label;
 
   return (
-    <div ref={ref} className="relative w-full sm:w-44">
+    <div ref={ref}>
       <button
         type="button"
-        onClick={() => setOpen(!open)}
+        onClick={toggleDropdown}
         className="
           flex
+          h-12
           w-full
           items-center
           justify-between
@@ -54,7 +86,6 @@ export default function CustomDropdown({
           border-gray-300
           bg-white
           px-4
-          py-3
           text-sm
           text-gray-700
           shadow-sm
@@ -67,7 +98,7 @@ export default function CustomDropdown({
           focus:ring-blue-100
         "
       >
-        <span>{selected ?? placeholder}</span>
+        <span className="truncate">{selected ?? placeholder}</span>
 
         <ChevronDown
           size={18}
@@ -81,17 +112,20 @@ export default function CustomDropdown({
 
       {open && (
         <div
+          style={{
+            position: "fixed",
+            top: position.top,
+            left: position.left,
+            width: position.width,
+          }}
           className="
-            absolute
-            z-50
-            mt-2
-            w-full
+            z-[9999]
             overflow-hidden
             rounded-xl
             border
             border-gray-200
             bg-white
-            shadow-lg
+            shadow-xl
           "
         >
           {options.map((option) => (
