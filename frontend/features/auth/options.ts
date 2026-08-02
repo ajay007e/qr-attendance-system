@@ -23,6 +23,20 @@ export const USER_ROLE_OPTIONS = [
   label: string;
 }>;
 
+export const UI_USER_ROLE_OPTIONS = [
+  {
+    value: USER_ROLES.LECTURER,
+    label: "Lecturer",
+  },
+  {
+    value: USER_ROLES.STUDENT,
+    label: "Student",
+  },
+] satisfies Array<{
+  value: UserRole;
+  label: string;
+}>;
+
 export const getUserRoleLabel = (role: UserRole) => {
   return USER_ROLE_OPTIONS.find((item) => item.value === role)?.label ?? role;
 };

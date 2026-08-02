@@ -1,49 +1,51 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-
-import { CreateUserRequest } from "@/features/users";
 import CustomDropdown from "@/shared/components/ui/CustomDropDown";
-import { USER_ROLES, UserRole } from "@/features/auth";
-import { AppError } from "@/shared/errors/AppError";
-import { FormError, FormInput } from "@/shared";
+import { User, UpdateUserPayload } from "./types";
 import { UI_USER_ROLE_OPTIONS } from "@/features/auth/options";
+import { AppError } from "@/shared/errors/AppError";
+import { FormError, FormInput, SubmitButton } from "@/shared";
 
-interface UserFormProps {
-  onSubmit: (data: CreateUserRequest) => Promise<void> | void;
-}
-
-export default function UserForm({ onSubmit }: UserFormProps) {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const [role, setRole] = useState<UserRole>(USER_ROLES.STUDENT);
+export function DetailsForm({
+  user,
+  onSubmit,
+}: {
+  user: User;
+  onSubmit: (data: UpdateUserPayload) => Promise<void> | void;
+}) {
+  const [firstName, setFirstName] = useState(user.first_name);
+  const [lastName, setLastName] = useState(user.last_name ?? "");
+  const [email, setEmail] = useState(user.email);
+  const [role, setRole] = useState(user.role);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
     if (loading) return;
+
     setError("");
+
     try {
       setLoading(true);
+
       await onSubmit({
+        id: user.id,
         first_name: firstName,
         last_name: lastName,
         email,
-        password,
         role,
       });
     } catch (err) {
       console.error(err);
+
       if (err instanceof AppError) {
         setError(err.message);
       } else {
-        setError("Unable to create user. Please try again.");
+        setError("Unable to update user. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -51,7 +53,7 @@ export default function UserForm({ onSubmit }: UserFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5" aria-busy={loading}>
+    <form className="space-y-5" onSubmit={handleSubmit} aria-busy={loading}>
       {/* Error */}
       {error && <FormError message={error} />}
 
@@ -76,7 +78,7 @@ export default function UserForm({ onSubmit }: UserFormProps) {
       </div>
 
       <FormInput
-        label="Email Address"
+        label="Email"
         type="email"
         required
         disabled={loading}
@@ -84,17 +86,6 @@ export default function UserForm({ onSubmit }: UserFormProps) {
         placeholder="Enter email address"
         value={email}
         onChange={setEmail}
-      />
-
-      <FormInput
-        label="Password"
-        type="password"
-        required
-        disabled={loading}
-        autoComplete="new-password"
-        placeholder="Enter password"
-        value={password}
-        onChange={setPassword}
       />
 
       {/* Role */}
@@ -106,40 +97,15 @@ export default function UserForm({ onSubmit }: UserFormProps) {
         <CustomDropdown
           value={role}
           onChange={setRole}
-          placeholder="Select user role"
           options={UI_USER_ROLE_OPTIONS}
+          disabled={loading}
         />
       </div>
 
       {/* Submit */}
-      <button
-        type="submit"
-        disabled={loading || !role}
-        className="
-          mt-2
-          flex
-          h-12
-          w-full
-          items-center
-          justify-center
-          rounded-xl
-          bg-blue-600
-          text-sm
-          font-semibold
-          text-white
-          transition
-          hover:bg-blue-700
-
-          focus:outline-none
-          focus:ring-4
-          focus:ring-blue-200
-
-          disabled:cursor-not-allowed
-          disabled:opacity-60
-        "
-      >
-        {loading ? "Creating User..." : "Create User"}
-      </button>
+      <SubmitButton disabled={loading}>
+        {loading ? "Saving Changes..." : "Save Changes"}
+      </SubmitButton>
     </form>
   );
 }

@@ -6,6 +6,7 @@ import { ChevronDown, LogOut, Settings, User } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/features/auth";
 import { menus } from "@/shared/navigation/menu";
+import { UI_USER_ROLES } from "@/features/users";
 
 type SidebarProps = {
   onNavigate?: () => void;
@@ -92,7 +93,9 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
                 {user.email}
               </p>
 
-              <p className="capitalize text-xs text-gray-500">{user.role}</p>
+              <p className="capitalize text-xs text-gray-500">
+                {UI_USER_ROLES[user.role]}
+              </p>
             </div>
           </div>
 

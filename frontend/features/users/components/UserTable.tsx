@@ -1,5 +1,6 @@
 import { Pencil } from "lucide-react";
 import { User } from "../types";
+import { UI_USER_ROLES } from "../constants";
 
 export default function UserTable({
   users,
@@ -36,8 +37,25 @@ export default function UserTable({
 
               <button
                 onClick={() => onEdit(user)}
-                className="rounded-lg p-2 text-blue-600 transition hover:bg-blue-50"
+                disabled={user.role === "SUPER_ADMIN"}
+                className="
+                  rounded-lg
+                  p-2
+                  text-blue-600
+                  transition
+                  hover:bg-blue-50
+
+                  disabled:cursor-not-allowed
+                  disabled:opacity-50
+                  disabled:hover:bg-transparent
+                  disabled:hover:text-blue-600
+                "
                 aria-label={`Edit ${user.first_name}`}
+                title={
+                  user.role === "SUPER_ADMIN"
+                    ? "Super Admin users cannot be edited"
+                    : "Edit User"
+                }
               >
                 <Pencil size={18} />
               </button>
@@ -46,7 +64,7 @@ export default function UserTable({
             {/* Footer */}
             <div className="mt-4 flex items-center justify-between border-t pt-4">
               <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600">
-                {user.role}
+                {UI_USER_ROLES[user.role]}
               </span>
 
               <span
@@ -107,7 +125,7 @@ export default function UserTable({
 
                   <td className="px-6 py-4">
                     <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600">
-                      {user.role}
+                      {UI_USER_ROLES[user.role]}
                     </span>
                   </td>
 
@@ -126,9 +144,27 @@ export default function UserTable({
                   <td className="px-6 py-4">
                     <button
                       onClick={() => onEdit(user)}
-                      className="rounded-lg p-2 text-blue-600 transition hover:bg-blue-50 hover:text-blue-700 cursor-pointer"
+                      disabled={user.role === "SUPER_ADMIN"}
+                      className="
+                        rounded-lg
+                        p-2
+                        text-blue-600
+                        transition
+                        hover:bg-blue-50
+                        hover:text-blue-700
+
+                        cursor-pointer
+                        disabled:cursor-not-allowed
+                        disabled:opacity-50
+                        disabled:hover:bg-transparent
+                        disabled:hover:text-blue-600
+                      "
                       aria-label={`Edit ${user.first_name} ${user.last_name}`}
-                      title="Edit User"
+                      title={
+                        user.role === "SUPER_ADMIN"
+                          ? "Super Admin users cannot be edited"
+                          : "Edit User"
+                      }
                     >
                       <Pencil size={18} />
                     </button>

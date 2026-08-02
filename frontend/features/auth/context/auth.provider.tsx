@@ -8,7 +8,6 @@ import { AuthContext } from "./auth.context";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
-
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -18,24 +17,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const currentUser = response.data.data;
       setUser(currentUser);
       return currentUser;
-    } catch {
+    } catch (error) {
       setUser(null);
       return null;
     }
   }
 
   async function login(email: string, password: string): Promise<AuthUser> {
-    await authService.login({
+    const response = await authService.login({
       email,
       password,
     });
-
-    const currentUser = await refresh();
-
-    if (!currentUser) {
-      throw new Error("Unable to retrieve authenticated user.");
-    }
-
+    const currentUser = response.data.user;
+    setUser(currentUser);
     return currentUser;
   }
 
@@ -52,6 +46,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async function initialize() {
       try {
         await refresh();
+      } catch (error) {
+        setUser(null);
       } finally {
         setLoading(false);
       }

@@ -13,7 +13,8 @@ import { Modal, PageLoader, useDebounce } from "@/shared";
 import useUsers from "./hooks/useUsers";
 import PageHeader from "@/shared/components/layout/AdminPageHeader";
 import UserForm from "./components/UserForm";
-import EditUserForm from "./components/EditUserForm";
+import { EditUserForm } from "./components/EditUserForm";
+import ErrorState from "@/shared/components/feedback/ErrorState";
 
 export default function UserManagement() {
   const [query, setQuery] = useState<UserQuery>(DEFAULT_USER_QUERY);
@@ -47,18 +48,13 @@ export default function UserManagement() {
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-red-200 bg-red-50 p-6">
-        <h2 className="font-semibold text-red-700">Unable to load users</h2>
-
-        <p className="mt-2 text-sm text-red-600">{error}</p>
-
-        <button
-          onClick={refresh}
-          className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-white"
-        >
-          Retry
-        </button>
-      </div>
+      <ErrorState
+        title="Unable to load users"
+        message="We couldn't retrieve the user list right now. Please check your connection and try again."
+        error={error}
+        onRetry={refresh}
+        retryLabel="Retry Loading"
+      />
     );
   }
 
@@ -224,7 +220,6 @@ export default function UserManagement() {
               await changeStatus(selectedUser.id, {
                 is_active: status,
               });
-
               setSelectedUser(null);
             }}
           />

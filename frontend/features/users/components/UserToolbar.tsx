@@ -76,7 +76,7 @@ export default function UserToolbar({
 
           <button
             onClick={onCreate}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 sm:w-auto"
+            className="flex w-full items-center justify-center gap-2 cursor-pointer rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 sm:w-auto"
           >
             <Plus size={18} />
             <span>Add User</span>

@@ -1,5 +1,6 @@
 import "./globals.css";
 import { AuthProvider } from "@/features/auth";
+import { ErrorProvider, GlobalError } from "@/shared";
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -8,7 +9,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <ErrorProvider>
+          <AuthProvider>
+            <GlobalError />
+            {children}
+          </AuthProvider>
+        </ErrorProvider>
       </body>
     </html>
   );
