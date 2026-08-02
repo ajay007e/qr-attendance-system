@@ -1,6 +1,5 @@
 import "./globals.css";
-import { AuthProvider } from "@/context/auth.context";
-
+import { AuthProvider } from "@/features/auth";
 export default function RootLayout({
   children,
 }: Readonly<{

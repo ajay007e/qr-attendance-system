@@ -3,15 +3,6 @@
 import { X } from "lucide-react";
 import { useEffect } from "react";
 
-interface ModalProps {
-  open: boolean;
-  onClose: () => void;
-  title?: string;
-  children: React.ReactNode;
-  footer?: React.ReactNode;
-  size?: "sm" | "md" | "lg";
-}
-
 export default function Modal({
   open,
   onClose,
@@ -19,7 +10,14 @@ export default function Modal({
   children,
   footer,
   size = "md",
-}: ModalProps) {
+}: {
+  open: boolean;
+  onClose: () => void;
+  title?: string;
+  children: React.ReactNode;
+  footer?: React.ReactNode;
+  size?: "sm" | "md" | "lg";
+}) {
   useEffect(() => {
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {

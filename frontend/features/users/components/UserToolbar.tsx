@@ -1,20 +1,17 @@
 import { Plus, Search } from "lucide-react";
 
-import CustomDropdown from "@/components/common/CustomDropDown";
-
-import { UserFilters } from "../types";
-
-interface UserToolbarProps {
-  filters: UserFilters;
-  onFiltersChange: (filters: UserFilters) => void;
-  onCreate: () => void;
-}
+import { UserQuery } from "../types";
+import CustomDropdown from "@/shared/components/ui/CustomDropDown";
 
 export default function UserToolbar({
   filters,
   onFiltersChange,
   onCreate,
-}: UserToolbarProps) {
+}: {
+  filters: UserQuery;
+  onFiltersChange: (filters: UserQuery) => void;
+  onCreate: () => void;
+}) {
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">

@@ -2,15 +2,6 @@
 
 import { useState } from "react";
 
-import PageHeader from "@/components/layout/AdminPageHeader";
-import Modal from "@/components/common/Modal";
-import PageLoader from "@/components/common/PageLoader";
-
-import UserForm from "@/components/forms/UserForm";
-import EditUserForm from "@/components/forms/EditUserForm";
-
-import { useUsers } from "./hooks/useUsers";
-
 import UserToolbar from "./components/UserToolbar";
 import UserTable from "./components/UserTable";
 import UserPagination from "./components/UserPagination";
@@ -18,7 +9,11 @@ import EmptyUserState from "./components/EmptyUserState";
 
 import type { User, UserQuery } from "./types";
 import { DEFAULT_USER_QUERY } from "./constants";
-import { useDebounce } from "@/hooks/useDebounce";
+import { Modal, PageLoader, useDebounce } from "@/shared";
+import useUsers from "./hooks/useUsers";
+import PageHeader from "@/shared/components/layout/AdminPageHeader";
+import UserForm from "./components/UserForm";
+import EditUserForm from "./components/EditUserForm";
 
 export default function UserManagement() {
   const [query, setQuery] = useState<UserQuery>(DEFAULT_USER_QUERY);

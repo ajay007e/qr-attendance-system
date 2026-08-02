@@ -1,10 +1,17 @@
 "use client";
 
+import CustomDropdown from "@/shared/components/ui/CustomDropDown";
 import { useState } from "react";
 
-import CustomDropdown from "@/components/common/CustomDropDown";
+// TODO: refactor this
+type Tab = "details" | "password" | "delete";
 
-interface EditUserFormProps {
+export default function EditUserForm({
+  user,
+  onUpdate,
+  onPasswordChange,
+  onStatusChange,
+}: {
   user: {
     id: number;
     first_name: string;
@@ -16,16 +23,7 @@ interface EditUserFormProps {
   onUpdate: (data: any) => void;
   onPasswordChange: (data: any) => void;
   onStatusChange: (data: boolean) => void;
-}
-
-type Tab = "details" | "password" | "delete";
-
-export default function EditUserForm({
-  user,
-  onUpdate,
-  onPasswordChange,
-  onStatusChange,
-}: EditUserFormProps) {
+}) {
   const [activeTab, setActiveTab] = useState<Tab>("details");
 
   const [firstName, setFirstName] = useState(user.first_name);

@@ -19,3 +19,8 @@ export interface PaginatedResponse<T> {
   data: T[];
   pagination: Pagination;
 }
+
+export interface LoginPayload {
+  email: string;
+  password: string;
+}

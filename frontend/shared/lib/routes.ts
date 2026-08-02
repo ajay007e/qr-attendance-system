@@ -1,4 +1,4 @@
-import { UserRole } from "@/types/auth";
+import { UserRole } from "@/features/auth";
 
 export const DASHBOARD_ROUTES: Record<UserRole, string> = {
   SUPER_ADMIN: "/dashboard",

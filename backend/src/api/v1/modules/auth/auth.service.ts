@@ -91,8 +91,8 @@ export class AuthService {
 
     // Create Super Admin
     await this.repository.create({
-      firstName: data.firstName,
-      lastName: data.lastName,
+      first_name: data.firstName,
+      last_name: data.lastName,
       email: data.email,
       password: hashedPassword,
       role: Role.SUPER_ADMIN,

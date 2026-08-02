@@ -1,12 +1,7 @@
+import { ComingSoon } from "@/shared";
 import { Plus } from "lucide-react";
 
-import ComingSoon from "@/components/common/ComingSoon";
-
-interface EmptyUserStateProps {
-  onCreate: () => void;
-}
-
-export default function EmptyUserState({ onCreate }: EmptyUserStateProps) {
+export default function EmptyUserState({ onCreate }: { onCreate: () => void }) {
   return (
     <div
       className="

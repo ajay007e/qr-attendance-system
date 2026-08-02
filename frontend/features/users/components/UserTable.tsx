@@ -1,12 +1,13 @@
 import { Pencil } from "lucide-react";
 import { User } from "../types";
 
-interface UserTableProps {
+export default function UserTable({
+  users,
+  onEdit,
+}: {
   users: User[];
   onEdit: (user: User) => void;
-}
-
-export default function UserTable({ users, onEdit }: UserTableProps) {
+}) {
   return (
     <>
       {/* Mobile Cards */}
@@ -21,7 +22,7 @@ export default function UserTable({ users, onEdit }: UserTableProps) {
               <div className="flex items-center gap-3 min-w-0">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-100 font-semibold text-blue-600">
                   {user.first_name[0]}
-                  {user.last_name[0]}
+                  {user.last_name?.[0]}
                 </div>
 
                 <div className="min-w-0">

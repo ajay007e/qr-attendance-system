@@ -2,9 +2,9 @@
 
 import { FormEvent, useState } from "react";
 
-import CustomDropdown from "@/components/common/CustomDropDown";
 import { CreateUserRequest } from "@/features/users";
-import { UserRole } from "@/types/auth";
+import CustomDropdown from "@/shared/components/ui/CustomDropDown";
+import { USER_ROLES, UserRole } from "@/features/auth";
 
 interface UserFormProps {
   onSubmit: (data: CreateUserRequest) => Promise<void> | void;
@@ -17,7 +17,7 @@ export default function UserForm({ onSubmit }: UserFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [role, setRole] = useState<UserRole>();
+  const [role, setRole] = useState<UserRole>(USER_ROLES.STUDENT);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

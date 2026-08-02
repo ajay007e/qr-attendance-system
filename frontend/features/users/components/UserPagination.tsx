@@ -1,27 +1,27 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface UserPaginationProps {
-  total: number;
-
-  page?: number;
-
-  totalPages?: number;
-
-  onPrevious?: () => void;
-
-  onNext?: () => void;
-
-  disabled?: boolean;
-}
-
 export default function UserPagination({
   total,
   page = 1,
   totalPages = 1,
+  limit = 10,
   onPrevious,
   onNext,
   disabled = true,
-}: UserPaginationProps) {
+  hasNext = true,
+  hasPrevious = true,
+}: {
+  total: number;
+  page?: number;
+  limit?: number;
+  count?: number;
+  totalPages?: number;
+  onPrevious?: () => void;
+  onNext?: () => void;
+  disabled?: boolean;
+  hasPrevious?: boolean;
+  hasNext?: boolean;
+}) {
   return (
     <div className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-600 shadow-sm sm:px-5 sm:py-4">
       {/* Info */}

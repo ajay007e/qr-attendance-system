@@ -4,9 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, LogOut, Settings, User } from "lucide-react";
 import { useState } from "react";
-
-import { useAuth } from "@/context/auth.context";
-import { menus } from "@/components/navigation/menu";
+import { useAuth } from "@/features/auth";
+import { menus } from "@/shared/navigation/menu";
 
 type SidebarProps = {
   onNavigate?: () => void;

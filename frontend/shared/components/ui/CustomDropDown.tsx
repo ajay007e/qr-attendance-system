@@ -3,24 +3,24 @@
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-interface Option {
+type Option<T extends string> = {
   label: string;
-  value: string;
-}
+  value: T;
+};
 
-interface CustomDropdownProps {
-  value?: string;
-  options: Option[];
-  onChange: (value: string) => void;
+type CustomDropdownProps<T extends string> = {
+  value?: T;
+  options: Option<T>[];
+  onChange: (value: T) => void;
   placeholder?: string;
-}
+};
 
-export default function CustomDropdown({
+export default function CustomDropdown<T extends string>({
   value,
   options,
   onChange,
   placeholder = "Select",
-}: CustomDropdownProps) {
+}: CustomDropdownProps<T>) {
   const [open, setOpen] = useState(false);
 
   const [position, setPosition] = useState({
@@ -40,10 +40,7 @@ export default function CustomDropdown({
     }
 
     document.addEventListener("mousedown", close);
-
-    return () => {
-      document.removeEventListener("mousedown", close);
-    };
+    return () => document.removeEventListener("mousedown", close);
   }, []);
 
   function toggleDropdown() {
@@ -51,7 +48,6 @@ export default function CustomDropdown({
       const rect = ref.current.getBoundingClientRect();
 
       const dropdownHeight = Math.min(options.length * 48, 240);
-
       const spaceBelow = window.innerHeight - rect.bottom;
 
       const shouldOpenUp =
@@ -75,38 +71,15 @@ export default function CustomDropdown({
       <button
         type="button"
         onClick={toggleDropdown}
-        className="
-          flex
-          h-12
-          w-full
-          items-center
-          justify-between
-          rounded-xl
-          border
-          border-gray-300
-          bg-white
-          px-4
-          text-sm
-          text-gray-700
-          shadow-sm
-          transition
-
-          hover:border-blue-400
-
-          focus:outline-none
-          focus:ring-4
-          focus:ring-blue-100
-        "
+        className="flex h-12 w-full items-center justify-between rounded-xl border border-gray-300 bg-white px-4 text-sm text-gray-700 shadow-sm transition hover:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100"
       >
         <span className="truncate">{selected ?? placeholder}</span>
 
         <ChevronDown
           size={18}
-          className={`
-            text-gray-500
-            transition-transform
-            ${open ? "rotate-180" : ""}
-          `}
+          className={`text-gray-500 transition-transform ${
+            open ? "rotate-180" : ""
+          }`}
         />
       </button>
 
@@ -118,15 +91,7 @@ export default function CustomDropdown({
             left: position.left,
             width: position.width,
           }}
-          className="
-            z-[9999]
-            overflow-hidden
-            rounded-xl
-            border
-            border-gray-200
-            bg-white
-            shadow-xl
-          "
+          className="z-[9999] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl"
         >
           {options.map((option) => (
             <button
@@ -136,21 +101,11 @@ export default function CustomDropdown({
                 onChange(option.value);
                 setOpen(false);
               }}
-              className={`
-                flex
-                w-full
-                px-4
-                py-3
-                text-left
-                text-sm
-                transition
-
-                ${
-                  option.value === value
-                    ? "bg-blue-50 text-blue-600"
-                    : "text-gray-700 hover:bg-gray-50"
-                }
-              `}
+              className={`flex w-full px-4 py-3 text-left text-sm transition ${
+                option.value === value
+                  ? "bg-blue-50 text-blue-600"
+                  : "text-gray-700 hover:bg-gray-50"
+              }`}
             >
               {option.label}
             </button>

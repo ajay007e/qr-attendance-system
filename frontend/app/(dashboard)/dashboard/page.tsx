@@ -1,5 +1,4 @@
-import PageHeader from "@/components/layout/AdminPageHeader";
-
+import PageHeader from "@/shared/components/layout/AdminPageHeader";
 import { BarChart3 } from "lucide-react";
 
 export default function AdminPage() {

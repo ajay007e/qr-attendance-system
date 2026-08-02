@@ -2,9 +2,8 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-
-import { useAuth } from "@/context/auth.context";
-import { getDashboardRoute } from "@/lib/routes";
+import { useAuth } from "@/features/auth";
+import { getDashboardRoute } from "@/shared";
 
 export default function LoginPage() {
   const router = useRouter();

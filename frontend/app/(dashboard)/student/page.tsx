@@ -1,6 +1,5 @@
+import PageHeader from "@/shared/components/layout/AdminPageHeader";
 import { GraduationCap } from "lucide-react";
-
-import PageHeader from "@/components/layout/AdminPageHeader";
 
 export default function StudentDashboardPage() {
   return (

@@ -2,18 +2,14 @@
 
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/features/auth";
+import { DashboardShell, getDashboardRoute, PageLoader } from "@/shared";
 
-import { useAuth } from "@/context/auth.context";
-import { getDashboardRoute } from "@/lib/routes";
-
-import PageLoader from "@/components/common/PageLoader";
-import DashboardShell from "@/components/layout/DashboardShell";
-
-interface Props {
+export default function DashboardLayout({
+  children,
+}: {
   children: React.ReactNode;
-}
-
-export default function DashboardLayout({ children }: Props) {
+}) {
   const router = useRouter();
   const pathname = usePathname();
 

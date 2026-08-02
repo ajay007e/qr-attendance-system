@@ -1,4 +1,4 @@
-import { UserRole } from "@/types/auth";
+import { UserRole } from "../auth";
 import { UserQuery } from "./types";
 
 export const USER_ROLES: UserRole[] = ["ADMIN", "LECTURER", "STUDENT"];

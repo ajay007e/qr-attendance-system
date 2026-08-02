@@ -1,4 +1,4 @@
-import { ResultSetHeader, RowDataPacket } from "mysql2";
+import { ResultSetHeader, RowDataPacket, ExecuteValues } from "mysql2";
 
 import { db } from "../../../../config/database";
 import {
@@ -16,7 +16,7 @@ export class UserRepository {
     const offset = (page - 1) * limit;
 
     let where = `WHERE 1 = 1`;
-    const params: unknown[] = [];
+    const params: ExecuteValues[] = [];
 
     if (query.search) {
       where += `

@@ -11,28 +11,9 @@ import type {
   ChangeUserStatusRequest,
   UserQuery,
 } from "../types";
+import { Pagination, DEFAULT_PAGINATION } from "@/shared";
 
-export interface Pagination {
-  page: number;
-  limit: number;
-  count: number;
-  total: number;
-  totalPages: number;
-  hasPrevious: boolean;
-  hasNext: boolean;
-}
-
-const DEFAULT_PAGINATION: Pagination = {
-  page: 1,
-  limit: 10,
-  count: 0,
-  total: 0,
-  totalPages: 0,
-  hasPrevious: false,
-  hasNext: false,
-};
-
-export function useUsers(query: UserQuery) {
+export default function useUsers(query: UserQuery) {
   const isInitialLoad = useRef(true);
 
   const [users, setUsers] = useState<User[]>([]);

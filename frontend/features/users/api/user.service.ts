@@ -1,22 +1,13 @@
-import api from "@/lib/api";
-
+import { ApiResponse, PaginatedResponse } from "@/shared";
 import type {
   User,
   CreateUserRequest,
   UpdateUserRequest,
   ChangePasswordRequest,
   ChangeUserStatusRequest,
+  UserQuery,
 } from "../types";
-
-import type { ApiResponse, PaginatedResponse } from "@/types/api";
-
-export interface UserQuery {
-  page?: number;
-  limit?: number;
-  search?: string;
-  role?: string;
-  status?: string;
-}
+import api from "@/shared/lib/api";
 
 export const userService = {
   async getUsers(query?: UserQuery) {
@@ -25,7 +16,7 @@ export const userService = {
         ([, value]) => value !== undefined && value !== "" && value !== "ALL",
       ),
     );
-    const response = await api.get<PaginatedResponse<User[]>>("/users", {
+    const response = await api.get<PaginatedResponse<User>>("/users", {
       params,
     });
 

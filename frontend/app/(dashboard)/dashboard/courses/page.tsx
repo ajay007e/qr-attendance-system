@@ -1,11 +1,10 @@
 "use client";
 
+import { ComingSoon } from "@/shared";
+import PageHeader from "@/shared/components/layout/AdminPageHeader";
+import CustomDropdown from "@/shared/components/ui/CustomDropDown";
 import { Plus, Search } from "lucide-react";
 import { useState } from "react";
-
-import PageHeader from "@/components/layout/AdminPageHeader";
-import ComingSoon from "@/components/common/ComingSoon";
-import CustomDropdown from "@/components/common/CustomDropDown";
 
 const ENABLE_COURSE_DATA = true;
 

@@ -2,10 +2,8 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-
-import { useAuth } from "@/context/auth.context";
-import { getDashboardRoute } from "@/lib/routes";
-import PageLoader from "@/components/common/PageLoader";
+import { useAuth } from "@/features/auth";
+import { getDashboardRoute, PageLoader } from "@/shared";
 
 export default function AuthLayout({
   children,

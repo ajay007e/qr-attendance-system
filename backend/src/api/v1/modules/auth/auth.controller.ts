@@ -50,7 +50,7 @@ export class AuthController {
   me = async (req: Request, res: Response) => {
     res.json({
       success: true,
-      user: req.user,
+      data: req.user,
     });
   };
 }
