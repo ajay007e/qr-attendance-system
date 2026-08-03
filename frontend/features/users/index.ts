@@ -1,12 +1,11 @@
-export { default as UserManagement } from "./UserManagement";
+export { UserManagement } from "./components/UserManagement";
 
-export { default as UserTable } from "./components/UserTable";
-export { default as UserToolbar } from "./components/UserToolbar";
-export { default as UserPagination } from "./components/UserPagination";
-export { default as UserForm } from "./components/UserForm";
-export { default as EditUserForm } from "./components/EditUserForm";
-
-export { default as EmptyUserState } from "./components/EmptyUserState";
+export { UserTable } from "./components/UserTable";
+export { UserToolbar } from "./components/UserToolbar";
+export { UserPagination } from "./components/UserPagination";
+export { UserForm } from "./components/UserForm";
+export { EditUserForm } from "./components/EditUserForm";
+export { EmptyUserState } from "./components/EmptyUserState";
 
 export type * from "./types";
 export * from "./constants";

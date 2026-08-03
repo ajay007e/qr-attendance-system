@@ -2,16 +2,12 @@
 
 import { FormEvent, useState } from "react";
 
-import { CreateUserRequest } from "@/features/users";
 import CustomDropdown from "@/shared/components/ui/CustomDropDown";
 import { USER_ROLES, UserRole } from "@/features/auth";
 import { AppError } from "@/shared/errors/AppError";
 import { FormError, FormInput } from "@/shared";
 import { UI_USER_ROLE_OPTIONS } from "@/features/auth/options";
-
-interface UserFormProps {
-  onSubmit: (data: CreateUserRequest) => Promise<void> | void;
-}
+import { UserFormProps } from "./types";
 
 export default function UserForm({ onSubmit }: UserFormProps) {
   const [firstName, setFirstName] = useState("");

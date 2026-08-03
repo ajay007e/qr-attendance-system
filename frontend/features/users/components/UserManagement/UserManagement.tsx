@@ -2,19 +2,19 @@
 
 import { useState } from "react";
 
-import UserToolbar from "./components/UserToolbar";
-import UserTable from "./components/UserTable";
-import UserPagination from "./components/UserPagination";
-import EmptyUserState from "./components/EmptyUserState";
-
-import type { User, UserQuery } from "./types";
-import { DEFAULT_USER_QUERY } from "./constants";
 import { Modal, PageLoader, useDebounce } from "@/shared";
-import useUsers from "./hooks/useUsers";
 import PageHeader from "@/shared/components/layout/AdminPageHeader";
-import UserForm from "./components/UserForm";
-import { EditUserForm } from "./components/EditUserForm";
 import ErrorFallback from "@/shared/components/feedback/ErrorFallback";
+import { UserQuery } from "../../types";
+import { DEFAULT_USER_QUERY } from "../../constants";
+import { User } from "../EditUserForm/types";
+import useUsers from "../../hooks/useUsers";
+import UserToolbar from "../UserToolbar/UserToolbar";
+import UserTable from "../UserTable/UserTable";
+import UserPagination from "../UserPagination/UserPagination";
+import UserForm from "../UserForm/UserForm";
+import { EditUserForm } from "../EditUserForm";
+import { EmptyUserState } from "../EmptyUserState";
 
 export default function UserManagement() {
   const [query, setQuery] = useState<UserQuery>(DEFAULT_USER_QUERY);
@@ -63,6 +63,32 @@ export default function UserManagement() {
       <PageHeader
         title="User Management"
         subtitle="Manage administrators, lecturers, and student accounts."
+        action={
+          <button
+            type="button"
+            onClick={() => setShowCreateUser(true)}
+            className="
+        flex
+        w-full
+        cursor-pointer
+        items-center
+        justify-center
+        gap-2
+        rounded-xl
+        bg-blue-600
+        px-5
+        py-3
+        text-sm
+        font-semibold
+        text-white
+        transition
+        hover:bg-blue-700
+        sm:w-auto
+      "
+          >
+            Add User
+          </button>
+        }
       />
       <UserToolbar
         filters={query}
@@ -72,7 +98,6 @@ export default function UserManagement() {
             page: 1,
           })
         }
-        onCreate={() => setShowCreateUser(true)}
       />
 
       {showEmptyState ? (
