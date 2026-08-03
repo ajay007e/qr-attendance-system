@@ -21,7 +21,7 @@ export interface Option<T extends string> {
 
 export interface CustomDropdownProps<T extends string> {
   value?: T;
-  options: Option<T>[];
+  options: readonly Option<T>[];
   onChange: (value: T) => void;
   placeholder?: string;
 }
@@ -44,4 +44,21 @@ export interface ModalProps {
 
 export interface PageLoaderProps {
   message?: string;
+}
+
+export type BadgeVariant = "blue" | "green" | "red" | "yellow" | "gray";
+
+export interface BadgeProps {
+  children: ReactNode;
+  variant?: BadgeVariant;
+  className?: string;
+}
+
+export interface IconButtonProps {
+  children: ReactNode;
+  onClick?: () => void;
+  disabled?: boolean;
+  ariaLabel: string;
+  title?: string;
+  className?: string;
 }

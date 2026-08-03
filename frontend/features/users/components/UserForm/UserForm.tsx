@@ -11,7 +11,7 @@ import {
   USER_ROLES,
   UserRole,
 } from "@/shared";
-import { UserFormProps } from "./types";
+import { UserFormProps } from "../../types";
 
 export default function UserForm({ onSubmit }: UserFormProps) {
   const [firstName, setFirstName] = useState("");

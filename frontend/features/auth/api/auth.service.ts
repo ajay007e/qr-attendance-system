@@ -1,6 +1,5 @@
 import api from "@/shared/lib/api";
-import { AuthUser } from "../types";
-import { ApiResponse, LoginPayload } from "@/shared";
+import { ApiResponse, LoginPayload, User } from "@/shared";
 
 export const authService = {
   login(data: LoginPayload) {
@@ -12,6 +11,6 @@ export const authService = {
   },
 
   me() {
-    return api.get<ApiResponse<AuthUser>>("/auth/me");
+    return api.get<ApiResponse<User>>("/auth/me");
   },
 };

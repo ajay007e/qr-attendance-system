@@ -2,7 +2,6 @@
 
 import { FormEvent, useState } from "react";
 import CustomDropdown from "@/shared/components/ui/CustomDropDown";
-import { User, UpdateUserPayload } from "./types";
 import { AppError } from "@/shared/errors/AppError";
 import {
   FormError,
@@ -10,14 +9,9 @@ import {
   SubmitButton,
   UI_USER_ROLE_OPTIONS,
 } from "@/shared";
+import { DetailsFormProps } from "../../types";
 
-export function DetailsForm({
-  user,
-  onSubmit,
-}: {
-  user: User;
-  onSubmit: (data: UpdateUserPayload) => Promise<void> | void;
-}) {
+export function DetailsForm({ user, onSubmit }: DetailsFormProps) {
   const [firstName, setFirstName] = useState(user.first_name);
   const [lastName, setLastName] = useState(user.last_name ?? "");
   const [email, setEmail] = useState(user.email);
@@ -58,58 +52,48 @@ export function DetailsForm({
 
   return (
     <form className="space-y-5" onSubmit={handleSubmit} aria-busy={loading}>
-      {/* Error */}
-      {error && <FormError message={error} />}
+      <fieldset disabled={loading} className="space-y-5">
+        {error && <FormError message={error} />}
 
-      {/* Name */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <FormInput
+            label="First Name"
+            required
+            placeholder="Enter first name"
+            value={firstName}
+            onChange={setFirstName}
+          />
+          <FormInput
+            label="Last Name"
+            placeholder="Enter last name"
+            value={lastName}
+            onChange={setLastName}
+          />
+        </div>
         <FormInput
-          label="First Name"
+          label="Email"
+          type="email"
           required
-          disabled={loading}
-          placeholder="Enter first name"
-          value={firstName}
-          onChange={setFirstName}
+          autoComplete="email"
+          placeholder="Enter email address"
+          value={email}
+          onChange={setEmail}
         />
+        <div>
+          <label className="mb-2 block text-sm font-medium text-gray-700">
+            Role
+          </label>
 
-        <FormInput
-          label="Last Name"
-          disabled={loading}
-          placeholder="Enter last name"
-          value={lastName}
-          onChange={setLastName}
-        />
-      </div>
-
-      <FormInput
-        label="Email"
-        type="email"
-        required
-        disabled={loading}
-        autoComplete="email"
-        placeholder="Enter email address"
-        value={email}
-        onChange={setEmail}
-      />
-
-      {/* Role */}
-      <div>
-        <label className="mb-2 block text-sm font-medium text-gray-700">
-          Role
-        </label>
-
-        <CustomDropdown
-          value={role}
-          onChange={setRole}
-          options={UI_USER_ROLE_OPTIONS}
-          disabled={loading}
-        />
-      </div>
-
-      {/* Submit */}
-      <SubmitButton disabled={loading}>
-        {loading ? "Saving Changes..." : "Save Changes"}
-      </SubmitButton>
+          <CustomDropdown
+            value={role}
+            onChange={setRole}
+            options={UI_USER_ROLE_OPTIONS}
+          />
+        </div>
+        <SubmitButton disabled={loading}>
+          {loading ? "Saving Changes..." : "Save Changes"}
+        </SubmitButton>
+      </fieldset>
     </form>
   );
 }

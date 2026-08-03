@@ -2,12 +2,11 @@ import { Search } from "lucide-react";
 
 import CustomDropdown from "@/shared/components/ui/CustomDropDown";
 
+import { UserToolbarProps } from "../../types";
 import {
   USER_ROLE_FILTER_OPTIONS,
   USER_STATUS_FILTER_OPTIONS,
-} from "./constants";
-
-import { UserToolbarProps } from "./types";
+} from "../../constants";
 
 export default function UserToolbar({
   filters,

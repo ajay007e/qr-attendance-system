@@ -1,25 +1,16 @@
-import { Tab } from "./types";
+import { TABS } from "../../constants";
+import { TabsProps } from "../../types";
 
-const tabs: { key: Tab; label: string }[] = [
-  { key: "details", label: "Details" },
-  { key: "password", label: "Password" },
-  { key: "delete", label: "Delete" },
-];
-
-export function Tabs({ activeTab, onChange }: Props) {
+export function Tabs({ activeTab, onChange }: TabsProps) {
   return (
     <div className="flex rounded-xl bg-gray-100 p-1">
-      {tabs.map((tab) => {
+      {TABS.map((tab) => {
         const isActive = activeTab === tab.key;
-
-        let activeClass = "text-gray-500";
-
-        if (isActive) {
-          activeClass =
-            tab.key === "delete"
-              ? "bg-white text-red-600 shadow-sm"
-              : "bg-white text-blue-600 shadow-sm";
-        }
+        const activeClass = isActive
+          ? tab.key === "delete"
+            ? "bg-white text-red-600 shadow-sm"
+            : "bg-white text-blue-600 shadow-sm"
+          : "text-gray-500";
 
         return (
           <button

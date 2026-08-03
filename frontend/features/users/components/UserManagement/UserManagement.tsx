@@ -2,12 +2,11 @@
 
 import { useState } from "react";
 
-import { Modal, PageLoader, useDebounce } from "@/shared";
+import { Modal, PageLoader, useDebounce, User } from "@/shared";
 import PageHeader from "@/shared/components/layout/AdminPageHeader";
 import ErrorFallback from "@/shared/components/feedback/ErrorFallback";
 import { UserQuery } from "../../types";
 import { DEFAULT_USER_QUERY } from "../../constants";
-import { User } from "../EditUserForm/types";
 import useUsers from "../../hooks/useUsers";
 import UserToolbar from "../UserToolbar/UserToolbar";
 import UserTable from "../UserTable/UserTable";
@@ -190,8 +189,6 @@ export default function UserManagement() {
             page={pagination.page}
             totalPages={pagination.totalPages}
             total={pagination.total}
-            count={pagination.count}
-            limit={pagination.limit}
             hasPrevious={pagination.hasPrevious}
             hasNext={pagination.hasNext}
             onPrevious={() =>

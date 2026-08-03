@@ -1,6 +1,5 @@
-import { ApiResponse, PaginatedResponse } from "@/shared";
+import { ApiResponse, PaginatedResponse, User } from "@/shared";
 import type {
-  User,
   CreateUserRequest,
   UpdateUserRequest,
   ChangePasswordRequest,

@@ -1,6 +1,6 @@
 import { ComingSoon } from "@/shared";
-import type { EmptyUserStateProps } from "./types";
 import { Plus } from "lucide-react";
+import { EmptyUserStateProps } from "../../types";
 
 export default function EmptyUserState({ onCreate }: EmptyUserStateProps) {
   return (

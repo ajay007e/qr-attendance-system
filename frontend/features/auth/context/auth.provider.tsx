@@ -2,16 +2,16 @@
 
 import { ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AuthUser } from "../types";
 import { authService } from "../api/auth.service";
 import { AuthContext } from "./auth.context";
+import { User } from "@/shared";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const [user, setUser] = useState<AuthUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  async function refresh(): Promise<AuthUser | null> {
+  async function refresh(): Promise<User | null> {
     try {
       const response = await authService.me();
       const currentUser = response.data.data;
@@ -23,7 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  async function login(email: string, password: string): Promise<AuthUser> {
+  async function login(email: string, password: string): Promise<User> {
     const response = await authService.login({
       email,
       password,

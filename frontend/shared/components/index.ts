@@ -11,7 +11,9 @@ export { default as DashboardShell } from "./layout/DashboardShell";
 export { default as AdminPageHeader } from "./layout/AdminPageHeader";
 
 export { default as Modal } from "./ui/Modal";
+export { default as Badge } from "./ui/Badge";
 export { default as FormInput } from "./ui/FormInput";
+export { default as IconButton } from "./ui/IconButton";
 export { default as PageLoader } from "./ui/PageLoader";
 export { default as SubmitButton } from "./ui/SubmitButton";
 export { default as CustomDropDown } from "./ui/CustomDropDown";

@@ -5,7 +5,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { userService } from "../api/user.service";
 
 import type {
-  User,
   CreateUserRequest,
   UpdateUserRequest,
   ChangePasswordRequest,
@@ -13,7 +12,7 @@ import type {
   UserQuery,
 } from "../types";
 
-import { Pagination, DEFAULT_PAGINATION, useError } from "@/shared";
+import { Pagination, DEFAULT_PAGINATION, useError, User } from "@/shared";
 
 export default function useUsers(query: UserQuery) {
   const isInitialLoad = useRef(true);
