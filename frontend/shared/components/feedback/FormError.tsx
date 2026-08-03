@@ -1,6 +1,8 @@
 "use client";
 
-export default function FormError({ message }: { message?: string | null }) {
+import { FormErrorProps } from "./types";
+
+export default function FormError({ message }: FormErrorProps) {
   if (!message) {
     return null;
   }

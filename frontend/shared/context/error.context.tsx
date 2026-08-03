@@ -1,15 +1,8 @@
 "use client";
 
 import { createContext } from "react";
+import { ErrorContextType } from "../types";
 
-export const ErrorContext = createContext<
-  | {
-      error: {
-        type: string;
-        message: string;
-      } | null;
-      handleError: (error: unknown) => void;
-      clearError: () => void;
-    }
-  | undefined
->(undefined);
+export const ErrorContext = createContext<ErrorContextType | undefined>(
+  undefined,
+);

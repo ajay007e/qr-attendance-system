@@ -2,7 +2,9 @@
 
 import { Bell, Menu } from "lucide-react";
 
-export default function Topbar({ onMenuClick }: { onMenuClick?: () => void }) {
+import { TopbarProps } from "./types";
+
+export default function Topbar({ onMenuClick }: TopbarProps) {
   return (
     <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm sm:px-6">
       {/* Left */}

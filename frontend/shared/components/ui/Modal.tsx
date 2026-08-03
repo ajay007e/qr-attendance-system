@@ -2,6 +2,7 @@
 
 import { X } from "lucide-react";
 import { useEffect } from "react";
+import { ModalProps } from "./types";
 
 export default function Modal({
   open,
@@ -10,14 +11,7 @@ export default function Modal({
   children,
   footer,
   size = "md",
-}: {
-  open: boolean;
-  onClose: () => void;
-  title?: string;
-  children: React.ReactNode;
-  footer?: React.ReactNode;
-  size?: "sm" | "md" | "lg";
-}) {
+}: ModalProps) {
   useEffect(() => {
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -72,7 +66,6 @@ export default function Modal({
           ${size === "lg" ? "sm:max-w-3xl" : ""}
         `}
       >
-        {/* Header */}
         {title && (
           <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4 sm:px-6">
             <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
@@ -94,12 +87,10 @@ export default function Modal({
           </div>
         )}
 
-        {/* Content */}
         <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6">
           {children}
         </div>
 
-        {/* Footer */}
         {footer && (
           <div className="shrink-0 border-t border-gray-100 px-5 py-4 sm:px-6">
             {footer}

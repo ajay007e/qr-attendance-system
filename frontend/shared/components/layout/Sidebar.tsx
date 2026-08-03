@@ -4,13 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, LogOut, Settings, User } from "lucide-react";
 import { useState } from "react";
-import { useAuth } from "@/features/auth";
-import { menus } from "@/shared/navigation/menu";
-import { UI_USER_ROLES } from "@/features/users";
 
-type SidebarProps = {
-  onNavigate?: () => void;
-};
+import { useAuth } from "@/features/auth";
+import { UI_USER_ROLES } from "@/features/users";
+import { menus } from "@/shared/navigation/menu";
+
+import { SidebarProps } from "./types";
 
 export default function Sidebar({ onNavigate }: SidebarProps) {
   const pathname = usePathname();

@@ -1,10 +1,6 @@
 import { Clock } from "lucide-react";
 
-interface ComingSoonProps {
-  title?: string;
-  message?: string;
-  size?: "sm" | "md" | "lg";
-}
+import { ComingSoonProps } from "./types";
 
 export default function ComingSoon({
   title = "Coming Soon",

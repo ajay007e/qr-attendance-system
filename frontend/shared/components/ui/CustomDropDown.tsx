@@ -2,18 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-
-type Option<T extends string> = {
-  label: string;
-  value: T;
-};
-
-type CustomDropdownProps<T extends string> = {
-  value?: T;
-  options: Option<T>[];
-  onChange: (value: T) => void;
-  placeholder?: string;
-};
+import { CustomDropdownProps, DropdownPosition } from "./types";
 
 export default function CustomDropdown<T extends string>({
   value,
@@ -23,7 +12,7 @@ export default function CustomDropdown<T extends string>({
 }: CustomDropdownProps<T>) {
   const [open, setOpen] = useState(false);
 
-  const [position, setPosition] = useState({
+  const [position, setPosition] = useState<DropdownPosition>({
     top: 0,
     left: 0,
     width: 0,

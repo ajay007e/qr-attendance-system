@@ -13,3 +13,35 @@ export type SubmitButtonProps = {
   children: ReactNode;
   disabled?: boolean;
 };
+
+export interface Option<T extends string> {
+  label: string;
+  value: T;
+}
+
+export interface CustomDropdownProps<T extends string> {
+  value?: T;
+  options: Option<T>[];
+  onChange: (value: T) => void;
+  placeholder?: string;
+}
+
+export interface DropdownPosition {
+  top: number;
+  left: number;
+  width: number;
+  direction: "up" | "down";
+}
+
+export interface ModalProps {
+  open: boolean;
+  onClose: () => void;
+  title?: string;
+  children: ReactNode;
+  footer?: ReactNode;
+  size?: "sm" | "md" | "lg";
+}
+
+export interface PageLoaderProps {
+  message?: string;
+}

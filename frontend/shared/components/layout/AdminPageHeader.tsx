@@ -1,12 +1,10 @@
+import { PageHeaderProps } from "./types";
+
 export default function PageHeader({
   title,
   subtitle,
   action,
-}: {
-  title: string;
-  subtitle?: string;
-  action?: React.ReactNode;
-}) {
+}: PageHeaderProps) {
   return (
     <section
       className="

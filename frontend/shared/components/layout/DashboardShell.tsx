@@ -6,12 +6,9 @@ import { X } from "lucide-react";
 import Footer from "./Footer";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
+import { DashboardShellProps } from "./types";
 
-export default function DashboardShell({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardShell({ children }: DashboardShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Prevent body scrolling while the mobile drawer is open

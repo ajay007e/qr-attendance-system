@@ -1,8 +1,8 @@
+import { PageLoaderProps } from "./types";
+
 export default function PageLoader({
   message = "Loading...",
-}: {
-  message?: string;
-}) {
+}: PageLoaderProps) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="flex flex-col items-center gap-5">

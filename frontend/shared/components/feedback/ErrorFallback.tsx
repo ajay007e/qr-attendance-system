@@ -1,20 +1,14 @@
 "use client";
 
-type ErrorStateProps = {
-  title?: string;
-  message?: string;
-  error?: string;
-  onRetry?: () => void;
-  retryLabel?: string;
-};
+import { ErrorFallbackProps } from "./types";
 
-export default function ErrorState({
+export default function ErrorFalback({
   title = "Unable to load data",
   message = "Something went wrong while loading this information. Please try again.",
   error,
   onRetry,
   retryLabel = "Retry",
-}: ErrorStateProps) {
+}: ErrorFallbackProps) {
   return (
     <div className="mx-auto flex min-h-[420px] w-full max-w-3xl items-center justify-center px-4">
       <div
@@ -77,9 +71,9 @@ export default function ErrorState({
                 bg-red-50
                 px-4
                 py-3
+                text-center
                 text-sm
                 text-red-700
-                text-center
               "
             >
               {error}
@@ -92,6 +86,7 @@ export default function ErrorState({
               className="
                 mt-6
                 inline-flex
+                cursor-pointer
                 items-center
                 gap-2
                 rounded-xl
@@ -106,7 +101,6 @@ export default function ErrorState({
                 hover:bg-red-700
                 hover:shadow-md
                 active:scale-95
-                cursor-pointer
               "
             >
               <svg

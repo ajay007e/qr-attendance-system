@@ -14,7 +14,7 @@ import useUsers from "./hooks/useUsers";
 import PageHeader from "@/shared/components/layout/AdminPageHeader";
 import UserForm from "./components/UserForm";
 import { EditUserForm } from "./components/EditUserForm";
-import ErrorState from "@/shared/components/feedback/ErrorState";
+import ErrorFallback from "@/shared/components/feedback/ErrorFallback";
 
 export default function UserManagement() {
   const [query, setQuery] = useState<UserQuery>(DEFAULT_USER_QUERY);
@@ -48,7 +48,7 @@ export default function UserManagement() {
 
   if (error) {
     return (
-      <ErrorState
+      <ErrorFallback
         title="Unable to load users"
         message="We couldn't retrieve the user list right now. Please check your connection and try again."
         error={error}

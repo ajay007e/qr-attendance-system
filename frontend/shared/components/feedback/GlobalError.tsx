@@ -63,24 +63,9 @@ export default function GlobalError() {
         </div>
 
         <div className="flex-1">
-          <h3
-            className="
-              font-semibold
-              text-gray-900
-            "
-          >
-            Something went wrong
-          </h3>
+          <h3 className="font-semibold text-gray-900">Something went wrong</h3>
 
-          <p
-            className="
-              mt-1
-              text-sm
-              text-gray-600
-            "
-          >
-            {error.message}
-          </p>
+          <p className="mt-1 text-sm text-gray-600">{error.message}</p>
 
           <button
             onClick={clearError}
@@ -124,23 +109,9 @@ function LoginRequiredModal() {
           shadow-2xl
         "
       >
-        <h2
-          className="
-            text-xl
-            font-semibold
-            text-gray-900
-          "
-        >
-          Session expired
-        </h2>
+        <h2 className="text-xl font-semibold text-gray-900">Session expired</h2>
 
-        <p
-          className="
-            mt-3
-            text-sm
-            text-gray-600
-          "
-        >
+        <p className="mt-3 text-sm text-gray-600">
           Your session has expired. Please login again to continue.
         </p>
 
