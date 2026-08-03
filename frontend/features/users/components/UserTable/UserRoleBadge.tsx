@@ -1,5 +1,4 @@
-import { UserRole } from "@/features/auth";
-import { UI_USER_ROLES } from "../../constants";
+import { getUserRoleLabel, UserRole } from "@/shared";
 
 interface Props {
   role: UserRole;
@@ -18,7 +17,7 @@ export default function UserRoleBadge({ role }: Props) {
         text-blue-600
       "
     >
-      {UI_USER_ROLES[role]}
+      {getUserRoleLabel(role)}
     </span>
   );
 }

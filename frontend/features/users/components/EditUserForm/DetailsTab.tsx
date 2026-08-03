@@ -3,9 +3,13 @@
 import { FormEvent, useState } from "react";
 import CustomDropdown from "@/shared/components/ui/CustomDropDown";
 import { User, UpdateUserPayload } from "./types";
-import { UI_USER_ROLE_OPTIONS } from "@/features/auth/options";
 import { AppError } from "@/shared/errors/AppError";
-import { FormError, FormInput, SubmitButton } from "@/shared";
+import {
+  FormError,
+  FormInput,
+  SubmitButton,
+  UI_USER_ROLE_OPTIONS,
+} from "@/shared";
 
 export function DetailsForm({
   user,

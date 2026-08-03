@@ -3,10 +3,14 @@
 import { FormEvent, useState } from "react";
 
 import CustomDropdown from "@/shared/components/ui/CustomDropDown";
-import { USER_ROLES, UserRole } from "@/features/auth";
 import { AppError } from "@/shared/errors/AppError";
-import { FormError, FormInput } from "@/shared";
-import { UI_USER_ROLE_OPTIONS } from "@/features/auth/options";
+import {
+  FormError,
+  FormInput,
+  UI_USER_ROLE_OPTIONS,
+  USER_ROLES,
+  UserRole,
+} from "@/shared";
 import { UserFormProps } from "./types";
 
 export default function UserForm({ onSubmit }: UserFormProps) {

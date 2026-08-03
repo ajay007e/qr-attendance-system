@@ -1,31 +1,16 @@
-import { UserRole } from "../auth";
+import { UserRole, User } from "@/shared";
 
-export interface User {
-  id: number;
-  first_name: string;
-  last_name: string | null;
-  email: string;
-  phone: string | null;
-  role: UserRole;
-  is_active: boolean;
-}
-
-export interface CreateUserRequest {
-  first_name: string;
-  last_name?: string;
-  email: string;
+export type CreateUserRequest = Pick<
+  User,
+  "first_name" | "last_name" | "email" | "role"
+> & {
   password: string;
-  phone?: string;
-  role: UserRole;
-}
+};
 
-export interface UpdateUserRequest {
-  first_name: string;
-  last_name?: string;
-  email: string;
-  phone?: string;
-  role: UserRole;
-}
+export type UpdateUserRequest = Pick<
+  User,
+  "first_name" | "last_name" | "email" | "role"
+>;
 
 export interface ChangeUserStatusRequest {
   is_active: boolean;
@@ -38,10 +23,7 @@ export interface ChangePasswordRequest {
 export interface UserQuery {
   page?: number;
   limit?: number;
-
   search: string;
-
   role: UserRole | "ALL";
-
   status: "ALL" | "ACTIVE" | "INACTIVE";
 }

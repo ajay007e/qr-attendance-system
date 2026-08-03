@@ -6,10 +6,10 @@ import { ChevronDown, LogOut, Settings, User } from "lucide-react";
 import { useState } from "react";
 
 import { useAuth } from "@/features/auth";
-import { UI_USER_ROLES } from "@/features/users";
 import { menus } from "@/shared/navigation/menu";
 
 import { SidebarProps } from "./types";
+import { getUserRoleLabel } from "@/shared";
 
 export default function Sidebar({ onNavigate }: SidebarProps) {
   const pathname = usePathname();
@@ -93,7 +93,7 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
               </p>
 
               <p className="capitalize text-xs text-gray-500">
-                {UI_USER_ROLES[user.role]}
+                {getUserRoleLabel(user.role)}
               </p>
             </div>
           </div>

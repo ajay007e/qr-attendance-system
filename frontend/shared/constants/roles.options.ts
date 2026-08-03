@@ -1,10 +1,10 @@
-import { USER_ROLES } from "./constants";
-import type { UserRole } from "./types";
+import { UserRole } from "..";
+import { USER_ROLES } from "./roles";
 
 export const USER_ROLE_OPTIONS = [
   {
     value: USER_ROLES.SUPER_ADMIN,
-    label: "Super Admin",
+    label: "Admin",
   },
   {
     value: USER_ROLES.ADMIN,

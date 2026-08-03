@@ -11,6 +11,8 @@ export * from "./hooks/useError";
 export * from "./hooks/useDebounce";
 
 export * from "./navigation/menu";
+export * from "./constants/roles";
 export * from "./constants/pagination";
+export * from "./constants/roles.options";
 
 export * from "./providers/error.provider";
