@@ -3,13 +3,12 @@
 import { useState } from "react";
 
 import { AppError } from "@/shared/errors/AppError";
-import { FormError, SubmitButton } from "@/shared";
+import { FormError } from "@/shared";
 
 import { StatusTabProps } from "../types";
 
 export function StatusTab({ course, onStatusChange }: StatusTabProps) {
   const [loading, setLoading] = useState(false);
-
   const [error, setError] = useState("");
 
   const isActive = course.is_active;
@@ -65,21 +64,42 @@ export function StatusTab({ course, onStatusChange }: StatusTabProps) {
           className={`
             mt-2
             text-sm
+            leading-relaxed
             ${isActive ? "text-red-600" : "text-green-600"}
           `}
         >
           {isActive
-            ? "This will hide the course from active course lists. Existing attendance records will remain unchanged."
-            : "This will make the course available again for active use."}
+            ? "This action will hide the course from active course lists. Existing attendance records will remain unchanged."
+            : "This action will make the course available again for active use."}
         </p>
 
-        <SubmitButton disabled={loading}>
+        <button
+          onClick={handleStatusChange}
+          disabled={loading}
+          className={`
+            mt-4
+            w-full
+            rounded-xl
+            py-3
+            text-sm
+            font-semibold
+            text-white
+            transition
+            disabled:cursor-not-allowed
+            disabled:opacity-50
+            ${
+              isActive
+                ? "bg-red-600 hover:bg-red-700"
+                : "bg-green-600 hover:bg-green-700"
+            }
+          `}
+        >
           {loading
             ? "Updating..."
             : isActive
               ? "Deactivate Course"
               : "Activate Course"}
-        </SubmitButton>
+        </button>
       </div>
     </div>
   );
