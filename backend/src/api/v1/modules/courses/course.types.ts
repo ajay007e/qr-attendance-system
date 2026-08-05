@@ -55,8 +55,8 @@ export interface PaginatedCourses {
 }
 
 export interface CreateCourseRequest {
-  course_code: string;
-  course_name: string;
+  courseCode: string;
+  courseName: string;
 
   description?: string;
 
@@ -66,8 +66,8 @@ export interface CreateCourseRequest {
 }
 
 export interface UpdateCourseRequest {
-  course_code: string;
-  course_name: string;
+  courseCode: string;
+  courseName: string;
 
   description?: string;
 

@@ -158,8 +158,8 @@ export class CourseRepository {
       VALUES (?, ?, ?, ?, ?)
       `,
       [
-        data.course_code,
-        data.course_name,
+        data.courseCode,
+        data.courseName,
         data.description ?? null,
         data.credits,
         data.session,
@@ -182,8 +182,8 @@ export class CourseRepository {
       WHERE id = ?
       `,
       [
-        data.course_code,
-        data.course_name,
+        data.courseCode,
+        data.courseName,
         data.description ?? null,
         data.credits,
         data.session,

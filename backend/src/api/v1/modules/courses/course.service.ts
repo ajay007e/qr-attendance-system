@@ -51,11 +51,11 @@ export class CourseService {
   }
 
   async create(data: CreateCourseRequest): Promise<Course> {
-    if (!data.course_code?.trim()) {
+    if (!data.courseCode?.trim()) {
       throw new AppError("Course code is required", 400);
     }
 
-    if (!data.course_name?.trim()) {
+    if (!data.courseName?.trim()) {
       throw new AppError("Course name is required", 400);
     }
 
@@ -67,7 +67,7 @@ export class CourseService {
       throw new AppError("Invalid course session", 400);
     }
 
-    const existing = await this.repository.findByCode(data.course_code);
+    const existing = await this.repository.findByCode(data.courseCode);
 
     if (existing) {
       throw new AppError("Course code already exists", 409);
@@ -81,11 +81,11 @@ export class CourseService {
   async update(id: number, data: UpdateCourseRequest): Promise<Course> {
     await this.get(id);
 
-    if (!data.course_code?.trim()) {
+    if (!data.courseCode?.trim()) {
       throw new AppError("Course code is required", 400);
     }
 
-    if (!data.course_name?.trim()) {
+    if (!data.courseName?.trim()) {
       throw new AppError("Course name is required", 400);
     }
 
@@ -97,7 +97,7 @@ export class CourseService {
       throw new AppError("Invalid course session", 400);
     }
 
-    const existing = await this.repository.findByCode(data.course_code);
+    const existing = await this.repository.findByCode(data.courseCode);
 
     if (existing && existing.id !== id) {
       throw new AppError("Course code already exists", 409);
