@@ -25,3 +25,5 @@ userRouter.put("/:id", controller.update);
 userRouter.patch("/:id/status", controller.setActive);
 
 userRouter.patch("/:id/password", controller.updatePassword);
+
+userRouter.get("/lecturers/search", controller.searchLecturers);

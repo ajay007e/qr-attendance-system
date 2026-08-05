@@ -87,4 +87,8 @@ export class UserService {
     const hashedPassword = await hashPassword(payload.password);
     await this.repository.updatePassword(payload.id, hashedPassword);
   }
+
+  async searchLecturers(search?: string) {
+    return this.repository.searchLecturers(search);
+  }
 }

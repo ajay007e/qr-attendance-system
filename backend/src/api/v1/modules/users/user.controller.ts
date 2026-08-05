@@ -116,4 +116,22 @@ export class UserController {
       next(error);
     }
   };
+
+  searchLecturers = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const search =
+        typeof req.query.search === "string"
+          ? req.query.search.trim()
+          : undefined;
+
+      const lecturers = await this.service.searchLecturers(search);
+
+      res.json({
+        success: true,
+        data: lecturers,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
