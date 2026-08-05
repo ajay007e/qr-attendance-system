@@ -1,3 +1,15 @@
+export type CourseSession =
+  | "ANNUAL"
+  | "SPRING"
+  | "WINTER"
+  | "SUMMER"
+  | "AUTUMN"
+  | "TRIMESTER_1"
+  | "TRIMESTER_2"
+  | "TRIMESTER_3";
+
+export type CourseLecturerRole = "PRIMARY" | "SECONDARY" | "TUTOR";
+
 export interface Course {
   id: number;
 
@@ -5,8 +17,9 @@ export interface Course {
   course_name: string;
   description: string | null;
 
-  semester: number;
-  year: number;
+  credits: number;
+
+  session: CourseSession;
 
   is_active: boolean;
 
@@ -22,33 +35,65 @@ export interface CourseLecturer {
 
   email: string;
 
-  role: string;
+  role: CourseLecturerRole;
 
   created_at: Date;
 }
 
+export interface PaginatedCourses {
+  data: Course[];
+
+  pagination: {
+    page: number;
+    limit: number;
+    count: number;
+    total: number;
+    totalPages: number;
+    hasPrevious: boolean;
+    hasNext: boolean;
+  };
+}
+
 export interface CreateCourseRequest {
-  courseCode: string;
-  courseName: string;
+  course_code: string;
+  course_name: string;
+
   description?: string;
 
-  semester: number;
-  year: number;
+  credits: number;
+
+  session: CourseSession;
 }
 
 export interface UpdateCourseRequest {
-  courseCode: string;
-  courseName: string;
+  course_code: string;
+  course_name: string;
+
   description?: string;
 
-  semester: number;
-  year: number;
+  credits: number;
+
+  session: CourseSession;
 }
 
 export interface UpdateCourseStatusRequest {
-  isActive: boolean;
+  is_active: boolean;
 }
 
 export interface AssignLecturerRequest {
-  userId: number;
+  user_id: number;
+
+  role: CourseLecturerRole;
+}
+
+export interface CourseQuery {
+  search?: string;
+
+  session?: CourseSession;
+
+  status?: "ACTIVE" | "INACTIVE";
+
+  page?: number;
+
+  limit?: number;
 }
