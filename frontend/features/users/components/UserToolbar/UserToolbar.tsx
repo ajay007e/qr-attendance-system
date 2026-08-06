@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 
-import CustomDropdown from "@/shared/components/ui/CustomDropDown";
+import { CustomDropdown } from "@/shared";
 
 import { UserToolbarProps } from "../../types";
 import {

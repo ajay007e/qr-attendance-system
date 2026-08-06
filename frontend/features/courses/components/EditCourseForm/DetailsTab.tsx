@@ -2,12 +2,13 @@
 
 import { FormEvent, useState } from "react";
 
-import CustomDropdown from "@/shared/components/ui/CustomDropDown";
+import { CustomDropdown, FormError, FormInput, SubmitButton } from "@/shared";
+
 import { AppError } from "@/shared/errors/AppError";
 
-import { FormError, FormInput, SubmitButton } from "@/shared";
-import { CourseSession } from "../../types";
-import { DetailsTabProps } from "./types";
+import type { CourseSession, UpdateCourseRequest } from "../../types";
+import type { DetailsTabProps } from "./types";
+
 import { COURSE_SESSION_FILTER_OPTIONS } from "../../constants";
 
 export function DetailsTab({ course, onSubmit }: DetailsTabProps) {
@@ -25,26 +26,25 @@ export function DetailsTab({ course, onSubmit }: DetailsTabProps) {
 
   const [error, setError] = useState("");
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
     if (loading) return;
 
     setError("");
 
+    const payload: UpdateCourseRequest = {
+      courseCode,
+      courseName,
+      description,
+      credits: Number(credits),
+      session,
+    };
+
     try {
       setLoading(true);
 
-      await onSubmit({
-        id: course.id,
-
-        courseCode,
-        courseName,
-        description,
-
-        credits: Number(credits),
-        session,
-      });
+      await onSubmit(payload);
     } catch (err) {
       console.error(err);
 
@@ -95,7 +95,7 @@ export function DetailsTab({ course, onSubmit }: DetailsTabProps) {
 
           <textarea
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(event) => setDescription(event.target.value)}
             rows={4}
             className="
               w-full

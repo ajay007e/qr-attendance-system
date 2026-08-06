@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 
-import { AppError } from "@/shared/errors/AppError";
 import { FormError } from "@/shared";
-import { StatusTabProps } from "./types";
+import { AppError } from "@/shared/errors/AppError";
 
-export function StatusTab({ course, onStatusChange }: StatusTabProps) {
-  const [loading, setLoading] = useState(false);
+import type { StatusTabProps } from "./types";
+import { useCourseMutation } from "../../hooks/useCourseMutation";
+
+export function StatusTab({ course, refresh, onClose }: StatusTabProps) {
+  const { updateStatus, loading } = useCourseMutation(refresh);
+
   const [error, setError] = useState("");
 
   const isActive = course.is_active;
@@ -18,9 +21,11 @@ export function StatusTab({ course, onStatusChange }: StatusTabProps) {
     setError("");
 
     try {
-      setLoading(true);
-
-      await onStatusChange(!isActive);
+      await updateStatus({
+        ...course,
+        is_active: !isActive,
+      });
+      onClose();
     } catch (err) {
       console.error(err);
 
@@ -29,8 +34,6 @@ export function StatusTab({ course, onStatusChange }: StatusTabProps) {
       } else {
         setError("Unable to update course status. Please try again.");
       }
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -73,6 +76,7 @@ export function StatusTab({ course, onStatusChange }: StatusTabProps) {
         </p>
 
         <button
+          type="button"
           onClick={handleStatusChange}
           disabled={loading}
           className={`
@@ -86,6 +90,7 @@ export function StatusTab({ course, onStatusChange }: StatusTabProps) {
             transition
             disabled:cursor-not-allowed
             disabled:opacity-50
+
             ${
               isActive
                 ? "bg-red-600 hover:bg-red-700"

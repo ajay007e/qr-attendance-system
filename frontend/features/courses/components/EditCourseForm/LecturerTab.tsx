@@ -1,88 +1,40 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Loader2, Search, Trash2, UserPlus, X } from "lucide-react";
 
-import { Badge } from "@/shared";
-import CustomDropdown from "@/shared/components/ui/CustomDropDown";
+import { Badge, CustomDropdown } from "@/shared";
 
-import { userService } from "@/features/users/api/user.service";
-
+import { LECTURER_ROLE_OPTIONS } from "../../constants";
 import { useCourseLecturers } from "../../hooks/useCourseLecturers";
 
-import type { LecturersTabProps } from "./types";
+import type {
+  LecturerRole,
+  LecturerSearchResult,
+  LecturerTabProps,
+} from "../../types";
+import { useLecturerSearch } from "@/features/users";
 
-type Lecturer = {
-  id: number;
-  first_name: string;
-  last_name: string | null;
-  email: string;
-};
-
-const ROLE_OPTIONS = [
-  {
-    label: "Primary",
-    value: "PRIMARY",
-  },
-  {
-    label: "Secondary",
-    value: "SECONDARY",
-  },
-  { label: "Tutor", value: "TUTOR" },
-];
-
-export function LecturersTab({ course }: LecturersTabProps) {
+export function LecturersTab({ course }: LecturerTabProps) {
   const {
     lecturers: assignedLecturers,
     assignLecturer: assignCourseLecturer,
     removeLecturer: removeCourseLecturer,
   } = useCourseLecturers(course.id);
 
-  const [query, setQuery] = useState("");
+  const { query, setQuery, results, loading } = useLecturerSearch();
 
-  const [results, setResults] = useState<Lecturer[]>([]);
+  const [selectedLecturer, setSelectedLecturer] =
+    useState<LecturerSearchResult | null>(null);
 
-  const [selectedLecturer, setSelectedLecturer] = useState<Lecturer | null>(
-    null,
-  );
-
-  const [selectedRole, setSelectedRole] = useState("");
+  const [selectedRole, setSelectedRole] = useState<LecturerRole | "">("");
 
   const [open, setOpen] = useState(false);
 
-  const [loading, setLoading] = useState(false);
-
-  async function loadLecturers() {
-    if (query.trim().length < 2) {
-      setResults([]);
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      const response = await userService.searchLecturers(query);
-
-      setResults(response ?? []);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      loadLecturers();
-    }, 400);
-
-    return () => clearTimeout(timer);
-  }, [query]);
-
-  function selectLecturer(lecturer: Lecturer) {
+  function selectLecturer(lecturer: LecturerSearchResult) {
     setSelectedLecturer(lecturer);
 
     setQuery("");
-
-    setResults([]);
 
     setOpen(false);
   }
@@ -214,18 +166,18 @@ export function LecturersTab({ course }: LecturersTabProps) {
             {open && results.length > 0 && (
               <div
                 className="
-                    absolute
-                    z-30
-                    mt-2
-                    max-h-[320px]
-                    w-full
-                    overflow-y-auto
-                    rounded-xl
-                    border
-                    border-gray-200
-                    bg-white
-                    shadow-xl
-                  "
+                  absolute
+                  z-30
+                  mt-2
+                  max-h-[320px]
+                  w-full
+                  overflow-y-auto
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-white
+                  shadow-xl
+                "
               >
                 {results.map((lecturer) => (
                   <button
@@ -233,30 +185,30 @@ export function LecturersTab({ course }: LecturersTabProps) {
                     type="button"
                     onClick={() => selectLecturer(lecturer)}
                     className="
-                          flex
-                          w-full
-                          items-center
-                          gap-4
-                          px-4
-                          py-3
-                          text-left
-                          transition
-                          hover:bg-blue-50
-                        "
+                      flex
+                      w-full
+                      items-center
+                      gap-4
+                      px-4
+                      py-3
+                      text-left
+                      transition
+                      hover:bg-blue-50
+                    "
                   >
                     <div
                       className="
-                            flex
-                            h-10
-                            w-10
-                            shrink-0
-                            items-center
-                            justify-center
-                            rounded-full
-                            bg-blue-100
-                            font-semibold
-                            text-blue-700
-                          "
+                        flex
+                        h-10
+                        w-10
+                        shrink-0
+                        items-center
+                        justify-center
+                        rounded-full
+                        bg-blue-100
+                        font-semibold
+                        text-blue-700
+                      "
                     >
                       {lecturer.first_name[0]}
 
@@ -266,21 +218,21 @@ export function LecturersTab({ course }: LecturersTabProps) {
                     <div className="min-w-0">
                       <p
                         className="
-                              truncate
-                              text-sm
-                              font-medium
-                              text-gray-900
-                            "
+                          truncate
+                          text-sm
+                          font-medium
+                          text-gray-900
+                        "
                       >
                         {lecturer.first_name} {lecturer.last_name}
                       </p>
 
                       <p
                         className="
-                              truncate
-                              text-sm
-                              text-gray-600
-                            "
+                          truncate
+                          text-sm
+                          text-gray-600
+                        "
                       >
                         {lecturer.email}
                       </p>
@@ -291,6 +243,7 @@ export function LecturersTab({ course }: LecturersTabProps) {
             )}
           </div>
         )}
+
         {selectedLecturer && (
           <div
             className="
@@ -357,8 +310,8 @@ export function LecturersTab({ course }: LecturersTabProps) {
 
           <CustomDropdown
             value={selectedRole}
-            options={ROLE_OPTIONS}
-            onChange={setSelectedRole}
+            options={LECTURER_ROLE_OPTIONS}
+            onChange={(value) => setSelectedRole(value as LecturerRole)}
             placeholder="Select lecturer role"
           />
         </div>
@@ -445,40 +398,40 @@ export function LecturersTab({ course }: LecturersTabProps) {
             <div
               key={lecturer.id}
               className="
-                  flex
-                  flex-col
-                  gap-3
-                  px-4
-                  py-4
+                flex
+                flex-col
+                gap-3
+                px-4
+                py-4
 
-                  sm:flex-row
-                  sm:items-center
-                  sm:justify-between
+                sm:flex-row
+                sm:items-center
+                sm:justify-between
 
-                  sm:px-5
-                "
+                sm:px-5
+              "
             >
               <div
                 className="
-                    flex
-                    min-w-0
-                    items-center
-                    gap-3
-                  "
+                  flex
+                  min-w-0
+                  items-center
+                  gap-3
+                "
               >
                 <div
                   className="
-                      flex
-                      h-10
-                      w-10
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-full
-                      bg-gray-100
-                      font-semibold
-                      text-gray-700
-                    "
+                    flex
+                    h-10
+                    w-10
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-gray-100
+                    font-semibold
+                    text-gray-700
+                  "
                 >
                   {lecturer.first_name[0]}
 
@@ -488,20 +441,20 @@ export function LecturersTab({ course }: LecturersTabProps) {
                 <div className="min-w-0">
                   <p
                     className="
-                        truncate
-                        font-semibold
-                        text-gray-900
-                      "
+                      truncate
+                      font-semibold
+                      text-gray-900
+                    "
                   >
                     {lecturer.first_name} {lecturer.last_name}
                   </p>
 
                   <p
                     className="
-                        truncate
-                        text-sm
-                        text-gray-600
-                      "
+                      truncate
+                      text-sm
+                      text-gray-600
+                    "
                   >
                     {lecturer.email}
                   </p>
@@ -510,13 +463,13 @@ export function LecturersTab({ course }: LecturersTabProps) {
 
               <div
                 className="
-                    flex
-                    items-center
-                    justify-between
-                    gap-3
+                  flex
+                  items-center
+                  justify-between
+                  gap-3
 
-                    sm:justify-end
-                  "
+                  sm:justify-end
+                "
               >
                 <Badge variant="blue">{lecturer.role}</Badge>
 
@@ -524,12 +477,12 @@ export function LecturersTab({ course }: LecturersTabProps) {
                   type="button"
                   onClick={() => removeLecturer(lecturer.id)}
                   className="
-                      rounded-lg
-                      p-2
-                      text-red-600
-                      transition
-                      hover:bg-red-50
-                    "
+                    rounded-lg
+                    p-2
+                    text-red-600
+                    transition
+                    hover:bg-red-50
+                  "
                 >
                   <Trash2 size={18} />
                 </button>

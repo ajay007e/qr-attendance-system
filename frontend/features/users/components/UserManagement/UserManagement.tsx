@@ -10,10 +10,10 @@ import { DEFAULT_USER_QUERY } from "../../constants";
 import useUsers from "../../hooks/useUsers";
 import UserToolbar from "../UserToolbar/UserToolbar";
 import UserTable from "../UserTable/UserTable";
-import UserPagination from "../UserPagination/UserPagination";
 import UserForm from "../UserForm/UserForm";
 import { EditUserForm } from "../EditUserForm";
 import { EmptyUserState } from "../EmptyUserState";
+import { Pagination } from "@/shared/components";
 
 export default function UserManagement() {
   const [query, setQuery] = useState<UserQuery>(DEFAULT_USER_QUERY);
@@ -185,7 +185,8 @@ export default function UserManagement() {
             <UserTable users={users} onEdit={setSelectedUser} />
           </div>
 
-          <UserPagination
+          <Pagination
+            label="users"
             page={pagination.page}
             totalPages={pagination.totalPages}
             total={pagination.total}

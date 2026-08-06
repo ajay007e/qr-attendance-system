@@ -1,32 +1,52 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import { CoursePaginationProps } from "../types";
-
 import {
   PAGINATION_BUTTON_CLASS_NAME,
-  PAGINATION_DESKTOP_BUTTON_CLASS_NAME,
-  PAGINATION_MOBILE_BUTTON_CLASS_NAME,
   PAGINATION_CONTAINER_CLASS_NAME,
   PAGINATION_CURRENT_PAGE_CLASS_NAME,
-} from "../../users/components/UserPagination/pagination.constants";
+  PAGINATION_DESKTOP_BUTTON_CLASS_NAME,
+  PAGINATION_MOBILE_BUTTON_CLASS_NAME,
+} from "./pagination.constants";
 
-export default function CoursePagination({
+interface PaginationProps {
+  total: number;
+
+  label?: string;
+
+  page: number;
+
+  totalPages: number;
+
+  onPrevious: () => void;
+
+  onNext: () => void;
+
+  hasPrevious?: boolean;
+
+  hasNext?: boolean;
+
+  disabled?: boolean;
+}
+
+export default function Pagination({
   total,
 
-  page = 1,
+  label = "items",
 
-  totalPages = 1,
+  page,
+
+  totalPages,
 
   onPrevious,
 
   onNext,
 
-  disabled = false,
-
   hasPrevious = true,
 
   hasNext = true,
-}: CoursePaginationProps) {
+
+  disabled = false,
+}: PaginationProps) {
   const previousDisabled = disabled || !hasPrevious || page <= 1;
 
   const nextDisabled = disabled || !hasNext || page >= totalPages;
@@ -35,16 +55,10 @@ export default function CoursePagination({
     <div className={PAGINATION_CONTAINER_CLASS_NAME}>
       <p className="whitespace-nowrap">
         Showing <span className="font-semibold text-gray-900">{total}</span>{" "}
-        courses
+        {label}
       </p>
 
-      <div
-        className="
-          flex
-          items-center
-          gap-2
-        "
-      >
+      <div className="flex items-center gap-2">
         {/* Desktop Previous */}
 
         <button

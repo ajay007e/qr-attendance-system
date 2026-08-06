@@ -16,4 +16,6 @@ export { default as FormInput } from "./ui/FormInput";
 export { default as IconButton } from "./ui/IconButton";
 export { default as PageLoader } from "./ui/PageLoader";
 export { default as SubmitButton } from "./ui/SubmitButton";
-export { default as CustomDropDown } from "./ui/CustomDropDown";
+export { default as CustomDropdown } from "./ui/CustomDropdown";
+
+export { default as Pagination } from "./navigation/pagination/Pagination";

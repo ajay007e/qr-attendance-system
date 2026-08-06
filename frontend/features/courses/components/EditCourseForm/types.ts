@@ -1,32 +1,27 @@
-import { Course, UpdateCourseRequest } from "../../types";
+import type { Course, UpdateCourseRequest } from "../../types";
 
 export type CourseEditTab = "details" | "lecturers" | "status";
 
 export interface EditCourseFormProps {
   course: Course;
 
-  onUpdate: (data: UpdateCourseRequest) => Promise<void> | void;
+  refresh: () => Promise<void>;
 
-  onStatusChange: (active: boolean) => Promise<void> | void;
-}
-
-export interface CourseTabsProps {
-  activeTab: CourseEditTab;
-  onChange: (tab: CourseEditTab) => void;
+  onClose: () => void;
 }
 
 export interface DetailsTabProps {
   course: Course;
 
-  onSubmit: (data: UpdateCourseRequest) => Promise<void> | void;
-}
+  refresh: () => Promise<void>;
 
-export interface LecturersTabProps {
-  course: Course;
+  onSubmit: (data: UpdateCourseRequest) => Promise<void> | void;
 }
 
 export interface StatusTabProps {
   course: Course;
 
-  onStatusChange: (active: boolean) => Promise<void> | void;
+  refresh: () => Promise<void>;
+
+  onClose: () => void;
 }

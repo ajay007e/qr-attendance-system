@@ -1,29 +1,6 @@
-import { CourseQuery } from "./types";
+import type { CourseSession, LecturerRole } from "./types";
 
-export const COURSE_SESSIONS = [
-  "ANNUAL",
-  "SPRING",
-  "SUMMER",
-  "AUTUMN",
-  "WINTER",
-  "TRIMESTER_1",
-  "TRIMESTER_2",
-  "TRIMESTER_3",
-] as const;
-
-export const DEFAULT_COURSE_QUERY: CourseQuery = {
-  page: 1,
-  limit: 10,
-  search: "",
-  session: "ALL",
-  status: "ALL",
-};
-
-export const COURSE_SESSION_FILTER_OPTIONS = [
-  {
-    label: "All Sessions",
-    value: "ALL",
-  },
+export const COURSE_SESSION_OPTIONS = [
   {
     label: "Annual",
     value: "ANNUAL",
@@ -56,7 +33,31 @@ export const COURSE_SESSION_FILTER_OPTIONS = [
     label: "Trimester 3",
     value: "TRIMESTER_3",
   },
+] satisfies {
+  label: string;
+  value: CourseSession;
+}[];
+
+export const COURSE_SESSION_FILTER_OPTIONS = [
+  {
+    label: "All Sessions",
+    value: "ALL",
+  },
+
+  ...COURSE_SESSION_OPTIONS,
 ];
+
+export const DEFAULT_COURSE_QUERY = {
+  page: 1,
+
+  limit: 10,
+
+  search: "",
+
+  session: "ALL",
+
+  status: "ALL",
+} as const;
 
 export const COURSE_STATUS_FILTER_OPTIONS = [
   {
@@ -76,3 +77,21 @@ export const COURSE_STATUS_FILTER_OPTIONS = [
 export const UI_COURSE_SESSION_OPTIONS = COURSE_SESSION_FILTER_OPTIONS.filter(
   (item) => item.value !== "ALL",
 );
+
+export const LECTURER_ROLE_OPTIONS = [
+  {
+    label: "Primary",
+    value: "PRIMARY",
+  },
+  {
+    label: "Secondary",
+    value: "SECONDARY",
+  },
+  {
+    label: "Tutor",
+    value: "TUTOR",
+  },
+] satisfies {
+  label: string;
+  value: LecturerRole;
+}[];

@@ -10,55 +10,38 @@ export type CourseSession =
 
 export interface Course {
   id: number;
-
   course_code: string;
   course_name: string;
   description: string | null;
-
   credits: number;
-
   session: CourseSession;
-
   is_active: boolean;
-
   created_at: Date;
   updated_at: Date;
 }
 
 export interface CourseLecturer {
   id: number;
-
   first_name: string;
   last_name: string | null;
-
   email: string;
-
-  role: string;
-
-  created_at: Date;
+  role?: LecturerRole;
+  created_at?: Date;
 }
 
 export interface CreateCourseRequest {
   courseCode: string;
-
   courseName: string;
-
   description?: string;
-
   credits: number;
-
   session: CourseSession;
 }
 
 export interface UpdateCourseRequest {
   courseCode: string;
-
   courseName: string;
-
   description?: string;
-
   credits: number;
-
   session: CourseSession;
 }
 
@@ -68,19 +51,19 @@ export interface UpdateCourseStatusRequest {
 
 export interface AssignLecturerRequest {
   userId: number;
-  role: string;
+  role: LecturerRole;
 }
 
 export interface CourseQuery {
   page?: number;
-
   limit?: number;
-
   search: string;
-
   session: CourseSession | "ALL";
-
   status: "ALL" | "ACTIVE" | "INACTIVE";
+}
+
+export interface EmptyCourseStateProps {
+  onCreate: () => void;
 }
 
 export interface CourseToolbarProps {
@@ -134,11 +117,37 @@ export interface EditCourseFormProps {
 }
 
 export interface LecturerTabProps {
-  courseId: number;
+  course: Course;
+}
 
+export interface LecturerRoleSelectProps {
+  value: LecturerRole | "";
+  onChange: (role: LecturerRole) => void;
+}
+
+export interface LecturerSearchProps {
+  query: string;
+  results: CourseLecturer[];
+  loading: boolean;
+  selectedLecturer: CourseLecturer | null;
+  onQueryChange: (value: string) => void;
+  onSelect: (lecturer: CourseLecturer) => void;
+  onClear: () => void;
+  onFocus: () => void;
+  open: boolean;
+}
+
+export interface AssignedLecturerListProps {
   lecturers: CourseLecturer[];
 
-  onAssign: (userId: number) => Promise<void> | void;
-
-  onRemove: (userId: number) => Promise<void> | void;
+  onRemove: (id: number) => Promise<void>;
 }
+
+export interface LecturerSearchResult {
+  id: number;
+  first_name: string;
+  last_name: string | null;
+  email: string;
+}
+
+export type LecturerRole = "PRIMARY" | "SECONDARY" | "TUTOR";

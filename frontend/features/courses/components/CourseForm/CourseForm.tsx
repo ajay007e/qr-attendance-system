@@ -2,26 +2,45 @@
 
 import { FormEvent, useState } from "react";
 
-import CustomDropdown from "@/shared/components/ui/CustomDropDown";
-import { AppError } from "@/shared/errors/AppError";
-import { FormError, FormInput, SubmitButton } from "@/shared";
+import { FormError, FormInput, SubmitButton, CustomDropdown } from "@/shared";
 
-import { CourseFormProps, CourseSession } from "../types";
-import { COURSE_SESSION_FILTER_OPTIONS } from "../constants";
+import { AppError } from "@/shared/errors/AppError";
+
+import type { CourseFormProps, CourseSession } from "../../types";
+
+import { COURSE_SESSION_FILTER_OPTIONS } from "../../constants";
+
+const INITIAL_FORM = {
+  courseCode: "",
+  courseName: "",
+  description: "",
+  credits: "",
+  session: "ANNUAL" as CourseSession,
+};
 
 export default function CourseForm({ onSubmit }: CourseFormProps) {
-  const [courseCode, setCourseCode] = useState("");
-  const [courseName, setCourseName] = useState("");
-  const [description, setDescription] = useState("");
-
-  const [credits, setCredits] = useState("");
-  const [session, setSession] = useState<CourseSession>("ANNUAL");
+  const [form, setForm] = useState(INITIAL_FORM);
 
   const [loading, setLoading] = useState(false);
+
   const [error, setError] = useState("");
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  const updateField = <K extends keyof typeof form>(
+    key: K,
+    value: (typeof form)[K],
+  ) => {
+    setForm((previous) => ({
+      ...previous,
+      [key]: value,
+    }));
+  };
+
+  const resetForm = () => {
+    setForm(INITIAL_FORM);
+  };
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
     if (loading) return;
 
@@ -31,23 +50,21 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
       setLoading(true);
 
       await onSubmit({
-        courseCode,
-        courseName,
-        description,
-        credits: Number(credits),
-        session,
+        courseCode: form.courseCode,
+
+        courseName: form.courseName,
+
+        description: form.description,
+
+        credits: Number(form.credits),
+
+        session: form.session,
       });
 
-      setCourseCode("");
-      setCourseName("");
-      setDescription("");
-      setCredits("");
-      setSession("ANNUAL");
-    } catch (err) {
-      console.error(err);
-
-      if (err instanceof AppError) {
-        setError(err.message);
+      resetForm();
+    } catch (error) {
+      if (error instanceof AppError) {
+        setError(error.message);
       } else {
         setError("Unable to create course. Please try again.");
       }
@@ -66,8 +83,8 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
             label="Course Code"
             required
             placeholder="Enter course code"
-            value={courseCode}
-            onChange={setCourseCode}
+            value={form.courseCode}
+            onChange={(value) => updateField("courseCode", value)}
           />
 
           <FormInput
@@ -76,8 +93,8 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
             type="number"
             min={1}
             placeholder="Enter credits"
-            value={credits}
-            onChange={setCredits}
+            value={form.credits}
+            onChange={(value) => updateField("credits", value)}
           />
         </div>
 
@@ -85,8 +102,8 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
           label="Course Name"
           required
           placeholder="Enter course name"
-          value={courseName}
-          onChange={setCourseName}
+          value={form.courseName}
+          onChange={(value) => updateField("courseName", value)}
         />
 
         <div>
@@ -95,8 +112,8 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
           </label>
 
           <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={form.description}
+            onChange={(event) => updateField("description", event.target.value)}
             placeholder="Enter course description"
             rows={4}
             className="
@@ -124,8 +141,8 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
           </label>
 
           <CustomDropdown
-            value={session}
-            onChange={(value) => setSession(value as CourseSession)}
+            value={form.session}
+            onChange={(value) => updateField("session", value as CourseSession)}
             options={COURSE_SESSION_FILTER_OPTIONS}
             placeholder="Select course session"
           />

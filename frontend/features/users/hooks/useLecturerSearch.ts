@@ -3,14 +3,19 @@
 import { useEffect, useState } from "react";
 
 import { useDebounce } from "@/shared";
-import { userService } from "@/features/users";
 
-export function useLecturerSearch() {
+import { userService } from "../api/user.service";
+
+import type { Lecturer } from "../types";
+
+export default function useLecturerSearch() {
   const [query, setQuery] = useState("");
 
   const [results, setResults] = useState<Lecturer[]>([]);
 
   const [loading, setLoading] = useState(false);
+
+  const [error, setError] = useState<string | null>(null);
 
   const debouncedQuery = useDebounce(query, 400);
 
@@ -25,9 +30,19 @@ export function useLecturerSearch() {
       try {
         setLoading(true);
 
+        setError(null);
+
         const lecturers = await userService.searchLecturers(debouncedQuery);
 
         setResults(lecturers);
+      } catch (error) {
+        setResults([]);
+
+        setError(
+          error instanceof Error
+            ? error.message
+            : "Unable to search lecturers.",
+        );
       } finally {
         setLoading(false);
       }
@@ -44,5 +59,7 @@ export function useLecturerSearch() {
     results,
 
     loading,
+
+    error,
   };
 }

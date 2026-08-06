@@ -15,6 +15,10 @@ export function useCourseLecturers(courseId: number) {
 
   const [loading, setLoading] = useState(true);
 
+  const [assigning, setAssigning] = useState(false);
+
+  const [removing, setRemoving] = useState(false);
+
   const [error, setError] = useState<string | null>(null);
 
   const loadLecturers = useCallback(async () => {
@@ -23,32 +27,54 @@ export function useCourseLecturers(courseId: number) {
 
       setError(null);
 
-      const lecturers = await CourseService.getLecturers(courseId);
+      const data = await CourseService.getLecturers(courseId);
 
-      setLecturers(lecturers);
+      setLecturers(data);
     } catch (error) {
       handleError(error);
 
-      if (error instanceof Error) {
-        setError(error.message);
-      } else {
-        setError("Unable to load lecturers.");
-      }
+      setError(
+        error instanceof Error ? error.message : "Unable to load lecturers.",
+      );
     } finally {
       setLoading(false);
     }
   }, [courseId, handleError]);
 
   const assignLecturer = async (data: AssignLecturerRequest) => {
-    await CourseService.assignLecturer(courseId, data);
+    try {
+      setAssigning(true);
 
-    await loadLecturers();
+      setError(null);
+
+      await CourseService.assignLecturer(courseId, data);
+
+      await loadLecturers();
+    } catch (error) {
+      handleError(error);
+
+      throw error;
+    } finally {
+      setAssigning(false);
+    }
   };
 
   const removeLecturer = async (userId: number) => {
-    await CourseService.removeLecturer(courseId, userId);
+    try {
+      setRemoving(true);
 
-    await loadLecturers();
+      setError(null);
+
+      await CourseService.removeLecturer(courseId, userId);
+
+      await loadLecturers();
+    } catch (error) {
+      handleError(error);
+
+      throw error;
+    } finally {
+      setRemoving(false);
+    }
   };
 
   useEffect(() => {
@@ -61,6 +87,10 @@ export function useCourseLecturers(courseId: number) {
     lecturers,
 
     loading,
+
+    assigning,
+
+    removing,
 
     error,
 

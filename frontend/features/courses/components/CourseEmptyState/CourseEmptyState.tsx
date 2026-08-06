@@ -1,8 +1,6 @@
 import { BookOpen } from "lucide-react";
 
-interface EmptyCourseStateProps {
-  onCreate: () => void;
-}
+import type { EmptyCourseStateProps } from "../../types";
 
 export default function EmptyCourseState({ onCreate }: EmptyCourseStateProps) {
   return (

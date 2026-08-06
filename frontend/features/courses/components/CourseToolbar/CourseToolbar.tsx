@@ -1,13 +1,12 @@
 import { Search } from "lucide-react";
 
-import CustomDropdown from "@/shared/components/ui/CustomDropDown";
-
 import {
   COURSE_SESSION_FILTER_OPTIONS,
   COURSE_STATUS_FILTER_OPTIONS,
-} from "../constants";
+} from "../../constants";
 
-import { CourseToolbarProps } from "../types";
+import type { CourseToolbarProps } from "../../types";
+import { CustomDropdown } from "@/shared";
 
 export default function CourseToolbar({
   filters,
@@ -44,8 +43,6 @@ export default function CourseToolbar({
           lg:justify-between
         "
       >
-        {/* Search */}
-
         <div
           className="
             relative
@@ -66,7 +63,7 @@ export default function CourseToolbar({
 
           <input
             value={filters.search}
-            onChange={(e) => updateFilter("search", e.target.value)}
+            onChange={(event) => updateFilter("search", event.target.value)}
             placeholder="Search courses..."
             className="
               w-full
@@ -81,15 +78,12 @@ export default function CourseToolbar({
               text-gray-700
               outline-none
               transition
-
               focus:border-blue-600
               focus:ring-4
               focus:ring-blue-100
             "
           />
         </div>
-
-        {/* Filters */}
 
         <div
           className="

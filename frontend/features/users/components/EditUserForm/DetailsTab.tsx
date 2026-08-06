@@ -1,9 +1,9 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import CustomDropdown from "@/shared/components/ui/CustomDropDown";
 import { AppError } from "@/shared/errors/AppError";
 import {
+  CustomDropdown,
   FormError,
   FormInput,
   SubmitButton,
