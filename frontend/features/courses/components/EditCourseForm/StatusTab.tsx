@@ -4,8 +4,7 @@ import { useState } from "react";
 
 import { AppError } from "@/shared/errors/AppError";
 import { FormError } from "@/shared";
-
-import { StatusTabProps } from "../types";
+import { StatusTabProps } from "./types";
 
 export function StatusTab({ course, onStatusChange }: StatusTabProps) {
   const [loading, setLoading] = useState(false);

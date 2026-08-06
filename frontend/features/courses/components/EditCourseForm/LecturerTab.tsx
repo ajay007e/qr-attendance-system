@@ -6,73 +6,38 @@ import { Loader2, Search, Trash2, UserPlus, X } from "lucide-react";
 import { Badge } from "@/shared";
 import CustomDropdown from "@/shared/components/ui/CustomDropDown";
 
+import { userService } from "@/features/users/api/user.service";
+
+import { useCourseLecturers } from "../../hooks/useCourseLecturers";
+
+import type { LecturersTabProps } from "./types";
+
 type Lecturer = {
   id: number;
   first_name: string;
-  last_name: string;
+  last_name: string | null;
   email: string;
-};
-
-type AssignedLecturer = Lecturer & {
-  role: string;
 };
 
 const ROLE_OPTIONS = [
   {
     label: "Primary",
-    value: "Primary",
+    value: "PRIMARY",
   },
   {
     label: "Secondary",
-    value: "Secondary",
+    value: "SECONDARY",
   },
-  {
-    label: "Tutor",
-    value: "Tutor",
-  },
+  { label: "Tutor", value: "TUTOR" },
 ];
 
-const MOCK_LECTURERS: Lecturer[] = Array.from({ length: 80 }, (_, index) => ({
-  id: index + 1,
-  first_name: ["John", "Sarah", "Michael", "Emma", "David"][index % 5],
-  last_name: ["Smith", "Williams", "Brown", "Wilson"][index % 4],
-  email: `lecturer${index + 1}@example.com`,
-}));
+export function LecturersTab({ course }: LecturersTabProps) {
+  const {
+    lecturers: assignedLecturers,
+    assignLecturer: assignCourseLecturer,
+    removeLecturer: removeCourseLecturer,
+  } = useCourseLecturers(course.id);
 
-const INITIAL_ASSIGNED: AssignedLecturer[] = [
-  {
-    id: 100,
-    first_name: "David",
-    last_name: "Johnson",
-    email: "david.johnson@example.com",
-    role: "Primary",
-  },
-];
-
-function searchLecturers(query: string, page: number, limit = 10) {
-  return new Promise<{
-    data: Lecturer[];
-    hasMore: boolean;
-  }>((resolve) => {
-    setTimeout(() => {
-      const filtered = MOCK_LECTURERS.filter((lecturer) => {
-        const value =
-          `${lecturer.first_name} ${lecturer.last_name} ${lecturer.email}`.toLowerCase();
-
-        return value.includes(query.toLowerCase());
-      });
-
-      const start = (page - 1) * limit;
-
-      resolve({
-        data: filtered.slice(start, start + limit),
-        hasMore: start + limit < filtered.length,
-      });
-    }, 500);
-  });
-}
-
-export function LecturersTab() {
   const [query, setQuery] = useState("");
 
   const [results, setResults] = useState<Lecturer[]>([]);
@@ -83,35 +48,25 @@ export function LecturersTab() {
 
   const [selectedRole, setSelectedRole] = useState("");
 
-  const [assignedLecturers, setAssignedLecturers] =
-    useState<AssignedLecturer[]>(INITIAL_ASSIGNED);
-
   const [open, setOpen] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
-  const [page, setPage] = useState(1);
-
-  const [hasMore, setHasMore] = useState(false);
-
-  async function loadLecturers(nextPage = 1, append = false) {
+  async function loadLecturers() {
     if (query.trim().length < 2) {
       setResults([]);
       return;
     }
 
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const response = await searchLecturers(query, nextPage);
+      const response = await userService.searchLecturers(query);
 
-    setResults((current) =>
-      append ? [...current, ...response.data] : response.data,
-    );
-
-    setPage(nextPage);
-    setHasMore(response.hasMore);
-
-    setLoading(false);
+      setResults(response ?? []);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -126,11 +81,13 @@ export function LecturersTab() {
     setSelectedLecturer(lecturer);
 
     setQuery("");
+
     setResults([]);
+
     setOpen(false);
   }
 
-  function assignLecturer() {
+  async function assignLecturer() {
     if (!selectedLecturer || !selectedRole) {
       return;
     }
@@ -143,20 +100,18 @@ export function LecturersTab() {
       return;
     }
 
-    setAssignedLecturers((current) => [
-      ...current,
-      {
-        ...selectedLecturer,
-        role: selectedRole,
-      },
-    ]);
+    await assignCourseLecturer({
+      userId: selectedLecturer.id,
+      role: selectedRole,
+    });
 
     setSelectedLecturer(null);
+
     setSelectedRole("");
   }
 
-  function removeLecturer(id: number) {
-    setAssignedLecturers((current) => current.filter((item) => item.id !== id));
+  async function removeLecturer(id: number) {
+    await removeCourseLecturer(id);
   }
 
   return (
@@ -304,7 +259,8 @@ export function LecturersTab() {
                           "
                     >
                       {lecturer.first_name[0]}
-                      {lecturer.last_name[0]}
+
+                      {lecturer.last_name?.[0]}
                     </div>
 
                     <div className="min-w-0">
@@ -331,30 +287,10 @@ export function LecturersTab() {
                     </div>
                   </button>
                 ))}
-
-                {hasMore && (
-                  <button
-                    type="button"
-                    onClick={() => loadLecturers(page + 1, true)}
-                    className="
-                        w-full
-                        border-t
-                        border-gray-200
-                        py-3
-                        text-sm
-                        font-medium
-                        text-blue-600
-                        hover:bg-blue-50
-                      "
-                  >
-                    Load more lecturers
-                  </button>
-                )}
               </div>
             )}
           </div>
         )}
-
         {selectedLecturer && (
           <div
             className="
@@ -405,6 +341,7 @@ export function LecturersTab() {
             </button>
           </div>
         )}
+
         <div className="mt-5">
           <label
             className="
@@ -544,7 +481,8 @@ export function LecturersTab() {
                     "
                 >
                   {lecturer.first_name[0]}
-                  {lecturer.last_name[0]}
+
+                  {lecturer.last_name?.[0]}
                 </div>
 
                 <div className="min-w-0">

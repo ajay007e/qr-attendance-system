@@ -227,6 +227,7 @@ export default function CourseManagement() {
               setSelectedCourse(null);
             }}
             onStatusChange={async (status) => {
+              console.log(status);
               await updateStatus({
                 ...selectedCourse,
                 is_active: status,

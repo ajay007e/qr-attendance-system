@@ -57,4 +57,14 @@ export const userService = {
 
     return response.data;
   },
+
+  async searchLecturers(search?: string) {
+    const response = await api.get("/users/lecturers/search", {
+      params: {
+        search,
+      },
+    });
+
+    return response.data.data;
+  },
 };

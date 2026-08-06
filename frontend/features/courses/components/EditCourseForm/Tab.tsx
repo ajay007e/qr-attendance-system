@@ -8,9 +8,7 @@ export function Tabs({ activeTab, onChange }: CourseTabsProps) {
         const isActive = activeTab === tab.key;
 
         const activeClass = isActive
-          ? tab.key === "status"
-            ? "bg-white text-red-600 shadow-sm"
-            : "bg-white text-blue-600 shadow-sm"
+          ? "bg-white text-blue-600 shadow-sm"
           : "text-gray-500";
 
         return (

@@ -68,6 +68,7 @@ export interface UpdateCourseStatusRequest {
 
 export interface AssignLecturerRequest {
   userId: number;
+  role: string;
 }
 
 export interface CourseQuery {

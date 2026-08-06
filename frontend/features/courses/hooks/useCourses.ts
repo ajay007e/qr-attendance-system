@@ -79,7 +79,7 @@ export function useCourses(query: CourseQuery) {
   };
 
   const updateStatus = async (course: Course) => {
-    await CourseService.updateStatus(course.id, !course.is_active);
+    await CourseService.updateStatus(course.id, course.is_active);
 
     await loadCourses();
   };
