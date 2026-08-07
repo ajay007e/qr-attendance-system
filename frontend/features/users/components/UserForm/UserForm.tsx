@@ -3,15 +3,7 @@
 import { FormEvent, useState } from "react";
 
 import { AppError } from "@/shared/errors/AppError";
-import {
-  Button,
-  CustomDropdown,
-  FormError,
-  FormInput,
-  UI_USER_ROLE_OPTIONS,
-  USER_ROLES,
-  UserRole,
-} from "@/shared";
+import { Button, CustomDropdown, FormError, Field, UI_USER_ROLE_OPTIONS, USER_ROLES, UserRole } from "@/shared";
 import { UserFormProps } from "../../types";
 
 export default function UserForm({ onSubmit }: UserFormProps) {
@@ -58,68 +50,55 @@ export default function UserForm({ onSubmit }: UserFormProps) {
 
       {/* Name */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-        <FormInput
-          label="First Name"
-          required
-          disabled={loading}
-          placeholder="Enter first name"
-          value={firstName}
-          onChange={setFirstName}
-        />
+        <Field label="First Name" required>
+          <Field.Input
+            disabled={loading}
+            placeholder="Enter first name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+        </Field>
 
-        <FormInput
-          label="Last Name"
-          disabled={loading}
-          placeholder="Enter last name"
-          value={lastName}
-          onChange={setLastName}
-        />
+        <Field label="Last Name">
+          <Field.Input
+            disabled={loading}
+            placeholder="Enter last name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+        </Field>
       </div>
 
-      <FormInput
-        label="Email Address"
-        type="email"
-        required
-        disabled={loading}
-        autoComplete="email"
-        placeholder="Enter email address"
-        value={email}
-        onChange={setEmail}
-      />
+      <Field label="Email Address" required>
+        <Field.Input
+          type="email"
+          disabled={loading}
+          autoComplete="email"
+          placeholder="Enter email address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </Field>
 
-      <FormInput
-        label="Password"
-        type="password"
-        required
-        disabled={loading}
-        autoComplete="new-password"
-        placeholder="Enter password"
-        value={password}
-        onChange={setPassword}
-      />
+      <Field label="Password" required>
+        <Field.Input
+          type="password"
+          disabled={loading}
+          autoComplete="new-password"
+          placeholder="Enter password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          showPasswordToggle
+        />
+      </Field>
 
       {/* Role */}
       <div>
-        <label className="mb-2 block text-sm font-medium text-gray-700">
-          Role
-        </label>
-
-        <CustomDropdown
-          value={role}
-          onChange={setRole}
-          placeholder="Select user role"
-          options={UI_USER_ROLE_OPTIONS}
-        />
+        <label className="mb-2 block text-sm font-medium text-gray-700">Role</label>
+        <CustomDropdown value={role} onChange={setRole} placeholder="Select user role" options={UI_USER_ROLE_OPTIONS} />
       </div>
 
-      <Button
-        type="submit"
-        size="lg"
-        fullWidth
-        loading={loading}
-        disabled={!role}
-        className="mt-2"
-      >
+      <Button type="submit" size="lg" fullWidth loading={loading} disabled={!role} className="mt-2">
         {loading ? "Creating User..." : "Create User"}
       </Button>
     </form>

@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 
-import { FormError, FormInput, CustomDropdown, Button } from "@/shared";
+import { FormError, Field, CustomDropdown, Button } from "@/shared";
 
 import { AppError } from "@/shared/errors/AppError";
 
@@ -20,15 +20,10 @@ const INITIAL_FORM = {
 
 export default function CourseForm({ onSubmit }: CourseFormProps) {
   const [form, setForm] = useState(INITIAL_FORM);
-
   const [loading, setLoading] = useState(false);
-
   const [error, setError] = useState("");
 
-  const updateField = <K extends keyof typeof form>(
-    key: K,
-    value: (typeof form)[K],
-  ) => {
+  const updateField = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) => {
     setForm((previous) => ({
       ...previous,
       [key]: value,
@@ -41,26 +36,17 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
     if (loading) return;
-
     setError("");
-
     try {
       setLoading(true);
-
       await onSubmit({
         courseCode: form.courseCode,
-
         courseName: form.courseName,
-
         description: form.description,
-
         credits: Number(form.credits),
-
         session: form.session,
       });
-
       resetForm();
     } catch (error) {
       if (error instanceof AppError) {
@@ -79,67 +65,43 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
 
       <fieldset disabled={loading} className="space-y-5">
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <FormInput
-            label="Course Code"
-            required
-            placeholder="Enter course code"
-            value={form.courseCode}
-            onChange={(value) => updateField("courseCode", value)}
-          />
-
-          <FormInput
-            label="Credits"
-            required
-            type="number"
-            min={1}
-            placeholder="Enter credits"
-            value={form.credits}
-            onChange={(value) => updateField("credits", value)}
-          />
+          <Field label="Course Code" required>
+            <Field.Input
+              placeholder="Enter course code"
+              value={form.courseCode}
+              onChange={(event) => updateField("courseCode", event.target.value)}
+            />
+          </Field>
+          <Field label="Credits" required>
+            <Field.Input
+              type="number"
+              min={1}
+              placeholder="Enter credits"
+              value={form.credits}
+              onChange={(event) => updateField("credits", event.target.value)}
+            />
+          </Field>
         </div>
 
-        <FormInput
-          label="Course Name"
-          required
-          placeholder="Enter course name"
-          value={form.courseName}
-          onChange={(value) => updateField("courseName", value)}
-        />
+        <Field label="Course Name" required>
+          <Field.Input
+            placeholder="Enter course name"
+            value={form.courseName}
+            onChange={(event) => updateField("courseName", event.target.value)}
+          />
+        </Field>
 
-        <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">
-            Description
-          </label>
-
-          <textarea
+        <Field label="Description">
+          <Field.Textarea
             value={form.description}
             onChange={(event) => updateField("description", event.target.value)}
             placeholder="Enter course description"
             rows={4}
-            className="
-              w-full
-              rounded-xl
-              border
-              border-gray-300
-              bg-white
-              px-4
-              py-3
-              text-sm
-              text-gray-700
-              outline-none
-              transition
-              focus:border-blue-600
-              focus:ring-4
-              focus:ring-blue-100
-            "
           />
-        </div>
+        </Field>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">
-            Session
-          </label>
-
+          <label className="mb-2 block text-sm font-medium text-gray-700">Session</label>
           <CustomDropdown
             value={form.session}
             onChange={(value) => updateField("session", value as CourseSession)}
@@ -148,13 +110,7 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
           />
         </div>
 
-        <Button
-          type="submit"
-          size="lg"
-          fullWidth
-          loading={loading}
-          className="mt-2"
-        >
+        <Button type="submit" size="lg" fullWidth loading={loading} className="mt-2">
           {loading ? "Creating Course..." : "Create Course"}
         </Button>
       </fieldset>

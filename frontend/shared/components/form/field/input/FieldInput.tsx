@@ -9,81 +9,77 @@ import { useFieldContext } from "../field.context";
 import { inputWrapperVariants, inputVariants } from "./input.styles";
 
 import type { FieldInputProps } from "./input.types";
+import Button from "@/shared/components/ui/button";
 
 const FieldInput = React.forwardRef<HTMLInputElement, FieldInputProps>(
   (
     {
       type = "text",
-
-      className,
-
       leftIcon,
-
       rightIcon,
-
       prefix,
-
       suffix,
-
       loading,
-
       clearable,
-
       showPasswordToggle,
-
       value,
-
       onChange,
-
       onClear,
-
+      className,
       disabled,
+      fullWidth = true,
 
       ...props
     },
     ref,
   ) => {
     const field = useFieldContext();
+    const fieldId = field?.id;
+    const fieldRequired = field?.required;
+    const fieldDisabled = field?.disabled;
+    const fieldInvalid = field?.invalid ?? false;
+    const fieldDescribedBy = field?.describedBy;
+    const fieldSize = field?.size ?? "md";
+    const fieldVariant = field?.variant ?? "outline";
 
-    const [showPassword, setShowPassword] = React.useState(false);
-
-    const inputType = type === "password" && showPassword ? "text" : type;
-
+    const [passwordVisible, setPasswordVisible] = React.useState(false);
+    const inputType = type === "password" && passwordVisible ? "text" : type;
     const hasValue = value !== undefined && String(value).length > 0;
-
-    const handleClear = () => {
-      onClear?.();
-
-      if (onChange) {
-        const event = {
-          target: {
-            value: "",
-          },
-        } as React.ChangeEvent<HTMLInputElement>;
-
-        onChange(event);
-      }
-    };
 
     return (
       <div
         className={cn(
           inputWrapperVariants({
-            size: field.size,
-
-            variant: field.variant,
-
-            invalid: field.invalid,
-
-            disabled: disabled || field.disabled,
+            size: fieldSize,
+            variant: fieldVariant,
+            invalid: fieldInvalid,
+            disabled: disabled || fieldDisabled,
+            fullWidth,
           }),
           className,
         )}
       >
+        {leftIcon && (
+          <span
+            className="
+            absolute
+            left-4
+
+            top-1/2
+
+            -translate-y-1/2
+
+            text-slate-400
+          "
+          >
+            {leftIcon}
+          </span>
+        )}
+
         {prefix && (
           <span
             className="
-            px-3
+            pl-4
             text-sm
             text-slate-500
           "
@@ -92,53 +88,33 @@ const FieldInput = React.forwardRef<HTMLInputElement, FieldInputProps>(
           </span>
         )}
 
-        {leftIcon && (
-          <span
-            className="
-            pl-3
-            text-slate-400
-          "
-          >
-            {leftIcon}
-          </span>
-        )}
-
         <input
           ref={ref}
-          id={field.id}
+          id={fieldId}
           type={inputType}
-          required={field.required}
-          disabled={disabled || field.disabled}
-          aria-invalid={field.invalid}
-          aria-describedby={field.describedBy}
+          required={fieldRequired}
+          disabled={disabled || fieldDisabled}
+          aria-invalid={fieldInvalid}
+          aria-describedby={fieldDescribedBy}
           value={value}
           onChange={onChange}
           className={cn(
             inputVariants(),
-
-            "px-3",
+            "px-4",
+            leftIcon && "pl-11",
+            rightIcon && "pr-11",
+            clearable && hasValue && "pr-10",
+            showPasswordToggle && "pr-10",
           )}
           {...props}
         />
 
-        {suffix && (
-          <span
-            className="
-            px-3
-            text-sm
-            text-slate-500
-          "
-          >
-            {suffix}
-          </span>
-        )}
-
         {loading && (
           <Loader2
+            size={18}
             className="
-            mr-3
-            h-4
-            w-4
+            absolute
+            right-4
             animate-spin
             text-slate-400
           "
@@ -146,33 +122,52 @@ const FieldInput = React.forwardRef<HTMLInputElement, FieldInputProps>(
         )}
 
         {!loading && clearable && hasValue && (
-          <button
+          <Button
             type="button"
-            onClick={handleClear}
-            className="
-              mr-2
-              text-slate-400
-              hover:text-slate-700
-            "
+            variant="ghost"
+            size="icon"
+            onClick={onClear}
+            className="absolute right-3 top-1/2 -translate-y-1/2"
           >
-            <X size={16} />
-          </button>
+            <X size={18} />
+          </Button>
         )}
 
         {!loading && showPasswordToggle && type === "password" && (
-          <button
+          <Button
             type="button"
-            onClick={() => setShowPassword((value) => !value)}
-            className="
-              mr-3
-              text-slate-400
-            "
+            variant="ghost"
+            size="icon"
+            onClick={() => setPasswordVisible((prev) => !prev)}
+            className="absolute right-3 top-1/2 -translate-y-1/2"
           >
-            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-          </button>
+            {passwordVisible ? <EyeOff size={18} /> : <Eye size={18} />}
+          </Button>
         )}
 
-        {!loading && rightIcon}
+        {rightIcon && !loading && (
+          <span
+            className="
+            absolute
+            right-4
+            text-slate-400
+          "
+          >
+            {rightIcon}
+          </span>
+        )}
+
+        {suffix && (
+          <span
+            className="
+            pr-4
+            text-sm
+            text-slate-500
+          "
+          >
+            {suffix}
+          </span>
+        )}
       </div>
     );
   },

@@ -18,4 +18,5 @@ export interface FieldErrorProps {
 
 export interface FormErrorProps {
   message?: string | null;
+  className?: string | null;
 }

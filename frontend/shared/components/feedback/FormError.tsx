@@ -2,7 +2,7 @@
 
 import { FormErrorProps } from "./types";
 
-export default function FormError({ message }: FormErrorProps) {
+export default function FormError({ message, className }: FormErrorProps) {
   if (!message) {
     return null;
   }
@@ -10,7 +10,7 @@ export default function FormError({ message }: FormErrorProps) {
   return (
     <div
       role="alert"
-      className="
+      className={`
         rounded-xl
         border
         border-red-200
@@ -19,7 +19,8 @@ export default function FormError({ message }: FormErrorProps) {
         py-3
         text-sm
         text-red-700
-      "
+        ${className ?? ""}
+      `}
     >
       {message}
     </div>

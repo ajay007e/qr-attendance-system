@@ -1,21 +1,12 @@
 import { Search } from "lucide-react";
 
-import { CustomDropdown } from "@/shared";
+import { CustomDropdown, Field } from "@/shared";
 
 import { UserToolbarProps } from "../../types";
-import {
-  USER_ROLE_FILTER_OPTIONS,
-  USER_STATUS_FILTER_OPTIONS,
-} from "../../constants";
+import { USER_ROLE_FILTER_OPTIONS, USER_STATUS_FILTER_OPTIONS } from "../../constants";
 
-export default function UserToolbar({
-  filters,
-  onFiltersChange,
-}: UserToolbarProps) {
-  const updateFilter = <K extends keyof typeof filters>(
-    key: K,
-    value: (typeof filters)[K],
-  ) => {
+export default function UserToolbar({ filters, onFiltersChange }: UserToolbarProps) {
+  const updateFilter = <K extends keyof typeof filters>(key: K, value: (typeof filters)[K]) => {
     onFiltersChange({
       ...filters,
       [key]: value,
@@ -44,41 +35,15 @@ export default function UserToolbar({
         "
       >
         {/* Search */}
-        <div className="relative w-full lg:max-w-md">
-          <Search
-            size={18}
-            className="
-              absolute
-              left-3
-              top-1/2
-              -translate-y-1/2
-              text-gray-400
-            "
-          />
-
-          <input
-            value={filters.search}
-            onChange={(e) => updateFilter("search", e.target.value)}
-            placeholder="Search users..."
-            className="
-              w-full
-              rounded-xl
-              border
-              border-gray-300
-              bg-white
-              py-3
-              pl-10
-              pr-4
-              text-sm
-              text-gray-700
-              outline-none
-              transition
-              focus:border-blue-600
-              focus:ring-4
-              focus:ring-blue-100
-            "
-          />
-        </div>
+        <Field.Input
+          value={filters.search}
+          onChange={(e) => updateFilter("search", e.target.value)}
+          placeholder="Search users..."
+          leftIcon={<Search size={18} />}
+          fullWidth
+          clearable
+          onClear={() => updateFilter("search", "")}
+        />
 
         {/* Filters */}
         <div

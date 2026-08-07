@@ -5,39 +5,50 @@ export const inputWrapperVariants = cva(
     "relative",
     "flex",
     "items-center",
-    "w-full",
+
     "rounded-xl",
+
     "border",
-    "transition-colors",
+
     "bg-white",
+
+    "transition",
+
     "focus-within:ring-4",
   ],
   {
     variants: {
+      fullWidth: {
+        true: "w-full",
+      },
       size: {
-        sm: "h-9 text-sm",
-        md: "h-10 text-sm",
-        lg: "h-12 text-base",
+        sm: "h-10",
+
+        md: "h-12",
+
+        lg: "h-14",
       },
 
       variant: {
         outline: [
           "border-slate-300",
-          "focus-within:border-blue-500",
+
+          "focus-within:border-blue-600",
+
           "focus-within:ring-blue-100",
         ].join(" "),
 
         filled: [
-          "bg-slate-100",
           "border-transparent",
-          "focus-within:border-blue-500",
+
+          "bg-slate-100",
+
+          "focus-within:border-blue-600",
+
+          "focus-within:ring-blue-100",
         ].join(" "),
 
-        ghost: [
-          "border-transparent",
-          "bg-transparent",
-          "focus-within:border-slate-300",
-        ].join(" "),
+        ghost: ["border-transparent", "bg-transparent"].join(" "),
       },
 
       invalid: {
@@ -45,7 +56,7 @@ export const inputWrapperVariants = cva(
       },
 
       disabled: {
-        true: ["cursor-not-allowed", "bg-slate-100", "opacity-60"].join(" "),
+        true: "opacity-60 cursor-not-allowed",
       },
     },
 
@@ -58,11 +69,15 @@ export const inputWrapperVariants = cva(
 );
 
 export const inputVariants = cva([
+  "h-full",
+
   "w-full",
 
   "bg-transparent",
 
   "outline-none",
+
+  "text-sm",
 
   "text-slate-900",
 

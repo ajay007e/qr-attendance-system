@@ -2,15 +2,11 @@
 
 import { FormEvent, useState } from "react";
 
-import { CustomDropdown, Button, FormError, FormInput } from "@/shared";
+import { CustomDropdown, Button, FormError, Field } from "@/shared";
 
 import { AppError } from "@/shared/errors/AppError";
 
-import type {
-  CourseSession,
-  UpdateCourseRequest,
-  DetailsTabProps,
-} from "../../types";
+import type { CourseSession, UpdateCourseRequest, DetailsTabProps } from "../../types";
 
 import { COURSE_SESSION_FILTER_OPTIONS } from "../../constants";
 
@@ -67,66 +63,43 @@ export function DetailsTab({ course, onSubmit }: DetailsTabProps) {
         {error && <FormError message={error} />}
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <FormInput
-            label="Course Code"
-            required
-            placeholder="Enter course code"
-            value={courseCode}
-            onChange={setCourseCode}
-          />
-
-          <FormInput
-            label="Credits"
-            type="number"
-            required
-            placeholder="Enter credits"
-            min={1}
-            value={credits}
-            onChange={setCredits}
-          />
+          <Field label="Course Code" required>
+            <Field.Input
+              placeholder="Enter course code"
+              value={courseCode}
+              onChange={(event) => setCourseCode(event.target.value)}
+            />
+          </Field>
+          <Field label="Credits" required>
+            <Field.Input
+              type="number"
+              placeholder="Enter credits"
+              min={1}
+              value={credits}
+              onChange={(event) => setCredits(event.target.value)}
+            />
+          </Field>
         </div>
 
-        <FormInput
-          label="Course Name"
-          placeholder="Enter course name"
-          required
-          value={courseName}
-          onChange={setCourseName}
-        />
+        <Field label="Course Name" required>
+          <Field.Input
+            placeholder="Enter course name"
+            value={courseName}
+            onChange={(event) => setCourseName(event.target.value)}
+          />
+        </Field>
 
-        <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">
-            Description
-          </label>
-
-          <textarea
+        <Field label="Description">
+          <Field.Textarea
             value={description}
             onChange={(event) => setDescription(event.target.value)}
             placeholder="Enter course description"
             rows={4}
-            className="
-              w-full
-              rounded-xl
-              border
-              border-gray-300
-              bg-white
-              px-4
-              py-3
-              text-sm
-              text-gray-700
-              outline-none
-              transition
-              focus:border-blue-600
-              focus:ring-4
-              focus:ring-blue-100
-            "
           />
-        </div>
+        </Field>
 
         <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">
-            Session
-          </label>
+          <label className="mb-2 block text-sm font-medium text-gray-700">Session</label>
 
           <CustomDropdown
             value={session}
