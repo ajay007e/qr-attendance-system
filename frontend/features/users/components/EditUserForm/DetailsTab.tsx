@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { AppError } from "@/shared/errors/AppError";
-import { Button, CustomDropdown, FormError, FormInput, Field, UI_USER_ROLE_OPTIONS } from "@/shared";
+import { Button, FormError, Field, UI_USER_ROLE_OPTIONS } from "@/shared";
 import { DetailsFormProps } from "../../types";
 
 export function DetailsForm({ user, onSubmit }: DetailsFormProps) {
@@ -72,7 +72,7 @@ export function DetailsForm({ user, onSubmit }: DetailsFormProps) {
         </Field>
         <div>
           <label className="mb-2 block text-sm font-medium text-gray-700">Role</label>
-          <CustomDropdown value={role} onChange={setRole} options={UI_USER_ROLE_OPTIONS} />
+          <Field.Select value={role} onChange={setRole} options={UI_USER_ROLE_OPTIONS} />
         </div>
         <Button type="submit" fullWidth loading={loading}>
           {loading ? "Saving Changes..." : "Save Changes"}

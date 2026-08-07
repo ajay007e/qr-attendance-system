@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Search, Trash2, UserPlus, X } from "lucide-react";
 
-import { Badge, Button, CustomDropdown, Field, FormError } from "@/shared";
+import { Badge, Button, Field, FormError } from "@/shared";
 import { AppError } from "@/shared/errors/AppError";
 
 import { LECTURER_ROLE_OPTIONS } from "../../constants";
@@ -183,7 +183,7 @@ export function LecturersTab({ course }: LecturerTabProps) {
         <div className="mt-5">
           <label className="mb-2 block text-sm font-medium text-gray-700">Lecturer Role</label>
 
-          <CustomDropdown
+          <Field.Select
             value={selectedRole}
             options={LECTURER_ROLE_OPTIONS}
             onChange={(value) => {

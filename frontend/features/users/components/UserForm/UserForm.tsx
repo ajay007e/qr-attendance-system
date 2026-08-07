@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 
 import { AppError } from "@/shared/errors/AppError";
-import { Button, CustomDropdown, FormError, Field, UI_USER_ROLE_OPTIONS, USER_ROLES, UserRole } from "@/shared";
+import { Button, FormError, Field, UI_USER_ROLE_OPTIONS, USER_ROLES, UserRole } from "@/shared";
 import { UserFormProps } from "../../types";
 
 export default function UserForm({ onSubmit }: UserFormProps) {
@@ -95,7 +95,7 @@ export default function UserForm({ onSubmit }: UserFormProps) {
       {/* Role */}
       <div>
         <label className="mb-2 block text-sm font-medium text-gray-700">Role</label>
-        <CustomDropdown value={role} onChange={setRole} placeholder="Select user role" options={UI_USER_ROLE_OPTIONS} />
+        <Field.Select value={role} onChange={setRole} placeholder="Select user role" options={UI_USER_ROLE_OPTIONS} />
       </div>
 
       <Button type="submit" size="lg" fullWidth loading={loading} disabled={!role} className="mt-2">

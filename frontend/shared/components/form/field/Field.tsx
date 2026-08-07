@@ -6,11 +6,13 @@ import { fieldVariants, helperVariants, labelVariants, messageVariants } from ".
 import FieldInput from "./input/FieldInput";
 import FieldTextarea from "./textarea/FieldTextarea";
 import FieldAutocomplete from "./autocomplete/FieldAutocomplete";
+import FieldSelect from "./select/FieldSelect";
 
 export interface FieldComponent extends React.FC<FieldProps> {
   Input: typeof FieldInput;
   Textarea: typeof FieldTextarea;
   Autocomplete: typeof FieldAutocomplete;
+  Select: typeof FieldSelect;
 }
 
 const FieldBase = ({
@@ -143,5 +145,6 @@ const Field = Object.assign(FieldBase, {
   Input: FieldInput,
   Textarea: FieldTextarea,
   Autocomplete: FieldAutocomplete,
+  Select: FieldSelect,
 }) as FieldComponent;
 export default Field;

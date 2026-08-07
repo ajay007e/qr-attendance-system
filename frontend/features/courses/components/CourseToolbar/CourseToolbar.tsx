@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import { COURSE_SESSION_FILTER_OPTIONS, COURSE_STATUS_FILTER_OPTIONS } from "../../constants";
 
 import type { CourseToolbarProps } from "../../types";
-import { CustomDropdown, Field } from "@/shared";
+import { Field } from "@/shared";
 
 export default function CourseToolbar({ filters, onFiltersChange }: CourseToolbarProps) {
   const updateFilter = <K extends keyof CourseToolbarProps["filters"]>(
@@ -55,7 +55,7 @@ export default function CourseToolbar({ filters, onFiltersChange }: CourseToolba
           "
         >
           <div className="min-w-[180px]">
-            <CustomDropdown
+            <Field.Select
               value={filters.session}
               onChange={(value) => updateFilter("session", value)}
               options={COURSE_SESSION_FILTER_OPTIONS}
@@ -63,7 +63,7 @@ export default function CourseToolbar({ filters, onFiltersChange }: CourseToolba
           </div>
 
           <div className="min-w-[180px]">
-            <CustomDropdown
+            <Field.Select
               value={filters.status}
               onChange={(value) => updateFilter("status", value)}
               options={COURSE_STATUS_FILTER_OPTIONS}

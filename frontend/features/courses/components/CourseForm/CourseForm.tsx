@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 
-import { FormError, Field, CustomDropdown, Button } from "@/shared";
+import { FormError, Field, Button } from "@/shared";
 
 import { AppError } from "@/shared/errors/AppError";
 
@@ -102,7 +102,7 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
 
         <div>
           <label className="mb-2 block text-sm font-medium text-gray-700">Session</label>
-          <CustomDropdown
+          <Field.Select
             value={form.session}
             onChange={(value) => updateField("session", value as CourseSession)}
             options={COURSE_SESSION_FILTER_OPTIONS}

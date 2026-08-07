@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 
-import { CustomDropdown, Field } from "@/shared";
+import { Field } from "@/shared";
 
 import { UserToolbarProps } from "../../types";
 import { USER_ROLE_FILTER_OPTIONS, USER_STATUS_FILTER_OPTIONS } from "../../constants";
@@ -57,7 +57,7 @@ export default function UserToolbar({ filters, onFiltersChange }: UserToolbarPro
           "
         >
           <div className="min-w-[180px]">
-            <CustomDropdown
+            <Field.Select
               value={filters.role}
               onChange={(value) => updateFilter("role", value)}
               options={USER_ROLE_FILTER_OPTIONS}
@@ -65,7 +65,7 @@ export default function UserToolbar({ filters, onFiltersChange }: UserToolbarPro
           </div>
 
           <div className="min-w-[180px]">
-            <CustomDropdown
+            <Field.Select
               value={filters.status}
               onChange={(value) => updateFilter("status", value)}
               options={USER_STATUS_FILTER_OPTIONS}
