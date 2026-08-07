@@ -14,10 +14,6 @@ export interface ModalProps {
   size?: "sm" | "md" | "lg";
 }
 
-export interface PageLoaderProps {
-  message?: string;
-}
-
 export type BadgeVariant = "blue" | "green" | "red" | "yellow" | "gray";
 
 export interface BadgeProps {

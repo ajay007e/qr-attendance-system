@@ -9,9 +9,12 @@ import {
   User,
   Button,
   Pagination,
+  AdminPageHeader as PageHeader,
+  ErrorFallback,
+  EmptyState,
+  Loader,
+  NoResults,
 } from "@/shared";
-import PageHeader from "@/shared/components/layout/AdminPageHeader";
-import ErrorFallback from "@/shared/components/feedback/ErrorFallback";
 import { UserQuery } from "../../types";
 import { DEFAULT_USER_QUERY } from "../../constants";
 import useUsers from "../../hooks/useUsers";
@@ -19,8 +22,7 @@ import UserToolbar from "../UserToolbar/UserToolbar";
 import UserTable from "../UserTable/UserTable";
 import UserForm from "../UserForm/UserForm";
 import { EditUserForm } from "../EditUserForm";
-import { EmptyUserState } from "../EmptyUserState";
-import { Loader2, Plus } from "lucide-react";
+import { Plus, Users } from "lucide-react";
 
 export default function UserManagement() {
   const [query, setQuery] = useState<UserQuery>(DEFAULT_USER_QUERY);
@@ -45,8 +47,7 @@ export default function UserManagement() {
   if (loading) {
     return <PageLoader />;
   }
-  const hasFilters =
-    Boolean(query.search) || Boolean(query.role) || Boolean(query.status);
+  const hasFilters = Boolean(query.search) || Boolean(query.role) || Boolean(query.status);
 
   const showEmptyState = pagination.total === 0 && !hasFilters;
 
@@ -93,64 +94,31 @@ export default function UserManagement() {
       />
 
       {showEmptyState ? (
-        <EmptyUserState onCreate={() => setShowCreateUser(true)} />
+        <EmptyState
+          icon={<Users size={28} />}
+          title="No Users Available"
+          message="Create user accounts for students, lecturers, and administrators."
+          size="lg"
+          action={{
+            label: "Add User",
+            icon: <Plus size={18} />,
+            onClick: () => setShowCreateUser(true),
+          }}
+        />
       ) : showNoResults ? (
-        <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-5 py-15 text-center sm:py-20">
-          <h3 className="text-lg font-semibold text-gray-900">
-            No users found
-          </h3>
-
-          <p className="mt-2 text-sm text-gray-500">
-            Try changing your search or filters.
-          </p>
-
-          <Button
-            size="sm"
-            className="mt-6"
-            onClick={() => setQuery(DEFAULT_USER_QUERY)}
-          >
-            Clear Filters
-          </Button>
-        </div>
+        <NoResults
+          title="No users found"
+          message="Try changing your search or filters."
+          action={
+            <Button size="sm" className="mt-6" onClick={() => setQuery(DEFAULT_USER_QUERY)}>
+              Clear Filters
+            </Button>
+          }
+        />
       ) : (
         <>
           <div className="relative">
-            {isFetching && (
-              <div
-                className="
-                  absolute
-                  inset-0
-                  z-20
-                  flex
-                  items-center
-                  justify-center
-                  rounded-2xl
-                  bg-white/70
-                  backdrop-blur-sm
-                "
-              >
-                <div
-                  className="
-                    flex
-                    items-center
-                    gap-3
-                    rounded-xl
-                    bg-white
-                    px-4
-                    py-3
-                    sm:px-5
-                    text-sm
-                    font-medium
-                    text-gray-700
-                    shadow-lg
-                  "
-                >
-                  <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
-                  Loading users...
-                </div>
-              </div>
-            )}
-
+            {isFetching && <Loader message="Loading users..." />}
             <UserTable users={users} onEdit={setSelectedUser} />
           </div>
 
@@ -177,12 +145,7 @@ export default function UserManagement() {
         </>
       )}
 
-      <Modal
-        open={showCreateUser}
-        onClose={() => setShowCreateUser(false)}
-        title="Create User"
-        size="md"
-      >
+      <Modal open={showCreateUser} onClose={() => setShowCreateUser(false)} title="Create User" size="md">
         <UserForm
           onSubmit={async (data) => {
             await createUser(data);
@@ -191,12 +154,7 @@ export default function UserManagement() {
         />
       </Modal>
 
-      <Modal
-        open={!!selectedUser}
-        onClose={() => setSelectedUser(null)}
-        title="Edit User"
-        size="md"
-      >
+      <Modal open={!!selectedUser} onClose={() => setSelectedUser(null)} title="Edit User" size="md">
         {selectedUser && (
           <EditUserForm
             user={selectedUser}
