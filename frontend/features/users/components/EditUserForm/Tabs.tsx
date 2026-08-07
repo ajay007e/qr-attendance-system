@@ -1,3 +1,4 @@
+import { Button } from "@/shared";
 import { TABS } from "../../constants";
 import { TabsProps } from "../../types";
 
@@ -7,30 +8,19 @@ export function Tabs({ activeTab, onChange }: TabsProps) {
       {TABS.map((tab) => {
         const isActive = activeTab === tab.key;
         const activeClass = isActive
-          ? tab.key === "delete"
-            ? "bg-white text-red-600 shadow-sm"
-            : "bg-white text-blue-600 shadow-sm"
+          ? "bg-white text-blue-600 shadow-sm"
           : "text-gray-500";
 
         return (
-          <button
+          <Button
             key={tab.key}
             type="button"
+            variant="ghost"
             onClick={() => onChange(tab.key)}
-            className={`
-              flex-1
-              rounded-lg
-              px-2
-              py-2.5
-              text-xs
-              font-medium
-              transition
-              sm:text-sm
-              ${activeClass}
-            `}
+            className={`flex-1 rounded-lg px-2 py-2.5 text-xs font-medium sm:text-sm ${activeClass}`}
           >
             {tab.label}
-          </button>
+          </Button>
         );
       })}
     </div>

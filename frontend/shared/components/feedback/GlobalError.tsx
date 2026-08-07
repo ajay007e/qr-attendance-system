@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { useError } from "@/shared";
+import { Button, useError } from "@/shared";
 
 export default function GlobalError() {
   const { error, clearError } = useError();
@@ -67,18 +67,14 @@ export default function GlobalError() {
 
           <p className="mt-1 text-sm text-gray-600">{error.message}</p>
 
-          <button
+          <Button
+            type="button"
+            variant="ghost"
             onClick={clearError}
-            className="
-              mt-3
-              text-sm
-              font-medium
-              text-red-600
-              hover:text-red-700
-            "
+            className="mt-3 text-red-600 hover:text-red-700"
           >
             Dismiss
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -115,25 +111,17 @@ function LoginRequiredModal() {
           Your session has expired. Please login again to continue.
         </p>
 
-        <button
-          className="
-            mt-6
-            w-full
-            rounded-xl
-            bg-blue-600
-            px-4
-            py-3
-            text-sm
-            font-semibold
-            text-white
-            hover:bg-blue-700
-          "
+        <Button
+          type="button"
+          variant="primary"
+          fullWidth
+          className="mt-6"
           onClick={() => {
             window.location.href = "/login";
           }}
         >
           Go to Login
-        </button>
+        </Button>
       </div>
     </div>
   );

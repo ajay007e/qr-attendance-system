@@ -1,11 +1,11 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/features/auth";
-import { FormError, getDashboardRoute, useError } from "@/shared";
+import { FormError, getDashboardRoute, useError, Button } from "@/shared";
 import { AppError } from "@/shared/errors/AppError";
 
 export default function LoginPage() {
@@ -276,29 +276,16 @@ export default function LoginPage() {
                 "
               />
 
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon"
                 disabled={loading}
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="
-                  absolute
-                  right-3
-                  top-1/2
-                  -translate-y-1/2
-
-                  rounded-lg
-                  p-2
-
-                  text-slate-400
-
-                  transition
-
-                  hover:bg-slate-100
-                  hover:text-slate-600
-                "
+                className="absolute right-3 top-1/2 -translate-y-1/2"
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
+              </Button>
             </div>
 
             {fieldErrors.password && (
@@ -307,45 +294,9 @@ export default function LoginPage() {
               </p>
             )}
           </div>
-
-          {/* Button */}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="
-              flex
-              h-12
-              w-full
-
-              items-center
-              justify-center
-              gap-2
-
-              rounded-xl
-
-              bg-blue-600
-
-              text-sm
-              font-semibold
-              text-white
-
-              transition
-
-              hover:bg-blue-700
-
-              focus:outline-none
-              focus:ring-4
-              focus:ring-blue-200
-
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-            "
-          >
-            {loading && <Loader2 size={18} className="animate-spin" />}
-
+          <Button type="submit" size="lg" loading={loading} fullWidth>
             {loading ? "Signing in..." : "Sign in"}
-          </button>
+          </Button>
         </form>
       </div>
     </main>

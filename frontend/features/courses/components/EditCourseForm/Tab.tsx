@@ -1,3 +1,4 @@
+import { Button } from "@/shared";
 import { COURSE_TABS } from "../../constants";
 import { CourseEditTab, CourseTabsProp } from "../../types";
 
@@ -12,24 +13,15 @@ export function Tabs({ activeTab, onChange }: CourseTabsProp) {
           : "text-gray-500";
 
         return (
-          <button
+          <Button
             key={tab.key}
             type="button"
+            variant="ghost"
             onClick={() => onChange(tab.key as CourseEditTab)}
-            className={`
-              flex-1
-              rounded-lg
-              px-2
-              py-2.5
-              text-xs
-              font-medium
-              transition
-              sm:text-sm
-              ${activeClass}
-            `}
+            className={`flex-1 rounded-lg px-2 py-2.5 text-xs font-medium sm:text-sm ${activeClass}`}
           >
             {tab.label}
-          </button>
+          </Button>
         );
       })}
     </div>

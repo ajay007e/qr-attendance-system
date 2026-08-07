@@ -1,6 +1,7 @@
-import { BookOpen } from "lucide-react";
+import { BookOpen, Plus } from "lucide-react";
 
 import type { EmptyCourseStateProps } from "../../types";
+import { Button } from "@/shared";
 
 export default function EmptyCourseState({ onCreate }: EmptyCourseStateProps) {
   return (
@@ -58,27 +59,15 @@ export default function EmptyCourseState({ onCreate }: EmptyCourseStateProps) {
         managing your academic sessions and lecturers.
       </p>
 
-      <button
-        type="button"
+      <Button
+        size="lg"
+        fullWidth
+        className="sm:w-auto"
+        leftIcon={<Plus size={18} />}
         onClick={onCreate}
-        className="
-          mt-6
-          rounded-xl
-          bg-blue-600
-          px-5
-          py-3
-          text-sm
-          font-semibold
-          text-white
-          transition
-          hover:bg-blue-700
-          focus:outline-none
-          focus:ring-4
-          focus:ring-blue-200
-        "
       >
         Create Course
-      </button>
+      </Button>
     </div>
   );
 }

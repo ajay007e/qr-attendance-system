@@ -7,6 +7,7 @@ import {
   PAGINATION_DESKTOP_BUTTON_CLASS_NAME,
   PAGINATION_MOBILE_BUTTON_CLASS_NAME,
 } from "./pagination.constants";
+import Button from "../../ui/Button";
 
 interface PaginationProps {
   total: number;
@@ -61,8 +62,10 @@ export default function Pagination({
       <div className="flex items-center gap-2">
         {/* Desktop Previous */}
 
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="sm"
           onClick={onPrevious}
           disabled={previousDisabled}
           className={`
@@ -71,22 +74,24 @@ export default function Pagination({
           `}
         >
           Previous
-        </button>
+        </Button>
 
         {/* Mobile Previous */}
 
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="icon"
           onClick={onPrevious}
           disabled={previousDisabled}
+          aria-label="Previous page"
           className={`
             ${PAGINATION_BUTTON_CLASS_NAME}
             ${PAGINATION_MOBILE_BUTTON_CLASS_NAME}
           `}
-          aria-label="Previous page"
         >
           <ChevronLeft size={18} />
-        </button>
+        </Button>
 
         <span className={PAGINATION_CURRENT_PAGE_CLASS_NAME}>
           <span className="sm:hidden">
@@ -98,7 +103,7 @@ export default function Pagination({
 
         {/* Desktop Next */}
 
-        <button
+        <Button
           type="button"
           onClick={onNext}
           disabled={nextDisabled}
@@ -108,11 +113,11 @@ export default function Pagination({
           `}
         >
           Next
-        </button>
+        </Button>
 
         {/* Mobile Next */}
 
-        <button
+        <Button
           type="button"
           onClick={onNext}
           disabled={nextDisabled}
@@ -123,7 +128,7 @@ export default function Pagination({
           aria-label="Next page"
         >
           <ChevronRight size={18} />
-        </button>
+        </Button>
       </div>
     </div>
   );

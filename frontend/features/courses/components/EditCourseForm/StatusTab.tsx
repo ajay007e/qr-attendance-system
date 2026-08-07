@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { FormError } from "@/shared";
+import { FormError, Button } from "@/shared";
 import { AppError } from "@/shared/errors/AppError";
 
 import { useCourseMutation } from "../../hooks/useCourseMutation";
@@ -74,36 +74,20 @@ export function StatusTab({ course, refresh, onClose }: StatusTabProps) {
             ? "This action will hide the course from active course lists. Existing attendance records will remain unchanged."
             : "This action will make the course available again for active use."}
         </p>
-
-        <button
+        <Button
           type="button"
           onClick={handleStatusChange}
-          disabled={loading}
-          className={`
-            mt-4
-            w-full
-            rounded-xl
-            py-3
-            text-sm
-            font-semibold
-            text-white
-            transition
-            disabled:cursor-not-allowed
-            disabled:opacity-50
-
-            ${
-              isActive
-                ? "bg-red-600 hover:bg-red-700"
-                : "bg-green-600 hover:bg-green-700"
-            }
-          `}
+          loading={loading}
+          variant={isActive ? "danger" : "success"}
+          fullWidth
+          className="mt-4"
         >
           {loading
             ? "Updating..."
             : isActive
               ? "Deactivate Course"
               : "Activate Course"}
-        </button>
+        </Button>
       </div>
     </div>
   );

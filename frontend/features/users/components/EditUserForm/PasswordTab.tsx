@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { AppError } from "@/shared/errors/AppError";
-import { FormError, FormInput, SubmitButton } from "@/shared";
+import { Button, FormError, FormInput } from "@/shared";
 import { PasswordFormProps } from "../../types";
 
 export function PasswordForm({ userId, onSubmit }: PasswordFormProps) {
@@ -61,11 +61,15 @@ export function PasswordForm({ userId, onSubmit }: PasswordFormProps) {
           value={confirmPassword}
           onChange={setConfirmPassword}
         />
-        <SubmitButton
-          disabled={loading || !password || password !== confirmPassword}
+        <Button
+          type="submit"
+          size="lg"
+          fullWidth
+          loading={loading}
+          disabled={!password || password !== confirmPassword}
         >
           {loading ? "Changing Password..." : "Change Password"}
-        </SubmitButton>
+        </Button>
       </fieldset>
     </form>
   );

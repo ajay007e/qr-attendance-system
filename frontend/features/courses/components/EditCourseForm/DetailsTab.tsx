@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 
-import { CustomDropdown, FormError, FormInput, SubmitButton } from "@/shared";
+import { CustomDropdown, Button, FormError, FormInput } from "@/shared";
 
 import { AppError } from "@/shared/errors/AppError";
 
@@ -136,9 +136,9 @@ export function DetailsTab({ course, onSubmit }: DetailsTabProps) {
           />
         </div>
 
-        <SubmitButton disabled={loading}>
+        <Button type="submit" fullWidth loading={loading}>
           {loading ? "Saving Changes..." : "Save Changes"}
-        </SubmitButton>
+        </Button>
       </fieldset>
     </form>
   );

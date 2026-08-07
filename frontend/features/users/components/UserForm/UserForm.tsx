@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 
 import { AppError } from "@/shared/errors/AppError";
 import {
+  Button,
   CustomDropdown,
   FormError,
   FormInput,
@@ -111,35 +112,16 @@ export default function UserForm({ onSubmit }: UserFormProps) {
         />
       </div>
 
-      {/* Submit */}
-      <button
+      <Button
         type="submit"
-        disabled={loading || !role}
-        className="
-          mt-2
-          flex
-          h-12
-          w-full
-          items-center
-          justify-center
-          rounded-xl
-          bg-blue-600
-          text-sm
-          font-semibold
-          text-white
-          transition
-          hover:bg-blue-700
-
-          focus:outline-none
-          focus:ring-4
-          focus:ring-blue-200
-
-          disabled:cursor-not-allowed
-          disabled:opacity-60
-        "
+        size="lg"
+        fullWidth
+        loading={loading}
+        disabled={!role}
+        className="mt-2"
       >
         {loading ? "Creating User..." : "Create User"}
-      </button>
+      </Button>
     </form>
   );
 }

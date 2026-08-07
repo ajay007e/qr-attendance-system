@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Loader2, Search, Trash2, UserPlus, X } from "lucide-react";
 
-import { Badge, CustomDropdown, FormError } from "@/shared";
+import { Badge, Button, CustomDropdown, FormError } from "@/shared";
 import { AppError } from "@/shared/errors/AppError";
 
 import { LECTURER_ROLE_OPTIONS } from "../../constants";
@@ -292,13 +292,14 @@ export function LecturersTab({ course }: LecturerTabProps) {
               <p className="text-sm text-gray-600">{selectedLecturer.email}</p>
             </div>
 
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon"
               onClick={() => setSelectedLecturer(null)}
-              className="rounded-lg p-2 hover:bg-blue-100"
             >
               <X size={18} />
-            </button>
+            </Button>
           </div>
         )}
 
@@ -318,33 +319,17 @@ export function LecturersTab({ course }: LecturerTabProps) {
           />
         </div>
 
-        <button
+        <Button
           type="button"
           onClick={assignLecturer}
           disabled={!selectedLecturer || !selectedRole}
-          className="
-            mt-5
-            flex
-            w-full
-            items-center
-            justify-center
-            gap-2
-            rounded-xl
-            bg-blue-600
-            py-3
-            font-medium
-            text-white
-            hover:bg-blue-700
-            disabled:cursor-not-allowed
-            disabled:opacity-50
-
-            sm:w-auto
-            sm:px-8
-          "
+          variant="primary"
+          fullWidth
+          leftIcon={<UserPlus size={18} />}
+          className="mt-5"
         >
-          <UserPlus size={18} />
           Assign Lecturer
-        </button>
+        </Button>
       </section>
       <section
         className="
@@ -472,20 +457,15 @@ export function LecturersTab({ course }: LecturerTabProps) {
             "
               >
                 <Badge variant="blue">{lecturer.role}</Badge>
-
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={() => removeLecturer(lecturer.id)}
-                  className="
-                rounded-lg
-                p-2
-                text-red-600
-                transition
-                hover:bg-red-50
-              "
+                  className="text-red-600"
                 >
                   <Trash2 size={18} />
-                </button>
+                </Button>{" "}
               </div>
             </div>
           ))}

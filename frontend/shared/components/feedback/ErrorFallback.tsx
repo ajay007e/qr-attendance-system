@@ -1,6 +1,8 @@
 "use client";
 
+import Button from "../ui/Button";
 import { ErrorFallbackProps } from "./types";
+import { RefreshCw } from "lucide-react";
 
 export default function ErrorFalback({
   title = "Unable to load data",
@@ -81,44 +83,15 @@ export default function ErrorFalback({
           )}
 
           {onRetry && (
-            <button
+            <Button
+              variant="danger"
+              size="lg"
+              className="mt-6"
+              leftIcon={<RefreshCw size={18} />}
               onClick={onRetry}
-              className="
-                mt-6
-                inline-flex
-                cursor-pointer
-                items-center
-                gap-2
-                rounded-xl
-                bg-red-600
-                px-5
-                py-2.5
-                text-sm
-                font-semibold
-                text-white
-                shadow-sm
-                transition
-                hover:bg-red-700
-                hover:shadow-md
-                active:scale-95
-              "
             >
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 4v5h.582M20 20v-5h-.581M5.8 18.2A8 8 0 0118.2 5.8M18.2 5.8A8 8 0 015.8 18.2"
-                />
-              </svg>
-
               {retryLabel}
-            </button>
+            </Button>
           )}
         </div>
       </div>

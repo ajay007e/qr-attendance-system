@@ -3,28 +3,54 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, LogOut, Settings, User } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useAuth } from "@/features/auth";
 import { menus } from "@/shared/navigation/menu";
+import { getUserRoleLabel } from "@/shared";
 
 import { SidebarProps } from "./types";
-import { getUserRoleLabel } from "@/shared";
 
 export default function Sidebar({ onNavigate }: SidebarProps) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
 
   const [open, setOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleOutsideClick(event: MouseEvent) {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
 
   if (!user) return null;
 
-  const items = menus[user.role as keyof typeof menus];
+  const items = useMemo(
+    () => menus[user.role as keyof typeof menus] ?? [],
+    [user.role],
+  );
+
+  function handleNavigate() {
+    setOpen(false);
+    onNavigate?.();
+  }
 
   return (
-    <nav className="flex h-full flex-col overflow-hidden">
+    <nav className="flex h-full flex-col">
       {/* Navigation */}
-      <div className="flex-1 space-y-2 overflow-y-auto p-5">
+      <div className="flex-1 space-y-1 p-5">
         {items.map((item) => {
           const active = pathname === item.href;
 
@@ -32,7 +58,7 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
             <Link
               key={item.href}
               href={item.href}
-              onClick={onNavigate}
+              onClick={handleNavigate}
               className={[
                 "flex items-center rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200",
                 active
@@ -47,7 +73,7 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
       </div>
 
       {/* Profile */}
-      <div className="relative border-t border-gray-200 p-5">
+      <div ref={profileRef} className="relative border-t border-gray-200 p-5">
         {open && (
           <div className="absolute bottom-20 left-5 right-5 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl">
             <button

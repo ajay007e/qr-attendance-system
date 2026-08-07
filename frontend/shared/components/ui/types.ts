@@ -9,11 +9,6 @@ export interface FormInputProps extends Omit<
   onChange: (value: string) => void;
 }
 
-export type SubmitButtonProps = {
-  children: ReactNode;
-  disabled?: boolean;
-};
-
 export interface Option<T extends string> {
   label: string;
   value: T;
@@ -51,14 +46,5 @@ export type BadgeVariant = "blue" | "green" | "red" | "yellow" | "gray";
 export interface BadgeProps {
   children: ReactNode;
   variant?: BadgeVariant;
-  className?: string;
-}
-
-export interface IconButtonProps {
-  children: ReactNode;
-  onClick?: () => void;
-  disabled?: boolean;
-  ariaLabel: string;
-  title?: string;
   className?: string;
 }

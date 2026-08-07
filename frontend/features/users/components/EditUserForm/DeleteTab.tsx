@@ -1,3 +1,5 @@
+import { Button } from "@/shared";
+
 export function DeleteUserTab({ onDelete }: { onDelete: () => void }) {
   return (
     <div className="space-y-4 rounded-xl border border-red-200 bg-red-50 p-5">
@@ -7,12 +9,9 @@ export function DeleteUserTab({ onDelete }: { onDelete: () => void }) {
         This action cannot be undone. All user related data may be removed.
       </p>
 
-      <button
-        onClick={onDelete}
-        className="w-full rounded-xl bg-red-600 py-3 text-sm font-semibold text-white transition hover:bg-red-700"
-      >
+      <Button variant="danger" size="lg" fullWidth onClick={onDelete}>
         Delete User
-      </button>
+      </Button>
     </div>
   );
 }

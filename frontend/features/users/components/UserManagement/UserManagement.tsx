@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 
-import { Modal, PageLoader, useDebounce, User } from "@/shared";
+import {
+  Modal,
+  PageLoader,
+  useDebounce,
+  User,
+  Button,
+  Pagination,
+} from "@/shared";
 import PageHeader from "@/shared/components/layout/AdminPageHeader";
 import ErrorFallback from "@/shared/components/feedback/ErrorFallback";
 import { UserQuery } from "../../types";
@@ -13,7 +20,7 @@ import UserTable from "../UserTable/UserTable";
 import UserForm from "../UserForm/UserForm";
 import { EditUserForm } from "../EditUserForm";
 import { EmptyUserState } from "../EmptyUserState";
-import { Pagination } from "@/shared/components";
+import { Loader2, Plus } from "lucide-react";
 
 export default function UserManagement() {
   const [query, setQuery] = useState<UserQuery>(DEFAULT_USER_QUERY);
@@ -63,30 +70,16 @@ export default function UserManagement() {
         title="User Management"
         subtitle="Manage administrators, lecturers, and student accounts."
         action={
-          <button
+          <Button
             type="button"
+            size="lg"
+            fullWidth
+            className="sm:w-auto"
             onClick={() => setShowCreateUser(true)}
-            className="
-        flex
-        w-full
-        cursor-pointer
-        items-center
-        justify-center
-        gap-2
-        rounded-xl
-        bg-blue-600
-        px-5
-        py-3
-        text-sm
-        font-semibold
-        text-white
-        transition
-        hover:bg-blue-700
-        sm:w-auto
-      "
+            leftIcon={<Plus size={18} />}
           >
             Add User
-          </button>
+          </Button>
         }
       />
       <UserToolbar
@@ -111,12 +104,13 @@ export default function UserManagement() {
             Try changing your search or filters.
           </p>
 
-          <button
+          <Button
+            size="sm"
+            className="mt-6"
             onClick={() => setQuery(DEFAULT_USER_QUERY)}
-            className="mt-6 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer"
           >
             Clear Filters
-          </button>
+          </Button>
         </div>
       ) : (
         <>
@@ -151,32 +145,7 @@ export default function UserManagement() {
                     shadow-lg
                   "
                 >
-                  <svg
-                    className="
-                      h-5
-                      w-5
-                      animate-spin
-                      text-blue-600
-                    "
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                    />
-                  </svg>
+                  <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
                   Loading users...
                 </div>
               </div>

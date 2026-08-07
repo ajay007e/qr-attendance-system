@@ -36,10 +36,12 @@ export const buttonVariants = cva(
           "border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-100 focus-visible:ring-gray-200",
 
         ghost:
-          "text-gray-600 hover:bg-gray-100 hover:text-gray-900 focus-visible:ring-gray-200",
+          "text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus-visible:ring-slate-200",
 
         danger:
-          "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-200",
+          "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-200 shadow-sm hover:shadow-md active:scale-95",
+        success:
+          "bg-green-600 text-white hover:bg-green-700 focus-visible:ring-green-200",
       },
 
       size: {

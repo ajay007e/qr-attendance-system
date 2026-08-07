@@ -4,7 +4,7 @@ import { useDebounce } from "@/shared";
 
 import PageHeader from "@/shared/components/layout/AdminPageHeader";
 import ErrorFallback from "@/shared/components/feedback/ErrorFallback";
-import { Modal, PageLoader } from "@/shared";
+import { Modal, PageLoader, Button } from "@/shared";
 
 import { useCourses } from "../../hooks/useCourses";
 import { useCourseQuery } from "../../hooks/useCourseQuery";
@@ -17,6 +17,7 @@ import EmptyCourseState from "../CourseEmptyState";
 import EditCourseForm from "../EditCourseForm/EditCourseForm";
 import { useCourseMutation } from "../../hooks/useCourseMutation";
 import { Pagination } from "@/shared/components";
+import { Plus } from "lucide-react";
 
 export default function CourseManagement() {
   const { query, setQuery, resetQuery } = useCourseQuery();
@@ -78,27 +79,16 @@ export default function CourseManagement() {
         title="Course Management"
         subtitle="Manage courses, sessions and lecturers."
         action={
-          <button
+          <Button
+            type="button"
+            size="lg"
+            fullWidth
+            className="sm:w-auto"
             onClick={openCreateCourse}
-            className="flex
-        w-full
-        cursor-pointer
-        items-center
-        justify-center
-        gap-2
-        rounded-xl
-        bg-blue-600
-        px-5
-        py-3
-        text-sm
-        font-semibold
-        text-white
-        transition
-        hover:bg-blue-700
-        sm:w-auto"
+            leftIcon={<Plus size={18} />}
           >
             Create Course
-          </button>
+          </Button>
         }
       />
 
@@ -106,7 +96,19 @@ export default function CourseManagement() {
 
       {showEmptyState && <EmptyCourseState onCreate={openCreateCourse} />}
 
-      {showNoResults && <button onClick={resetQuery}>Clear Filters</button>}
+      {showNoResults && (
+        <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-5 py-15 text-center sm:py-20">
+          <h3 className="text-lg font-semibold text-gray-900">
+            No courses found
+          </h3>
+          <p className="mt-2 text-sm text-gray-500">
+            Try changing your search or filters.
+          </p>
+          <Button size="sm" className="mt-6" onClick={resetQuery}>
+            Clear Filters
+          </Button>
+        </div>
+      )}
 
       {!showEmptyState && !showNoResults && (
         <>

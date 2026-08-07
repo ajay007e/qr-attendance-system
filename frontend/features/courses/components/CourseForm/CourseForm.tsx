@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 
-import { FormError, FormInput, SubmitButton, CustomDropdown } from "@/shared";
+import { FormError, FormInput, CustomDropdown, Button } from "@/shared";
 
 import { AppError } from "@/shared/errors/AppError";
 
@@ -148,9 +148,15 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
           />
         </div>
 
-        <SubmitButton disabled={loading}>
+        <Button
+          type="submit"
+          size="lg"
+          fullWidth
+          loading={loading}
+          className="mt-2"
+        >
           {loading ? "Creating Course..." : "Create Course"}
-        </SubmitButton>
+        </Button>
       </fieldset>
     </form>
   );

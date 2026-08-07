@@ -3,10 +3,10 @@
 import { FormEvent, useState } from "react";
 import { AppError } from "@/shared/errors/AppError";
 import {
+  Button,
   CustomDropdown,
   FormError,
   FormInput,
-  SubmitButton,
   UI_USER_ROLE_OPTIONS,
 } from "@/shared";
 import { DetailsFormProps } from "../../types";
@@ -90,9 +90,9 @@ export function DetailsForm({ user, onSubmit }: DetailsFormProps) {
             options={UI_USER_ROLE_OPTIONS}
           />
         </div>
-        <SubmitButton disabled={loading}>
+        <Button type="submit" fullWidth loading={loading}>
           {loading ? "Saving Changes..." : "Save Changes"}
-        </SubmitButton>
+        </Button>
       </fieldset>
     </form>
   );
