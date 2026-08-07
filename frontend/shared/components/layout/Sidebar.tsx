@@ -96,7 +96,7 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
 
             <button
               onClick={logout}
-              className="flex w-full items-center gap-3 px-4 py-3 text-sm text-red-600 transition-colors hover:bg-red-50"
+              className="flex w-full items-center gap-3 px-4 py-3 text-sm text-red-600 transition-colors hover:bg-red-50 cursor-pointer"
             >
               <LogOut size={18} />
               Logout
@@ -106,7 +106,7 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
 
         <button
           onClick={() => setOpen((prev) => !prev)}
-          className="flex w-full items-center justify-between rounded-xl bg-gray-50 px-4 py-3 transition hover:bg-gray-100"
+          className="flex w-full items-center justify-between rounded-xl bg-gray-50 px-4 py-3 transition hover:bg-gray-100 cursor-pointer"
         >
           <div className="flex min-w-0 items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-semibold text-blue-600">

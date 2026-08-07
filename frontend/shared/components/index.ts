@@ -10,11 +10,13 @@ export { default as Sidebar } from "./layout/Sidebar";
 export { default as DashboardShell } from "./layout/DashboardShell";
 export { default as AdminPageHeader } from "./layout/AdminPageHeader";
 
-export { default as Button } from "./ui/Button";
+export { default as Button } from "./ui/button";
 export { default as Modal } from "./ui/Modal";
 export { default as Badge } from "./ui/Badge";
 export { default as FormInput } from "./ui/FormInput";
 export { default as PageLoader } from "./ui/PageLoader";
 export { default as CustomDropdown } from "./ui/CustomDropdown";
+
+export { default as Field } from "./form/field";
 
 export { default as Pagination } from "./navigation/pagination/Pagination";

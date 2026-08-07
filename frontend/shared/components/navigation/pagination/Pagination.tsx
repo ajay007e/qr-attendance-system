@@ -7,7 +7,7 @@ import {
   PAGINATION_DESKTOP_BUTTON_CLASS_NAME,
   PAGINATION_MOBILE_BUTTON_CLASS_NAME,
 } from "./pagination.constants";
-import Button from "../../ui/Button";
+import { Button } from "@/shared";
 
 interface PaginationProps {
   total: number;

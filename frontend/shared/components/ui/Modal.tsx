@@ -3,7 +3,7 @@
 import { X } from "lucide-react";
 import { useEffect } from "react";
 import { ModalProps } from "./types";
-import Button from "./Button";
+import { Button } from "@/shared";
 
 export default function Modal({
   open,

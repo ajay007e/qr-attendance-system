@@ -1,6 +1,6 @@
 "use client";
 
-import Button from "../ui/Button";
+import { Button } from "@/shared";
 import { ErrorFallbackProps } from "./types";
 import { RefreshCw } from "lucide-react";
 
