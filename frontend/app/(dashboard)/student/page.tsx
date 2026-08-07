@@ -1,109 +1,82 @@
-import PageHeader from "@/shared/components/layout/AdminPageHeader";
-import { GraduationCap } from "lucide-react";
+"use client";
+
+import { AdminPageHeader, ComingSoon, ErrorFallback, PageLoader } from "@/shared";
+import { CourseCard, useEnrolledCourses } from "@/features/enrolments";
 
 export default function StudentDashboardPage() {
+  const { courses, loading, error, refresh } = useEnrolledCourses();
+
   return (
-    <div
-      className="
-        mx-auto
-        w-full
-        max-w-7xl
-        space-y-5
-        sm:space-y-6
-      "
-    >
-      <PageHeader
+    <div className="mx-auto w-full max-w-7xl space-y-5 sm:space-y-6">
+      <AdminPageHeader
         title="Student Dashboard"
-        subtitle="View your courses, attendance records, and academic progress."
+        subtitle="View your enrolled courses and stay up to date with your studies."
       />
 
-      <section>
-        <StudentDashboardComingSoon />
+      <section className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Enrolled Courses
+          </h2>
+
+          {!loading && !error && courses.length > 0 && (
+            <span className="text-sm text-gray-500">
+              {courses.length} course{courses.length === 1 ? "" : "s"}
+            </span>
+          )}
+        </div>
+
+        {loading ? (
+          <PageLoader message="Loading your courses..." />
+        ) : error ? (
+          <ErrorFallback
+            title="Could not load your courses"
+            error={error}
+            onRetry={refresh}
+          />
+        ) : courses.length === 0 ? (
+          <div
+            className="
+              rounded-2xl
+              border
+              border-dashed
+              border-gray-300
+              bg-white
+              px-6
+              py-12
+              text-center
+            "
+          >
+            <p className="text-sm text-gray-600">
+              You are not enrolled in any courses yet.
+            </p>
+
+            <p className="mt-1 text-sm text-gray-500">
+              Head to the Enrollment tab to browse and enrol in courses.
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-4">
+            {courses.map((course) => (
+              <CourseCard key={course.id} course={course} />
+            ))}
+          </div>
+        )}
       </section>
-    </div>
-  );
-}
 
-function StudentDashboardComingSoon() {
-  return (
-    <div
-      className="
-        flex
-        min-h-[240px]
-        flex-col
-        items-center
-        justify-center
-        rounded-2xl
-        border
-        border-dashed
-        border-gray-300
-        bg-white
-        px-5
-        py-8
-        text-center
-        sm:min-h-[320px]
-        sm:px-6
-      "
-    >
-      <div
-        className="
-          flex
-          h-12
-          w-12
-          items-center
-          justify-center
-          rounded-full
-          bg-blue-50
-          text-blue-600
-          sm:h-14
-          sm:w-14
-        "
-      >
-        <GraduationCap size={24} className="sm:h-7 sm:w-7" />
-      </div>
+      <section className="grid gap-4 lg:grid-cols-2">
+        <ComingSoon
+          title="Timeline Coming Soon"
+          message="Your upcoming classes and attendance sessions will appear here."
+          size="sm"
+        />
 
-      <h2
-        className="
-          mt-4
-          text-lg
-          font-semibold
-          text-gray-900
-          sm:mt-5
-          sm:text-xl
-        "
-      >
-        Student Dashboard Coming Soon
-      </h2>
-
-      <p
-        className="
-          mt-2
-          max-w-lg
-          text-sm
-          leading-6
-          text-gray-500
-        "
-      >
-        Soon you'll be able to view your enrolled courses, track your
-        attendance, check attendance history, and stay up to date with your
-        academic progress from a single dashboard.
-      </p>
-
-      <span
-        className="
-          mt-4
-          rounded-full
-          bg-blue-50
-          px-4
-          py-1.5
-          text-xs
-          font-medium
-          text-blue-600
-          sm:mt-5
-        "
-      >
-        Under Development
-      </span>
+        <ComingSoon
+          title="Calendar Coming Soon"
+          message="A calendar view of your schedule is on the way."
+          size="sm"
+        />
+      </section>
     </div>
   );
 }

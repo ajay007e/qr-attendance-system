@@ -31,8 +31,12 @@ export const menus = {
       href: "/student",
     },
     {
-      title: "My Attendance",
-      href: "/student/attendance",
+      title: "Enrollment",
+      href: "/student/enrollment",
+    },
+    {
+      title: "Calendar",
+      href: "/student/calendar",
     },
   ],
 };

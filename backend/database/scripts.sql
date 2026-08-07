@@ -111,3 +111,28 @@ CREATE TABLE IF NOT EXISTS course_lecturers (
     INDEX idx_course_lecturers_role (role),
     INDEX idx_course_lecturers_course_role (course_id, role)
 );
+
+-- ==========================================================
+-- Course Enrolments
+-- ==========================================================
+
+CREATE TABLE IF NOT EXISTS course_enrolments (
+    course_id BIGINT UNSIGNED NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (course_id, user_id),
+
+    CONSTRAINT fk_course_enrolments_course
+        FOREIGN KEY (course_id)
+        REFERENCES courses(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_course_enrolments_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    INDEX idx_course_enrolments_user (user_id)
+);
