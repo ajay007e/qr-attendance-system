@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/features/auth";
@@ -16,6 +17,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState("");
@@ -25,13 +27,12 @@ export default function LoginPage() {
     password?: string;
   }>({});
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
 
     if (loading) return;
 
     setError("");
-
     setFieldErrors({});
 
     try {
@@ -49,15 +50,12 @@ export default function LoginPage() {
             return;
 
           case "VALIDATION":
-            if (err.details) {
-              setFieldErrors(
-                err.details as {
-                  email?: string;
-                  password?: string;
-                },
-              );
-            }
-
+            setFieldErrors(
+              err.details as {
+                email?: string;
+                password?: string;
+              },
+            );
             return;
         }
       }
@@ -69,209 +67,287 @@ export default function LoginPage() {
   }
 
   return (
-    <div
+    <main
       className="
-        w-full
-        max-w-md
-        rounded-2xl
-        border
-        border-gray-200
-        bg-white
-        p-6
-        shadow-lg
-        sm:p-8
+        flex
+        min-h-screen
+        items-center
+        justify-center
+        bg-slate-50
+        px-4
+        py-10
       "
     >
-      <div className="mb-8">
-        <h1
-          className="
-            text-2xl
-            font-bold
-            tracking-tight
-            text-gray-900
-            sm:text-3xl
-          "
-        >
-          Sign In
-        </h1>
+      <div
+        className="
+          w-full
+          max-w-md
 
-        <p
-          className="
-            mt-2
-            text-sm
-            text-gray-600
-          "
-        >
-          University Attendance Management System
-        </p>
+          rounded-2xl
+          border
+          border-slate-200
+          bg-white
+
+          p-6
+          shadow-sm
+
+          sm:max-w-lg
+          sm:p-10
+
+          lg:max-w-xl
+        "
+      >
+        {/* Header */}
+
+        <div className="mb-10">
+          <h1
+            className="
+              text-3xl
+              font-semibold
+              tracking-tight
+              text-slate-900
+            "
+          >
+            Welcome back
+          </h1>
+
+          <p
+            className="
+              mt-2
+              text-sm
+              text-slate-500
+            "
+          >
+            Sign in to manage your university attendance system.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6" aria-busy={loading}>
+          {error && <FormError message={error} />}
+
+          {/* Email */}
+
+          <div>
+            <label
+              htmlFor="email"
+              className="
+                mb-2
+                block
+                text-sm
+                font-medium
+                text-slate-700
+              "
+            >
+              Email address
+            </label>
+
+            <div className="relative">
+              <Mail
+                size={18}
+                className="
+                  absolute
+                  left-4
+                  top-1/2
+                  -translate-y-1/2
+                  text-slate-400
+                "
+              />
+
+              <input
+                id="email"
+                type="email"
+                required
+                disabled={loading}
+                autoFocus
+                autoComplete="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+
+                  setFieldErrors((prev) => ({
+                    ...prev,
+                    email: undefined,
+                  }));
+                }}
+                className="
+                  h-12
+                  w-full
+
+                  rounded-xl
+                  border
+                  border-slate-300
+
+                  bg-white
+
+                  pl-11
+                  pr-4
+
+                  text-sm
+                  text-slate-900
+
+                  outline-none
+                  transition
+
+                  placeholder:text-slate-400
+
+                  focus:border-blue-600
+                  focus:ring-4
+                  focus:ring-blue-100
+
+                  disabled:opacity-60
+                "
+              />
+            </div>
+
+            {fieldErrors.email && (
+              <p className="mt-2 text-sm text-red-600">{fieldErrors.email}</p>
+            )}
+          </div>
+
+          {/* Password */}
+
+          <div>
+            <label
+              htmlFor="password"
+              className="
+                mb-2
+                block
+                text-sm
+                font-medium
+                text-slate-700
+              "
+            >
+              Password
+            </label>
+
+            <div className="relative">
+              <Lock
+                size={18}
+                className="
+                  absolute
+                  left-4
+                  top-1/2
+                  -translate-y-1/2
+                  text-slate-400
+                "
+              />
+
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                required
+                disabled={loading}
+                autoComplete="current-password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+
+                  setFieldErrors((prev) => ({
+                    ...prev,
+                    password: undefined,
+                  }));
+                }}
+                className="
+                  h-12
+                  w-full
+
+                  rounded-xl
+                  border
+                  border-slate-300
+
+                  pl-11
+                  pr-12
+
+                  text-sm
+                  text-slate-900
+
+                  outline-none
+                  transition
+
+                  placeholder:text-slate-400
+
+                  focus:border-blue-600
+                  focus:ring-4
+                  focus:ring-blue-100
+
+                  disabled:opacity-60
+                "
+              />
+
+              <button
+                type="button"
+                disabled={loading}
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="
+                  absolute
+                  right-3
+                  top-1/2
+                  -translate-y-1/2
+
+                  rounded-lg
+                  p-2
+
+                  text-slate-400
+
+                  transition
+
+                  hover:bg-slate-100
+                  hover:text-slate-600
+                "
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+
+            {fieldErrors.password && (
+              <p className="mt-2 text-sm text-red-600">
+                {fieldErrors.password}
+              </p>
+            )}
+          </div>
+
+          {/* Button */}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="
+              flex
+              h-12
+              w-full
+
+              items-center
+              justify-center
+              gap-2
+
+              rounded-xl
+
+              bg-blue-600
+
+              text-sm
+              font-semibold
+              text-white
+
+              transition
+
+              hover:bg-blue-700
+
+              focus:outline-none
+              focus:ring-4
+              focus:ring-blue-200
+
+              disabled:cursor-not-allowed
+              disabled:opacity-60
+            "
+          >
+            {loading && <Loader2 size={18} className="animate-spin" />}
+
+            {loading ? "Signing in..." : "Sign in"}
+          </button>
+        </form>
       </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6" aria-busy={loading}>
-        {error && <FormError message={error} />}
-
-        <div>
-          <label
-            htmlFor="email"
-            className="
-              mb-2
-              block
-              text-sm
-              font-medium
-              text-gray-700
-            "
-          >
-            Email Address
-          </label>
-
-          <input
-            id="email"
-            type="email"
-            autoFocus
-            required
-            disabled={loading}
-            autoComplete="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-
-              setFieldErrors((prev) => ({
-                ...prev,
-                email: undefined,
-              }));
-            }}
-            className="
-              w-full
-              rounded-xl
-              border
-              border-gray-300
-              bg-white
-              px-4
-              py-3
-              text-gray-900
-              placeholder:text-gray-400
-              shadow-sm
-              outline-none
-              transition-all
-
-              focus:border-blue-600
-              focus:ring-4
-              focus:ring-blue-100
-
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-            "
-          />
-
-          {fieldErrors.email && (
-            <p
-              className="
-                mt-2
-                text-sm
-                text-red-600
-              "
-            >
-              {fieldErrors.email}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <label
-            htmlFor="password"
-            className="
-              mb-2
-              block
-              text-sm
-              font-medium
-              text-gray-700
-            "
-          >
-            Password
-          </label>
-
-          <input
-            id="password"
-            type="password"
-            required
-            disabled={loading}
-            autoComplete="current-password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-
-              setFieldErrors((prev) => ({
-                ...prev,
-                password: undefined,
-              }));
-            }}
-            className="
-              w-full
-              rounded-xl
-              border
-              border-gray-300
-              bg-white
-              px-4
-              py-3
-              text-gray-900
-              placeholder:text-gray-400
-              shadow-sm
-              outline-none
-              transition-all
-
-              focus:border-blue-600
-              focus:ring-4
-              focus:ring-blue-100
-
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-            "
-          />
-
-          {fieldErrors.password && (
-            <p
-              className="
-                mt-2
-                text-sm
-                text-red-600
-              "
-            >
-              {fieldErrors.password}
-            </p>
-          )}
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          aria-disabled={loading}
-          className="
-            mt-2
-            w-full
-            rounded-xl
-            bg-blue-600
-            px-4
-            py-3
-            text-sm
-            font-semibold
-            text-white
-            shadow-sm
-            transition-colors
-
-            hover:bg-blue-700
-
-            focus:outline-none
-            focus:ring-4
-            focus:ring-blue-200
-
-            disabled:cursor-not-allowed
-            disabled:opacity-60
-          "
-        >
-          {loading ? "Signing In..." : "Sign In"}
-        </button>
-      </form>
-    </div>
+    </main>
   );
 }

@@ -48,10 +48,6 @@ export default function CourseTable({ courses, onEdit }: CourseTableProps) {
                 </th>
 
                 <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Lecturers
-                </th>
-
-                <th className="px-6 py-4 text-left text-sm font-semibold">
                   Status
                 </th>
 

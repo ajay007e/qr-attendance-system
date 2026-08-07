@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Loader2, Search, Trash2, UserPlus, X } from "lucide-react";
 
-import { Badge, CustomDropdown } from "@/shared";
+import { Badge, CustomDropdown, FormError } from "@/shared";
+import { AppError } from "@/shared/errors/AppError";
 
 import { LECTURER_ROLE_OPTIONS } from "../../constants";
 import { useCourseLecturers } from "../../hooks/useCourseLecturers";
@@ -13,6 +14,7 @@ import type {
   LecturerSearchResult,
   LecturerTabProps,
 } from "../../types";
+
 import { useLecturerSearch } from "@/features/users";
 
 export function LecturersTab({ course }: LecturerTabProps) {
@@ -31,8 +33,12 @@ export function LecturersTab({ course }: LecturerTabProps) {
 
   const [open, setOpen] = useState(false);
 
+  const [error, setError] = useState("");
+
   function selectLecturer(lecturer: LecturerSearchResult) {
     setSelectedLecturer(lecturer);
+
+    setError("");
 
     setQuery("");
 
@@ -40,7 +46,15 @@ export function LecturersTab({ course }: LecturerTabProps) {
   }
 
   async function assignLecturer() {
-    if (!selectedLecturer || !selectedRole) {
+    setError("");
+
+    if (!selectedLecturer) {
+      setError("Please select a lecturer.");
+      return;
+    }
+
+    if (!selectedRole) {
+      setError("Please select a lecturer role.");
       return;
     }
 
@@ -49,25 +63,47 @@ export function LecturersTab({ course }: LecturerTabProps) {
     );
 
     if (exists) {
+      setError("This lecturer is already assigned to this course.");
       return;
     }
 
-    await assignCourseLecturer({
-      userId: selectedLecturer.id,
-      role: selectedRole,
-    });
+    try {
+      await assignCourseLecturer({
+        userId: selectedLecturer.id,
+        role: selectedRole,
+      });
 
-    setSelectedLecturer(null);
+      setSelectedLecturer(null);
+      setSelectedRole("");
+    } catch (err) {
+      console.error(err);
 
-    setSelectedRole("");
+      if (err instanceof AppError) {
+        setError(err.message);
+      } else {
+        setError("Unable to assign lecturer. Please try again.");
+      }
+    }
   }
 
   async function removeLecturer(id: number) {
-    await removeCourseLecturer(id);
+    try {
+      setError("");
+
+      await removeCourseLecturer(id);
+    } catch (err) {
+      console.error(err);
+
+      if (err instanceof AppError) {
+        setError(err.message);
+      } else {
+        setError("Unable to remove lecturer. Please try again.");
+      }
+    }
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <section
         className="
           rounded-xl
@@ -75,10 +111,11 @@ export function LecturersTab({ course }: LecturerTabProps) {
           border-gray-200
           bg-white
           p-4
+
           sm:p-5
         "
       >
-        <div className="mb-5">
+        <div>
           <h2
             className="
               text-lg
@@ -98,10 +135,16 @@ export function LecturersTab({ course }: LecturerTabProps) {
           >
             Search and assign lecturers to this course.
           </p>
+
+          {error && (
+            <div className="mt-4">
+              <FormError message={error} />
+            </div>
+          )}
         </div>
 
         {!selectedLecturer && (
-          <div className="relative">
+          <div className="relative mt-5">
             <label
               className="
                 mb-2
@@ -138,7 +181,6 @@ export function LecturersTab({ course }: LecturerTabProps) {
                 onFocus={() => setOpen(true)}
                 onChange={(event) => {
                   setQuery(event.target.value);
-
                   setOpen(true);
                 }}
                 placeholder="Search by name or email"
@@ -192,7 +234,6 @@ export function LecturersTab({ course }: LecturerTabProps) {
                       px-4
                       py-3
                       text-left
-                      transition
                       hover:bg-blue-50
                     "
                   >
@@ -201,7 +242,6 @@ export function LecturersTab({ course }: LecturerTabProps) {
                         flex
                         h-10
                         w-10
-                        shrink-0
                         items-center
                         justify-center
                         rounded-full
@@ -211,29 +251,15 @@ export function LecturersTab({ course }: LecturerTabProps) {
                       "
                     >
                       {lecturer.first_name[0]}
-
                       {lecturer.last_name?.[0]}
                     </div>
 
                     <div className="min-w-0">
-                      <p
-                        className="
-                          truncate
-                          text-sm
-                          font-medium
-                          text-gray-900
-                        "
-                      >
+                      <p className="truncate text-sm font-medium text-gray-900">
                         {lecturer.first_name} {lecturer.last_name}
                       </p>
 
-                      <p
-                        className="
-                          truncate
-                          text-sm
-                          text-gray-600
-                        "
-                      >
+                      <p className="truncate text-sm text-gray-600">
                         {lecturer.email}
                       </p>
                     </div>
@@ -247,10 +273,10 @@ export function LecturersTab({ course }: LecturerTabProps) {
         {selectedLecturer && (
           <div
             className="
+              mt-5
               flex
               items-start
               justify-between
-              gap-3
               rounded-xl
               border
               border-blue-200
@@ -258,37 +284,18 @@ export function LecturersTab({ course }: LecturerTabProps) {
               p-4
             "
           >
-            <div className="min-w-0">
-              <p
-                className="
-                  truncate
-                  font-semibold
-                  text-gray-900
-                "
-              >
+            <div>
+              <p className="font-semibold text-gray-900">
                 {selectedLecturer.first_name} {selectedLecturer.last_name}
               </p>
 
-              <p
-                className="
-                  truncate
-                  text-sm
-                  text-gray-600
-                "
-              >
-                {selectedLecturer.email}
-              </p>
+              <p className="text-sm text-gray-600">{selectedLecturer.email}</p>
             </div>
 
             <button
               type="button"
               onClick={() => setSelectedLecturer(null)}
-              className="
-                rounded-lg
-                p-2
-                text-gray-600
-                hover:bg-blue-100
-              "
+              className="rounded-lg p-2 hover:bg-blue-100"
             >
               <X size={18} />
             </button>
@@ -296,22 +303,17 @@ export function LecturersTab({ course }: LecturerTabProps) {
         )}
 
         <div className="mt-5">
-          <label
-            className="
-              mb-2
-              block
-              text-sm
-              font-medium
-              text-gray-700
-            "
-          >
+          <label className="mb-2 block text-sm font-medium text-gray-700">
             Lecturer Role
           </label>
 
           <CustomDropdown
             value={selectedRole}
             options={LECTURER_ROLE_OPTIONS}
-            onChange={(value) => setSelectedRole(value as LecturerRole)}
+            onChange={(value) => {
+              setSelectedRole(value as LecturerRole);
+              setError("");
+            }}
             placeholder="Select lecturer role"
           />
         </div>
@@ -332,7 +334,6 @@ export function LecturersTab({ course }: LecturerTabProps) {
             py-3
             font-medium
             text-white
-            transition
             hover:bg-blue-700
             disabled:cursor-not-allowed
             disabled:opacity-50
@@ -345,42 +346,41 @@ export function LecturersTab({ course }: LecturerTabProps) {
           Assign Lecturer
         </button>
       </section>
-
       <section
         className="
-          overflow-hidden
-          rounded-xl
-          border
-          border-gray-200
-          bg-white
-        "
+      overflow-hidden
+      rounded-xl
+      border
+      border-gray-200
+      bg-white
+    "
       >
         <div
           className="
-            border-b
-            border-gray-200
-            px-4
-            py-4
+        border-b
+        border-gray-200
+        px-4
+        py-4
 
-            sm:px-5
-          "
+        sm:px-5
+      "
         >
           <h2
             className="
-              text-lg
-              font-semibold
-              text-gray-900
-            "
+          text-lg
+          font-semibold
+          text-gray-900
+        "
           >
             Assigned Lecturers
           </h2>
 
           <p
             className="
-              mt-1
-              text-sm
-              text-gray-600
-            "
+          mt-1
+          text-sm
+          text-gray-600
+        "
           >
             Lecturers currently assigned to this course.
           </p>
@@ -388,50 +388,50 @@ export function LecturersTab({ course }: LecturerTabProps) {
 
         <div
           className="
-            max-h-[340px]
-            divide-y
-            divide-gray-200
-            overflow-y-auto
-          "
+        max-h-[340px]
+        divide-y
+        divide-gray-200
+        overflow-y-auto
+      "
         >
           {assignedLecturers.map((lecturer) => (
             <div
               key={lecturer.id}
               className="
-                flex
-                flex-col
-                gap-3
-                px-4
-                py-4
+            flex
+            flex-col
+            gap-3
+            px-4
+            py-4
 
-                sm:flex-row
-                sm:items-center
-                sm:justify-between
+            sm:flex-row
+            sm:items-center
+            sm:justify-between
 
-                sm:px-5
-              "
+            sm:px-5
+          "
             >
               <div
                 className="
-                  flex
-                  min-w-0
-                  items-center
-                  gap-3
-                "
+              flex
+              min-w-0
+              items-center
+              gap-3
+            "
               >
                 <div
                   className="
-                    flex
-                    h-10
-                    w-10
-                    shrink-0
-                    items-center
-                    justify-center
-                    rounded-full
-                    bg-gray-100
-                    font-semibold
-                    text-gray-700
-                  "
+                flex
+                h-10
+                w-10
+                shrink-0
+                items-center
+                justify-center
+                rounded-full
+                bg-gray-100
+                font-semibold
+                text-gray-700
+              "
                 >
                   {lecturer.first_name[0]}
 
@@ -441,20 +441,20 @@ export function LecturersTab({ course }: LecturerTabProps) {
                 <div className="min-w-0">
                   <p
                     className="
-                      truncate
-                      font-semibold
-                      text-gray-900
-                    "
+                  truncate
+                  font-semibold
+                  text-gray-900
+                "
                   >
                     {lecturer.first_name} {lecturer.last_name}
                   </p>
 
                   <p
                     className="
-                      truncate
-                      text-sm
-                      text-gray-600
-                    "
+                  truncate
+                  text-sm
+                  text-gray-600
+                "
                   >
                     {lecturer.email}
                   </p>
@@ -463,13 +463,13 @@ export function LecturersTab({ course }: LecturerTabProps) {
 
               <div
                 className="
-                  flex
-                  items-center
-                  justify-between
-                  gap-3
+              flex
+              items-center
+              justify-between
+              gap-3
 
-                  sm:justify-end
-                "
+              sm:justify-end
+            "
               >
                 <Badge variant="blue">{lecturer.role}</Badge>
 
@@ -477,12 +477,12 @@ export function LecturersTab({ course }: LecturerTabProps) {
                   type="button"
                   onClick={() => removeLecturer(lecturer.id)}
                   className="
-                    rounded-lg
-                    p-2
-                    text-red-600
-                    transition
-                    hover:bg-red-50
-                  "
+                rounded-lg
+                p-2
+                text-red-600
+                transition
+                hover:bg-red-50
+              "
                 >
                   <Trash2 size={18} />
                 </button>
@@ -493,12 +493,12 @@ export function LecturersTab({ course }: LecturerTabProps) {
           {!assignedLecturers.length && (
             <div
               className="
-                px-5
-                py-8
-                text-center
-                text-sm
-                text-gray-600
-              "
+            px-5
+            py-8
+            text-center
+            text-sm
+            text-gray-600
+          "
             >
               No lecturers assigned.
             </div>

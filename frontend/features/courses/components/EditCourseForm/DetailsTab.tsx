@@ -70,6 +70,7 @@ export function DetailsTab({ course, onSubmit }: DetailsTabProps) {
           <FormInput
             label="Course Code"
             required
+            placeholder="Enter course code"
             value={courseCode}
             onChange={setCourseCode}
           />
@@ -78,6 +79,7 @@ export function DetailsTab({ course, onSubmit }: DetailsTabProps) {
             label="Credits"
             type="number"
             required
+            placeholder="Enter credits"
             min={1}
             value={credits}
             onChange={setCredits}
@@ -86,6 +88,7 @@ export function DetailsTab({ course, onSubmit }: DetailsTabProps) {
 
         <FormInput
           label="Course Name"
+          placeholder="Enter course name"
           required
           value={courseName}
           onChange={setCourseName}
@@ -99,6 +102,7 @@ export function DetailsTab({ course, onSubmit }: DetailsTabProps) {
           <textarea
             value={description}
             onChange={(event) => setDescription(event.target.value)}
+            placeholder="Enter course description"
             rows={4}
             className="
               w-full
@@ -128,6 +132,7 @@ export function DetailsTab({ course, onSubmit }: DetailsTabProps) {
             value={session}
             onChange={(value) => setSession(value as CourseSession)}
             options={COURSE_SESSION_FILTER_OPTIONS}
+            placeholder="Select course session"
           />
         </div>
 

@@ -91,22 +91,20 @@ export default function UserToolbar({
             lg:flex-nowrap
           "
         >
-          <div className="flex flex-1 gap-3">
-            <div className="min-w-0 flex-1">
-              <CustomDropdown
-                value={filters.role}
-                onChange={(value) => updateFilter("role", value)}
-                options={USER_ROLE_FILTER_OPTIONS}
-              />
-            </div>
+          <div className="min-w-[180px]">
+            <CustomDropdown
+              value={filters.role}
+              onChange={(value) => updateFilter("role", value)}
+              options={USER_ROLE_FILTER_OPTIONS}
+            />
+          </div>
 
-            <div className="min-w-0 flex-1">
-              <CustomDropdown
-                value={filters.status}
-                onChange={(value) => updateFilter("status", value)}
-                options={USER_STATUS_FILTER_OPTIONS}
-              />
-            </div>
+          <div className="min-w-[180px]">
+            <CustomDropdown
+              value={filters.status}
+              onChange={(value) => updateFilter("status", value)}
+              options={USER_STATUS_FILTER_OPTIONS}
+            />
           </div>
         </div>
       </div>

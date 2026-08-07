@@ -80,7 +80,22 @@ export default function CourseManagement() {
         action={
           <button
             onClick={openCreateCourse}
-            className="rounded-xl bg-blue-600 px-5 py-3 text-white"
+            className="flex
+        w-full
+        cursor-pointer
+        items-center
+        justify-center
+        gap-2
+        rounded-xl
+        bg-blue-600
+        px-5
+        py-3
+        text-sm
+        font-semibold
+        text-white
+        transition
+        hover:bg-blue-700
+        sm:w-auto"
           >
             Create Course
           </button>

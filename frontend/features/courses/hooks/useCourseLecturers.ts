@@ -43,6 +43,7 @@ export function useCourseLecturers(courseId: number) {
 
   const assignLecturer = async (data: AssignLecturerRequest) => {
     try {
+      console.log(data);
       setAssigning(true);
 
       setError(null);
@@ -51,6 +52,7 @@ export function useCourseLecturers(courseId: number) {
 
       await loadLecturers();
     } catch (error) {
+      console.log(error);
       handleError(error);
 
       throw error;

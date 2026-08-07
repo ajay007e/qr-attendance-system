@@ -35,8 +35,6 @@ export function CourseTableRow({ course, onEdit }: CourseActionProps) {
         {formatSession(course.session)}
       </td>
 
-      <td className="px-6 py-4 text-sm text-gray-600">No lecturers</td>
-
       <td className="px-6 py-4">
         <Badge variant={course.is_active ? "green" : "red"}>
           {course.is_active ? "Active" : "Inactive"}
