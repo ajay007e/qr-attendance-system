@@ -1,7 +1,7 @@
-import { COURSE_TABS } from "./constants";
-import { CourseEditTab, CourseTabsProps } from "./types";
+import { COURSE_TABS } from "../../constants";
+import { CourseEditTab, CourseTabsProp } from "../../types";
 
-export function Tabs({ activeTab, onChange }: CourseTabsProps) {
+export function Tabs({ activeTab, onChange }: CourseTabsProp) {
   return (
     <div className="flex rounded-xl bg-gray-100 p-1">
       {COURSE_TABS.map((tab) => {

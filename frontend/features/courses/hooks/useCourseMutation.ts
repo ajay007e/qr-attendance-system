@@ -14,16 +14,17 @@ export function useCourseMutation(refresh: () => Promise<void>) {
   const { handleError } = useError();
   const [loading, setLoading] = useState(false);
 
-  async function execute(callback: () => Promise<void>) {
+  async function execute<T>(callback: () => Promise<T>): Promise<T> {
     try {
       setLoading(true);
 
-      await callback();
+      const result = await callback();
 
       await refresh();
+
+      return result;
     } catch (error) {
       handleError(error);
-
       throw error;
     } finally {
       setLoading(false);

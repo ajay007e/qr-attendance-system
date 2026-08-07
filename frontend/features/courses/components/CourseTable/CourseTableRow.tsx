@@ -1,6 +1,7 @@
 import { Badge, IconButton } from "@/shared";
 import { Pencil } from "lucide-react";
 import { formatSession } from "./course-table.utils";
+import { CourseActionProps } from "../../types";
 
 export function CourseTableRow({ course, onEdit }: CourseActionProps) {
   return (

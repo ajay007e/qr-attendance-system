@@ -12,14 +12,15 @@ import type {
   UserQuery,
 } from "../types";
 
-import { Pagination, DEFAULT_PAGINATION, useError, User } from "@/shared";
+import { PaginationMeta, DEFAULT_PAGINATION, useError, User } from "@/shared";
 
 export default function useUsers(query: UserQuery) {
   const isInitialLoad = useRef(true);
   const { handleError } = useError();
 
   const [users, setUsers] = useState<User[]>([]);
-  const [pagination, setPagination] = useState<Pagination>(DEFAULT_PAGINATION);
+  const [pagination, setPagination] =
+    useState<PaginationMeta>(DEFAULT_PAGINATION);
   const [loading, setLoading] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);

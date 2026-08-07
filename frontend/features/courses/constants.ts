@@ -1,3 +1,4 @@
+import { Option } from "@/shared/components/ui/types";
 import type { CourseSession, LecturerRole } from "./types";
 
 export const COURSE_SESSION_OPTIONS = [
@@ -45,7 +46,7 @@ export const COURSE_SESSION_FILTER_OPTIONS = [
   },
 
   ...COURSE_SESSION_OPTIONS,
-];
+] satisfies readonly Option<CourseSession | "ALL">[];
 
 export const DEFAULT_COURSE_QUERY = {
   page: 1,
@@ -72,7 +73,7 @@ export const COURSE_STATUS_FILTER_OPTIONS = [
     label: "Inactive",
     value: "INACTIVE",
   },
-];
+] satisfies readonly Option<"ALL" | "ACTIVE" | "INACTIVE">[];
 
 export const UI_COURSE_SESSION_OPTIONS = COURSE_SESSION_FILTER_OPTIONS.filter(
   (item) => item.value !== "ALL",
@@ -95,3 +96,18 @@ export const LECTURER_ROLE_OPTIONS = [
   label: string;
   value: LecturerRole;
 }[];
+
+export const COURSE_TABS = [
+  {
+    key: "details",
+    label: "Details",
+  },
+  {
+    key: "lecturers",
+    label: "Lecturers",
+  },
+  {
+    key: "status",
+    label: "Status",
+  },
+] as const;

@@ -5,13 +5,12 @@ import { useEffect, useState } from "react";
 import { useDebounce } from "@/shared";
 
 import { userService } from "../api/user.service";
-
-import type { Lecturer } from "../types";
+import { CourseLecturer } from "@/features/courses";
 
 export default function useLecturerSearch() {
   const [query, setQuery] = useState("");
 
-  const [results, setResults] = useState<Lecturer[]>([]);
+  const [results, setResults] = useState<CourseLecturer[]>([]);
 
   const [loading, setLoading] = useState(false);
 

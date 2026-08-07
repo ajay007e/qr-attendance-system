@@ -6,8 +6,11 @@ import { CustomDropdown, FormError, FormInput, SubmitButton } from "@/shared";
 
 import { AppError } from "@/shared/errors/AppError";
 
-import type { CourseSession, UpdateCourseRequest } from "../../types";
-import type { DetailsTabProps } from "./types";
+import type {
+  CourseSession,
+  UpdateCourseRequest,
+  DetailsTabProps,
+} from "../../types";
 
 import { COURSE_SESSION_FILTER_OPTIONS } from "../../constants";
 

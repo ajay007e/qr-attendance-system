@@ -5,8 +5,8 @@ import { useState } from "react";
 import { FormError } from "@/shared";
 import { AppError } from "@/shared/errors/AppError";
 
-import type { StatusTabProps } from "./types";
 import { useCourseMutation } from "../../hooks/useCourseMutation";
+import { StatusTabProps } from "../../types";
 
 export function StatusTab({ course, refresh, onClose }: StatusTabProps) {
   const { updateStatus, loading } = useCourseMutation(refresh);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Pagination, DEFAULT_PAGINATION, useError } from "@/shared";
+import { PaginationMeta, DEFAULT_PAGINATION, useError } from "@/shared";
 import { CourseService } from "../api/course.service";
 import type { Course, CourseQuery } from "../types";
 
@@ -9,7 +9,8 @@ export function useCourses(query: CourseQuery) {
   const isInitialLoad = useRef(true);
   const { handleError } = useError();
   const [courses, setCourses] = useState<Course[]>([]);
-  const [pagination, setPagination] = useState<Pagination>(DEFAULT_PAGINATION);
+  const [pagination, setPagination] =
+    useState<PaginationMeta>(DEFAULT_PAGINATION);
   const [loading, setLoading] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);

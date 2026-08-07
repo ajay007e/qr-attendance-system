@@ -2,14 +2,13 @@
 
 import { useState } from "react";
 
-import { CourseEditTab, EditCourseFormProps } from "./types";
-
 import { Tabs } from "./Tab";
 import { DetailsTab } from "./DetailsTab";
 import { LecturersTab } from "./LecturerTab";
 import { StatusTab } from "./StatusTab";
 
 import { useCourseMutation } from "../../hooks/useCourseMutation";
+import { CourseEditTab, EditCourseFormProps } from "../../types";
 
 export default function EditCourseForm({
   course,

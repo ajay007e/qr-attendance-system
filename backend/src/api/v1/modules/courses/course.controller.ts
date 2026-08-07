@@ -83,7 +83,6 @@ export class CourseController {
   };
 
   setActive = async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.body);
     try {
       const course = await this.service.setActive(
         Number(req.params.id),

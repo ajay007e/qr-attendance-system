@@ -106,16 +106,6 @@ export interface CourseFormProps {
   onSubmit: (data: CreateCourseRequest) => Promise<void> | void;
 }
 
-export interface EditCourseFormProps {
-  course: Course;
-
-  onUpdate: (
-    data: UpdateCourseRequest & { id: number },
-  ) => Promise<void> | void;
-
-  onStatusChange: (active: boolean) => Promise<void> | void;
-}
-
 export interface LecturerTabProps {
   course: Course;
 }
@@ -151,3 +141,34 @@ export interface LecturerSearchResult {
 }
 
 export type LecturerRole = "PRIMARY" | "SECONDARY" | "TUTOR";
+
+export type CourseEditTab = "details" | "lecturers" | "status";
+
+export interface EditCourseFormProps {
+  course: Course;
+
+  refresh: () => Promise<void>;
+
+  onClose: () => void;
+}
+
+export interface DetailsTabProps {
+  course: Course;
+
+  refresh: () => Promise<void>;
+
+  onSubmit: (data: UpdateCourseRequest) => Promise<void> | void;
+}
+
+export interface StatusTabProps {
+  course: Course;
+
+  refresh: () => Promise<void>;
+
+  onClose: () => void;
+}
+
+export interface CourseTabsProp {
+  activeTab: CourseEditTab;
+  onChange: (tab: CourseEditTab) => void;
+}

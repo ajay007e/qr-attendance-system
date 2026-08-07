@@ -29,9 +29,9 @@ export function validateCreateCourseRequest(data: CreateCourseRequest) {
     throw new AppError("Request body is required", 400);
   }
 
-  const courseCode = data.course_code?.trim().toUpperCase();
+  const courseCode = data.courseCode?.trim().toUpperCase();
 
-  const courseName = data.course_name?.trim();
+  const courseName = data.courseName?.trim();
 
   if (!courseCode) {
     throw new AppError("Course code is required", 400);
@@ -72,12 +72,12 @@ export function validateUpdateCourseRequest(data: UpdateCourseRequest) {
   return {
     ...data,
 
-    ...(data.course_code && {
-      course_code: data.course_code.trim().toUpperCase(),
+    ...(data.courseCode && {
+      course_code: data.courseCode.trim().toUpperCase(),
     }),
 
-    ...(data.course_name && {
-      course_name: data.course_name.trim(),
+    ...(data.courseName && {
+      course_name: data.courseName.trim(),
     }),
   };
 }
