@@ -1,6 +1,6 @@
-import { Pagination } from "../types";
+import { PaginationMeta } from "../types";
 
-export const DEFAULT_PAGINATION: Pagination = {
+export const DEFAULT_PAGINATION: PaginationMeta = {
   page: 1,
   limit: 10,
   count: 0,

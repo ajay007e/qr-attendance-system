@@ -4,7 +4,7 @@ export interface ApiResponse<T> {
   data: T;
 }
 
-export interface Pagination {
+export interface PaginationMeta {
   page: number;
   limit: number;
   count: number;
@@ -17,7 +17,7 @@ export interface Pagination {
 export interface PaginatedResponse<T> {
   success: boolean;
   data: T[];
-  pagination: Pagination;
+  pagination: PaginationMeta;
 }
 
 export interface LoginPayload {

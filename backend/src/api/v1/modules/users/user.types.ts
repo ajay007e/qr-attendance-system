@@ -72,3 +72,8 @@ export interface UserQuery {
   page?: number;
   limit?: number;
 }
+
+export interface LecturerSearchQuery {
+  search?: string;
+  limit?: number;
+}

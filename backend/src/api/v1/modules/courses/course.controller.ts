@@ -2,16 +2,39 @@ import { NextFunction, Request, Response } from "express";
 
 import { CourseService } from "./course.service";
 
+import { CourseQuery } from "./course.types";
+
 export class CourseController {
   constructor(private readonly service: CourseService) {}
 
-  list = async (_req: Request, res: Response, next: NextFunction) => {
+  list = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const courses = await this.service.list();
+      const query: CourseQuery = {
+        page: Number(req.query.page) || 1,
+
+        limit: Number(req.query.limit) || 10,
+
+        search:
+          typeof req.query.search === "string"
+            ? req.query.search.trim()
+            : undefined,
+
+        session:
+          typeof req.query.session === "string"
+            ? (req.query.session as CourseQuery["session"])
+            : undefined,
+
+        status:
+          typeof req.query.status === "string"
+            ? (req.query.status as CourseQuery["status"])
+            : undefined,
+      };
+
+      const result = await this.service.list(query);
 
       res.json({
         success: true,
-        data: courses,
+        ...result,
       });
     } catch (error) {
       next(error);
@@ -91,7 +114,11 @@ export class CourseController {
 
   assignLecturer = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await this.service.assignLecturer(Number(req.params.id), req.body.userId);
+      await this.service.assignLecturer(
+        Number(req.params.id),
+        req.body.userId,
+        req.body.role,
+      );
 
       res.status(201).json({
         success: true,

@@ -7,9 +7,24 @@ import { CourseRepository } from "./course.repository";
 
 import {
   Course,
+  CourseQuery,
   CreateCourseRequest,
   UpdateCourseRequest,
+  PaginatedCourses,
+  CourseLecturerRole,
 } from "./course.types";
+
+const VALID_SESSIONS = [
+  "ANNUAL",
+  "SPRING",
+  "WINTER",
+  "AUTUMN",
+  "TRIMESTER_1",
+  "TRIMESTER_2",
+  "TRIMESTER_3",
+];
+
+const VALID_LECTURER_ROLES = ["PRIMARY", "SECONDARY", "TUTOR"];
 
 export class CourseService {
   constructor(
@@ -21,8 +36,8 @@ export class CourseService {
    * Course CRUD
    * ===================================================== */
 
-  async list(): Promise<Course[]> {
-    return this.repository.findAll();
+  async list(query: CourseQuery): Promise<PaginatedCourses> {
+    return this.repository.findAll(query);
   }
 
   async get(id: number): Promise<Course> {
@@ -44,12 +59,12 @@ export class CourseService {
       throw new AppError("Course name is required", 400);
     }
 
-    if (data.semester < 1 || data.semester > 3) {
-      throw new AppError("Invalid semester", 400);
+    if (!data.credits || data.credits <= 0) {
+      throw new AppError("Invalid credits", 400);
     }
 
-    if (data.year < 2000) {
-      throw new AppError("Invalid year", 400);
+    if (!VALID_SESSIONS.includes(data.session)) {
+      throw new AppError("Invalid course session", 400);
     }
 
     const existing = await this.repository.findByCode(data.courseCode);
@@ -72,6 +87,14 @@ export class CourseService {
 
     if (!data.courseName?.trim()) {
       throw new AppError("Course name is required", 400);
+    }
+
+    if (!data.credits || data.credits <= 0) {
+      throw new AppError("Invalid credits", 400);
+    }
+
+    if (!VALID_SESSIONS.includes(data.session)) {
+      throw new AppError("Invalid course session", 400);
     }
 
     const existing = await this.repository.findByCode(data.courseCode);
@@ -103,8 +126,16 @@ export class CourseService {
     return this.repository.getLecturers(courseId);
   }
 
-  async assignLecturer(courseId: number, userId: number): Promise<void> {
+  async assignLecturer(
+    courseId: number,
+    userId: number,
+    role: CourseLecturerRole,
+  ): Promise<void> {
     await this.get(courseId);
+
+    if (!VALID_LECTURER_ROLES.includes(role)) {
+      throw new AppError("Invalid lecturer role", 400);
+    }
 
     const lecturer = await this.users.findById(userId);
 
@@ -122,7 +153,7 @@ export class CourseService {
       throw new AppError("Lecturer already assigned", 409);
     }
 
-    await this.repository.assignLecturer(courseId, userId);
+    await this.repository.assignLecturer(courseId, userId, role);
   }
 
   async removeLecturer(courseId: number, userId: number): Promise<void> {

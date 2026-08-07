@@ -8,6 +8,7 @@ import {
   User,
   UserQuery,
 } from "./user.types";
+import { Role } from "../../../../utils/constants/roles";
 
 export class UserRepository {
   async findAll(query: UserQuery): Promise<PaginatedUsers> {
@@ -217,5 +218,46 @@ export class UserRepository {
             `,
       [id],
     );
+  }
+
+  async searchLecturers(search?: string, limit = 10): Promise<User[]> {
+    let where = `
+    WHERE role = ?
+    AND is_active = TRUE
+  `;
+
+    const params: ExecuteValues[] = [Role.LECTURER];
+
+    if (search) {
+      where += `
+      AND (
+        first_name LIKE ?
+        OR last_name LIKE ?
+        OR email LIKE ?
+      )
+    `;
+
+      const keyword = `%${search}%`;
+
+      params.push(keyword, keyword, keyword);
+    }
+
+    const [rows] = await db.query<RowDataPacket[]>(
+      `
+    SELECT
+      id,
+      first_name,
+      last_name,
+      email,
+      role
+    FROM users
+    ${where}
+    ORDER BY first_name ASC
+    LIMIT ${limit}
+    `,
+      params,
+    );
+
+    return rows as User[];
   }
 }

@@ -3,11 +3,11 @@
 -- Database Schema
 -- ==========================================
 
-CREATE DATABASE IF NOT EXISTS attendance_system
+CREATE DATABASE IF NOT EXISTS qr_attendance_system
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
 
-USE attendance_system;
+USE qr_attendance_system;
 
 -- ==========================================
 -- Users
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- ==========================================================
 -- Courses
--- ========================================================== */
+-- ==========================================================
 
 CREATE TABLE IF NOT EXISTS courses (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -54,8 +54,18 @@ CREATE TABLE IF NOT EXISTS courses (
 
     description TEXT DEFAULT NULL,
 
-    semester TINYINT UNSIGNED NOT NULL,
-    year SMALLINT UNSIGNED NOT NULL,
+    credits TINYINT UNSIGNED NOT NULL,
+
+    session ENUM(
+        'ANNUAL',
+        'SPRING',
+        'SUMMER',
+        'AUTUMN',
+        'WINTER',
+        'TRIMESTER_1',
+        'TRIMESTER_2',
+        'TRIMESTER_3'
+    ) NOT NULL,
 
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
 
@@ -65,18 +75,23 @@ CREATE TABLE IF NOT EXISTS courses (
 
     INDEX idx_course_code (course_code),
     INDEX idx_course_name (course_name),
-    INDEX idx_semester (semester),
-    INDEX idx_year (year),
+    INDEX idx_session (session),
     INDEX idx_active (is_active)
 );
 
 -- ==========================================================
 -- Course Lecturers
--- ========================================================== */
+-- ==========================================================
 
 CREATE TABLE IF NOT EXISTS course_lecturers (
     course_id BIGINT UNSIGNED NOT NULL,
     user_id BIGINT UNSIGNED NOT NULL,
+
+    role ENUM(
+        'PRIMARY',
+        'SECONDARY',
+        'TUTOR'
+    ) NOT NULL DEFAULT 'PRIMARY',
 
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -92,5 +107,7 @@ CREATE TABLE IF NOT EXISTS course_lecturers (
         REFERENCES users(id)
         ON DELETE CASCADE,
 
-    INDEX idx_course_lecturers_user (user_id)
+    INDEX idx_course_lecturers_user (user_id),
+    INDEX idx_course_lecturers_role (role),
+    INDEX idx_course_lecturers_course_role (course_id, role)
 );
