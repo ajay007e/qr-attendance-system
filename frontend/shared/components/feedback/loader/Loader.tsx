@@ -2,27 +2,13 @@
 
 import { cn } from "@/shared/lib/utils";
 
-import { loaderMessageVariants, loaderSpinnerVariants } from "./loader.styles";
+import { loaderMessageVariants, loaderOverlayVariants, loaderSpinnerVariants, loaderVariants } from "./loader.styles";
 
 import type { LoaderProps } from "./loader.types";
 
-export default function Loader({ size = "md", message, className, ...props }: LoaderProps) {
-  return (
-    <div
-      role="status"
-      aria-live="polite"
-      className={cn(
-        `
-        flex
-        flex-col
-        items-center
-        justify-center
-        gap-3
-        `,
-        className,
-      )}
-      {...props}
-    >
+export default function Loader({ size = "md", message, className, overlay = false, ...props }: LoaderProps) {
+  const loader = (
+    <div role="status" aria-live="polite" className={cn(loaderVariants(), className)} {...props}>
       <div
         className={loaderSpinnerVariants({
           size,
@@ -34,4 +20,10 @@ export default function Loader({ size = "md", message, className, ...props }: Lo
       <span className="sr-only">{message ?? "Loading"}</span>
     </div>
   );
+
+  if (!overlay) {
+    return loader;
+  }
+
+  return <div className={loaderOverlayVariants()}>{loader}</div>;
 }

@@ -5,16 +5,29 @@ import { PaginationMeta, DEFAULT_PAGINATION, useError } from "@/shared";
 import { CourseService } from "../api/course.service";
 import type { Course, CourseQuery } from "../types";
 
+function getQueryKey(query: CourseQuery) {
+  return JSON.stringify({
+    search: query.search,
+    session: query.session,
+    status: query.status,
+    page: query.page,
+    limit: query.limit,
+  });
+}
+
 export function useCourses(query: CourseQuery) {
   const isInitialLoad = useRef(true);
   const { handleError } = useError();
   const [courses, setCourses] = useState<Course[]>([]);
-  const [pagination, setPagination] =
-    useState<PaginationMeta>(DEFAULT_PAGINATION);
+  const [pagination, setPagination] = useState<PaginationMeta>(DEFAULT_PAGINATION);
   const [loading, setLoading] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [loadedQueryKey, setLoadedQueryKey] = useState<string | null>(null);
+
   const loadCourses = useCallback(async () => {
+    const queryKey = getQueryKey(query);
     try {
       if (isInitialLoad.current) {
         setLoading(true);
@@ -25,6 +38,7 @@ export function useCourses(query: CourseQuery) {
       const response = await CourseService.list(query);
       setCourses(response.data ?? []);
       setPagination(response.pagination ?? DEFAULT_PAGINATION);
+      setLoadedQueryKey(queryKey);
     } catch (err) {
       setCourses([]);
       setPagination(DEFAULT_PAGINATION);
@@ -38,11 +52,15 @@ export function useCourses(query: CourseQuery) {
         setIsFetching(false);
       }
     }
-  }, [query, handleError]);
+  }, [query]);
 
   useEffect(() => {
     loadCourses();
   }, [loadCourses]);
+
+  const currentQueryKey = getQueryKey(query);
+
+  const hasLoadedCurrentQuery = loadedQueryKey === currentQueryKey;
 
   return {
     courses,
@@ -53,6 +71,7 @@ export function useCourses(query: CourseQuery) {
 
     error,
 
+    hasLoadedCurrentQuery,
     refresh: loadCourses,
   };
 }

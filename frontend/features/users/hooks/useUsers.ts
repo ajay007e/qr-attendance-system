@@ -14,18 +14,30 @@ import type {
 
 import { PaginationMeta, DEFAULT_PAGINATION, useError, User } from "@/shared";
 
+function getQueryKey(query: UserQuery) {
+  return JSON.stringify({
+    search: query.search,
+    role: query.role,
+    status: query.status,
+    page: query.page,
+    limit: query.limit,
+  });
+}
+
 export default function useUsers(query: UserQuery) {
   const isInitialLoad = useRef(true);
   const { handleError } = useError();
 
   const [users, setUsers] = useState<User[]>([]);
-  const [pagination, setPagination] =
-    useState<PaginationMeta>(DEFAULT_PAGINATION);
+  const [pagination, setPagination] = useState<PaginationMeta>(DEFAULT_PAGINATION);
   const [loading, setLoading] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [loadedQueryKey, setLoadedQueryKey] = useState<string | null>(null);
+
   const loadUsers = useCallback(async () => {
+    const queryKey = getQueryKey(query);
     try {
       if (isInitialLoad.current) {
         setLoading(true);
@@ -36,6 +48,7 @@ export default function useUsers(query: UserQuery) {
       const response = await userService.getUsers(query);
       setUsers(response.data);
       setPagination(response.pagination);
+      setLoadedQueryKey(queryKey);
     } catch (error) {
       setUsers([]);
       setPagination(DEFAULT_PAGINATION);
@@ -82,6 +95,10 @@ export default function useUsers(query: UserQuery) {
     loadUsers();
   }, [loadUsers]);
 
+  const currentQueryKey = getQueryKey(query);
+
+  const hasLoadedCurrentQuery = loadedQueryKey === currentQueryKey;
+
   return {
     users,
     pagination,
@@ -93,5 +110,7 @@ export default function useUsers(query: UserQuery) {
     updateUser,
     changeStatus,
     changePassword,
+
+    hasLoadedCurrentQuery,
   };
 }

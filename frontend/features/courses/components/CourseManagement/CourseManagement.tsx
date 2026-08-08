@@ -27,30 +27,13 @@ import { Plus, BookOpen } from "lucide-react";
 export default function CourseManagement() {
   const { query, setQuery, resetQuery } = useCourseQuery();
 
-  const {
-    showCreateCourse,
-    selectedCourse,
-
-    openCreateCourse,
-    closeCreateCourse,
-
-    openEditCourse,
-    closeEditCourse,
-  } = useCourseModal();
+  const { showCreateCourse, selectedCourse, openCreateCourse, closeCreateCourse, openEditCourse, closeEditCourse } =
+    useCourseModal();
 
   const debouncedQuery = useDebounce(query, 400);
 
-  const {
-    courses,
-    pagination,
-
-    loading,
-    isFetching,
-
-    error,
-
-    refresh,
-  } = useCourses(debouncedQuery);
+  const { courses, pagination, loading, isFetching, error, refresh, hasLoadedCurrentQuery } =
+    useCourses(debouncedQuery);
 
   const { createCourse } = useCourseMutation(refresh);
 
@@ -69,12 +52,14 @@ export default function CourseManagement() {
       />
     );
   }
+  const hasFilters = query.search.trim() !== "" || query.session !== "ALL" || query.status !== "ALL";
 
-  const hasFilters = query.search !== "" || query.session !== "ALL" || query.status !== "ALL";
+  const hasResults = pagination.total > 0;
 
-  const showEmptyState = pagination.total === 0 && !hasFilters;
+  const hasAnyCourses = !hasFilters ? pagination.total > 0 : true;
 
-  const showNoResults = pagination.total === 0 && hasFilters;
+  const showEmptyState = hasLoadedCurrentQuery && !hasAnyCourses;
+  const showNoResults = hasLoadedCurrentQuery && hasAnyCourses && !hasResults;
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-5">
@@ -82,25 +67,25 @@ export default function CourseManagement() {
         title="Course Management"
         subtitle="Manage courses, sessions and lecturers."
         action={
-          <Button
-            type="button"
-            size="lg"
-            fullWidth
-            className="sm:w-auto"
-            onClick={openCreateCourse}
-            leftIcon={<Plus size={18} />}
-          >
-            Create Course
-          </Button>
+          hasAnyCourses ? (
+            <Button
+              type="button"
+              size="lg"
+              fullWidth
+              className="sm:w-auto"
+              onClick={openCreateCourse}
+              leftIcon={<Plus size={18} />}
+            >
+              Create Course
+            </Button>
+          ) : undefined
         }
       />
-
-      <CourseToolbar filters={query} onFiltersChange={setQuery} />
 
       {showEmptyState && (
         <EmptyState
           icon={<BookOpen size={28} />}
-          title="No courses found"
+          title="No courses yet"
           message="There are no courses available yet. Create a new course to start managing your academic sessions and lecturers."
           action={{
             label: "Create Course",
@@ -110,40 +95,45 @@ export default function CourseManagement() {
         />
       )}
 
-      {showNoResults && (
-        <NoResults
-          title="No courses found"
-          message="Try changing your search or filters."
-          action={{
-            label: "Clear Filters",
-            onClick: resetQuery,
-          }}
-        />
-      )}
-
-      {!showEmptyState && !showNoResults && (
+      {hasAnyCourses && (
         <>
-          <div className="relative">
-            {isFetching && <Loader message="Loading courses..." />}
-            <CourseTable courses={courses} onEdit={openEditCourse} />
-          </div>
+          <CourseToolbar filters={query} onFiltersChange={setQuery} />
 
-          <Pagination
-            label="courses"
-            {...pagination}
-            onPrevious={() =>
-              setQuery({
-                ...query,
-                page: query.page! - 1,
-              })
-            }
-            onNext={() =>
-              setQuery({
-                ...query,
-                page: query.page! + 1,
-              })
-            }
-          />
+          {showNoResults && (
+            <NoResults
+              title="No courses found"
+              message="Try changing your search or filters."
+              action={{
+                label: "Clear Filters",
+                onClick: resetQuery,
+              }}
+            />
+          )}
+
+          {hasResults && (
+            <>
+              <div className="relative">
+                {isFetching && <Loader overlay message="Loading courses..." />}
+                <CourseTable courses={courses} onEdit={openEditCourse} />
+              </div>
+              <Pagination
+                label="courses"
+                {...pagination}
+                onPrevious={() =>
+                  setQuery({
+                    ...query,
+                    page: query.page! - 1,
+                  })
+                }
+                onNext={() =>
+                  setQuery({
+                    ...query,
+                    page: query.page! + 1,
+                  })
+                }
+              />
+            </>
+          )}
         </>
       )}
 

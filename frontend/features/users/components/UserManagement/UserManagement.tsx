@@ -42,16 +42,23 @@ export default function UserManagement() {
     updateUser,
     changePassword,
     changeStatus,
+    hasLoadedCurrentQuery,
   } = useUsers(debouncedQuery);
 
   if (loading) {
     return <PageLoader />;
   }
-  const hasFilters = Boolean(query.search) || Boolean(query.role) || Boolean(query.status);
 
-  const showEmptyState = pagination.total === 0 && !hasFilters;
+  const hasFilters =
+    debouncedQuery.search.trim() !== "" || debouncedQuery.role !== "ALL" || debouncedQuery.status !== "ALL";
 
-  const showNoResults = pagination.total === 0 && hasFilters;
+  const hasResults = pagination.total > 0;
+
+  const hasAnyUsers = !hasFilters ? pagination.total > 0 : true;
+
+  const showEmptyState = hasLoadedCurrentQuery && !hasAnyUsers;
+
+  const showNoResults = hasLoadedCurrentQuery && hasAnyUsers && !hasResults;
 
   if (error) {
     return (
@@ -71,29 +78,22 @@ export default function UserManagement() {
         title="User Management"
         subtitle="Manage administrators, lecturers, and student accounts."
         action={
-          <Button
-            type="button"
-            size="lg"
-            fullWidth
-            className="sm:w-auto"
-            onClick={() => setShowCreateUser(true)}
-            leftIcon={<Plus size={18} />}
-          >
-            Add User
-          </Button>
-        }
-      />
-      <UserToolbar
-        filters={query}
-        onFiltersChange={(filters) =>
-          setQuery({
-            ...filters,
-            page: 1,
-          })
+          hasAnyUsers ? (
+            <Button
+              type="button"
+              size="lg"
+              fullWidth
+              className="sm:w-auto"
+              onClick={() => setShowCreateUser(true)}
+              leftIcon={<Plus size={18} />}
+            >
+              Add User
+            </Button>
+          ) : undefined
         }
       />
 
-      {showEmptyState ? (
+      {showEmptyState && (
         <EmptyState
           icon={<Users size={28} />}
           title="No Users Available"
@@ -105,45 +105,61 @@ export default function UserManagement() {
             onClick: () => setShowCreateUser(true),
           }}
         />
-      ) : showNoResults ? (
-        <NoResults
-          title="No users found"
-          message="Try changing your search or filters."
-          action={{
-            label: "Clear Filters",
-            onClick: () => setQuery(DEFAULT_USER_QUERY),
-          }}
-        />
-      ) : (
+      )}
+      {hasAnyUsers && (
         <>
-          <div className="relative">
-            {isFetching && <Loader message="Loading users..." />}
-            <UserTable users={users} onEdit={setSelectedUser} />
-          </div>
-
-          <Pagination
-            label="users"
-            page={pagination.page}
-            totalPages={pagination.totalPages}
-            total={pagination.total}
-            hasPrevious={pagination.hasPrevious}
-            hasNext={pagination.hasNext}
-            onPrevious={() =>
-              setQuery((previous) => ({
-                ...previous,
-                page: previous.page! - 1,
-              }))
-            }
-            onNext={() =>
-              setQuery((previous) => ({
-                ...previous,
-                page: previous.page! + 1,
-              }))
+          <UserToolbar
+            filters={query}
+            onFiltersChange={(filters) =>
+              setQuery({
+                ...filters,
+                page: 1,
+              })
             }
           />
+
+          {showNoResults && (
+            <NoResults
+              title="No users found"
+              message="Try changing your search or filters."
+              action={{
+                label: "Clear Filters",
+                onClick: () => setQuery(DEFAULT_USER_QUERY),
+              }}
+            />
+          )}
+
+          {hasResults && (
+            <>
+              <div className="relative">
+                {isFetching && <Loader overlay message="Loading users..." />}
+                <UserTable users={users} onEdit={setSelectedUser} />
+              </div>
+
+              <Pagination
+                label="users"
+                page={pagination.page}
+                totalPages={pagination.totalPages}
+                total={pagination.total}
+                hasPrevious={pagination.hasPrevious}
+                hasNext={pagination.hasNext}
+                onPrevious={() =>
+                  setQuery((previous) => ({
+                    ...previous,
+                    page: previous.page! - 1,
+                  }))
+                }
+                onNext={() =>
+                  setQuery((previous) => ({
+                    ...previous,
+                    page: previous.page! + 1,
+                  }))
+                }
+              />
+            </>
+          )}
         </>
       )}
-
       <Modal open={showCreateUser} onClose={() => setShowCreateUser(false)} title="Create User" size="md">
         <UserForm
           onSubmit={async (data) => {
