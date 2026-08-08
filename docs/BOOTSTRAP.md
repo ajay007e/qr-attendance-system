@@ -53,8 +53,8 @@ curl -X POST http://localhost:5000/api/v1/auth/bootstrap \
   -H "Content-Type: application/json" \
   -H "x-admin-api-key: 5f7d7b9c..." \
   -d '{
-    "firstName": "Ajay",
-    "lastName": "Mathew",
+    "firstName": "System",
+    "lastName": "Administrator",
     "email": "admin@example.com",
     "password": "Password@123"
   }'

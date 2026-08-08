@@ -32,7 +32,6 @@ export default function UserForm({ onSubmit }: UserFormProps) {
         role,
       });
     } catch (err) {
-      console.error(err);
       if (err instanceof AppError) {
         setError(err.message);
       } else {

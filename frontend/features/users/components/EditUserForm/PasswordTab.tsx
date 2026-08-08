@@ -28,7 +28,6 @@ export function PasswordForm({ userId, onSubmit }: PasswordFormProps) {
       setPassword("");
       setConfirmPassword("");
     } catch (err) {
-      console.error(err);
       if (err instanceof AppError) {
         setError(err.message);
       } else {
