@@ -114,11 +114,10 @@ export default function CourseManagement() {
         <NoResults
           title="No courses found"
           message="Try changing your search or filters."
-          action={
-            <Button size="sm" className="mt-6" onClick={resetQuery}>
-              Clear Filters
-            </Button>
-          }
+          action={{
+            label: "Clear Filters",
+            onClick: resetQuery,
+          }}
         />
       )}
 

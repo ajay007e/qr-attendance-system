@@ -109,11 +109,10 @@ export default function UserManagement() {
         <NoResults
           title="No users found"
           message="Try changing your search or filters."
-          action={
-            <Button size="sm" className="mt-6" onClick={() => setQuery(DEFAULT_USER_QUERY)}>
-              Clear Filters
-            </Button>
-          }
+          action={{
+            label: "Clear Filters",
+            onClick: () => setQuery(DEFAULT_USER_QUERY),
+          }}
         />
       ) : (
         <>

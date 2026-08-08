@@ -1,7 +1,6 @@
 "use client";
 
-import { cn } from "@/shared/lib/utils";
-import { noResultsMessageVariants, noResultsTitleVariants, noResultsVariants } from "./no-results.styles";
+import { EmptyState } from "@/shared";
 import type { NoResultsProps } from "./no-results.types";
 
 export default function NoResults({
@@ -10,13 +9,5 @@ export default function NoResults({
   action,
   className,
 }: NoResultsProps) {
-  return (
-    <div className={cn(noResultsVariants(), className)}>
-      <h3 className={noResultsTitleVariants()}>{title}</h3>
-
-      <p className={noResultsMessageVariants()}>{message}</p>
-
-      {action}
-    </div>
-  );
+  return <EmptyState title={title} message={message} action={action} className={className} />;
 }
