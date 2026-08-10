@@ -12,7 +12,7 @@ export const env = {
   db: {
     host: process.env.DB_HOST || "localhost",
     port: Number(process.env.DB_PORT) || 3306,
-    name: process.env.DB_NAME || "attendance_system",
+    name: process.env.DB_NAME || "qr_attendance_system",
     user: process.env.DB_USER || "root",
     password: process.env.DB_PASSWORD || "password",
   },
