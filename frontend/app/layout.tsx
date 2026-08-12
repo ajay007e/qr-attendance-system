@@ -1,8 +1,7 @@
 import "./globals.css";
 
 import { AuthProvider } from "@/features/auth";
-import { ErrorProvider, GlobalError } from "@/shared";
-import { ToastProvider } from "@/shared/components/feedback/toast";
+import { ErrorProvider, GlobalError, ToastProvider } from "@/shared";
 
 export default function RootLayout({
   children,

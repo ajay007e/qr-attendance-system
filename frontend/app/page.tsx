@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+
 import { useAuth } from "@/features/auth";
 import { getDashboardRoute } from "@/shared";
 
@@ -11,13 +12,8 @@ export default function HomePage() {
 
   useEffect(() => {
     if (loading) return;
-
-    if (!user) {
-      router.replace("/login");
-      return;
-    }
-
-    router.replace(getDashboardRoute(user.role));
+    const destination = user ? getDashboardRoute(user.role) : "/login";
+    router.replace(destination);
   }, [loading, user, router]);
 
   return null;

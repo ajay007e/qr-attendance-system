@@ -5,11 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth";
 import { DashboardShell, getDashboardRoute, PageLoader } from "@/shared";
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
