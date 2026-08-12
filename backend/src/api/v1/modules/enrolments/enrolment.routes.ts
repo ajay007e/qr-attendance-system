@@ -39,6 +39,6 @@ enrolmentRouter.delete(
 
 enrolmentRouter.get(
   "/courses/:courseId/students",
-  authorize(Role.SUPER_ADMIN, Role.LECTURER),
+  authorize(Role.LECTURER),
   controller.getStudents,
 );

@@ -2,7 +2,19 @@ import { RowDataPacket } from "mysql2";
 
 import { db } from "../../../../config/database";
 
-import { CourseStudent, EnrolledCourse } from "./enrolment.types";
+import { CourseStudent, EnrolledCourse, Pagination } from "./enrolment.types";
+
+// MySQL duplicate-key error code, raised when inserting a row that violates
+// the (course_id, user_id) composite primary key.
+const DUPLICATE_ENTRY = "ER_DUP_ENTRY";
+
+function isDuplicateEntryError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    (error as { code?: string }).code === DUPLICATE_ENTRY
+  );
+}
 
 export class EnrolmentRepository {
   /* =====================================================
@@ -35,7 +47,8 @@ export class EnrolmentRepository {
 
   async findAvailableCourses(
     userId: number,
-    search?: string,
+    search: string | undefined,
+    pagination: Pagination,
   ): Promise<EnrolledCourse[]> {
     const params: (number | string)[] = [userId];
 
@@ -49,7 +62,9 @@ export class EnrolmentRepository {
       params.push(like, like);
     }
 
-    const [rows] = await db.execute<RowDataPacket[]>(
+    const { limit, offset } = pagination;
+
+    const [rows] = await db.query<RowDataPacket[]>(
       `
             SELECT
                 c.id,
@@ -69,6 +84,8 @@ export class EnrolmentRepository {
             )
             ${searchClause}
             ORDER BY c.course_code ASC
+            LIMIT ${limit}
+            OFFSET ${offset}
             `,
       params,
     );
@@ -91,9 +108,12 @@ export class EnrolmentRepository {
     return rows.length > 0;
   }
 
-  async enrol(courseId: number, userId: number): Promise<void> {
-    await db.execute(
-      `
+  // Returns false when the (course_id, user_id) row already exists, relying on
+  // the composite primary key instead of a separate existence query.
+  async enrol(courseId: number, userId: number): Promise<boolean> {
+    try {
+      await db.execute(
+        `
             INSERT INTO course_enrolments
             (
                 course_id,
@@ -101,8 +121,17 @@ export class EnrolmentRepository {
             )
             VALUES (?, ?)
             `,
-      [courseId, userId],
-    );
+        [courseId, userId],
+      );
+
+      return true;
+    } catch (error) {
+      if (isDuplicateEntryError(error)) {
+        return false;
+      }
+
+      throw error;
+    }
   }
 
   async unenrol(courseId: number, userId: number): Promise<void> {
@@ -117,8 +146,13 @@ export class EnrolmentRepository {
     );
   }
 
-  async getStudents(courseId: number): Promise<CourseStudent[]> {
-    const [rows] = await db.execute<RowDataPacket[]>(
+  async getStudents(
+    courseId: number,
+    pagination: Pagination,
+  ): Promise<CourseStudent[]> {
+    const { limit, offset } = pagination;
+
+    const [rows] = await db.query<RowDataPacket[]>(
       `
             SELECT
                 u.id,
@@ -132,6 +166,8 @@ export class EnrolmentRepository {
                 ON u.id = ce.user_id
             WHERE ce.course_id = ?
             ORDER BY u.first_name
+            LIMIT ${limit}
+            OFFSET ${offset}
             `,
       [courseId],
     );

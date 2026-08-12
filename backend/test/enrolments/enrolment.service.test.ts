@@ -1,14 +1,20 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { AppError } from "../../../../utils/app.error";
+import { AppError } from "../../src/utils/app.error";
 
-import { CourseRepository } from "../courses/course.repository";
-import { Course } from "../courses/course.types";
+import { CourseRepository } from "../../src/api/v1/modules/courses/course.repository";
+import { Course } from "../../src/api/v1/modules/courses/course.types";
 
-import { EnrolmentRepository } from "./enrolment.repository";
-import { EnrolmentService } from "./enrolment.service";
-import { CourseStudent, EnrolledCourse } from "./enrolment.types";
+import { EnrolmentRepository } from "../../src/api/v1/modules/enrolments/enrolment.repository";
+import { EnrolmentService } from "../../src/api/v1/modules/enrolments/enrolment.service";
+import {
+  CourseStudent,
+  EnrolledCourse,
+  Pagination,
+} from "../../src/api/v1/modules/enrolments/enrolment.types";
+
+const pagination: Pagination = { limit: 20, offset: 0 };
 
 const activeCourse = {
   id: 7,
@@ -27,9 +33,11 @@ class FakeEnrolmentRepository {
   availableCourses: EnrolledCourse[] = [];
   students: CourseStudent[] = [];
   enrolled = false;
+  enrolResult = true;
   enrolCalls: Array<[number, number]> = [];
   unenrolCalls: Array<[number, number]> = [];
-  availableCalls: Array<[number, string | undefined]> = [];
+  availableCalls: Array<[number, string | undefined, Pagination]> = [];
+  studentCalls: Array<[number, Pagination]> = [];
 
   async findEnrolledCourses(): Promise<EnrolledCourse[]> {
     return this.enrolledCourses;
@@ -37,9 +45,10 @@ class FakeEnrolmentRepository {
 
   async findAvailableCourses(
     userId: number,
-    search?: string,
+    search: string | undefined,
+    requestedPagination: Pagination,
   ): Promise<EnrolledCourse[]> {
-    this.availableCalls.push([userId, search]);
+    this.availableCalls.push([userId, search, requestedPagination]);
     return this.availableCourses;
   }
 
@@ -47,15 +56,20 @@ class FakeEnrolmentRepository {
     return this.enrolled;
   }
 
-  async enrol(courseId: number, userId: number): Promise<void> {
+  async enrol(courseId: number, userId: number): Promise<boolean> {
     this.enrolCalls.push([courseId, userId]);
+    return this.enrolResult;
   }
 
   async unenrol(courseId: number, userId: number): Promise<void> {
     this.unenrolCalls.push([courseId, userId]);
   }
 
-  async getStudents(): Promise<CourseStudent[]> {
+  async getStudents(
+    courseId: number,
+    requestedPagination: Pagination,
+  ): Promise<CourseStudent[]> {
+    this.studentCalls.push([courseId, requestedPagination]);
     return this.students;
   }
 }
@@ -97,8 +111,11 @@ test("lists enrolled and available courses", async () => {
   repository.availableCourses = [course];
 
   assert.deepEqual(await service.getEnrolledCourses(12), [course]);
-  assert.deepEqual(await service.getAvailableCourses(12, "CSIT"), [course]);
-  assert.deepEqual(repository.availableCalls, [[12, "CSIT"]]);
+  assert.deepEqual(
+    await service.getAvailableCourses(12, "CSIT", pagination),
+    [course],
+  );
+  assert.deepEqual(repository.availableCalls, [[12, "CSIT", pagination]]);
 });
 
 test("enrols a student in an active course", async () => {
@@ -131,15 +148,15 @@ test("rejects enrolment when the course is inactive", async () => {
   assert.deepEqual(repository.enrolCalls, []);
 });
 
-test("rejects duplicate enrolment", async () => {
+test("rejects duplicate enrolment reported by the primary key", async () => {
   const { repository, service } = createService();
-  repository.enrolled = true;
+  repository.enrolResult = false;
 
   await assert.rejects(
     service.enrol(7, 12),
     isAppError(409, "Already enrolled in this course"),
   );
-  assert.deepEqual(repository.enrolCalls, []);
+  assert.deepEqual(repository.enrolCalls, [[7, 12]]);
 });
 
 test("withdraws an enrolled student", async () => {
@@ -173,7 +190,8 @@ test("returns the roster for an existing course", async () => {
   };
   repository.students = [student];
 
-  assert.deepEqual(await service.getStudents(7), [student]);
+  assert.deepEqual(await service.getStudents(7, pagination), [student]);
+  assert.deepEqual(repository.studentCalls, [[7, pagination]]);
 });
 
 test("rejects roster access when the course does not exist", async () => {
@@ -181,7 +199,7 @@ test("rejects roster access when the course does not exist", async () => {
   courses.course = null;
 
   await assert.rejects(
-    service.getStudents(404),
+    service.getStudents(404, pagination),
     isAppError(404, "Course not found"),
   );
 });
