@@ -1,99 +1,84 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { AlertTriangle, X } from "lucide-react";
 
-import { cn } from "@/shared/lib/utils";
+import { useToast, Button } from "@/shared";
+import { ErrorToastProps } from "../error.types";
 
-export default function ErrorToast({
-  message,
-  onDismiss,
-  className,
-}: {
-  message: string;
+export default function ErrorToast({ message, onDismiss, className }: ErrorToastProps) {
+  const { custom } = useToast();
+  const toastCreatedRef = useRef(false);
 
-  onDismiss: () => void;
+  useEffect(() => {
+    if (toastCreatedRef.current) {
+      return;
+    }
 
-  className?: string;
-}) {
-  return (
-    <div
-      role="alert"
-      className={cn(
-        `
-        fixed
-        right-6
-        top-6
-        z-[9999]
-        flex
-        w-full
-        max-w-sm
-        items-start
-        gap-3
-        rounded-xl
-        border
-        border-red-200
-        bg-white
-        p-4
-        shadow-lg
-        animate-in
-        slide-in-from-top-2
-        fade-in
-        duration-200
-        `,
-        className,
-      )}
-    >
-      <div
-        className="
-        flex
-        h-9
-        w-9
-        shrink-0
-        items-center
-        justify-center
-        rounded-full
-        bg-red-50
-        text-red-600
-        "
-      >
-        <AlertTriangle size={18} />
-      </div>
+    toastCreatedRef.current = true;
 
-      <div className="flex-1">
-        <p
-          className="
-          text-sm
-          font-medium
-          text-gray-900
-          "
+    custom({
+      content: ({ dismiss }) => (
+        <div
+          role="alert"
+          className={[
+            "relative",
+            "flex",
+            "w-full",
+            "items-start",
+            "gap-3",
+            "overflow-hidden",
+            "bg-gray-50",
+            "p-4",
+            className ?? "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
         >
-          Something went wrong
-        </p>
+          <div className={["absolute", "inset-y-0", "left-0", "w-1", "bg-red-600"].join(" ")} aria-hidden="true" />
 
-        <p
-          className="
-          mt-1
-          text-sm
-          text-gray-600
-          "
-        >
-          {message}
-        </p>
-      </div>
+          <div
+            className={[
+              "flex",
+              "size-10",
+              "shrink-0",
+              "items-center",
+              "justify-center",
+              "rounded-xl",
+              "bg-red-50",
+              "text-red-600",
+            ].join(" ")}
+          >
+            <AlertTriangle size={20} strokeWidth={2} aria-hidden="true" />
+          </div>
 
-      <button
-        type="button"
-        onClick={onDismiss}
-        className="
-        rounded-md
-        text-gray-400
-        transition
-        hover:text-gray-600
-        "
-        aria-label="Dismiss error"
-      >
-        <X size={16} />
-      </button>
-    </div>
-  );
+          <div className="min-w-0 flex-1 pt-0.5">
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-semibold leading-5 text-gray-900">Something went wrong</p>
+            </div>
+
+            <p className="mt-1 text-sm leading-5 text-gray-600">{message}</p>
+          </div>
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              dismiss();
+              onDismiss();
+            }}
+            aria-label="Dismiss error"
+          >
+            <X size={16} strokeWidth={2} aria-hidden="true" />
+          </Button>
+        </div>
+      ),
+      duration: 0,
+      dismissible: false,
+      progress: false,
+    });
+  }, [custom, message, onDismiss, className]);
+
+  return null;
 }

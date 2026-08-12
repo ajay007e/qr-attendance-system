@@ -5,13 +5,7 @@ import { buttonVariants } from "./button.styles";
 import { cn } from "@/shared/lib/utils";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?:
-    | "primary"
-    | "secondary"
-    | "outline"
-    | "ghost"
-    | "danger"
-    | "success";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "success" | "link";
   size?: "xs" | "sm" | "md" | "lg" | "icon";
   loading?: boolean;
   leftIcon?: React.ReactNode;

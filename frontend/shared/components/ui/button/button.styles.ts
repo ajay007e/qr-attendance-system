@@ -26,22 +26,18 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary:
-          "bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-200",
+        primary: "bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-200",
 
-        secondary:
-          "bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:ring-gray-200",
+        secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200 focus-visible:ring-gray-200",
 
-        outline:
-          "border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-100 focus-visible:ring-gray-200",
+        outline: "border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-100 focus-visible:ring-gray-200",
 
-        ghost:
-          "text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus-visible:ring-slate-200",
+        ghost: "text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus-visible:ring-slate-200",
 
         danger:
           "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-200 shadow-sm hover:shadow-md active:scale-95",
-        success:
-          "bg-green-600 text-white hover:bg-green-700 focus-visible:ring-green-200",
+        success: "bg-green-600 text-white hover:bg-green-700 focus-visible:ring-green-200",
+        link: "text-blue-600 underline underline-offset-2 hover:text-blue-700 hover:no-underline focus-visible:ring-blue-100",
       },
 
       size: {

@@ -7,6 +7,7 @@ import Footer from "./Footer";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import type { DashboardShellProps } from "./types";
+import Button from "../ui/button";
 
 export default function DashboardShell({ children }: DashboardShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -91,21 +92,15 @@ export default function DashboardShell({ children }: DashboardShellProps) {
           >
             <h2 className="text-lg font-semibold text-gray-900">Navigation</h2>
 
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon"
               onClick={() => setSidebarOpen(false)}
-              className="
-                rounded-lg
-                p-2
-                text-gray-600
-                transition
-                hover:bg-gray-100
-                hover:text-gray-900
-              "
               aria-label="Close navigation"
             >
-              <X size={22} />
-            </button>
+              <X size={22} aria-hidden="true" />
+            </Button>
           </div>
 
           <div className="min-h-0 flex-1 overflow-y-auto">

@@ -17,3 +17,9 @@ export interface FormErrorProps {
 
   className?: string;
 }
+
+export interface ErrorToastProps {
+  message: string;
+  onDismiss: () => void;
+  className?: string;
+}

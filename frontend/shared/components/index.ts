@@ -3,6 +3,7 @@ export { default as NoResults } from "./feedback/no-results";
 export { default as EmptyState } from "./feedback/empty-state";
 export { default as ComingSoon } from "./feedback/coming-soon";
 export { FormError, GlobalError, ErrorFallback } from "./feedback/error";
+export { useToast } from "./feedback/toast";
 
 export { default as Footer } from "./layout/Footer";
 export { default as Topbar } from "./layout/Topbar";

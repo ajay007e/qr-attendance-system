@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { CustomToastProps, ToastData, ToastProps } from "./toast.types";
 import {
-  toastActionStyles,
   toastContentStyles,
   toastEnterStyles,
   toastMessageStyles,
@@ -14,6 +13,7 @@ import {
 import { ToastCloseButton } from "./components/ToastCloseButton";
 import { ToastIcon } from "./components/ToastIcon";
 import { ToastProgress } from "./components/ToastProgress";
+import Button from "../../ui/button";
 
 export function Toast({ toast, onDismiss, onUpdate }: ToastProps) {
   const {
@@ -178,9 +178,9 @@ export function Toast({ toast, onDismiss, onUpdate }: ToastProps) {
           {message}
 
           {action && (
-            <button type="button" className={toastActionStyles} onClick={action.onClick}>
+            <Button type="button" variant="link" size="sm" onClick={action.onClick} className="mt-2">
               {action.label}
-            </button>
+            </Button>
           )}
         </div>
 
