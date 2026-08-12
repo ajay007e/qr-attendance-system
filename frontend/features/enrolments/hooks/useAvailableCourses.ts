@@ -5,47 +5,57 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useDebounce, useError } from "@/shared";
 
 import { enrolmentService } from "../api/enrolment.service";
+import { COURSE_SEARCH_MIN_LENGTH } from "../constants";
 import type { StudentCourse } from "../types";
 
 export default function useAvailableCourses(search: string) {
   const { handleError } = useError();
 
-  const isInitialLoad = useRef(true);
+  const requestId = useRef(0);
 
   const debouncedSearch = useDebounce(search);
 
   const [courses, setCourses] = useState<StudentCourse[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isFetching, setIsFetching] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
+    const query = debouncedSearch.trim();
+
+    if (query.length < COURSE_SEARCH_MIN_LENGTH) {
+      requestId.current += 1;
+      setCourses([]);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
+    const currentRequest = ++requestId.current;
+
     try {
-      if (isInitialLoad.current) {
-        setLoading(true);
-      } else {
-        setIsFetching(true);
-      }
+      setLoading(true);
       setError(null);
 
-      const response = await enrolmentService.getAvailable(debouncedSearch);
+      const response = await enrolmentService.getAvailable(query);
 
-      setCourses(response.data);
+      if (currentRequest === requestId.current) {
+        setCourses(response.data);
+      }
     } catch (error) {
+      if (currentRequest !== requestId.current) {
+        return;
+      }
+
       setCourses([]);
       handleError(error);
-
       setError(
         error instanceof Error
           ? error.message
           : "Unable to load available courses.",
       );
     } finally {
-      if (isInitialLoad.current) {
+      if (currentRequest === requestId.current) {
         setLoading(false);
-        isInitialLoad.current = false;
-      } else {
-        setIsFetching(false);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -63,10 +73,13 @@ export default function useAvailableCourses(search: string) {
     return () => window.clearTimeout(timer);
   }, [load]);
 
+  const isWaitingForDebounce =
+    search.trim().length >= COURSE_SEARCH_MIN_LENGTH &&
+    search.trim() !== debouncedSearch.trim();
+
   return {
     courses,
-    loading,
-    isFetching,
+    loading: loading || isWaitingForDebounce,
     error,
     refresh: load,
     enrol,

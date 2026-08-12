@@ -1,17 +1,16 @@
-import type { CourseSession } from "../courses/types";
+import type { Course } from "../courses/types";
 
-export interface StudentCourse {
-  id: number;
-
-  course_code: string;
-  course_name: string;
-  description: string | null;
-
-  credits: number;
-  session: CourseSession;
-
-  is_active: boolean;
-
+export interface StudentCourse
+  extends Pick<
+    Course,
+    | "id"
+    | "course_code"
+    | "course_name"
+    | "description"
+    | "credits"
+    | "session"
+    | "is_active"
+  > {
   enrolled_at: string | null;
 }
 
@@ -26,5 +25,8 @@ export interface CourseCardProps {
 
 export interface CourseSearchProps {
   value: string;
+  courses: StudentCourse[];
+  loading?: boolean;
   onChange: (value: string) => void;
+  onSelect: (course: StudentCourse) => void;
 }
