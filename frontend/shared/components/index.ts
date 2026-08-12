@@ -18,3 +18,4 @@ export { default as Button } from "./ui/button";
 export { default as Field } from "./form/field";
 
 export { default as Pagination } from "./navigation/pagination/Pagination";
+export { default as Tabs } from "./navigation/tabs/Tabs";
