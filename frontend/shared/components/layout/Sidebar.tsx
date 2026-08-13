@@ -20,10 +20,7 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
 
   useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {
-      if (
-        profileRef.current &&
-        !profileRef.current.contains(event.target as Node)
-      ) {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setOpen(false);
       }
     }
@@ -35,12 +32,9 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
     };
   }, []);
 
-  if (!user) return null;
+  const items = useMemo(() => (user ? (menus[user.role as keyof typeof menus] ?? []) : []), [user]);
 
-  const items = useMemo(
-    () => menus[user.role as keyof typeof menus] ?? [],
-    [user.role],
-  );
+  if (!user) return null;
 
   function handleNavigate() {
     setOpen(false);
@@ -76,18 +70,12 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
       <div ref={profileRef} className="relative border-t border-gray-200 p-5">
         {open && (
           <div className="absolute bottom-20 left-5 right-5 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl">
-            <button
-              disabled
-              className="flex w-full items-center gap-3 px-4 py-3 text-sm text-gray-400"
-            >
+            <button disabled className="flex w-full items-center gap-3 px-4 py-3 text-sm text-gray-400">
               <User size={18} />
               Profile
             </button>
 
-            <button
-              disabled
-              className="flex w-full items-center gap-3 px-4 py-3 text-sm text-gray-400"
-            >
+            <button disabled className="flex w-full items-center gap-3 px-4 py-3 text-sm text-gray-400">
               <Settings size={18} />
               Settings
             </button>
@@ -114,22 +102,13 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
             </div>
 
             <div className="min-w-0 text-left">
-              <p className="truncate text-sm font-semibold text-gray-900">
-                {user.email}
-              </p>
+              <p className="truncate text-sm font-semibold text-gray-900">{user.email}</p>
 
-              <p className="capitalize text-xs text-gray-500">
-                {getUserRoleLabel(user.role)}
-              </p>
+              <p className="capitalize text-xs text-gray-500">{getUserRoleLabel(user.role)}</p>
             </div>
           </div>
 
-          <ChevronDown
-            size={18}
-            className={`shrink-0 transition-transform ${
-              open ? "rotate-180" : ""
-            }`}
-          />
+          <ChevronDown size={18} className={`shrink-0 transition-transform ${open ? "rotate-180" : ""}`} />
         </button>
       </div>
     </nav>

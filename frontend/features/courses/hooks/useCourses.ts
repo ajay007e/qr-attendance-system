@@ -52,10 +52,16 @@ export function useCourses(query: CourseQuery) {
         setIsFetching(false);
       }
     }
-  }, [query]);
+  }, [query, handleError]);
 
   useEffect(() => {
-    loadCourses();
+    const timeoutId = setTimeout(() => {
+      void loadCourses();
+    }, 0);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [loadCourses]);
 
   const currentQueryKey = getQueryKey(query);

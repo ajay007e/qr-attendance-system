@@ -2,9 +2,9 @@
 
 import React from "react";
 
-import type { AutocompleteContextValue } from "./autocomplete.types";
+import type { AutocompleteContextValue, AutocompleteContextValueBase } from "./autocomplete.types";
 
-export const AutocompleteContext = React.createContext<AutocompleteContextValue<any> | null>(null);
+export const AutocompleteContext = React.createContext<AutocompleteContextValueBase | null>(null);
 
 export function useAutocompleteContext<T>() {
   const context = React.useContext(AutocompleteContext) as AutocompleteContextValue<T> | null;

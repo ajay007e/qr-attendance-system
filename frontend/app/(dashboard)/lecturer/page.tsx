@@ -84,9 +84,8 @@ function LecturerDashboardComingSoon() {
           text-gray-500
         "
       >
-        Soon you'll be able to manage your assigned courses, start attendance
-        sessions, review attendance history, and monitor student participation
-        from one place.
+        Soon you will be able to manage your assigned courses, start attendance sessions, review attendance history, and
+        monitor student participation from one place.
       </p>
 
       <span

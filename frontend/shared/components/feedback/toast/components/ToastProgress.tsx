@@ -12,15 +12,12 @@ export function ToastProgress({ duration, variant, paused = false }: ToastProgre
   const lastTimestampRef = useRef<number | null>(null);
 
   useEffect(() => {
-    remainingRef.current = duration;
-    lastTimestampRef.current = null;
-    setProgress(100);
-  }, [duration]);
-
-  useEffect(() => {
     if (duration <= 0) {
       return;
     }
+
+    remainingRef.current = duration;
+    lastTimestampRef.current = null;
 
     let animationFrame: number;
 

@@ -35,7 +35,8 @@ const FieldBase = ({
   messageClassName,
   helperClassName,
 }: FieldProps) => {
-  const fieldId = id ?? React.useId();
+  const generatedId = React.useId();
+  const fieldId = id ?? generatedId;
   const messageId = `${fieldId}-message`;
   const hasMessage = Boolean(error || success || helperText);
   const contextValue = {

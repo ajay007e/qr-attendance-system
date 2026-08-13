@@ -14,7 +14,7 @@ import { AutocompleteContext } from "./autocomplete.context";
 
 import { useAutocomplete } from "./useAutocomplete";
 
-import type { FieldAutocompleteProps } from "./autocomplete.types";
+import type { AutocompleteContextValue, FieldAutocompleteProps } from "./autocomplete.types";
 
 const FieldAutocomplete = React.forwardRef(
   <T,>(
@@ -90,7 +90,7 @@ const FieldAutocomplete = React.forwardRef(
     const hasValue = value.length > 0;
 
     return (
-      <AutocompleteContext.Provider value={autocomplete}>
+      <AutocompleteContext.Provider value={autocomplete as unknown as AutocompleteContextValue<unknown>}>
         <div className="relative">
           <div
             className={cn(

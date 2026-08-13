@@ -67,7 +67,7 @@ export default function useUsers(query: UserQuery) {
         setIsFetching(false);
       }
     }
-  }, [query]);
+  }, [query, handleError]);
 
   const createUser = async (data: CreateUserRequest) => {
     await userService.createUser(data);
@@ -92,7 +92,13 @@ export default function useUsers(query: UserQuery) {
   };
 
   useEffect(() => {
-    loadUsers();
+    const timeoutId = setTimeout(() => {
+      void loadUsers();
+    }, 0);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [loadUsers]);
 
   const currentQueryKey = getQueryKey(query);

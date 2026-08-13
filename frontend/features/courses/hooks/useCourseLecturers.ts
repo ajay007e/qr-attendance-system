@@ -33,9 +33,7 @@ export function useCourseLecturers(courseId: number) {
     } catch (error) {
       handleError(error);
 
-      setError(
-        error instanceof Error ? error.message : "Unable to load lecturers.",
-      );
+      setError(error instanceof Error ? error.message : "Unable to load lecturers.");
     } finally {
       setLoading(false);
     }
@@ -82,8 +80,37 @@ export function useCourseLecturers(courseId: number) {
   useEffect(() => {
     if (!courseId) return;
 
-    loadLecturers();
-  }, [courseId, loadLecturers]);
+    let cancelled = false;
+
+    async function fetchLecturers() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const data = await CourseService.getLecturers(courseId);
+
+        if (!cancelled) {
+          setLecturers(data);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          handleError(error);
+
+          setError(error instanceof Error ? error.message : "Unable to load lecturers.");
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    fetchLecturers();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [courseId, handleError]);
 
   return {
     lecturers,

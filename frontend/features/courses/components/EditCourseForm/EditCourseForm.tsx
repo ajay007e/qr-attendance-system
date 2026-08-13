@@ -10,14 +10,14 @@ import { StatusTab } from "./StatusTab";
 
 import { useCourseMutation } from "../../hooks/useCourseMutation";
 import { COURSE_TABS } from "../../constants";
-import type { CourseEditTab, EditCourseFormProps } from "../../types";
+import type { CourseEditTab, EditCourseFormProps, UpdateCourseRequest } from "../../types";
 
 export default function EditCourseForm({ course, refresh, onClose }: EditCourseFormProps) {
   const [activeTab, setActiveTab] = useState<CourseEditTab>("details");
 
   const { updateCourse } = useCourseMutation(refresh);
 
-  async function handleUpdate(data: any) {
+  async function handleUpdate(data: UpdateCourseRequest) {
     await updateCourse(course.id, data);
     onClose();
   }

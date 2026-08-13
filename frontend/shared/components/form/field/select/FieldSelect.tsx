@@ -91,7 +91,6 @@ export default function FieldSelect<T>({
         type="button"
         disabled={isDisabled}
         aria-expanded={open}
-        aria-invalid={field?.invalid}
         aria-describedby={field?.describedBy}
         onClick={toggleDropdown}
         className={cn(

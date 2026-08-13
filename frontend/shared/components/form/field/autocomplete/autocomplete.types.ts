@@ -129,3 +129,21 @@ export interface AutocompleteContextValue<T> {
 
   highlightPrevious: () => void;
 }
+
+export interface AutocompleteContextValueBase {
+  options: unknown[];
+  filteredOptions: unknown[];
+  value: string;
+  selectedOption?: unknown | null;
+  open: boolean;
+  highlightedIndex: number;
+  highlightedOption?: unknown;
+  loading?: boolean;
+  getOptionLabel: (option: unknown) => string;
+  selectOption: (option: unknown) => void;
+  openDropdown: () => void;
+  closeDropdown: () => void;
+  setHighlightedIndex: (index: number) => void;
+  highlightNext: () => void;
+  highlightPrevious: () => void;
+}
