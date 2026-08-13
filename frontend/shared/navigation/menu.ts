@@ -20,8 +20,8 @@ export const menus = {
       href: "/lecturer",
     },
     {
-      title: "Attendance",
-      href: "/lecturer/attendance",
+      title: "Calendar",
+      href: "/lecturer/calendar",
     },
   ],
 
