@@ -3,6 +3,7 @@
 import { X } from "lucide-react";
 import { useEffect } from "react";
 import { ModalProps } from "./types";
+import { Button } from "@/shared";
 
 export default function Modal({
   open,
@@ -70,20 +71,15 @@ export default function Modal({
           <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4 sm:px-6">
             <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
 
-            <button
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
               onClick={onClose}
-              className="
-                rounded-lg
-                p-2
-                text-gray-400
-                transition
-                hover:bg-gray-100
-                hover:text-gray-700
-              "
               aria-label="Close modal"
             >
               <X size={20} />
-            </button>
+            </Button>
           </div>
         )}
 

@@ -1,4 +1,4 @@
-import { Badge, IconButton } from "@/shared";
+import { Button, Badge } from "@/shared";
 import { Pencil } from "lucide-react";
 import { formatSession } from "./course-table.utils";
 import { CourseActionProps } from "../../types";
@@ -42,18 +42,15 @@ export function CourseTableRow({ course, onEdit }: CourseActionProps) {
       </td>
 
       <td className="px-6 py-4">
-        <IconButton
+        <Button
+          size="icon"
+          variant="ghost"
           onClick={() => onEdit(course)}
-          ariaLabel={`Edit ${course.course_name}`}
-          title="Edit Course"
-          className="
-            text-blue-600
-            hover:bg-blue-50
-            hover:text-blue-700
-          "
+          aria-label={`Edit ${course.course_name}`}
+          title={"Edit User"}
         >
           <Pencil size={18} />
-        </IconButton>
+        </Button>
       </td>
     </tr>
   );

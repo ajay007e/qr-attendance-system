@@ -1,27 +1,32 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+
+import { User } from "@/shared";
 import { authService } from "../api/auth.service";
 import { AuthContext } from "./auth.context";
-import { User } from "@/shared";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
+
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  async function refresh(): Promise<User | null> {
+  const refresh = useCallback(async (): Promise<User | null> => {
     try {
       const response = await authService.me();
       const currentUser = response.data.data;
+
       setUser(currentUser);
+
       return currentUser;
-    } catch (error) {
+    } catch {
       setUser(null);
+
       return null;
     }
-  }
+  }, []);
 
   async function login(email: string, password: string): Promise<User> {
     const response = await authService.login({
@@ -44,17 +49,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     async function initialize() {
-      try {
-        await refresh();
-      } catch (error) {
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
+      await refresh();
+      setLoading(false);
     }
 
     initialize();
-  }, []);
+  }, [refresh]);
 
   return (
     <AuthContext.Provider

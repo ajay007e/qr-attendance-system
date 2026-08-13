@@ -2,42 +2,44 @@
 
 import { useState } from "react";
 
-import { Tabs } from "./Tab";
+import { Tabs } from "@/shared";
+
 import { DetailsTab } from "./DetailsTab";
 import { LecturersTab } from "./LecturerTab";
 import { StatusTab } from "./StatusTab";
 
 import { useCourseMutation } from "../../hooks/useCourseMutation";
-import { CourseEditTab, EditCourseFormProps } from "../../types";
+import { COURSE_TABS } from "../../constants";
+import type { CourseEditTab, EditCourseFormProps, UpdateCourseRequest } from "../../types";
 
-export default function EditCourseForm({
-  course,
-  refresh,
-  onClose,
-}: EditCourseFormProps) {
+export default function EditCourseForm({ course, refresh, onClose }: EditCourseFormProps) {
   const [activeTab, setActiveTab] = useState<CourseEditTab>("details");
 
   const { updateCourse } = useCourseMutation(refresh);
 
-  async function handleUpdate(data: any) {
+  async function handleUpdate(data: UpdateCourseRequest) {
     await updateCourse(course.id, data);
-
     onClose();
   }
 
   return (
     <div className="space-y-5">
-      <Tabs activeTab={activeTab} onChange={setActiveTab} />
+      <Tabs
+        tabs={COURSE_TABS}
+        value={activeTab}
+        onChange={setActiveTab}
+        variant="segmented"
+        size="md"
+        width="full"
+        scrollable
+        ariaLabel="Course edit sections"
+      />
 
-      {activeTab === "details" && (
-        <DetailsTab course={course} refresh={refresh} onSubmit={handleUpdate} />
-      )}
+      {activeTab === "details" && <DetailsTab course={course} refresh={refresh} onSubmit={handleUpdate} />}
 
       {activeTab === "lecturers" && <LecturersTab course={course} />}
 
-      {activeTab === "status" && (
-        <StatusTab course={course} refresh={refresh} onClose={onClose} />
-      )}
+      {activeTab === "status" && <StatusTab course={course} refresh={refresh} onClose={onClose} />}
     </div>
   );
 }

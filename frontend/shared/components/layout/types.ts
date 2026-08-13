@@ -17,3 +17,10 @@ export interface SidebarProps {
 export interface TopbarProps {
   onMenuClick?: () => void;
 }
+
+export interface SectionHeaderProps {
+  title: string;
+  subtitle?: ReactNode;
+  action?: ReactNode;
+  className?: string;
+}

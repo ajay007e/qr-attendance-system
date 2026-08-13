@@ -2,13 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { AppError } from "@/shared/errors/AppError";
-import {
-  CustomDropdown,
-  FormError,
-  FormInput,
-  SubmitButton,
-  UI_USER_ROLE_OPTIONS,
-} from "@/shared";
+import { Button, FormError, Field, UI_USER_ROLE_OPTIONS } from "@/shared";
 import { DetailsFormProps } from "../../types";
 
 export function DetailsForm({ user, onSubmit }: DetailsFormProps) {
@@ -56,43 +50,33 @@ export function DetailsForm({ user, onSubmit }: DetailsFormProps) {
         {error && <FormError message={error} />}
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <FormInput
-            label="First Name"
-            required
-            placeholder="Enter first name"
-            value={firstName}
-            onChange={setFirstName}
-          />
-          <FormInput
-            label="Last Name"
-            placeholder="Enter last name"
-            value={lastName}
-            onChange={setLastName}
-          />
+          <Field label="First Name" required>
+            <Field.Input
+              placeholder="Enter first name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+          </Field>
+          <Field label="Last Name">
+            <Field.Input placeholder="Enter last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+          </Field>
         </div>
-        <FormInput
-          label="Email"
-          type="email"
-          required
-          autoComplete="email"
-          placeholder="Enter email address"
-          value={email}
-          onChange={setEmail}
-        />
+        <Field label="Email" required>
+          <Field.Input
+            type="email"
+            autoComplete="email"
+            placeholder="Enter email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </Field>
         <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">
-            Role
-          </label>
-
-          <CustomDropdown
-            value={role}
-            onChange={setRole}
-            options={UI_USER_ROLE_OPTIONS}
-          />
+          <label className="mb-2 block text-sm font-medium text-gray-700">Role</label>
+          <Field.Select value={role} onChange={setRole} options={UI_USER_ROLE_OPTIONS} />
         </div>
-        <SubmitButton disabled={loading}>
+        <Button type="submit" fullWidth loading={loading}>
           {loading ? "Saving Changes..." : "Save Changes"}
-        </SubmitButton>
+        </Button>
       </fieldset>
     </form>
   );

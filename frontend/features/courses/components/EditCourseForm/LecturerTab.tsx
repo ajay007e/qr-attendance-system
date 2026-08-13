@@ -1,21 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Search, Trash2, UserPlus, X } from "lucide-react";
+import { Search, Trash2, UserPlus, X } from "lucide-react";
 
-import { Badge, CustomDropdown, FormError } from "@/shared";
+import { Badge, Button, Field, FormError } from "@/shared";
 import { AppError } from "@/shared/errors/AppError";
 
 import { LECTURER_ROLE_OPTIONS } from "../../constants";
 import { useCourseLecturers } from "../../hooks/useCourseLecturers";
 
-import type {
-  LecturerRole,
-  LecturerSearchResult,
-  LecturerTabProps,
-} from "../../types";
+import type { LecturerRole, LecturerSearchResult, LecturerTabProps } from "../../types";
 
 import { useLecturerSearch } from "@/features/users";
+
+import { useAutocompleteContext } from "@/shared/components/form/field/autocomplete/autocomplete.context";
 
 export function LecturersTab({ course }: LecturerTabProps) {
   const {
@@ -26,24 +24,11 @@ export function LecturersTab({ course }: LecturerTabProps) {
 
   const { query, setQuery, results, loading } = useLecturerSearch();
 
-  const [selectedLecturer, setSelectedLecturer] =
-    useState<LecturerSearchResult | null>(null);
+  const [selectedLecturer, setSelectedLecturer] = useState<LecturerSearchResult | null>(null);
 
   const [selectedRole, setSelectedRole] = useState<LecturerRole | "">("");
 
-  const [open, setOpen] = useState(false);
-
   const [error, setError] = useState("");
-
-  function selectLecturer(lecturer: LecturerSearchResult) {
-    setSelectedLecturer(lecturer);
-
-    setError("");
-
-    setQuery("");
-
-    setOpen(false);
-  }
 
   async function assignLecturer() {
     setError("");
@@ -58,9 +43,7 @@ export function LecturersTab({ course }: LecturerTabProps) {
       return;
     }
 
-    const exists = assignedLecturers.some(
-      (item) => item.id === selectedLecturer.id,
-    );
+    const exists = assignedLecturers.some((item) => item.id === selectedLecturer.id);
 
     if (exists) {
       setError("This lecturer is already assigned to this course.");
@@ -144,129 +127,28 @@ export function LecturersTab({ course }: LecturerTabProps) {
         </div>
 
         {!selectedLecturer && (
-          <div className="relative mt-5">
-            <label
-              className="
-                mb-2
-                block
-                text-sm
-                font-medium
-                text-gray-700
-              "
-            >
-              Search Lecturer
-            </label>
-
-            <div
-              className="
-                flex
-                items-center
-                gap-3
-                rounded-xl
-                border
-                border-gray-300
-                bg-white
-                px-4
-                py-3
-                transition
-                focus-within:border-blue-600
-                focus-within:ring-4
-                focus-within:ring-blue-100
-              "
-            >
-              <Search size={18} className="text-gray-500" />
-
-              <input
+          <div className="mt-5">
+            <Field label="Search Lecturer">
+              <Field.Autocomplete<LecturerSearchResult>
                 value={query}
-                onFocus={() => setOpen(true)}
-                onChange={(event) => {
-                  setQuery(event.target.value);
-                  setOpen(true);
+                onChange={(value) => {
+                  setQuery(value);
+                  setError("");
                 }}
+                options={results}
+                loading={loading}
                 placeholder="Search by name or email"
-                className="
-                  flex-1
-                  bg-transparent
-                  text-sm
-                  text-gray-700
-                  outline-none
-                  placeholder:text-gray-400
-                "
-              />
-
-              {loading && (
-                <Loader2
-                  size={18}
-                  className="
-                    animate-spin
-                    text-blue-600
-                  "
-                />
-              )}
-            </div>
-
-            {open && results.length > 0 && (
-              <div
-                className="
-                  absolute
-                  z-30
-                  mt-2
-                  max-h-[320px]
-                  w-full
-                  overflow-y-auto
-                  rounded-xl
-                  border
-                  border-gray-200
-                  bg-white
-                  shadow-xl
-                "
+                leftIcon={<Search size={18} className="text-gray-500" />}
+                getOptionLabel={(lecturer) => `${lecturer.first_name} ${lecturer.last_name ?? ""}`}
+                onSelect={(lecturer) => {
+                  setSelectedLecturer(lecturer);
+                  setQuery("");
+                  setError("");
+                }}
               >
-                {results.map((lecturer) => (
-                  <button
-                    key={lecturer.id}
-                    type="button"
-                    onClick={() => selectLecturer(lecturer)}
-                    className="
-                      flex
-                      w-full
-                      items-center
-                      gap-4
-                      px-4
-                      py-3
-                      text-left
-                      hover:bg-blue-50
-                    "
-                  >
-                    <div
-                      className="
-                        flex
-                        h-10
-                        w-10
-                        items-center
-                        justify-center
-                        rounded-full
-                        bg-blue-100
-                        font-semibold
-                        text-blue-700
-                      "
-                    >
-                      {lecturer.first_name[0]}
-                      {lecturer.last_name?.[0]}
-                    </div>
-
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-gray-900">
-                        {lecturer.first_name} {lecturer.last_name}
-                      </p>
-
-                      <p className="truncate text-sm text-gray-600">
-                        {lecturer.email}
-                      </p>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
+                <LecturerDropdown />
+              </Field.Autocomplete>
+            </Field>
           </div>
         )}
 
@@ -292,22 +174,16 @@ export function LecturersTab({ course }: LecturerTabProps) {
               <p className="text-sm text-gray-600">{selectedLecturer.email}</p>
             </div>
 
-            <button
-              type="button"
-              onClick={() => setSelectedLecturer(null)}
-              className="rounded-lg p-2 hover:bg-blue-100"
-            >
+            <Button type="button" variant="ghost" size="icon" onClick={() => setSelectedLecturer(null)}>
               <X size={18} />
-            </button>
+            </Button>
           </div>
         )}
 
         <div className="mt-5">
-          <label className="mb-2 block text-sm font-medium text-gray-700">
-            Lecturer Role
-          </label>
+          <label className="mb-2 block text-sm font-medium text-gray-700">Lecturer Role</label>
 
-          <CustomDropdown
+          <Field.Select
             value={selectedRole}
             options={LECTURER_ROLE_OPTIONS}
             onChange={(value) => {
@@ -318,33 +194,17 @@ export function LecturersTab({ course }: LecturerTabProps) {
           />
         </div>
 
-        <button
+        <Button
           type="button"
           onClick={assignLecturer}
           disabled={!selectedLecturer || !selectedRole}
-          className="
-            mt-5
-            flex
-            w-full
-            items-center
-            justify-center
-            gap-2
-            rounded-xl
-            bg-blue-600
-            py-3
-            font-medium
-            text-white
-            hover:bg-blue-700
-            disabled:cursor-not-allowed
-            disabled:opacity-50
-
-            sm:w-auto
-            sm:px-8
-          "
+          variant="primary"
+          fullWidth
+          leftIcon={<UserPlus size={18} />}
+          className="mt-5"
         >
-          <UserPlus size={18} />
           Assign Lecturer
-        </button>
+        </Button>
       </section>
       <section
         className="
@@ -472,20 +332,15 @@ export function LecturersTab({ course }: LecturerTabProps) {
             "
               >
                 <Badge variant="blue">{lecturer.role}</Badge>
-
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon"
                   onClick={() => removeLecturer(lecturer.id)}
-                  className="
-                rounded-lg
-                p-2
-                text-red-600
-                transition
-                hover:bg-red-50
-              "
+                  className="text-red-600"
                 >
                   <Trash2 size={18} />
-                </button>
+                </Button>{" "}
               </div>
             </div>
           ))}
@@ -505,6 +360,77 @@ export function LecturersTab({ course }: LecturerTabProps) {
           )}
         </div>
       </section>
+    </div>
+  );
+}
+
+function LecturerDropdown() {
+  const { filteredOptions, selectOption, highlightedIndex } = useAutocompleteContext<LecturerSearchResult>();
+
+  if (!filteredOptions.length) {
+    return null;
+  }
+
+  return (
+    <div
+      className="
+        absolute
+        z-30
+        mt-2
+        max-h-[320px]
+        w-full
+        overflow-y-auto
+        rounded-xl
+        border
+        border-gray-200
+        bg-white
+        shadow-xl
+      "
+    >
+      {filteredOptions.map((lecturer, index) => (
+        <button
+          key={lecturer.id}
+          type="button"
+          onMouseDown={() => selectOption(lecturer)}
+          className={`
+            flex
+            w-full
+            items-center
+            gap-4
+            px-4
+            py-3
+            text-left
+            hover:bg-blue-50
+
+            ${index === highlightedIndex ? "bg-blue-50" : ""}
+          `}
+        >
+          <div
+            className="
+              flex
+              h-10
+              w-10
+              items-center
+              justify-center
+              rounded-full
+              bg-blue-100
+              font-semibold
+              text-blue-700
+            "
+          >
+            {lecturer.first_name[0]}
+            {lecturer.last_name?.[0]}
+          </div>
+
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium text-gray-900">
+              {lecturer.first_name} {lecturer.last_name}
+            </p>
+
+            <p className="truncate text-sm text-gray-600">{lecturer.email}</p>
+          </div>
+        </button>
+      ))}
     </div>
   );
 }

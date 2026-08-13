@@ -1,94 +1,99 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-import {
-  PAGINATION_BUTTON_CLASS_NAME,
-  PAGINATION_CONTAINER_CLASS_NAME,
-  PAGINATION_CURRENT_PAGE_CLASS_NAME,
-  PAGINATION_DESKTOP_BUTTON_CLASS_NAME,
-  PAGINATION_MOBILE_BUTTON_CLASS_NAME,
-} from "./pagination.constants";
+import { Button } from "@/shared";
 
 interface PaginationProps {
   total: number;
-
   label?: string;
-
   page: number;
-
   totalPages: number;
-
   onPrevious: () => void;
-
   onNext: () => void;
-
   hasPrevious?: boolean;
-
   hasNext?: boolean;
-
   disabled?: boolean;
 }
 
 export default function Pagination({
   total,
-
   label = "items",
-
   page,
-
   totalPages,
-
   onPrevious,
-
   onNext,
-
   hasPrevious = true,
-
   hasNext = true,
-
   disabled = false,
 }: PaginationProps) {
   const previousDisabled = disabled || !hasPrevious || page <= 1;
-
   const nextDisabled = disabled || !hasNext || page >= totalPages;
 
   return (
-    <div className={PAGINATION_CONTAINER_CLASS_NAME}>
-      <p className="whitespace-nowrap">
-        Showing <span className="font-semibold text-gray-900">{total}</span>{" "}
-        {label}
+    <div
+      className="
+        flex
+        flex-col
+        gap-4
+        rounded-2xl
+        border
+        border-gray-200
+        bg-white
+        px-4
+        py-4
+        text-sm
+        text-gray-600
+        sm:flex-row
+        sm:items-center
+        sm:justify-between
+      "
+    >
+      {/* Total */}
+      <p className="w-full text-center whitespace-nowrap sm:w-auto sm:text-left">
+        Showing <span className="font-semibold text-gray-900">{total}</span> {label}
       </p>
 
-      <div className="flex items-center gap-2">
+      {/* Pagination controls */}
+      <div className="flex w-full items-center justify-between gap-2 sm:w-auto sm:justify-normal">
         {/* Desktop Previous */}
-
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="sm"
           onClick={onPrevious}
           disabled={previousDisabled}
-          className={`
-            ${PAGINATION_BUTTON_CLASS_NAME}
-            ${PAGINATION_DESKTOP_BUTTON_CLASS_NAME}
-          `}
+          className="hidden sm:inline-flex"
         >
           Previous
-        </button>
+        </Button>
 
         {/* Mobile Previous */}
-
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="icon"
           onClick={onPrevious}
           disabled={previousDisabled}
-          className={`
-            ${PAGINATION_BUTTON_CLASS_NAME}
-            ${PAGINATION_MOBILE_BUTTON_CLASS_NAME}
-          `}
           aria-label="Previous page"
+          className="sm:hidden"
         >
-          <ChevronLeft size={18} />
-        </button>
+          <ChevronLeft size={18} aria-hidden="true" />
+        </Button>
 
-        <span className={PAGINATION_CURRENT_PAGE_CLASS_NAME}>
+        {/* Current Page */}
+        <span
+          className="
+            inline-flex
+            items-center
+            justify-center
+            rounded-lg
+            bg-blue-600
+            px-3
+            py-2
+            text-sm
+            font-semibold
+            text-white
+          "
+        >
           <span className="sm:hidden">
             {page}/{totalPages}
           </span>
@@ -97,33 +102,29 @@ export default function Pagination({
         </span>
 
         {/* Desktop Next */}
-
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="sm"
           onClick={onNext}
           disabled={nextDisabled}
-          className={`
-            ${PAGINATION_BUTTON_CLASS_NAME}
-            ${PAGINATION_DESKTOP_BUTTON_CLASS_NAME}
-          `}
+          className="hidden sm:inline-flex"
         >
           Next
-        </button>
+        </Button>
 
         {/* Mobile Next */}
-
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="icon"
           onClick={onNext}
           disabled={nextDisabled}
-          className={`
-            ${PAGINATION_BUTTON_CLASS_NAME}
-            ${PAGINATION_MOBILE_BUTTON_CLASS_NAME}
-          `}
           aria-label="Next page"
+          className="sm:hidden"
         >
-          <ChevronRight size={18} />
-        </button>
+          <ChevronRight size={18} aria-hidden="true" />
+        </Button>
       </div>
     </div>
   );

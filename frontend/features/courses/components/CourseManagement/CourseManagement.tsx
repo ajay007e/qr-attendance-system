@@ -1,10 +1,17 @@
 "use client";
 
-import { useDebounce } from "@/shared";
-
-import PageHeader from "@/shared/components/layout/AdminPageHeader";
-import ErrorFallback from "@/shared/components/feedback/ErrorFallback";
-import { Modal, PageLoader } from "@/shared";
+import {
+  useDebounce,
+  PageHeader,
+  ErrorFallback,
+  Modal,
+  PageLoader,
+  Button,
+  Pagination,
+  EmptyState,
+  Loader,
+  NoResults,
+} from "@/shared";
 
 import { useCourses } from "../../hooks/useCourses";
 import { useCourseQuery } from "../../hooks/useCourseQuery";
@@ -13,41 +20,22 @@ import { useCourseModal } from "../../hooks/useCourseModal";
 import CourseToolbar from "../CourseToolbar";
 import CourseTable from "../CourseTable";
 import CourseForm from "../CourseForm";
-import EmptyCourseState from "../CourseEmptyState";
 import EditCourseForm from "../EditCourseForm/EditCourseForm";
 import { useCourseMutation } from "../../hooks/useCourseMutation";
-import { Pagination } from "@/shared/components";
+import { Plus, BookOpen } from "lucide-react";
 
 export default function CourseManagement() {
   const { query, setQuery, resetQuery } = useCourseQuery();
 
-  const {
-    showCreateCourse,
-    selectedCourse,
-
-    openCreateCourse,
-    closeCreateCourse,
-
-    openEditCourse,
-    closeEditCourse,
-  } = useCourseModal();
+  const { showCreateCourse, selectedCourse, openCreateCourse, closeCreateCourse, openEditCourse, closeEditCourse } =
+    useCourseModal();
 
   const debouncedQuery = useDebounce(query, 400);
 
-  const {
-    courses,
-    pagination,
+  const { courses, pagination, loading, isFetching, error, refresh, hasLoadedCurrentQuery } =
+    useCourses(debouncedQuery);
 
-    loading,
-    isFetching,
-
-    error,
-
-    refresh,
-  } = useCourses(debouncedQuery);
-
-  const { createCourse, updateCourse, updateStatus } =
-    useCourseMutation(refresh);
+  const { createCourse } = useCourseMutation(refresh);
 
   if (loading) {
     return <PageLoader />;
@@ -64,13 +52,14 @@ export default function CourseManagement() {
       />
     );
   }
+  const hasFilters = query.search.trim() !== "" || query.session !== "ALL" || query.status !== "ALL";
 
-  const hasFilters =
-    query.search !== "" || query.session !== "ALL" || query.status !== "ALL";
+  const hasResults = pagination.total > 0;
 
-  const showEmptyState = pagination.total === 0 && !hasFilters;
+  const hasAnyCourses = !hasFilters ? pagination.total > 0 : true;
 
-  const showNoResults = pagination.total === 0 && hasFilters;
+  const showEmptyState = hasLoadedCurrentQuery && !hasAnyCourses;
+  const showNoResults = hasLoadedCurrentQuery && hasAnyCourses && !hasResults;
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-5">
@@ -78,64 +67,77 @@ export default function CourseManagement() {
         title="Course Management"
         subtitle="Manage courses, sessions and lecturers."
         action={
-          <button
-            onClick={openCreateCourse}
-            className="flex
-        w-full
-        cursor-pointer
-        items-center
-        justify-center
-        gap-2
-        rounded-xl
-        bg-blue-600
-        px-5
-        py-3
-        text-sm
-        font-semibold
-        text-white
-        transition
-        hover:bg-blue-700
-        sm:w-auto"
-          >
-            Create Course
-          </button>
+          hasAnyCourses ? (
+            <Button
+              type="button"
+              size="lg"
+              fullWidth
+              className="sm:w-auto"
+              onClick={openCreateCourse}
+              leftIcon={<Plus size={18} />}
+            >
+              Create Course
+            </Button>
+          ) : undefined
         }
       />
 
-      <CourseToolbar filters={query} onFiltersChange={setQuery} />
+      {showEmptyState && (
+        <EmptyState
+          icon={<BookOpen size={28} />}
+          title="No courses yet"
+          message="There are no courses available yet. Create a new course to start managing your academic sessions and lecturers."
+          action={{
+            label: "Create Course",
+            icon: <Plus size={18} />,
+            onClick: openCreateCourse,
+          }}
+        />
+      )}
 
-      {showEmptyState && <EmptyCourseState onCreate={openCreateCourse} />}
-
-      {showNoResults && <button onClick={resetQuery}>Clear Filters</button>}
-
-      {!showEmptyState && !showNoResults && (
+      {hasAnyCourses && (
         <>
-          <CourseTable courses={courses} onEdit={openEditCourse} />
+          <CourseToolbar filters={query} onFiltersChange={setQuery} />
 
-          <Pagination
-            label="courses"
-            {...pagination}
-            onPrevious={() =>
-              setQuery({
-                ...query,
-                page: query.page! - 1,
-              })
-            }
-            onNext={() =>
-              setQuery({
-                ...query,
-                page: query.page! + 1,
-              })
-            }
-          />
+          {showNoResults && (
+            <NoResults
+              title="No courses found"
+              message="Try changing your search or filters."
+              action={{
+                label: "Clear Filters",
+                onClick: resetQuery,
+              }}
+            />
+          )}
+
+          {hasResults && (
+            <>
+              <div className="relative">
+                {isFetching && <Loader overlay message="Loading courses..." />}
+                <CourseTable courses={courses} onEdit={openEditCourse} />
+              </div>
+              <Pagination
+                label="courses"
+                {...pagination}
+                onPrevious={() =>
+                  setQuery({
+                    ...query,
+                    page: query.page! - 1,
+                  })
+                }
+                onNext={() =>
+                  setQuery({
+                    ...query,
+                    page: query.page! + 1,
+                  })
+                }
+              />
+            </>
+          )}
         </>
       )}
 
-      <Modal
-        open={showCreateCourse}
-        onClose={closeCreateCourse}
-        title="Create Course"
-      >
+      <Modal open={showCreateCourse} onClose={closeCreateCourse} title="Create Course">
         <CourseForm
           onSubmit={async (data) => {
             await createCourse(data);
@@ -144,18 +146,8 @@ export default function CourseManagement() {
         />
       </Modal>
 
-      <Modal
-        open={!!selectedCourse}
-        onClose={closeEditCourse}
-        title="Edit Course"
-      >
-        {selectedCourse && (
-          <EditCourseForm
-            course={selectedCourse}
-            refresh={refresh}
-            onClose={closeEditCourse}
-          />
-        )}
+      <Modal open={!!selectedCourse} onClose={closeEditCourse} title="Edit Course">
+        {selectedCourse && <EditCourseForm course={selectedCourse} refresh={refresh} onClose={closeEditCourse} />}
       </Modal>
     </div>
   );

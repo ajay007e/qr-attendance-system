@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { AppError } from "../errors/AppError";
 import { ErrorContext } from "../context/error.context";
 import { ErrorProviderProps, ErrorState } from "../types";
@@ -8,7 +8,7 @@ import { ErrorProviderProps, ErrorState } from "../types";
 export function ErrorProvider({ children }: ErrorProviderProps) {
   const [error, setError] = useState<ErrorState>(null);
 
-  function handleError(error: unknown) {
+  const handleError = useCallback((error: unknown) => {
     if (error instanceof AppError) {
       setError({
         type: error.type,
@@ -21,21 +21,19 @@ export function ErrorProvider({ children }: ErrorProviderProps) {
       type: "UNKNOWN",
       message: "Something went wrong.",
     });
-  }
+  }, []);
 
-  function clearError() {
+  const clearError = useCallback(() => {
     setError(null);
-  }
+  }, []);
 
-  return (
-    <ErrorContext.Provider
-      value={{
-        error,
-        handleError,
-        clearError,
-      }}
-    >
-      {children}
-    </ErrorContext.Provider>
+  const value = useMemo(
+    () => ({
+      error,
+      handleError,
+      clearError,
+    }),
+    [error, handleError, clearError],
   );
+  return <ErrorContext.Provider value={value}>{children}</ErrorContext.Provider>;
 }

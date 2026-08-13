@@ -2,9 +2,19 @@
 
 import { useState } from "react";
 
-import { Modal, PageLoader, useDebounce, User } from "@/shared";
-import PageHeader from "@/shared/components/layout/AdminPageHeader";
-import ErrorFallback from "@/shared/components/feedback/ErrorFallback";
+import {
+  Modal,
+  PageLoader,
+  useDebounce,
+  User,
+  Button,
+  Pagination,
+  PageHeader,
+  ErrorFallback,
+  EmptyState,
+  Loader,
+  NoResults,
+} from "@/shared";
 import { UserQuery } from "../../types";
 import { DEFAULT_USER_QUERY } from "../../constants";
 import useUsers from "../../hooks/useUsers";
@@ -12,8 +22,7 @@ import UserToolbar from "../UserToolbar/UserToolbar";
 import UserTable from "../UserTable/UserTable";
 import UserForm from "../UserForm/UserForm";
 import { EditUserForm } from "../EditUserForm";
-import { EmptyUserState } from "../EmptyUserState";
-import { Pagination } from "@/shared/components";
+import { Plus, Users } from "lucide-react";
 
 export default function UserManagement() {
   const [query, setQuery] = useState<UserQuery>(DEFAULT_USER_QUERY);
@@ -33,17 +42,23 @@ export default function UserManagement() {
     updateUser,
     changePassword,
     changeStatus,
+    hasLoadedCurrentQuery,
   } = useUsers(debouncedQuery);
 
   if (loading) {
     return <PageLoader />;
   }
+
   const hasFilters =
-    Boolean(query.search) || Boolean(query.role) || Boolean(query.status);
+    debouncedQuery.search.trim() !== "" || debouncedQuery.role !== "ALL" || debouncedQuery.status !== "ALL";
 
-  const showEmptyState = pagination.total === 0 && !hasFilters;
+  const hasResults = pagination.total > 0;
 
-  const showNoResults = pagination.total === 0 && hasFilters;
+  const hasAnyUsers = !hasFilters ? pagination.total > 0 : true;
+
+  const showEmptyState = hasLoadedCurrentQuery && !hasAnyUsers;
+
+  const showNoResults = hasLoadedCurrentQuery && hasAnyUsers && !hasResults;
 
   if (error) {
     return (
@@ -58,162 +73,94 @@ export default function UserManagement() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-5 sm:space-y-6">
+    <>
       <PageHeader
         title="User Management"
         subtitle="Manage administrators, lecturers, and student accounts."
         action={
-          <button
-            type="button"
-            onClick={() => setShowCreateUser(true)}
-            className="
-        flex
-        w-full
-        cursor-pointer
-        items-center
-        justify-center
-        gap-2
-        rounded-xl
-        bg-blue-600
-        px-5
-        py-3
-        text-sm
-        font-semibold
-        text-white
-        transition
-        hover:bg-blue-700
-        sm:w-auto
-      "
-          >
-            Add User
-          </button>
-        }
-      />
-      <UserToolbar
-        filters={query}
-        onFiltersChange={(filters) =>
-          setQuery({
-            ...filters,
-            page: 1,
-          })
+          hasAnyUsers ? (
+            <Button
+              type="button"
+              size="lg"
+              fullWidth
+              className="sm:w-auto"
+              onClick={() => setShowCreateUser(true)}
+              leftIcon={<Plus size={18} />}
+            >
+              Add User
+            </Button>
+          ) : undefined
         }
       />
 
-      {showEmptyState ? (
-        <EmptyUserState onCreate={() => setShowCreateUser(true)} />
-      ) : showNoResults ? (
-        <div className="rounded-2xl border border-dashed border-gray-300 bg-white px-5 py-15 text-center sm:py-20">
-          <h3 className="text-lg font-semibold text-gray-900">
-            No users found
-          </h3>
-
-          <p className="mt-2 text-sm text-gray-500">
-            Try changing your search or filters.
-          </p>
-
-          <button
-            onClick={() => setQuery(DEFAULT_USER_QUERY)}
-            className="mt-6 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer"
-          >
-            Clear Filters
-          </button>
-        </div>
-      ) : (
+      {showEmptyState && (
+        <EmptyState
+          icon={<Users size={28} />}
+          title="No Users Available"
+          message="Create user accounts for students, lecturers, and administrators."
+          size="lg"
+          action={{
+            label: "Add User",
+            icon: <Plus size={18} />,
+            onClick: () => setShowCreateUser(true),
+          }}
+        />
+      )}
+      {hasAnyUsers && (
         <>
-          <div className="relative">
-            {isFetching && (
-              <div
-                className="
-                  absolute
-                  inset-0
-                  z-20
-                  flex
-                  items-center
-                  justify-center
-                  rounded-2xl
-                  bg-white/70
-                  backdrop-blur-sm
-                "
-              >
-                <div
-                  className="
-                    flex
-                    items-center
-                    gap-3
-                    rounded-xl
-                    bg-white
-                    px-4
-                    py-3
-                    sm:px-5
-                    text-sm
-                    font-medium
-                    text-gray-700
-                    shadow-lg
-                  "
-                >
-                  <svg
-                    className="
-                      h-5
-                      w-5
-                      animate-spin
-                      text-blue-600
-                    "
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                    />
-                  </svg>
-                  Loading users...
-                </div>
-              </div>
-            )}
-
-            <UserTable users={users} onEdit={setSelectedUser} />
-          </div>
-
-          <Pagination
-            label="users"
-            page={pagination.page}
-            totalPages={pagination.totalPages}
-            total={pagination.total}
-            hasPrevious={pagination.hasPrevious}
-            hasNext={pagination.hasNext}
-            onPrevious={() =>
-              setQuery((previous) => ({
-                ...previous,
-                page: previous.page! - 1,
-              }))
-            }
-            onNext={() =>
-              setQuery((previous) => ({
-                ...previous,
-                page: previous.page! + 1,
-              }))
+          <UserToolbar
+            filters={query}
+            onFiltersChange={(filters) =>
+              setQuery({
+                ...filters,
+                page: 1,
+              })
             }
           />
+
+          {showNoResults && (
+            <NoResults
+              title="No users found"
+              message="Try changing your search or filters."
+              action={{
+                label: "Clear Filters",
+                onClick: () => setQuery(DEFAULT_USER_QUERY),
+              }}
+            />
+          )}
+
+          {hasResults && (
+            <>
+              <div className="relative">
+                {isFetching && <Loader overlay message="Loading users..." />}
+                <UserTable users={users} onEdit={setSelectedUser} />
+              </div>
+
+              <Pagination
+                label="users"
+                page={pagination.page}
+                totalPages={pagination.totalPages}
+                total={pagination.total}
+                hasPrevious={pagination.hasPrevious}
+                hasNext={pagination.hasNext}
+                onPrevious={() =>
+                  setQuery((previous) => ({
+                    ...previous,
+                    page: previous.page! - 1,
+                  }))
+                }
+                onNext={() =>
+                  setQuery((previous) => ({
+                    ...previous,
+                    page: previous.page! + 1,
+                  }))
+                }
+              />
+            </>
+          )}
         </>
       )}
-
-      <Modal
-        open={showCreateUser}
-        onClose={() => setShowCreateUser(false)}
-        title="Create User"
-        size="md"
-      >
+      <Modal open={showCreateUser} onClose={() => setShowCreateUser(false)} title="Create User" size="md">
         <UserForm
           onSubmit={async (data) => {
             await createUser(data);
@@ -222,12 +169,7 @@ export default function UserManagement() {
         />
       </Modal>
 
-      <Modal
-        open={!!selectedUser}
-        onClose={() => setSelectedUser(null)}
-        title="Edit User"
-        size="md"
-      >
+      <Modal open={!!selectedUser} onClose={() => setSelectedUser(null)} title="Edit User" size="md">
         {selectedUser && (
           <EditUserForm
             user={selectedUser}
@@ -248,6 +190,6 @@ export default function UserManagement() {
           />
         )}
       </Modal>
-    </div>
+    </>
   );
 }

@@ -2,7 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { AppError } from "@/shared/errors/AppError";
-import { FormError, FormInput, SubmitButton } from "@/shared";
+import { Button, FormError, Field } from "@/shared";
 import { PasswordFormProps } from "../../types";
 
 export function PasswordForm({ userId, onSubmit }: PasswordFormProps) {
@@ -28,7 +28,6 @@ export function PasswordForm({ userId, onSubmit }: PasswordFormProps) {
       setPassword("");
       setConfirmPassword("");
     } catch (err) {
-      console.error(err);
       if (err instanceof AppError) {
         setError(err.message);
       } else {
@@ -43,29 +42,34 @@ export function PasswordForm({ userId, onSubmit }: PasswordFormProps) {
     <form className="space-y-5" onSubmit={handleSubmit} aria-busy={loading}>
       <fieldset disabled={loading} className="space-y-5">
         {error && <FormError message={error} />}
-        <FormInput
-          label="New Password"
-          type="password"
-          required
-          autoComplete="new-password"
-          placeholder="Enter new password"
-          value={password}
-          onChange={setPassword}
-        />
-        <FormInput
-          label="Confirm Password"
-          type="password"
-          required
-          autoComplete="new-password"
-          placeholder="Confirm new password"
-          value={confirmPassword}
-          onChange={setConfirmPassword}
-        />
-        <SubmitButton
-          disabled={loading || !password || password !== confirmPassword}
+        <Field label="New Password" required>
+          <Field.Input
+            type="password"
+            autoComplete="new-password"
+            placeholder="Enter new password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            showPasswordToggle
+          />
+        </Field>
+        <Field label="Confirm Password" required>
+          <Field.Input
+            type="password"
+            autoComplete="new-password"
+            placeholder="Confirm new password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+        </Field>
+        <Button
+          type="submit"
+          size="lg"
+          fullWidth
+          loading={loading}
+          disabled={!password || password !== confirmPassword}
         >
           {loading ? "Changing Password..." : "Change Password"}
-        </SubmitButton>
+        </Button>
       </fieldset>
     </form>
   );

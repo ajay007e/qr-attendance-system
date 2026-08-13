@@ -1,5 +1,5 @@
 import { Pencil } from "lucide-react";
-import { Badge, getUserRoleLabel, IconButton, USER_ROLES } from "@/shared";
+import { Badge, Button, getUserRoleLabel, USER_ROLES } from "@/shared";
 import { UserActionProps, UserTableProps } from "../../types";
 
 export default function UserTable({ users, onEdit }: UserTableProps) {
@@ -61,15 +61,16 @@ function UserCard({ user, onEdit }: UserActionProps) {
             <p className="truncate text-sm text-gray-500">{user.email}</p>
           </div>
         </div>
-        <IconButton
+        <Button
+          size="icon"
+          variant="ghost"
           onClick={() => onEdit(user)}
           disabled={disabled}
-          ariaLabel={`Edit ${user.first_name}`}
+          aria-label={`Edit ${user.first_name}`}
           title={disabled ? "Super Admin users cannot be edited" : "Edit User"}
-          className="text-blue-600 hover:bg-blue-50 hover:text-blue-700 disabled:hover:bg-transparent disabled:hover:text-blue-600"
         >
           <Pencil size={18} />
-        </IconButton>
+        </Button>
       </div>
       <div className="mt-4 flex justify-between border-t pt-4">
         <Badge variant="blue">{getUserRoleLabel(user.role)}</Badge>
@@ -98,15 +99,16 @@ function UserTableRow({ user, onEdit }: UserActionProps) {
         </Badge>
       </td>
       <td className="px-6 py-4">
-        <IconButton
+        <Button
+          size="icon"
+          variant="ghost"
           onClick={() => onEdit(user)}
           disabled={disabled}
-          ariaLabel={`Edit ${user.first_name}`}
+          aria-label={`Edit ${user.first_name}`}
           title={disabled ? "Super Admin users cannot be edited" : "Edit User"}
-          className="text-blue-600 hover:bg-blue-50 hover:text-blue-700 disabled:hover:bg-transparent disabled:hover:text-blue-600"
         >
           <Pencil size={18} />
-        </IconButton>
+        </Button>
       </td>
     </tr>
   );

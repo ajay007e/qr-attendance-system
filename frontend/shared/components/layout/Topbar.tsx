@@ -3,6 +3,7 @@
 import { Bell, Menu } from "lucide-react";
 
 import { TopbarProps } from "./types";
+import { Button } from "@/shared";
 
 export default function Topbar({ onMenuClick }: TopbarProps) {
   return (
@@ -10,13 +11,16 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
       {/* Left */}
       <div className="flex items-center gap-3">
         {/* Mobile Menu */}
-        <button
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
           onClick={onMenuClick}
-          className="rounded-lg p-2 text-gray-600 transition hover:bg-gray-100 hover:text-blue-600 lg:hidden"
           aria-label="Open navigation menu"
+          className="lg:hidden hover:text-blue-600"
         >
           <Menu size={22} />
-        </button>
+        </Button>
 
         <h1 className="truncate text-base font-bold text-gray-900 sm:text-lg">
           Attendance System
@@ -25,12 +29,15 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
 
       {/* Right */}
       <div className="flex items-center gap-2">
-        <button
-          className="rounded-full p-2 text-gray-600 transition hover:bg-gray-100 hover:text-blue-600"
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
           aria-label="Notifications"
+          className="hover:text-blue-600"
         >
           <Bell size={21} />
-        </button>
+        </Button>
       </div>
     </header>
   );

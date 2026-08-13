@@ -1,4 +1,4 @@
-import { Badge, IconButton } from "@/shared";
+import { Badge, Button } from "@/shared";
 import { CourseActionProps } from "../../types";
 import { Pencil } from "lucide-react";
 import { formatSession } from "./course-table.utils";
@@ -25,19 +25,15 @@ export function CourseCard({ course, onEdit }: CourseActionProps) {
             <p className="mt-1 text-sm text-gray-500">{course.description}</p>
           )}
         </div>
-
-        <IconButton
+        <Button
+          size="icon"
+          variant="ghost"
           onClick={() => onEdit(course)}
-          ariaLabel={`Edit ${course.course_name}`}
-          title="Edit Course"
-          className="
-            text-blue-600
-            hover:bg-blue-50
-            hover:text-blue-700
-          "
+          aria-label={`Edit ${course.course_name}`}
+          title={"Edit User"}
         >
           <Pencil size={18} />
-        </IconButton>
+        </Button>
       </div>
 
       <div

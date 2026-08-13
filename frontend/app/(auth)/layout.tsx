@@ -5,18 +5,12 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth";
 import { getDashboardRoute, PageLoader } from "@/shared";
 
-export default function AuthLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { loading, user } = useAuth();
 
   useEffect(() => {
-    if (loading) return;
-
-    if (user) {
+    if (!loading && user) {
       router.replace(getDashboardRoute(user.role));
     }
   }, [loading, user, router]);
@@ -29,9 +23,5 @@ export default function AuthLayout({
     return null;
   }
 
-  return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50">
-      {children}
-    </main>
-  );
+  return children;
 }
