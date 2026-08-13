@@ -38,6 +38,7 @@ export const buttonVariants = cva(
           "bg-red-600 text-white hover:bg-red-700 focus-visible:ring-red-200 shadow-sm hover:shadow-md active:scale-95",
         success: "bg-green-600 text-white hover:bg-green-700 focus-visible:ring-green-200",
         link: "text-blue-600 underline underline-offset-2 hover:text-blue-700 hover:no-underline focus-visible:ring-blue-100",
+        "danger-outline": "border border-red-200 bg-white text-red-600 hover:bg-red-50 focus-visible:ring-red-200",
       },
 
       size: {

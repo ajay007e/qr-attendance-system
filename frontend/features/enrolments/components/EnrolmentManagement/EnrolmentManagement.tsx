@@ -2,12 +2,7 @@
 
 import { useState } from "react";
 
-import {
-  AdminPageHeader,
-  ErrorFallback,
-  PageLoader,
-  useError,
-} from "@/shared";
+import { AdminPageHeader, Button, ErrorFallback, PageLoader, useError } from "@/shared";
 
 import CourseCard from "../CourseCard";
 import CourseSearch from "../CourseSearch";
@@ -20,8 +15,7 @@ export default function EnrolmentManagement() {
   const { handleError } = useError();
 
   const [search, setSearch] = useState("");
-  const [selectedCourse, setSelectedCourse] =
-    useState<StudentCourse | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<StudentCourse | null>(null);
   const [pendingId, setPendingId] = useState<number | null>(null);
 
   const {
@@ -71,19 +65,12 @@ export default function EnrolmentManagement() {
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6">
-      <AdminPageHeader
-        title="Enrollment"
-        subtitle="Search for a course, review its details, then enrol."
-      />
+      <AdminPageHeader title="Enrollment" subtitle="Search for a course, review its details, then enrol." />
 
       <section className="space-y-4">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">
-            Find a Course
-          </h2>
-          <p className="mt-1 text-sm text-gray-500">
-            Search by course code or name. No courses load until you search.
-          </p>
+          <h2 className="text-lg font-semibold text-gray-900">Find a Course</h2>
+          <p className="mt-1 text-sm text-gray-500">Search by course code or name. No courses load until you search.</p>
         </div>
 
         {!selectedCourse && (
@@ -100,55 +87,32 @@ export default function EnrolmentManagement() {
         )}
 
         {availableError && !selectedCourse && (
-          <ErrorFallback
-            title="Could not search available courses"
-            error={availableError}
-            onRetry={refreshAvailable}
-          />
+          <ErrorFallback title="Could not search available courses" error={availableError} onRetry={refreshAvailable} />
         )}
 
         {selectedCourse && (
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-4">
-              <h3 className="text-sm font-semibold text-gray-700">
-                Selected Course
-              </h3>
-              <button
-                type="button"
-                onClick={() => setSelectedCourse(null)}
-                className="text-sm font-medium text-blue-600 hover:text-blue-700"
-              >
+              <h3 className="text-sm font-semibold text-gray-700">Selected Course</h3>
+              <Button type="button" variant="link" size="sm" onClick={() => setSelectedCourse(null)}>
                 Search again
-              </button>
+              </Button>
             </div>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
               <CourseCard
                 course={selectedCourse}
                 action={
-                  <button
+                  <Button
                     type="button"
+                    variant="primary"
+                    size="md"
+                    fullWidth
                     onClick={() => handleEnrol(selectedCourse.id)}
-                    disabled={pendingId === selectedCourse.id}
-                    className="
-                      w-full
-                      rounded-xl
-                      bg-blue-600
-                      px-4
-                      py-2
-                      text-sm
-                      font-medium
-                      text-white
-                      transition
-                      hover:bg-blue-700
-                      disabled:cursor-not-allowed
-                      disabled:opacity-60
-                    "
+                    loading={pendingId === selectedCourse.id}
                   >
-                    {pendingId === selectedCourse.id
-                      ? "Enrolling..."
-                      : "Enrol in Course"}
-                  </button>
+                    {pendingId === selectedCourse.id ? "Enrolling..." : "Enrol in Course"}
+                  </Button>
                 }
               />
             </div>
@@ -162,11 +126,7 @@ export default function EnrolmentManagement() {
         {enrolledLoading ? (
           <PageLoader message="Loading your courses..." />
         ) : enrolledError ? (
-          <ErrorFallback
-            title="Could not load your courses"
-            error={enrolledError}
-            onRetry={refreshEnrolled}
-          />
+          <ErrorFallback title="Could not load your courses" error={enrolledError} onRetry={refreshEnrolled} />
         ) : enrolledCourses.length === 0 ? (
           <div
             className="
@@ -180,9 +140,7 @@ export default function EnrolmentManagement() {
               text-center
             "
           >
-            <p className="text-sm text-gray-600">
-              You have not enrolled in any courses yet.
-            </p>
+            <p className="text-sm text-gray-600">You have not enrolled in any courses yet.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
@@ -191,29 +149,16 @@ export default function EnrolmentManagement() {
                 key={course.id}
                 course={course}
                 action={
-                  <button
+                  <Button
                     type="button"
+                    variant="danger-outline"
+                    size="md"
+                    fullWidth
                     onClick={() => handleWithdraw(course.id)}
-                    disabled={pendingId === course.id}
-                    className="
-                      w-full
-                      rounded-xl
-                      border
-                      border-red-200
-                      bg-white
-                      px-4
-                      py-2
-                      text-sm
-                      font-medium
-                      text-red-600
-                      transition
-                      hover:bg-red-50
-                      disabled:cursor-not-allowed
-                      disabled:opacity-60
-                    "
+                    loading={pendingId === course.id}
                   >
-                    {pendingId === course.id ? "Withdrawing..." : "Withdraw"}
-                  </button>
+                    Withdraw
+                  </Button>
                 }
               />
             ))}
