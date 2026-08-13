@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { AdminPageHeader, Button, ErrorFallback, PageLoader, useError } from "@/shared";
+import { AdminPageHeader, Button, EmptyState, ErrorFallback, PageLoader, useError } from "@/shared";
 
 import CourseCard from "../CourseCard";
 import CourseSearch from "../CourseSearch";
@@ -128,20 +128,7 @@ export default function EnrolmentManagement() {
         ) : enrolledError ? (
           <ErrorFallback title="Could not load your courses" error={enrolledError} onRetry={refreshEnrolled} />
         ) : enrolledCourses.length === 0 ? (
-          <div
-            className="
-              rounded-2xl
-              border
-              border-dashed
-              border-gray-300
-              bg-white
-              px-6
-              py-12
-              text-center
-            "
-          >
-            <p className="text-sm text-gray-600">You have not enrolled in any courses yet.</p>
-          </div>
+          <EmptyState size="md" title="No courses enrolled" message="You have not enrolled in any courses yet." />
         ) : (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {enrolledCourses.map((course) => (
