@@ -2,7 +2,7 @@
 
 import {
   useDebounce,
-  AdminPageHeader as PageHeader,
+  PageHeader,
   ErrorFallback,
   Modal,
   PageLoader,

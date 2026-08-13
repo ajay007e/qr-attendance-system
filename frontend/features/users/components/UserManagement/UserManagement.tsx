@@ -9,7 +9,7 @@ import {
   User,
   Button,
   Pagination,
-  AdminPageHeader as PageHeader,
+  PageHeader,
   ErrorFallback,
   EmptyState,
   Loader,
@@ -73,7 +73,7 @@ export default function UserManagement() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-5 sm:space-y-6">
+    <>
       <PageHeader
         title="User Management"
         subtitle="Manage administrators, lecturers, and student accounts."
@@ -190,6 +190,6 @@ export default function UserManagement() {
           />
         )}
       </Modal>
-    </div>
+    </>
   );
 }

@@ -14,7 +14,6 @@ export default function DashboardShell({ children }: DashboardShellProps) {
 
   useEffect(() => {
     document.body.style.overflow = sidebarOpen ? "hidden" : "";
-
     return () => {
       document.body.style.overflow = "";
     };
@@ -28,32 +27,14 @@ export default function DashboardShell({ children }: DashboardShellProps) {
 
       <div className="flex min-h-0 flex-1 overflow-hidden">
         {/* Desktop Sidebar */}
-        <aside
-          className="
-            hidden
-            h-full
-            w-72
-            shrink-0
-            border-r
-            border-gray-200
-            bg-white
-            shadow-sm
-            lg:flex
-          "
-        >
+        <aside className="hidden h-full w-72 shrink-0 border-r border-gray-200 bg-white shadow-sm lg:flex">
           <Sidebar />
         </aside>
 
         {/* Mobile Overlay */}
         {sidebarOpen && (
           <div
-            className="
-              fixed
-              inset-0
-              z-40
-              bg-black/50
-              lg:hidden
-            "
+            className="fixed inset-0 z-40 bg-black/50 lg:hidden"
             onClick={() => setSidebarOpen(false)}
             aria-hidden="true"
           />
@@ -61,37 +42,11 @@ export default function DashboardShell({ children }: DashboardShellProps) {
 
         {/* Mobile Sidebar */}
         <aside
-          className={`
-            fixed
-            inset-y-0
-            left-0
-            z-50
-            flex
-            w-72
-            flex-col
-            bg-white
-            shadow-xl
-            transition-transform
-            duration-300
-            ease-in-out
-            lg:hidden
-            ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-          `}
+          className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-white shadow-xl transition-transform duration-300 ease-in-out lg:hidden
+            ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
         >
-          <div
-            className="
-              flex
-              h-16
-              shrink-0
-              items-center
-              justify-between
-              border-b
-              border-gray-200
-              px-4
-            "
-          >
+          <div className="flex h-16 shrink-0 items-center justify-between border-b border-gray-200 px-4">
             <h2 className="text-lg font-semibold text-gray-900">Navigation</h2>
-
             <Button
               type="button"
               variant="ghost"
@@ -109,21 +64,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
         </aside>
 
         {/* Main Content */}
-        <main
-          className="
-            min-h-0
-            min-w-0
-            flex-1
-            overflow-y-auto
-            overflow-x-hidden
-            px-4
-            py-4
-            sm:px-6
-            sm:py-6
-            lg:px-8
-            lg:py-8
-          "
-        >
+        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
           {children}
         </main>
       </div>

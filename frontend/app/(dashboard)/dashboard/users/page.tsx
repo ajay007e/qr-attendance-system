@@ -1,5 +1,10 @@
 import { UserManagement } from "@/features/users";
+import { Container } from "@/shared";
 
 export default function UsersPage() {
-  return <UserManagement />;
+  return (
+    <Container>
+      <UserManagement />
+    </Container>
+  );
 }

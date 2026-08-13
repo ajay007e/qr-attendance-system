@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { AdminPageHeader, Button, EmptyState, ErrorFallback, PageLoader, useError } from "@/shared";
+import { Button, EmptyState, ErrorFallback, PageLoader, useError, Section, SectionHeader } from "@/shared";
 
 import CourseCard from "../CourseCard";
 import CourseSearch from "../CourseSearch";
@@ -64,15 +64,12 @@ export default function EnrolmentManagement() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-6">
-      <AdminPageHeader title="Enrollment" subtitle="Search for a course, review its details, then enrol." />
-
-      <section className="space-y-4">
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900">Find a Course</h2>
-          <p className="mt-1 text-sm text-gray-500">Search by course code or name. No courses load until you search.</p>
-        </div>
-
+    <>
+      <Section>
+        <SectionHeader
+          title="Find a Course"
+          subtitle="Search by course code or name. No courses load until you search."
+        />
         {!selectedCourse && (
           <CourseSearch
             value={search}
@@ -118,11 +115,10 @@ export default function EnrolmentManagement() {
             </div>
           </div>
         )}
-      </section>
+      </Section>
 
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold text-gray-900">My Courses</h2>
-
+      <Section>
+        <SectionHeader title="My Courses" />
         {enrolledLoading ? (
           <PageLoader message="Loading your courses..." />
         ) : enrolledError ? (
@@ -151,7 +147,7 @@ export default function EnrolmentManagement() {
             ))}
           </div>
         )}
-      </section>
-    </div>
+      </Section>
+    </>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-import { AdminPageHeader, EmptyState, ErrorFallback, PageLoader } from "@/shared";
+import { EmptyState, ErrorFallback, PageLoader, Section, SectionHeader } from "@/shared";
 
 import CourseCard from "../CourseCard";
 import useEnrolledCourses from "../../hooks/useEnrolledCourses";
@@ -18,21 +18,19 @@ export default function StudentDashboard() {
 
   return (
     <>
-      <AdminPageHeader
-        title="Student Dashboard"
-        subtitle="View your enrolled courses and stay up to date with your studies."
-      />
-      <section className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">Enrolled Courses</h2>
-
-          {!loading && !error && courses.length > 0 && (
-            <span className="text-sm text-gray-500">
-              {courses.length} course{courses.length === 1 ? "" : "s"}
-            </span>
-          )}
-        </div>
-
+      <Section>
+        <SectionHeader
+          title="Enrolled Courses"
+          action={
+            !loading &&
+            !error &&
+            courses.length > 0 && (
+              <span className="text-sm text-gray-500">
+                {courses.length} course{courses.length === 1 ? "" : "s"}
+              </span>
+            )
+          }
+        />
         {loading ? (
           <PageLoader message="Loading your courses..." />
         ) : error ? (
@@ -54,7 +52,7 @@ export default function StudentDashboard() {
             ))}
           </div>
         )}
-      </section>
+      </Section>
     </>
   );
 }

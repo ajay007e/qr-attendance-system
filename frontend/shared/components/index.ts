@@ -9,7 +9,10 @@ export { default as Footer } from "./layout/Footer";
 export { default as Topbar } from "./layout/Topbar";
 export { default as Sidebar } from "./layout/Sidebar";
 export { default as DashboardShell } from "./layout/DashboardShell";
-export { default as AdminPageHeader } from "./layout/AdminPageHeader";
+export { default as PageHeader } from "./layout/PageHeader";
+export { default as Container } from "./layout/DashboardContainer";
+export { default as Section } from "./layout/DashboardSection";
+export { default as SectionHeader } from "./layout/SectionHeader";
 
 export { default as Modal } from "./ui/Modal";
 export { default as Badge } from "./ui/Badge";
