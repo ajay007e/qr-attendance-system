@@ -13,11 +13,12 @@ import type {
   CourseLecturerRole,
   UpdateCourseData,
 } from "./course.types";
+import { DEFAULT_LIMIT, DEFAULT_MAX_LIMIT, DEFAULT_PAGE } from "@/utils";
 
 export class CourseRepository {
   async findAll(query: CourseQuery): Promise<PaginatedData<DatabaseCourse>> {
-    const page = query.page ?? 1;
-    const limit = query.limit ?? 10;
+    const page = Math.max(1, query.page ?? DEFAULT_PAGE);
+    const limit = Math.min(DEFAULT_MAX_LIMIT, Math.max(1, query.limit ?? DEFAULT_LIMIT));
     const offset = (page - 1) * limit;
 
     let where = "WHERE 1 = 1";

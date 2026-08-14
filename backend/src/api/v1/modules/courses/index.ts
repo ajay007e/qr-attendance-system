@@ -10,4 +10,7 @@ const service = new CourseService(repository, userRepository);
 
 const controller = new CourseController(service);
 
+export { CourseRepository };
 export { repository, service, controller };
+
+export { Course, CourseLecturerRole, DatabaseCourse } from "./course.types";

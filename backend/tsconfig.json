@@ -17,7 +17,7 @@
     "resolveJsonModule": true,
 
     "paths": {
-      "@/*": ["./src/*"],
+      "@/*": ["./src/*"]
     },
 
     "noUnusedLocals": true,
@@ -26,17 +26,11 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
 
-
     "noUncheckedSideEffectImports": true,
 
     "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-
-
- 
+    "allowUnusedLabels": false
   },
 
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

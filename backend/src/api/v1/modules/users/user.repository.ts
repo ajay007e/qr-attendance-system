@@ -2,7 +2,7 @@ import type { ExecuteValues, ResultSetHeader, RowDataPacket } from "mysql2";
 
 import { db } from "@/config/database";
 import type { PaginatedData } from "@/types";
-import { ROLES } from "@/utils";
+import { DEFAULT_LIMIT, DEFAULT_MAX_LIMIT, DEFAULT_PAGE, ROLES } from "@/utils";
 
 import { LECTURER_COLUMNS, USER_COLUMNS, USER_COLUMNS_WITH_PASSWORD } from "./user.constants";
 
@@ -17,8 +17,8 @@ import type {
 
 export class UserRepository {
   async findAll(query: UserQuery): Promise<PaginatedData<DatabaseUserWithoutPassword>> {
-    const page = Math.max(1, query.page ?? 1);
-    const limit = Math.min(100, Math.max(1, query.limit ?? 10));
+    const page = Math.max(1, query.page ?? DEFAULT_PAGE);
+    const limit = Math.min(DEFAULT_MAX_LIMIT, Math.max(1, query.limit ?? DEFAULT_LIMIT));
     const offset = (page - 1) * limit;
 
     let where = "WHERE 1 = 1";

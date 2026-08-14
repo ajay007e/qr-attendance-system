@@ -1,13 +1,16 @@
-import { ExecuteValues, RowDataPacket } from "mysql2";
+import type { ExecuteValues, ResultSetHeader, RowDataPacket } from "mysql2";
 
-import { db } from "../../../../config/database";
+import { db } from "@/config";
+import type { PaginatedData } from "@/types";
+import { DEFAULT_LIMIT, DEFAULT_MAX_LIMIT, DEFAULT_PAGE } from "@/utils";
 
-import { AssignedCourse, CourseStudent, EnrolledCourse, Pagination } from "./enrolment.types";
-import { ParticipantQuery } from "../courses/course.types";
-import { PaginatedUsers, User } from "../users/user.types";
+import type {
+  DatabaseAssignedCourse,
+  DatabaseEnrolledCourse,
+  DatabaseStudent,
+  EnrolmentQuery,
+} from "./enrolment.types";
 
-// MySQL duplicate-key error code, raised when inserting a row that violates
-// the (course_id, user_id) composite primary key.
 const DUPLICATE_ENTRY = "ER_DUP_ENTRY";
 
 function isDuplicateEntryError(error: unknown): boolean {
@@ -19,87 +22,111 @@ export class EnrolmentRepository {
    * Student Enrolment
    * ===================================================== */
 
-  async findEnrolledCourses(userId: number): Promise<EnrolledCourse[]> {
+  async findEnrolledCourses(userId: number): Promise<DatabaseEnrolledCourse[]> {
     const [rows] = await db.execute<RowDataPacket[]>(
       `
-            SELECT
-                c.id,
-                c.course_code,
-                c.course_name,
-                c.description,
-                c.credits,
-                c.session,
-                c.is_active,
-                ce.created_at AS enrolled_at
-            FROM course_enrolments ce
-            INNER JOIN courses c
-                ON c.id = ce.course_id
-            WHERE ce.user_id = ?
-            ORDER BY c.course_code ASC
-            `,
+        SELECT
+          c.id,
+          c.course_code,
+          c.course_name,
+          c.description,
+          c.credits,
+          c.session,
+          c.is_active,
+          ce.created_at AS enrolled_at
+        FROM course_enrolments ce
+        INNER JOIN courses c
+          ON c.id = ce.course_id
+        WHERE ce.user_id = ?
+        ORDER BY c.course_code ASC
+      `,
       [userId],
     );
 
-    return rows as EnrolledCourse[];
+    return rows as DatabaseEnrolledCourse[];
   }
 
-  async findAvailableCourses(
-    userId: number,
-    search: string | undefined,
-    pagination: Pagination,
-  ): Promise<EnrolledCourse[]> {
-    const params: (number | string)[] = [userId];
+  async findAvailableCourses(userId: number, query: EnrolmentQuery): Promise<PaginatedData<DatabaseEnrolledCourse>> {
+    const page = Math.max(1, query.page ?? DEFAULT_PAGE);
+    const limit = Math.min(DEFAULT_MAX_LIMIT, Math.max(1, query.limit ?? DEFAULT_LIMIT));
+    const offset = (page - 1) * limit;
 
-    let searchClause = "";
+    let where = `
+      WHERE c.is_active = TRUE
+        AND c.id NOT IN (
+          SELECT course_id
+          FROM course_enrolments
+          WHERE user_id = ?
+        )
+    `;
 
-    if (search && search.trim()) {
-      searchClause = "AND (c.course_code LIKE ? OR c.course_name LIKE ?)";
+    const params: ExecuteValues[] = [userId];
 
-      const like = `%${search.trim()}%`;
+    if (query.search) {
+      where += `
+        AND (
+          c.course_code LIKE ?
+          OR c.course_name LIKE ?
+        )
+      `;
 
-      params.push(like, like);
+      const keyword = `%${query.search}%`;
+
+      params.push(keyword, keyword);
     }
 
-    const { limit, offset } = pagination;
-
-    const [rows] = await db.query<RowDataPacket[]>(
+    const [countRows] = await db.execute<RowDataPacket[]>(
       `
-            SELECT
-                c.id,
-                c.course_code,
-                c.course_name,
-                c.description,
-                c.credits,
-                c.session,
-                c.is_active,
-                NULL AS enrolled_at
-            FROM courses c
-            WHERE c.is_active = TRUE
-            AND c.id NOT IN (
-                SELECT course_id
-                FROM course_enrolments
-                WHERE user_id = ?
-            )
-            ${searchClause}
-            ORDER BY c.course_code ASC
-            LIMIT ${limit}
-            OFFSET ${offset}
-            `,
+        SELECT COUNT(*) AS total
+        FROM courses c
+        ${where}
+      `,
       params,
     );
 
-    return rows as EnrolledCourse[];
+    const total = Number(countRows[0]?.total ?? 0);
+    const totalPages = Math.ceil(total / limit);
+
+    const [rows] = await db.execute<RowDataPacket[]>(
+      `
+        SELECT
+          c.id,
+          c.course_code,
+          c.course_name,
+          c.description,
+          c.credits,
+          c.session,
+          c.is_active,
+          NULL AS enrolled_at
+        FROM courses c
+        ${where}
+        ORDER BY c.course_code ASC
+        LIMIT ?
+        OFFSET ?
+      `,
+      [...params, limit, offset],
+    );
+
+    return {
+      items: rows as DatabaseEnrolledCourse[],
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages,
+      },
+    };
   }
 
   async isEnrolled(courseId: number, userId: number): Promise<boolean> {
     const [rows] = await db.execute<RowDataPacket[]>(
       `
-            SELECT 1
-            FROM course_enrolments
-            WHERE course_id = ?
-            AND user_id = ?
-            LIMIT 1
-            `,
+        SELECT 1
+        FROM course_enrolments
+        WHERE course_id = ?
+          AND user_id = ?
+        LIMIT 1
+      `,
       [courseId, userId],
     );
 
@@ -108,15 +135,14 @@ export class EnrolmentRepository {
 
   async enrol(courseId: number, userId: number): Promise<boolean> {
     try {
-      await db.execute(
+      await db.execute<ResultSetHeader>(
         `
-            INSERT INTO course_enrolments
-            (
-                course_id,
-                user_id
-            )
-            VALUES (?, ?)
-            `,
+          INSERT INTO course_enrolments (
+            course_id,
+            user_id
+          )
+          VALUES (?, ?)
+        `,
         [courseId, userId],
       );
 
@@ -133,11 +159,10 @@ export class EnrolmentRepository {
   async unenrol(courseId: number, userId: number): Promise<void> {
     await db.execute(
       `
-            DELETE
-            FROM course_enrolments
-            WHERE course_id = ?
-            AND user_id = ?
-            `,
+        DELETE FROM course_enrolments
+        WHERE course_id = ?
+          AND user_id = ?
+      `,
       [courseId, userId],
     );
   }
@@ -146,104 +171,101 @@ export class EnrolmentRepository {
    * Lecturer Courses
    * ===================================================== */
 
-  async findAssignedCourses(userId: number): Promise<AssignedCourse[]> {
+  async findAssignedCourses(userId: number): Promise<DatabaseAssignedCourse[]> {
     const [rows] = await db.execute<RowDataPacket[]>(
       `
-            SELECT
-                c.id,
-                c.course_code,
-                c.course_name,
-                c.description,
-                c.credits,
-                c.session,
-                c.is_active,
-                cl.role AS lecturer_role,
-                cl.created_at AS assigned_at
-            FROM course_lecturers cl
-            INNER JOIN courses c
-                ON c.id = cl.course_id
-            WHERE cl.user_id = ?
-            ORDER BY c.course_code ASC
-            `,
+        SELECT
+          c.id,
+          c.course_code,
+          c.course_name,
+          c.description,
+          c.credits,
+          c.session,
+          c.is_active,
+          cl.role AS lecturer_role,
+          cl.created_at AS assigned_at
+        FROM course_lecturers cl
+        INNER JOIN courses c
+          ON c.id = cl.course_id
+        WHERE cl.user_id = ?
+        ORDER BY c.course_code ASC
+      `,
       [userId],
     );
 
-    return rows as AssignedCourse[];
+    return rows as DatabaseAssignedCourse[];
   }
 
   /* =====================================================
    * Course Roster
    * ===================================================== */
 
-  async getStudents(courseId: number, query: ParticipantQuery): Promise<PaginatedUsers> {
-    const page = query.page ?? 1;
-    const limit = query.limit ?? 10;
+  async getStudents(courseId: number, query: EnrolmentQuery): Promise<PaginatedData<DatabaseStudent>> {
+    const page = Math.max(1, query.page ?? DEFAULT_PAGE);
+    const limit = Math.min(DEFAULT_MAX_LIMIT, Math.max(1, query.limit ?? DEFAULT_LIMIT));
     const offset = (page - 1) * limit;
 
     let where = `
-    WHERE ce.course_id = ?
-  `;
+      WHERE ce.course_id = ?
+    `;
 
     const params: ExecuteValues[] = [courseId];
 
-    if (query.search?.trim()) {
+    if (query.search) {
       where += `
-      AND (
-        u.first_name LIKE ?
-        OR u.last_name LIKE ?
-        OR u.email LIKE ?
-      )
-    `;
+        AND (
+          u.first_name LIKE ?
+          OR u.last_name LIKE ?
+          OR u.email LIKE ?
+        )
+      `;
 
-      const keyword = `%${query.search.trim()}%`;
+      const keyword = `%${query.search}%`;
 
       params.push(keyword, keyword, keyword);
     }
 
-    const [rows] = await db.query<RowDataPacket[]>(
+    const [countRows] = await db.execute<RowDataPacket[]>(
       `
-      SELECT
+        SELECT COUNT(*) AS total
+        FROM course_enrolments ce
+        INNER JOIN users u
+          ON u.id = ce.user_id
+        ${where}
+      `,
+      params,
+    );
+
+    const total = Number(countRows[0]?.total ?? 0);
+    const totalPages = Math.ceil(total / limit);
+
+    const [rows] = await db.execute<RowDataPacket[]>(
+      `
+        SELECT
           u.id,
           u.first_name,
           u.last_name,
           u.email,
           u.role,
           ce.created_at AS enrolled_at
-      FROM course_enrolments ce
-      INNER JOIN users u
+        FROM course_enrolments ce
+        INNER JOIN users u
           ON u.id = ce.user_id
-      ${where}
-      ORDER BY u.first_name
-      LIMIT ?
-      OFFSET ?
-    `,
+        ${where}
+        ORDER BY u.first_name ASC, u.last_name ASC
+        LIMIT ?
+        OFFSET ?
+      `,
       [...params, limit, offset],
     );
 
-    const [countRows] = await db.query<RowDataPacket[]>(
-      `
-      SELECT COUNT(*) AS total
-      FROM course_enrolments ce
-      INNER JOIN users u
-          ON u.id = ce.user_id
-      ${where}
-    `,
-      params,
-    );
-
-    const total = Number(countRows[0].total);
-    const totalPages = Math.ceil(total / limit);
-
     return {
-      data: rows as User[],
-      pagination: {
+      items: rows as DatabaseStudent[],
+      meta: {
         page,
         limit,
-        count: rows.length,
         total,
         totalPages,
-        hasPrevious: page > 1,
-        hasNext: page < totalPages,
       },
     };
   }

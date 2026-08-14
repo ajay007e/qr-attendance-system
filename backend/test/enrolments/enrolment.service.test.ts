@@ -8,11 +8,7 @@ import { Course } from "../../src/api/v1/modules/courses/course.types";
 
 import { EnrolmentRepository } from "../../src/api/v1/modules/enrolments/enrolment.repository";
 import { EnrolmentService } from "../../src/api/v1/modules/enrolments/enrolment.service";
-import {
-  CourseStudent,
-  EnrolledCourse,
-  Pagination,
-} from "../../src/api/v1/modules/enrolments/enrolment.types";
+import { CourseStudent, EnrolledCourse, Pagination } from "../../src/api/v1/modules/enrolments/enrolment.types";
 
 const pagination: Pagination = { limit: 20, offset: 0 };
 
@@ -65,10 +61,7 @@ class FakeEnrolmentRepository {
     this.unenrolCalls.push([courseId, userId]);
   }
 
-  async getStudents(
-    courseId: number,
-    requestedPagination: Pagination,
-  ): Promise<CourseStudent[]> {
+  async getStudents(courseId: number, requestedPagination: Pagination): Promise<CourseStudent[]> {
     this.studentCalls.push([courseId, requestedPagination]);
     return this.students;
   }
@@ -94,10 +87,7 @@ function createService() {
 }
 
 function isAppError(statusCode: number, message: string) {
-  return (error: unknown) =>
-    error instanceof AppError &&
-    error.statusCode === statusCode &&
-    error.message === message;
+  return (error: unknown) => error instanceof AppError && error.statusCode === statusCode && error.message === message;
 }
 
 test("lists enrolled and available courses", async () => {
@@ -111,10 +101,7 @@ test("lists enrolled and available courses", async () => {
   repository.availableCourses = [course];
 
   assert.deepEqual(await service.getEnrolledCourses(12), [course]);
-  assert.deepEqual(
-    await service.getAvailableCourses(12, "CSIT", pagination),
-    [course],
-  );
+  assert.deepEqual(await service.getAvailableCourses(12, "CSIT", pagination), [course]);
   assert.deepEqual(repository.availableCalls, [[12, "CSIT", pagination]]);
 });
 
@@ -130,10 +117,7 @@ test("rejects enrolment when the course does not exist", async () => {
   const { courses, repository, service } = createService();
   courses.course = null;
 
-  await assert.rejects(
-    service.enrol(404, 12),
-    isAppError(404, "Course not found"),
-  );
+  await assert.rejects(service.enrol(404, 12), isAppError(404, "Course not found"));
   assert.deepEqual(repository.enrolCalls, []);
 });
 
@@ -141,10 +125,7 @@ test("rejects enrolment when the course is inactive", async () => {
   const { courses, repository, service } = createService();
   courses.course = { ...activeCourse, is_active: false };
 
-  await assert.rejects(
-    service.enrol(7, 12),
-    isAppError(400, "Course is not open for enrolment"),
-  );
+  await assert.rejects(service.enrol(7, 12), isAppError(400, "Course is not open for enrolment"));
   assert.deepEqual(repository.enrolCalls, []);
 });
 
@@ -152,10 +133,7 @@ test("rejects duplicate enrolment reported by the primary key", async () => {
   const { repository, service } = createService();
   repository.enrolResult = false;
 
-  await assert.rejects(
-    service.enrol(7, 12),
-    isAppError(409, "Already enrolled in this course"),
-  );
+  await assert.rejects(service.enrol(7, 12), isAppError(409, "Already enrolled in this course"));
   assert.deepEqual(repository.enrolCalls, [[7, 12]]);
 });
 
@@ -171,10 +149,7 @@ test("withdraws an enrolled student", async () => {
 test("rejects withdrawal when the student is not enrolled", async () => {
   const { repository, service } = createService();
 
-  await assert.rejects(
-    service.unenrol(7, 12),
-    isAppError(404, "Not enrolled in this course"),
-  );
+  await assert.rejects(service.unenrol(7, 12), isAppError(404, "Not enrolled in this course"));
   assert.deepEqual(repository.unenrolCalls, []);
 });
 
@@ -198,8 +173,5 @@ test("rejects roster access when the course does not exist", async () => {
   const { courses, service } = createService();
   courses.course = null;
 
-  await assert.rejects(
-    service.getStudents(404, pagination),
-    isAppError(404, "Course not found"),
-  );
+  await assert.rejects(service.getStudents(404, pagination), isAppError(404, "Course not found"));
 });

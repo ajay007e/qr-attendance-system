@@ -1,7 +1,6 @@
 import "express";
 import "express-session";
 
-import type { Role } from "@/utils";
 import { SessionUser } from "@/types";
 
 declare module "express-session" {
