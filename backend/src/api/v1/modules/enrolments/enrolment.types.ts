@@ -26,5 +26,6 @@ export interface EnrolRequest {
 
 export interface Pagination {
   limit: number;
-  offset: number;
+  page: number;
+  search?: string;
 }

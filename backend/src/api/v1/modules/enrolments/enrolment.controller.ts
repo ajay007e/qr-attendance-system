@@ -110,7 +110,7 @@ export class EnrolmentController {
     try {
       const courseId = validateCourseId(Number(req.params.courseId));
 
-      const pagination = validatePagination(req.query.limit, req.query.offset);
+      const pagination = validatePagination(req.query.limit, req.query.page, req.query.search);
 
       const students = await this.service.getStudents(courseId, pagination);
 

@@ -3,7 +3,7 @@ import { Course } from "../../types";
 export type CourseTab = "site" | "participants" | "grades" | "attendance";
 
 export interface CourseLandingProps {
-  course: Course;
+  courseId: number;
   backHref: string;
 }
 

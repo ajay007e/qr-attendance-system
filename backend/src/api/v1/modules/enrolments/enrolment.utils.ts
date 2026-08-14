@@ -32,18 +32,19 @@ export function validateEnrolRequest(data: EnrolRequest): EnrolRequest {
   };
 }
 
-export function validatePagination(limit?: unknown, offset?: unknown): Pagination {
+export function validatePagination(limit?: unknown, page?: unknown, search?: unknown): Pagination {
   const rawLimit = Number(limit);
-  const rawOffset = Number(offset);
+  const rawPage = Number(page);
 
   const normalizedLimit =
     Number.isFinite(rawLimit) && rawLimit > 0 ? Math.min(Math.floor(rawLimit), MAX_LIMIT) : DEFAULT_LIMIT;
 
-  const normalizedOffset = Number.isFinite(rawOffset) && rawOffset >= 0 ? Math.floor(rawOffset) : 0;
+  const normalizedPage = Number.isFinite(rawPage) && rawPage > 0 ? Math.floor(rawPage) : 1;
 
   return {
+    page: normalizedPage,
     limit: normalizedLimit,
-    offset: normalizedOffset,
+    search: search?.trim() ?? "",
   };
 }
 

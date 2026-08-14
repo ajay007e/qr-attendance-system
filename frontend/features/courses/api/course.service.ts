@@ -1,10 +1,5 @@
 import api from "@/shared/lib/api";
-import {
-  AssignLecturerRequest,
-  CreateCourseRequest,
-  CourseQuery,
-  UpdateCourseRequest,
-} from "../types";
+import { AssignLecturerRequest, CreateCourseRequest, CourseQuery, UpdateCourseRequest } from "../types";
 
 import { Course, CourseLecturer } from "../types";
 
@@ -53,9 +48,7 @@ export class CourseService {
   }
 
   static async removeLecturer(courseId: number, userId: number) {
-    const response = await api.delete(
-      `/courses/${courseId}/lecturers/${userId}`,
-    );
+    const response = await api.delete(`/courses/${courseId}/lecturers/${userId}`);
     return response.data;
   }
 }

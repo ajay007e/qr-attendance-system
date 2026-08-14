@@ -9,6 +9,17 @@ import { Role } from "../../../../utils/constants/roles";
 export const courseRouter = Router();
 
 courseRouter.use(isAuthenticated);
+
+/* ======================================================
+ * Course Read
+ * ====================================================== */
+
+courseRouter.get("/:id", authorize(Role.SUPER_ADMIN, Role.LECTURER, Role.STUDENT), controller.get);
+
+/* ======================================================
+ * Admin
+ * ====================================================== */
+
 courseRouter.use(authorize(Role.SUPER_ADMIN));
 
 /* ======================================================
@@ -26,8 +37,6 @@ courseRouter.delete("/:id/lecturers/:userId", controller.removeLecturer);
  * ====================================================== */
 
 courseRouter.get("/", controller.list);
-
-courseRouter.get("/:id", controller.get);
 
 courseRouter.post("/", controller.create);
 

@@ -1,6 +1,7 @@
 import { AppError } from "../../../../utils/app.error";
 
 import { CourseRepository } from "../courses/course.repository";
+import { PaginatedUsers } from "../users/user.types";
 
 import { EnrolmentRepository } from "./enrolment.repository";
 
@@ -74,7 +75,7 @@ export class EnrolmentService {
    * Course Roster
    * ===================================================== */
 
-  async getStudents(courseId: number, pagination: Pagination): Promise<CourseStudent[]> {
+  async getStudents(courseId: number, pagination: Pagination): Promise<PaginatedUsers> {
     courseId = validateCourseId(courseId);
 
     const course = await this.courses.findById(courseId);

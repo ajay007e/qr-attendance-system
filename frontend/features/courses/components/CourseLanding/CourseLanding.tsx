@@ -5,17 +5,41 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 import { getCourseCardGradient } from "../../../enrolments/utils";
+import { useCourse } from "../../hooks/useCourse";
+
 import { ParticipantsTab } from "./components/ParticiapantsPanel/ParticipantsPanel";
 import { GradesTab } from "./components/GradesPanel/GradesPanel";
 import { AttendanceTab } from "./components/AttendancePanel/AttendancePanel";
 import { SiteTab } from "./components/SitePanel/SitePanel";
-import { Tabs } from "@/shared";
-import { COURSE_TABS } from "./constants";
-import { CourseLandingProps, CourseTab } from "./types";
 
-export default function CourseLanding({ course, backHref }: CourseLandingProps) {
+import { Tabs, PageLoader, ErrorFallback } from "@/shared";
+
+import { COURSE_TABS } from "./constants";
+import type { CourseLandingProps, CourseTab } from "./types";
+
+export default function CourseLanding({ courseId, backHref }: CourseLandingProps) {
   const [activeTab, setActiveTab] = useState<CourseTab>("site");
+
+  const { course, loading, error, refresh } = useCourse(courseId);
+
+  if (loading) {
+    return <PageLoader />;
+  }
+
+  if (error || !course) {
+    return (
+      <ErrorFallback
+        title="Unable to load course"
+        message="We couldn't retrieve this course right now. Please try again."
+        error={error?.message}
+        onRetry={refresh}
+        retryLabel="Retry Loading"
+      />
+    );
+  }
+
   const gradient = getCourseCardGradient(course.course_code);
+
   return (
     <div className="space-y-5">
       <Link
@@ -38,8 +62,11 @@ export default function CourseLanding({ course, backHref }: CourseLandingProps) 
       />
 
       {activeTab === "site" && <SiteTab course={course} gradient={gradient} />}
-      {activeTab === "participants" && <ParticipantsTab />}
+
+      {activeTab === "participants" && <ParticipantsTab course={course} />}
+
       {activeTab === "grades" && <GradesTab />}
+
       {activeTab === "attendance" && <AttendanceTab />}
     </div>
   );

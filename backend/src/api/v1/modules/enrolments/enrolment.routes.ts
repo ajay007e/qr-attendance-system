@@ -29,4 +29,4 @@ enrolmentRouter.get("/lecturer/courses", authorize(Role.LECTURER), controller.li
  * Course Roster
  * ====================================================== */
 
-enrolmentRouter.get("/courses/:courseId/students", authorize(Role.LECTURER), controller.getStudents);
+enrolmentRouter.get("/courses/:courseId/students", authorize(Role.LECTURER, Role.STUDENT), controller.getStudents);

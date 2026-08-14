@@ -1,8 +1,10 @@
-import { RowDataPacket } from "mysql2";
+import { ExecuteValues, RowDataPacket } from "mysql2";
 
 import { db } from "../../../../config/database";
 
 import { AssignedCourse, CourseStudent, EnrolledCourse, Pagination } from "./enrolment.types";
+import { ParticipantQuery } from "../courses/course.types";
+import { PaginatedUsers, User } from "../users/user.types";
 
 // MySQL duplicate-key error code, raised when inserting a row that violates
 // the (course_id, user_id) composite primary key.
@@ -173,29 +175,76 @@ export class EnrolmentRepository {
    * Course Roster
    * ===================================================== */
 
-  async getStudents(courseId: number, pagination: Pagination): Promise<CourseStudent[]> {
-    const { limit, offset } = pagination;
+  async getStudents(courseId: number, query: ParticipantQuery): Promise<PaginatedUsers> {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const offset = (page - 1) * limit;
+
+    let where = `
+    WHERE ce.course_id = ?
+  `;
+
+    const params: ExecuteValues[] = [courseId];
+
+    if (query.search?.trim()) {
+      where += `
+      AND (
+        u.first_name LIKE ?
+        OR u.last_name LIKE ?
+        OR u.email LIKE ?
+      )
+    `;
+
+      const keyword = `%${query.search.trim()}%`;
+
+      params.push(keyword, keyword, keyword);
+    }
 
     const [rows] = await db.query<RowDataPacket[]>(
       `
-            SELECT
-                u.id,
-                u.first_name,
-                u.last_name,
-                u.email,
-                u.role,
-                ce.created_at AS enrolled_at
-            FROM course_enrolments ce
-            INNER JOIN users u
-                ON u.id = ce.user_id
-            WHERE ce.course_id = ?
-            ORDER BY u.first_name
-            LIMIT ${limit}
-            OFFSET ${offset}
-            `,
-      [courseId],
+      SELECT
+          u.id,
+          u.first_name,
+          u.last_name,
+          u.email,
+          u.role,
+          ce.created_at AS enrolled_at
+      FROM course_enrolments ce
+      INNER JOIN users u
+          ON u.id = ce.user_id
+      ${where}
+      ORDER BY u.first_name
+      LIMIT ?
+      OFFSET ?
+    `,
+      [...params, limit, offset],
     );
 
-    return rows as CourseStudent[];
+    const [countRows] = await db.query<RowDataPacket[]>(
+      `
+      SELECT COUNT(*) AS total
+      FROM course_enrolments ce
+      INNER JOIN users u
+          ON u.id = ce.user_id
+      ${where}
+    `,
+      params,
+    );
+
+    const total = Number(countRows[0].total);
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      data: rows as User[],
+      pagination: {
+        page,
+        limit,
+        count: rows.length,
+        total,
+        totalPages,
+        hasPrevious: page > 1,
+        hasNext: page < totalPages,
+      },
+    };
   }
 }

@@ -1,8 +1,10 @@
-import { ApiResponse } from "@/shared";
+import { ApiResponse, PaginatedResponse } from "@/shared";
 import api from "@/shared/lib/api";
 
 import type { AssignedCourse, StudentCourse } from "../types";
+
 import { COURSE_SEARCH_LIMIT } from "../constants";
+import { Participant } from "@/features/courses/components/CourseLanding/components/ParticiapantsPanel/types";
 
 export const enrolmentService = {
   async getEnrolled() {
@@ -18,7 +20,13 @@ export const enrolmentService = {
   },
 
   async getAvailable(search?: string) {
-    const params = search?.trim() ? { search: search.trim(), limit: COURSE_SEARCH_LIMIT, offset: 0 } : undefined;
+    const params = search?.trim()
+      ? {
+          search: search.trim(),
+          limit: COURSE_SEARCH_LIMIT,
+          offset: 0,
+        }
+      : undefined;
 
     const response = await api.get<ApiResponse<StudentCourse[]>>("/enrolments/available", { params });
 
@@ -35,6 +43,21 @@ export const enrolmentService = {
 
   async withdraw(courseId: number) {
     const response = await api.delete<ApiResponse<void>>(`/enrolments/${courseId}`);
+
+    return response.data;
+  },
+
+  async getCourseStudents(
+    courseId: number,
+    params: {
+      search?: string;
+      page?: number;
+      limit?: number;
+    },
+  ) {
+    const response = await api.get<PaginatedResponse<Participant[]>>(`/enrolments/courses/${courseId}/students`, {
+      params,
+    });
 
     return response.data;
   },

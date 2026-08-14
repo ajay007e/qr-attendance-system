@@ -91,3 +91,9 @@ export interface CourseQuery {
   page?: number;
   limit?: number;
 }
+
+export interface ParticipantQuery {
+  search?: string;
+  page?: number;
+  limit?: number;
+}
