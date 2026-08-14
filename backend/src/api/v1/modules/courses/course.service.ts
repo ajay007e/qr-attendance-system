@@ -1,5 +1,5 @@
+import { ROLES } from "@/utils";
 import { AppError } from "../../../../utils/app.error";
-import { Role } from "../../../../utils/constants/roles";
 
 import { UserRepository } from "../users/user.repository";
 
@@ -110,7 +110,7 @@ export class CourseService {
       throw new AppError("Lecturer not found", 404);
     }
 
-    if (lecturer.role !== Role.LECTURER) {
+    if (lecturer.role !== ROLES.LECTURER) {
       throw new AppError("User is not a lecturer", 400);
     }
 

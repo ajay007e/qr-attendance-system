@@ -1,12 +1,11 @@
-import express from "express";
 import cors from "cors";
+import express from "express";
 import session from "express-session";
 
-import { sessionConfig } from "./config/session";
-import { router } from "./routes";
-
-import { notFound } from "./middleware/notFound.middleware";
-import { errorHandler } from "./utils/error.handler";
+import { sessionConfig } from "@/config";
+import { router } from "@/routes";
+import { errorHandler } from "@/utils";
+import { notFound } from "@/middleware";
 
 export const app = express();
 
@@ -31,5 +30,4 @@ app.get("/", (_req, res) => {
 app.use("/api", router);
 
 app.use(notFound);
-
 app.use(errorHandler);

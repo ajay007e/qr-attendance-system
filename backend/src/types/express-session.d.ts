@@ -1,24 +1,19 @@
-import "express-session";
 import "express";
+import "express-session";
+
+import type { Role } from "@/utils";
+import { SessionUser } from "@/types";
 
 declare module "express-session" {
   interface SessionData {
-    user?: {
-      id: number;
-      email: string;
-      role: string;
-    };
+    user?: SessionUser;
   }
 }
 
 declare global {
   namespace Express {
     interface Request {
-      user?: {
-        id: number;
-        email: string;
-        role: string;
-      };
+      user?: SessionUser;
     }
   }
 }

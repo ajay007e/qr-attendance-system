@@ -1,14 +1,8 @@
 import { ResultSetHeader, RowDataPacket, ExecuteValues } from "mysql2";
 
 import { db } from "../../../../config/database";
-import {
-  CreateUserData,
-  PaginatedUsers,
-  UpdateUserRequest,
-  User,
-  UserQuery,
-} from "./user.types";
-import { Role } from "../../../../utils/constants/roles";
+import { CreateUserData, PaginatedUsers, UpdateUserRequest, User, UserQuery } from "./user.types";
+import { ROLES } from "@/utils";
 
 export class UserRepository {
   async findAll(query: UserQuery): Promise<PaginatedUsers> {
@@ -160,13 +154,7 @@ export class UserRepository {
             )
             VALUES (?, ?, ?, ?, ?)
             `,
-      [
-        data.first_name,
-        data.last_name ?? null,
-        data.email,
-        data.password,
-        data.role,
-      ],
+      [data.first_name, data.last_name ?? null, data.email, data.password, data.role],
     );
 
     return result.insertId;
@@ -226,7 +214,7 @@ export class UserRepository {
     AND is_active = TRUE
   `;
 
-    const params: ExecuteValues[] = [Role.LECTURER];
+    const params: ExecuteValues[] = [ROLES.LECTURER];
 
     if (search) {
       where += `

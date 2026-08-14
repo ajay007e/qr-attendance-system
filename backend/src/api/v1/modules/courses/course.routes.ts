@@ -3,8 +3,7 @@ import { Router } from "express";
 import { controller } from ".";
 
 import { authorize, isAuthenticated } from "../../../../middleware/auth.middleware";
-
-import { Role } from "../../../../utils/constants/roles";
+import { ROLES } from "@/utils";
 
 export const courseRouter = Router();
 
@@ -14,13 +13,13 @@ courseRouter.use(isAuthenticated);
  * Course Read
  * ====================================================== */
 
-courseRouter.get("/:id", authorize(Role.SUPER_ADMIN, Role.LECTURER, Role.STUDENT), controller.get);
+courseRouter.get("/:id", authorize(ROLES.SUPER_ADMIN, ROLES.LECTURER, ROLES.STUDENT), controller.get);
 
 /* ======================================================
  * Admin
  * ====================================================== */
 
-courseRouter.use(authorize(Role.SUPER_ADMIN));
+courseRouter.use(authorize(ROLES.SUPER_ADMIN));
 
 /* ======================================================
  * Lecturer Assignment

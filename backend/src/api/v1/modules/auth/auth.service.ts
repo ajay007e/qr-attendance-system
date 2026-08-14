@@ -3,8 +3,8 @@ import { BootstrapRequest, LoginRequest } from "./auth.types";
 
 import { AppError } from "../../../../utils/app.error";
 import { comparePassword, hashPassword } from "../../../../utils/bcrypt";
-import { Role } from "../../../../utils/constants/roles";
 import { validateBootstrapRequest, validateLoginRequest } from "./auth.utils";
+import { ROLES } from "@/utils";
 
 export class AuthService {
   constructor(private readonly repository: UserRepository) {}
@@ -21,7 +21,7 @@ export class AuthService {
       last_name: payload.lastName,
       email: payload.email,
       password: hashedPassword,
-      role: Role.SUPER_ADMIN,
+      role: ROLES.SUPER_ADMIN,
     });
     return {
       success: true,

@@ -1,5 +1,6 @@
 import session from "express-session";
 import { env } from "./env";
+import { SESSION_COOKIE_MAX_AGE } from "@/utils";
 
 export const sessionConfig: session.SessionOptions = {
   secret: env.sessionSecret,
@@ -8,6 +9,6 @@ export const sessionConfig: session.SessionOptions = {
   cookie: {
     httpOnly: true,
     secure: false,
-    maxAge: 1000 * 60 * 60 * 24,
+    maxAge: SESSION_COOKIE_MAX_AGE,
   },
 };

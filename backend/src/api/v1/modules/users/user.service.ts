@@ -1,21 +1,11 @@
+import { ROLES } from "@/utils";
 import { AppError } from "../../../../utils/app.error";
 
 import { hashPassword } from "../../../../utils/bcrypt";
-import { Role } from "../../../../utils/constants/roles";
 import { isValidRole } from "../../../../utils/roles";
 import { UserRepository } from "./user.repository";
-import {
-  CreateUserRequest,
-  PaginatedUsers,
-  UpdateUserRequest,
-  User,
-  UserQuery,
-} from "./user.types";
-import {
-  validateCreateUserRequest,
-  validateSetActiveRequest,
-  validateUpdatePasswordRequest,
-} from "./user.utils";
+import { CreateUserRequest, PaginatedUsers, UpdateUserRequest, User, UserQuery } from "./user.types";
+import { validateCreateUserRequest, validateSetActiveRequest, validateUpdatePasswordRequest } from "./user.utils";
 
 export class UserService {
   constructor(private readonly repository: UserRepository) {}
@@ -71,7 +61,7 @@ export class UserService {
     if (user.id === payload.currentUserId) {
       throw new AppError("You cannot deactivate your own account", 400);
     }
-    if (!payload.isActive && user.role === Role.SUPER_ADMIN) {
+    if (!payload.isActive && user.role === ROLES.SUPER_ADMIN) {
       const count = await this.repository.countSuperAdmins();
       if (count <= 1) {
         throw new AppError("At least one Super Admin must remain active", 400);
