@@ -4,7 +4,9 @@ import { CourseRepository } from "../courses/course.repository";
 
 import { EnrolmentRepository } from "./enrolment.repository";
 
-import { CourseStudent, EnrolledCourse, Pagination } from "./enrolment.types";
+import { AssignedCourse, CourseStudent, EnrolledCourse, Pagination } from "./enrolment.types";
+
+import { validateCourseId } from "./enrolment.utils";
 
 export class EnrolmentService {
   constructor(
@@ -29,6 +31,8 @@ export class EnrolmentService {
   }
 
   async enrol(courseId: number, userId: number): Promise<void> {
+    courseId = validateCourseId(courseId);
+
     const course = await this.courses.findById(courseId);
 
     if (!course) {
@@ -39,9 +43,6 @@ export class EnrolmentService {
       throw new AppError("Course is not open for enrolment", 400);
     }
 
-    // Let the (course_id, user_id) primary key reject duplicates; the
-    // repository reports the collision so we can return a clean 409 instead of
-    // surfacing a raw database error as a 500.
     const enrolled = await this.repository.enrol(courseId, userId);
 
     if (!enrolled) {
@@ -50,6 +51,8 @@ export class EnrolmentService {
   }
 
   async unenrol(courseId: number, userId: number): Promise<void> {
+    courseId = validateCourseId(courseId);
+
     const enrolled = await this.repository.isEnrolled(courseId, userId);
 
     if (!enrolled) {
@@ -60,13 +63,20 @@ export class EnrolmentService {
   }
 
   /* =====================================================
+   * Lecturer Courses
+   * ===================================================== */
+
+  async getAssignedCourses(userId: number): Promise<AssignedCourse[]> {
+    return this.repository.findAssignedCourses(userId);
+  }
+
+  /* =====================================================
    * Course Roster
    * ===================================================== */
 
-  async getStudents(
-    courseId: number,
-    pagination: Pagination,
-  ): Promise<CourseStudent[]> {
+  async getStudents(courseId: number, pagination: Pagination): Promise<CourseStudent[]> {
+    courseId = validateCourseId(courseId);
+
     const course = await this.courses.findById(courseId);
 
     if (!course) {

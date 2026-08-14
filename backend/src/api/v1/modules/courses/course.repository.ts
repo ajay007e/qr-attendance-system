@@ -18,8 +18,8 @@ export class CourseRepository {
    * ===================================================== */
 
   async findAll(query: CourseQuery): Promise<PaginatedCourses> {
-    const page = query.page ?? 1;
-    const limit = query.limit ?? 10;
+    const page = Math.max(1, query.page ?? 1);
+    const limit = Math.min(100, Math.max(1, query.limit ?? 10));
     const offset = (page - 1) * limit;
 
     let where = `WHERE 1 = 1`;
@@ -157,13 +157,7 @@ export class CourseRepository {
       )
       VALUES (?, ?, ?, ?, ?)
       `,
-      [
-        data.courseCode,
-        data.courseName,
-        data.description ?? null,
-        data.credits,
-        data.session,
-      ],
+      [data.courseCode, data.courseName, data.description ?? null, data.credits, data.session],
     );
 
     return result.insertId;
@@ -181,14 +175,7 @@ export class CourseRepository {
         session = ?
       WHERE id = ?
       `,
-      [
-        data.courseCode,
-        data.courseName,
-        data.description ?? null,
-        data.credits,
-        data.session,
-        id,
-      ],
+      [data.courseCode, data.courseName, data.description ?? null, data.credits, data.session, id],
     );
   }
 
@@ -221,7 +208,7 @@ export class CourseRepository {
       INNER JOIN users u
         ON u.id = cl.user_id
       WHERE cl.course_id = ?
-      ORDER BY u.first_name
+      ORDER BY u.first_name, u.last_name
       `,
       [courseId],
     );
@@ -244,11 +231,7 @@ export class CourseRepository {
     return rows.length > 0;
   }
 
-  async assignLecturer(
-    courseId: number,
-    userId: number,
-    role: CourseLecturerRole,
-  ): Promise<void> {
+  async assignLecturer(courseId: number, userId: number, role: CourseLecturerRole): Promise<void> {
     await db.execute(
       `
       INSERT INTO course_lecturers

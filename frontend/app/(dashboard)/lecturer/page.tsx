@@ -1,4 +1,4 @@
-import { LecturerDashboard } from "@/features/courses/components/LecturerDashboard";
+import { LecturerDashboard } from "@/features/courses";
 import { ComingSoon, Container, Section } from "@/shared";
 
 export default function LecturerDashboardPage() {

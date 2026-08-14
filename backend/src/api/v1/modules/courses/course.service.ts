@@ -7,24 +7,19 @@ import { CourseRepository } from "./course.repository";
 
 import {
   Course,
+  CourseLecturerRole,
   CourseQuery,
   CreateCourseRequest,
-  UpdateCourseRequest,
   PaginatedCourses,
-  CourseLecturerRole,
+  UpdateCourseRequest,
 } from "./course.types";
 
-const VALID_SESSIONS = [
-  "ANNUAL",
-  "SPRING",
-  "WINTER",
-  "AUTUMN",
-  "TRIMESTER_1",
-  "TRIMESTER_2",
-  "TRIMESTER_3",
-];
-
-const VALID_LECTURER_ROLES = ["PRIMARY", "SECONDARY", "TUTOR"];
+import {
+  validateAssignLecturerRequest,
+  validateCreateCourseRequest,
+  validateCourseId,
+  validateUpdateCourseRequest,
+} from "./course.utils";
 
 export class CourseService {
   constructor(
@@ -41,6 +36,8 @@ export class CourseService {
   }
 
   async get(id: number): Promise<Course> {
+    validateCourseId(id);
+
     const course = await this.repository.findById(id);
 
     if (!course) {
@@ -51,29 +48,15 @@ export class CourseService {
   }
 
   async create(data: CreateCourseRequest): Promise<Course> {
-    if (!data.courseCode?.trim()) {
-      throw new AppError("Course code is required", 400);
-    }
+    const validated = validateCreateCourseRequest(data);
 
-    if (!data.courseName?.trim()) {
-      throw new AppError("Course name is required", 400);
-    }
-
-    if (!data.credits || data.credits <= 0) {
-      throw new AppError("Invalid credits", 400);
-    }
-
-    if (!VALID_SESSIONS.includes(data.session)) {
-      throw new AppError("Invalid course session", 400);
-    }
-
-    const existing = await this.repository.findByCode(data.courseCode);
+    const existing = await this.repository.findByCode(validated.courseCode);
 
     if (existing) {
       throw new AppError("Course code already exists", 409);
     }
 
-    const id = await this.repository.create(data);
+    const id = await this.repository.create(validated);
 
     return this.get(id);
   }
@@ -81,35 +64,25 @@ export class CourseService {
   async update(id: number, data: UpdateCourseRequest): Promise<Course> {
     await this.get(id);
 
-    if (!data.courseCode?.trim()) {
-      throw new AppError("Course code is required", 400);
-    }
+    const validated = validateUpdateCourseRequest(data);
 
-    if (!data.courseName?.trim()) {
-      throw new AppError("Course name is required", 400);
-    }
-
-    if (!data.credits || data.credits <= 0) {
-      throw new AppError("Invalid credits", 400);
-    }
-
-    if (!VALID_SESSIONS.includes(data.session)) {
-      throw new AppError("Invalid course session", 400);
-    }
-
-    const existing = await this.repository.findByCode(data.courseCode);
+    const existing = await this.repository.findByCode(validated.courseCode);
 
     if (existing && existing.id !== id) {
       throw new AppError("Course code already exists", 409);
     }
 
-    await this.repository.update(id, data);
+    await this.repository.update(id, validated);
 
     return this.get(id);
   }
 
   async setActive(id: number, isActive: boolean): Promise<Course> {
     await this.get(id);
+
+    if (typeof isActive !== "boolean") {
+      throw new AppError("isActive must be a boolean", 400);
+    }
 
     await this.repository.updateStatus(id, isActive);
 
@@ -126,18 +99,12 @@ export class CourseService {
     return this.repository.getLecturers(courseId);
   }
 
-  async assignLecturer(
-    courseId: number,
-    userId: number,
-    role: CourseLecturerRole,
-  ): Promise<void> {
+  async assignLecturer(courseId: number, userId: number, role: CourseLecturerRole): Promise<void> {
     await this.get(courseId);
 
-    if (!VALID_LECTURER_ROLES.includes(role)) {
-      throw new AppError("Invalid lecturer role", 400);
-    }
+    const validated = validateAssignLecturerRequest(userId, role);
 
-    const lecturer = await this.users.findById(userId);
+    const lecturer = await this.users.findById(validated.userId);
 
     if (!lecturer) {
       throw new AppError("Lecturer not found", 404);
@@ -147,17 +114,21 @@ export class CourseService {
       throw new AppError("User is not a lecturer", 400);
     }
 
-    const assigned = await this.repository.isLecturerAssigned(courseId, userId);
+    const assigned = await this.repository.isLecturerAssigned(courseId, validated.userId);
 
     if (assigned) {
       throw new AppError("Lecturer already assigned", 409);
     }
 
-    await this.repository.assignLecturer(courseId, userId, role);
+    await this.repository.assignLecturer(courseId, validated.userId, validated.role);
   }
 
   async removeLecturer(courseId: number, userId: number): Promise<void> {
     await this.get(courseId);
+
+    if (!Number.isInteger(userId) || userId <= 0) {
+      throw new AppError("Invalid user id", 400);
+    }
 
     const assigned = await this.repository.isLecturerAssigned(courseId, userId);
 

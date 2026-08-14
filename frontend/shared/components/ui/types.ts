@@ -14,7 +14,25 @@ export interface ModalProps {
   size?: "sm" | "md" | "lg";
 }
 
-export type BadgeVariant = "blue" | "green" | "red" | "yellow" | "gray";
+export type BadgeVariant =
+  | "blue"
+  | "green"
+  | "red"
+  | "yellow"
+  | "gray"
+  | "purple"
+  | "pink"
+  | "orange"
+  | "indigo"
+  | "teal"
+  | "cyan"
+  | "emerald"
+  | "lime"
+  | "amber"
+  | "violet"
+  | "slate"
+  | "zinc"
+  | "neutral";
 
 export interface BadgeProps {
   children: ReactNode;

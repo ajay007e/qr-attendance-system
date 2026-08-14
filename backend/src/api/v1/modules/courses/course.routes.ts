@@ -2,17 +2,13 @@ import { Router } from "express";
 
 import { controller } from ".";
 
-import {
-  authorize,
-  isAuthenticated,
-} from "../../../../middleware/auth.middleware";
+import { authorize, isAuthenticated } from "../../../../middleware/auth.middleware";
 
 import { Role } from "../../../../utils/constants/roles";
 
 export const courseRouter = Router();
 
 courseRouter.use(isAuthenticated);
-
 courseRouter.use(authorize(Role.SUPER_ADMIN));
 
 /* ======================================================

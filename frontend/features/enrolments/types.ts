@@ -1,17 +1,17 @@
 import type { Course } from "../courses/types";
 
-export interface StudentCourse
-  extends Pick<
-    Course,
-    | "id"
-    | "course_code"
-    | "course_name"
-    | "description"
-    | "credits"
-    | "session"
-    | "is_active"
-  > {
+export type CourseCardCourse = Pick<
+  Course,
+  "id" | "course_code" | "course_name" | "description" | "credits" | "session" | "is_active"
+>;
+
+export interface StudentCourse extends CourseCardCourse {
   enrolled_at: string | null;
+}
+
+export interface AssignedCourse extends CourseCardCourse {
+  lecturer_role: "PRIMARY" | "SECONDARY" | "TUTOR";
+  assigned_at: string;
 }
 
 export interface EnrolRequest {
@@ -19,8 +19,9 @@ export interface EnrolRequest {
 }
 
 export interface CourseCardProps {
-  course: StudentCourse;
+  course: CourseCardCourse;
   action?: React.ReactNode;
+  href?: string;
 }
 
 export interface CourseSearchProps {

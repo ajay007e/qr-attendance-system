@@ -39,6 +39,10 @@ export const COURSE_SESSION_OPTIONS = [
   value: CourseSession;
 }[];
 
+export const getSessionLabel = (value: CourseSession): string => {
+  return COURSE_SESSION_OPTIONS.find((option) => option.value === value)?.label ?? value;
+};
+
 export const COURSE_SESSION_FILTER_OPTIONS = [
   {
     label: "All Sessions",
@@ -75,9 +79,7 @@ export const COURSE_STATUS_FILTER_OPTIONS = [
   },
 ] satisfies readonly Option<"ALL" | "ACTIVE" | "INACTIVE">[];
 
-export const UI_COURSE_SESSION_OPTIONS = COURSE_SESSION_FILTER_OPTIONS.filter(
-  (item) => item.value !== "ALL",
-);
+export const UI_COURSE_SESSION_OPTIONS = COURSE_SESSION_FILTER_OPTIONS.filter((item) => item.value !== "ALL");
 
 export const LECTURER_ROLE_OPTIONS = [
   {

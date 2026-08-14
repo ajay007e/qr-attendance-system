@@ -48,7 +48,7 @@ export default function StudentDashboard() {
         ) : (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {courses.map((course) => (
-              <CourseCard key={course.id} course={course} />
+              <CourseCard key={course.id} course={course} href={`/student/courses/${course.id}`} />
             ))}
           </div>
         )}

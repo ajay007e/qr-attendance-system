@@ -2,7 +2,13 @@ import { NextFunction, Request, Response } from "express";
 
 import { CourseService } from "./course.service";
 
-import { CourseQuery } from "./course.types";
+import {
+  AssignLecturerRequest,
+  CourseQuery,
+  CreateCourseRequest,
+  UpdateCourseRequest,
+  UpdateCourseStatusRequest,
+} from "./course.types";
 
 export class CourseController {
   constructor(private readonly service: CourseService) {}
@@ -14,20 +20,11 @@ export class CourseController {
 
         limit: Number(req.query.limit) || 10,
 
-        search:
-          typeof req.query.search === "string"
-            ? req.query.search.trim()
-            : undefined,
+        search: typeof req.query.search === "string" ? req.query.search.trim() : undefined,
 
-        session:
-          typeof req.query.session === "string"
-            ? (req.query.session as CourseQuery["session"])
-            : undefined,
+        session: typeof req.query.session === "string" ? (req.query.session as CourseQuery["session"]) : undefined,
 
-        status:
-          typeof req.query.status === "string"
-            ? (req.query.status as CourseQuery["status"])
-            : undefined,
+        status: typeof req.query.status === "string" ? (req.query.status as CourseQuery["status"]) : undefined,
       };
 
       const result = await this.service.list(query);
@@ -56,7 +53,7 @@ export class CourseController {
 
   create = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const course = await this.service.create(req.body);
+      const course = await this.service.create(req.body as CreateCourseRequest);
 
       res.status(201).json({
         success: true,
@@ -70,7 +67,7 @@ export class CourseController {
 
   update = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const course = await this.service.update(Number(req.params.id), req.body);
+      const course = await this.service.update(Number(req.params.id), req.body as UpdateCourseRequest);
 
       res.json({
         success: true,
@@ -84,10 +81,9 @@ export class CourseController {
 
   setActive = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const course = await this.service.setActive(
-        Number(req.params.id),
-        req.body.isActive,
-      );
+      const body = req.body as UpdateCourseStatusRequest;
+
+      const course = await this.service.setActive(Number(req.params.id), body.isActive);
 
       res.json({
         success: true,
@@ -114,11 +110,9 @@ export class CourseController {
 
   assignLecturer = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await this.service.assignLecturer(
-        Number(req.params.id),
-        req.body.userId,
-        req.body.role,
-      );
+      const body = req.body as AssignLecturerRequest;
+
+      await this.service.assignLecturer(Number(req.params.id), body.userId, body.role);
 
       res.status(201).json({
         success: true,
@@ -131,10 +125,7 @@ export class CourseController {
 
   removeLecturer = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await this.service.removeLecturer(
-        Number(req.params.id),
-        Number(req.params.userId),
-      );
+      await this.service.removeLecturer(Number(req.params.id), Number(req.params.userId));
 
       res.json({
         success: true,

@@ -2,18 +2,14 @@ import { RowDataPacket } from "mysql2";
 
 import { db } from "../../../../config/database";
 
-import { CourseStudent, EnrolledCourse, Pagination } from "./enrolment.types";
+import { AssignedCourse, CourseStudent, EnrolledCourse, Pagination } from "./enrolment.types";
 
 // MySQL duplicate-key error code, raised when inserting a row that violates
 // the (course_id, user_id) composite primary key.
 const DUPLICATE_ENTRY = "ER_DUP_ENTRY";
 
 function isDuplicateEntryError(error: unknown): boolean {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    (error as { code?: string }).code === DUPLICATE_ENTRY
-  );
+  return typeof error === "object" && error !== null && (error as { code?: string }).code === DUPLICATE_ENTRY;
 }
 
 export class EnrolmentRepository {
@@ -108,8 +104,6 @@ export class EnrolmentRepository {
     return rows.length > 0;
   }
 
-  // Returns false when the (course_id, user_id) row already exists, relying on
-  // the composite primary key instead of a separate existence query.
   async enrol(courseId: number, userId: number): Promise<boolean> {
     try {
       await db.execute(
@@ -146,10 +140,40 @@ export class EnrolmentRepository {
     );
   }
 
-  async getStudents(
-    courseId: number,
-    pagination: Pagination,
-  ): Promise<CourseStudent[]> {
+  /* =====================================================
+   * Lecturer Courses
+   * ===================================================== */
+
+  async findAssignedCourses(userId: number): Promise<AssignedCourse[]> {
+    const [rows] = await db.execute<RowDataPacket[]>(
+      `
+            SELECT
+                c.id,
+                c.course_code,
+                c.course_name,
+                c.description,
+                c.credits,
+                c.session,
+                c.is_active,
+                cl.role AS lecturer_role,
+                cl.created_at AS assigned_at
+            FROM course_lecturers cl
+            INNER JOIN courses c
+                ON c.id = cl.course_id
+            WHERE cl.user_id = ?
+            ORDER BY c.course_code ASC
+            `,
+      [userId],
+    );
+
+    return rows as AssignedCourse[];
+  }
+
+  /* =====================================================
+   * Course Roster
+   * ===================================================== */
+
+  async getStudents(courseId: number, pagination: Pagination): Promise<CourseStudent[]> {
     const { limit, offset } = pagination;
 
     const [rows] = await db.query<RowDataPacket[]>(

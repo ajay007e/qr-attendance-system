@@ -1,14 +1,19 @@
-export type CourseSession =
-  | "ANNUAL"
-  | "SPRING"
-  | "WINTER"
-  | "SUMMER"
-  | "AUTUMN"
-  | "TRIMESTER_1"
-  | "TRIMESTER_2"
-  | "TRIMESTER_3";
+export const COURSE_SESSIONS = [
+  "ANNUAL",
+  "SPRING",
+  "SUMMER",
+  "AUTUMN",
+  "WINTER",
+  "TRIMESTER_1",
+  "TRIMESTER_2",
+  "TRIMESTER_3",
+] as const;
 
-export type CourseLecturerRole = "PRIMARY" | "SECONDARY" | "TUTOR";
+export type CourseSession = (typeof COURSE_SESSIONS)[number];
+
+export const COURSE_LECTURER_ROLES = ["PRIMARY", "SECONDARY", "TUTOR"] as const;
+
+export type CourseLecturerRole = (typeof COURSE_LECTURER_ROLES)[number];
 
 export interface Course {
   id: number;
@@ -57,43 +62,32 @@ export interface PaginatedCourses {
 export interface CreateCourseRequest {
   courseCode: string;
   courseName: string;
-
   description?: string;
-
   credits: number;
-
   session: CourseSession;
 }
 
 export interface UpdateCourseRequest {
   courseCode: string;
   courseName: string;
-
   description?: string;
-
   credits: number;
-
   session: CourseSession;
 }
 
 export interface UpdateCourseStatusRequest {
-  is_active: boolean;
+  isActive: boolean;
 }
 
 export interface AssignLecturerRequest {
-  user_id: number;
-
+  userId: number;
   role: CourseLecturerRole;
 }
 
 export interface CourseQuery {
   search?: string;
-
   session?: CourseSession;
-
   status?: "ACTIVE" | "INACTIVE";
-
   page?: number;
-
   limit?: number;
 }

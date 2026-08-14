@@ -4,7 +4,7 @@ import { BookOpen } from "lucide-react";
 import type { CourseCardProps } from "../../types";
 import { getCourseCardGradient } from "../../utils";
 
-export default function CourseCard({ course, action }: CourseCardProps) {
+export default function CourseCard({ course, action, href }: CourseCardProps) {
   const gradient = getCourseCardGradient(course.course_code);
 
   const card = (
@@ -31,9 +31,13 @@ export default function CourseCard({ course, action }: CourseCardProps) {
     return card;
   }
 
+  if (!href) {
+    return card;
+  }
+
   return (
     <Link
-      href={`/course/${course.id}`}
+      href={href}
       aria-label={`View ${course.course_code} details`}
       className="block h-full rounded-2xl focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
     >
