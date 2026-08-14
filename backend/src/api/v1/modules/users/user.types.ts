@@ -9,7 +9,7 @@ export interface User extends BaseUser {
   updatedAt: Date;
 }
 
-export interface DatabaseUser extends BaseUser {
+export interface DatabaseUser extends Omit<User, "firstName" | "lastName" | "isActive" | "createdAt" | "updatedAt"> {
   first_name: string;
   last_name: string | null;
   password: string;

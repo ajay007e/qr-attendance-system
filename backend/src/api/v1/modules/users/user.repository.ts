@@ -17,8 +17,8 @@ import type {
 
 export class UserRepository {
   async findAll(query: UserQuery): Promise<PaginatedData<DatabaseUserWithoutPassword>> {
-    const page = query.page ?? 1;
-    const limit = query.limit ?? 10;
+    const page = Math.max(1, query.page ?? 1);
+    const limit = Math.min(100, Math.max(1, query.limit ?? 10));
     const offset = (page - 1) * limit;
 
     let where = "WHERE 1 = 1";

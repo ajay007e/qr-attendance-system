@@ -1,19 +1,17 @@
-import { ROLES } from "@/utils";
-import { AppError } from "../../../../utils/app.error";
+import { AppError, ROLES } from "@/utils";
 
-import { UserRepository } from "../users/user.repository";
+import { UserRepository } from "../users";
 
 import { CourseRepository } from "./course.repository";
-
-import {
+import { toCreateCourseData, toCourse, toLecturer, toUpdateCourseData } from "./course.mapper";
+import type {
   Course,
   CourseLecturerRole,
   CourseQuery,
   CreateCourseRequest,
-  PaginatedCourses,
+  Lecturer,
   UpdateCourseRequest,
 } from "./course.types";
-
 import {
   validateAssignLecturerRequest,
   validateCreateCourseRequest,
@@ -27,12 +25,13 @@ export class CourseService {
     private readonly users: UserRepository,
   ) {}
 
-  /* =====================================================
-   * Course CRUD
-   * ===================================================== */
+  async list(query: CourseQuery) {
+    const result = await this.repository.findAll(query);
 
-  async list(query: CourseQuery): Promise<PaginatedCourses> {
-    return this.repository.findAll(query);
+    return {
+      items: result.items.map(toCourse),
+      meta: result.meta,
+    };
   }
 
   async get(id: number): Promise<Course> {
@@ -44,7 +43,7 @@ export class CourseService {
       throw new AppError("Course not found", 404);
     }
 
-    return course;
+    return toCourse(course);
   }
 
   async create(data: CreateCourseRequest): Promise<Course> {
@@ -56,7 +55,7 @@ export class CourseService {
       throw new AppError("Course code already exists", 409);
     }
 
-    const id = await this.repository.create(validated);
+    const id = await this.repository.create(toCreateCourseData(validated));
 
     return this.get(id);
   }
@@ -72,7 +71,7 @@ export class CourseService {
       throw new AppError("Course code already exists", 409);
     }
 
-    await this.repository.update(id, validated);
+    await this.repository.update(id, toUpdateCourseData(validated));
 
     return this.get(id);
   }
@@ -89,14 +88,12 @@ export class CourseService {
     return this.get(id);
   }
 
-  /* =====================================================
-   * Lecturer Assignment
-   * ===================================================== */
-
-  async getLecturers(courseId: number) {
+  async getLecturers(courseId: number): Promise<Lecturer[]> {
     await this.get(courseId);
 
-    return this.repository.getLecturers(courseId);
+    const lecturers = await this.repository.getLecturers(courseId);
+
+    return lecturers.map(toLecturer);
   }
 
   async assignLecturer(courseId: number, userId: number, role: CourseLecturerRole): Promise<void> {

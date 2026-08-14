@@ -1,8 +1,8 @@
 import { repository as userRepository } from "../users";
 
+import { CourseController } from "./course.controller";
 import { CourseRepository } from "./course.repository";
 import { CourseService } from "./course.service";
-import { CourseController } from "./course.controller";
 
 const repository = new CourseRepository();
 

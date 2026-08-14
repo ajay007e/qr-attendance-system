@@ -1,79 +1,54 @@
-export const COURSE_SESSIONS = [
-  "ANNUAL",
-  "SPRING",
-  "SUMMER",
-  "AUTUMN",
-  "WINTER",
-  "TRIMESTER_1",
-  "TRIMESTER_2",
-  "TRIMESTER_3",
-] as const;
+import type { PaginationQuery } from "@/types";
+
+import { COURSE_LECTURER_ROLES, COURSE_SESSIONS } from "./course.constants";
+import type { DatabaseUser, PublicUser } from "../users";
 
 export type CourseSession = (typeof COURSE_SESSIONS)[number];
-
-export const COURSE_LECTURER_ROLES = ["PRIMARY", "SECONDARY", "TUTOR"] as const;
 
 export type CourseLecturerRole = (typeof COURSE_LECTURER_ROLES)[number];
 
 export interface Course {
   id: number;
+  courseCode: string;
+  courseName: string;
+  description: string | null;
+  credits: number;
+  session: CourseSession;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
+export type DatabaseCourse = Omit<Course, "courseCode" | "courseName" | "isActive" | "createdAt" | "updatedAt"> & {
   course_code: string;
   course_name: string;
-  description: string | null;
-
-  credits: number;
-
-  session: CourseSession;
-
   is_active: boolean;
-
   created_at: Date;
   updated_at: Date;
-}
+};
 
-export interface CourseLecturer {
-  id: number;
+export type PublicCourse = Omit<Course, "createdAt" | "updatedAt">;
 
-  first_name: string;
-  last_name: string | null;
-
-  email: string;
-
+export type Lecturer = Pick<PublicUser, "id" | "firstName" | "lastName" | "email"> & {
   role: CourseLecturerRole;
+};
 
-  created_at: Date;
-}
+export type DatabaseLecturer = Pick<DatabaseUser, "id" | "first_name" | "last_name" | "email"> & {
+  role: CourseLecturerRole;
+};
 
-export interface PaginatedCourses {
-  data: Course[];
-
-  pagination: {
-    page: number;
-    limit: number;
-    count: number;
-    total: number;
-    totalPages: number;
-    hasPrevious: boolean;
-    hasNext: boolean;
-  };
-}
-
-export interface CreateCourseRequest {
-  courseCode: string;
-  courseName: string;
+export type CreateCourseRequest = Pick<Course, "courseCode" | "courseName" | "credits" | "session"> & {
   description?: string;
-  credits: number;
-  session: CourseSession;
-}
+};
 
-export interface UpdateCourseRequest {
-  courseCode: string;
-  courseName: string;
-  description?: string;
-  credits: number;
-  session: CourseSession;
-}
+export type CreateCourseData = Pick<
+  DatabaseCourse,
+  "course_code" | "course_name" | "description" | "credits" | "session"
+>;
+
+export type UpdateCourseRequest = CreateCourseRequest;
+
+export type UpdateCourseData = CreateCourseData;
 
 export interface UpdateCourseStatusRequest {
   isActive: boolean;
@@ -84,16 +59,12 @@ export interface AssignLecturerRequest {
   role: CourseLecturerRole;
 }
 
-export interface CourseQuery {
+export interface CourseQuery extends PaginationQuery {
   search?: string;
   session?: CourseSession;
   status?: "ACTIVE" | "INACTIVE";
-  page?: number;
-  limit?: number;
 }
 
-export interface ParticipantQuery {
+export interface ParticipantQuery extends PaginationQuery {
   search?: string;
-  page?: number;
-  limit?: number;
 }

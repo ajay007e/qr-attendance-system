@@ -10,3 +10,4 @@ export { UserRepository };
 export { repository, service, controller };
 
 export { toCreateUserData, toUser } from "./user.mapper";
+export { DatabaseUser, PublicUser } from "./user.types";

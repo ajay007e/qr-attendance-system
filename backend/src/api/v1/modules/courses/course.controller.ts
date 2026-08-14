@@ -1,8 +1,9 @@
-import { NextFunction, Request, Response } from "express";
+import type { RequestHandler } from "express";
+
+import { DEFAULT_LIMIT, DEFAULT_PAGE, parseQueryNumber, parseQueryString } from "@/utils";
 
 import { CourseService } from "./course.service";
-
-import {
+import type {
   AssignLecturerRequest,
   CourseQuery,
   CreateCourseRequest,
@@ -13,32 +14,28 @@ import {
 export class CourseController {
   constructor(private readonly service: CourseService) {}
 
-  list = async (req: Request, res: Response, next: NextFunction) => {
+  list: RequestHandler = async (req, res, next) => {
     try {
       const query: CourseQuery = {
-        page: Number(req.query.page) || 1,
-
-        limit: Number(req.query.limit) || 10,
-
-        search: typeof req.query.search === "string" ? req.query.search.trim() : undefined,
-
-        session: typeof req.query.session === "string" ? (req.query.session as CourseQuery["session"]) : undefined,
-
-        status: typeof req.query.status === "string" ? (req.query.status as CourseQuery["status"]) : undefined,
+        page: parseQueryNumber(req.query.page, DEFAULT_PAGE),
+        limit: parseQueryNumber(req.query.limit, DEFAULT_LIMIT),
+        search: parseQueryString(req.query.search),
+        session: parseQueryString(req.query.session) as CourseQuery["session"],
+        status: parseQueryString(req.query.status) as CourseQuery["status"],
       };
 
       const result = await this.service.list(query);
 
       res.json({
         success: true,
-        ...result,
+        data: result,
       });
     } catch (error) {
       next(error);
     }
   };
 
-  get = async (req: Request, res: Response, next: NextFunction) => {
+  get: RequestHandler = async (req, res, next) => {
     try {
       const course = await this.service.get(Number(req.params.id));
 
@@ -51,7 +48,7 @@ export class CourseController {
     }
   };
 
-  create = async (req: Request, res: Response, next: NextFunction) => {
+  create: RequestHandler = async (req, res, next) => {
     try {
       const course = await this.service.create(req.body as CreateCourseRequest);
 
@@ -65,7 +62,7 @@ export class CourseController {
     }
   };
 
-  update = async (req: Request, res: Response, next: NextFunction) => {
+  update: RequestHandler = async (req, res, next) => {
     try {
       const course = await this.service.update(Number(req.params.id), req.body as UpdateCourseRequest);
 
@@ -79,7 +76,7 @@ export class CourseController {
     }
   };
 
-  setActive = async (req: Request, res: Response, next: NextFunction) => {
+  setActive: RequestHandler = async (req, res, next) => {
     try {
       const body = req.body as UpdateCourseStatusRequest;
 
@@ -95,7 +92,7 @@ export class CourseController {
     }
   };
 
-  getLecturers = async (req: Request, res: Response, next: NextFunction) => {
+  getLecturers: RequestHandler = async (req, res, next) => {
     try {
       const lecturers = await this.service.getLecturers(Number(req.params.id));
 
@@ -108,7 +105,7 @@ export class CourseController {
     }
   };
 
-  assignLecturer = async (req: Request, res: Response, next: NextFunction) => {
+  assignLecturer: RequestHandler = async (req, res, next) => {
     try {
       const body = req.body as AssignLecturerRequest;
 
@@ -123,7 +120,7 @@ export class CourseController {
     }
   };
 
-  removeLecturer = async (req: Request, res: Response, next: NextFunction) => {
+  removeLecturer: RequestHandler = async (req, res, next) => {
     try {
       await this.service.removeLecturer(Number(req.params.id), Number(req.params.userId));
 
