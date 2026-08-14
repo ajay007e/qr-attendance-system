@@ -1,7 +1,15 @@
-import type { Role } from "@/utils";
 import type { BaseUser, PaginationQuery } from "@/types";
+import type { Role } from "@/utils";
 
 export interface User extends BaseUser {
+  firstName: string;
+  lastName: string | null;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface DatabaseUser extends BaseUser {
   first_name: string;
   last_name: string | null;
   password: string;
@@ -10,15 +18,26 @@ export interface User extends BaseUser {
   updated_at: Date;
 }
 
-export type CreateUserRequest = Pick<User, "first_name" | "email" | "password" | "role"> & {
-  last_name?: string;
+export type PublicUser = Omit<User, "createdAt" | "updatedAt">;
+
+export type DatabaseUserWithoutPassword = Omit<DatabaseUser, "password">;
+
+export type LecturerListItem = Pick<PublicUser, "id" | "firstName" | "lastName" | "email" | "role">;
+
+export type DatabaseLecturerListItem = Pick<DatabaseUser, "id" | "first_name" | "last_name" | "email" | "role">;
+
+export type CreateUserRequest = Pick<User, "firstName" | "email" | "role"> & {
+  lastName?: string;
+  password: string;
 };
 
-export type CreateUserData = CreateUserRequest;
+export type CreateUserData = Pick<DatabaseUser, "first_name" | "last_name" | "email" | "password" | "role">;
 
-export type UpdateUserRequest = Pick<User, "first_name" | "email" | "role"> & {
-  last_name?: string;
+export type UpdateUserRequest = Pick<User, "firstName" | "email" | "role"> & {
+  lastName: string | null;
 };
+
+export type UpdateUserData = Pick<CreateUserData, "first_name" | "last_name" | "email" | "role">;
 
 export interface UpdateUserStatusRequest {
   isActive: boolean;

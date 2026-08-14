@@ -1,4 +1,4 @@
-import { UserRepository } from "../users/user.repository";
+import { UserRepository, toCreateUserData, toUser } from "../users";
 
 import type { BootstrapRequest, LoginRequest, LoginResponse } from "./auth.types";
 
@@ -20,13 +20,15 @@ export class AuthService {
 
     const hashedPassword = await hashPassword(payload.password);
 
-    await this.repository.create({
-      first_name: payload.firstName,
-      last_name: payload.lastName,
-      email: payload.email,
-      password: hashedPassword,
-      role: ROLES.SUPER_ADMIN,
-    });
+    await this.repository.create(
+      toCreateUserData({
+        firstName: payload.firstName,
+        lastName: payload.lastName,
+        email: payload.email,
+        password: hashedPassword,
+        role: ROLES.SUPER_ADMIN,
+      }),
+    );
 
     return {
       success: true as const,
@@ -53,12 +55,14 @@ export class AuthService {
       throw new AppError("Invalid email or password", 401);
     }
 
+    const publicUser = toUser(user);
+
     return {
-      id: user.id,
-      firstName: user.first_name,
-      lastName: user.last_name,
-      email: user.email,
-      role: user.role,
+      id: publicUser.id,
+      firstName: publicUser.firstName,
+      lastName: publicUser.lastName,
+      email: publicUser.email,
+      role: publicUser.role,
     };
   }
 }
