@@ -37,11 +37,7 @@ export default function useLecturerSearch() {
       } catch (error) {
         setResults([]);
 
-        setError(
-          error instanceof Error
-            ? error.message
-            : "Unable to search lecturers.",
-        );
+        setError(error instanceof Error ? error.message : "Unable to search lecturers.");
       } finally {
         setLoading(false);
       }

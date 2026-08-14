@@ -48,11 +48,7 @@ export default function useAvailableCourses(search: string) {
 
       setCourses([]);
       handleError(error);
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Unable to load available courses.",
-      );
+      setError(error instanceof Error ? error.message : "Unable to load available courses.");
     } finally {
       if (currentRequest === requestId.current) {
         setLoading(false);
@@ -74,8 +70,7 @@ export default function useAvailableCourses(search: string) {
   }, [load]);
 
   const isWaitingForDebounce =
-    search.trim().length >= COURSE_SEARCH_MIN_LENGTH &&
-    search.trim() !== debouncedSearch.trim();
+    search.trim().length >= COURSE_SEARCH_MIN_LENGTH && search.trim() !== debouncedSearch.trim();
 
   return {
     courses,

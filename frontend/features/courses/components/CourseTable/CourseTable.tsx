@@ -31,39 +31,23 @@ export default function CourseTable({ courses, onEdit }: CourseTableProps) {
           <table className="min-w-full">
             <thead className="bg-gray-50 text-gray-900">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Code
-                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Code</th>
 
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Name
-                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Name</th>
 
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Credits
-                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Credits</th>
 
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Session
-                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Session</th>
 
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Status
-                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Status</th>
 
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Actions
-                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Actions</th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-gray-100">
               {courses.map((course) => (
-                <CourseTableRow
-                  key={course.id}
-                  course={course}
-                  onEdit={onEdit}
-                />
+                <CourseTableRow key={course.id} course={course} onEdit={onEdit} />
               ))}
             </tbody>
           </table>

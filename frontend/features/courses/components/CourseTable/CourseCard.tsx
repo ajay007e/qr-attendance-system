@@ -21,9 +21,7 @@ export function CourseCard({ course, onEdit }: CourseActionProps) {
 
           <p className="mt-1 font-medium text-gray-700">{course.course_name}</p>
 
-          {course.description && (
-            <p className="mt-1 text-sm text-gray-500">{course.description}</p>
-          )}
+          {course.description && <p className="mt-1 text-sm text-gray-500">{course.description}</p>}
         </div>
         <Button
           size="icon"
@@ -59,9 +57,7 @@ export function CourseCard({ course, onEdit }: CourseActionProps) {
         <div className="flex justify-between">
           <span className="text-gray-500 text-sm">Status</span>
 
-          <Badge variant={course.is_active ? "green" : "red"}>
-            {course.is_active ? "Active" : "Inactive"}
-          </Badge>
+          <Badge variant={course.is_active ? "green" : "red"}>{course.is_active ? "Active" : "Inactive"}</Badge>
         </div>
       </div>
     </div>

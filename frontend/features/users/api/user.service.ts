@@ -11,9 +11,7 @@ import api from "@/shared/lib/api";
 export const userService = {
   async getUsers(query?: UserQuery) {
     const params = Object.fromEntries(
-      Object.entries(query ?? {}).filter(
-        ([, value]) => value !== undefined && value !== "" && value !== "ALL",
-      ),
+      Object.entries(query ?? {}).filter(([, value]) => value !== undefined && value !== "" && value !== "ALL"),
     );
     const response = await api.get<PaginatedResponse<User>>("/users", {
       params,
@@ -41,19 +39,13 @@ export const userService = {
   },
 
   async changeStatus(id: number, data: ChangeUserStatusRequest) {
-    const response = await api.patch<ApiResponse<User>>(
-      `/users/${id}/status`,
-      data,
-    );
+    const response = await api.patch<ApiResponse<User>>(`/users/${id}/status`, data);
 
     return response.data;
   },
 
   async changePassword(id: number, data: ChangePasswordRequest) {
-    const response = await api.patch<ApiResponse<void>>(
-      `/users/${id}/password`,
-      data,
-    );
+    const response = await api.patch<ApiResponse<void>>(`/users/${id}/password`, data);
 
     return response.data;
   },

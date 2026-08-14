@@ -1,16 +1,10 @@
 import { UserRole, User } from "@/shared";
 
-export type CreateUserRequest = Pick<
-  User,
-  "first_name" | "last_name" | "email" | "role"
-> & {
+export type CreateUserRequest = Pick<User, "first_name" | "last_name" | "email" | "role"> & {
   password: string;
 };
 
-export type UpdateUserRequest = Pick<
-  User,
-  "first_name" | "last_name" | "email" | "role"
->;
+export type UpdateUserRequest = Pick<User, "first_name" | "last_name" | "email" | "role">;
 
 export interface ChangeUserStatusRequest {
   is_active: boolean;
@@ -73,10 +67,7 @@ export interface TabsProps {
   activeTab: Tab;
   onChange: (tab: Tab) => void;
 }
-export type UpdateUserPayload = Pick<
-  User,
-  "id" | "first_name" | "last_name" | "email" | "role"
->;
+export type UpdateUserPayload = Pick<User, "id" | "first_name" | "last_name" | "email" | "role">;
 
 export type ChangePasswordPayload = {
   id: number;

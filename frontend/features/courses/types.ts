@@ -1,12 +1,5 @@
 export type CourseSession =
-  | "ANNUAL"
-  | "SPRING"
-  | "SUMMER"
-  | "AUTUMN"
-  | "WINTER"
-  | "TRIMESTER_1"
-  | "TRIMESTER_2"
-  | "TRIMESTER_3";
+  "ANNUAL" | "SPRING" | "SUMMER" | "AUTUMN" | "WINTER" | "TRIMESTER_1" | "TRIMESTER_2" | "TRIMESTER_3";
 
 export interface Course {
   id: number;

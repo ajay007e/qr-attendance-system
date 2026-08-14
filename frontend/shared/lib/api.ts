@@ -26,12 +26,7 @@ api.interceptors.response.use(
     switch (status) {
       case 400:
       case 422:
-        throw new AppError(
-          "VALIDATION",
-          message,
-          status,
-          error.response.data?.details,
-        );
+        throw new AppError("VALIDATION", message, status, error.response.data?.details);
 
       case 401:
         throw new AppError("AUTH", message, status);
@@ -45,11 +40,7 @@ api.interceptors.response.use(
       case 500:
       case 502:
       case 503:
-        throw new AppError(
-          "SERVER",
-          "Server unavailable. Please try again later.",
-          status,
-        );
+        throw new AppError("SERVER", "Server unavailable. Please try again later.", status);
 
       default:
         throw new AppError("UNKNOWN", message, status);

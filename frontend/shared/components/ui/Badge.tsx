@@ -1,11 +1,7 @@
 import { BADGE_VARIENT_CLASSES } from "./constants";
 import { BadgeProps } from "./types";
 
-export default function Badge({
-  children,
-  variant = "gray",
-  className = "",
-}: BadgeProps) {
+export default function Badge({ children, variant = "gray", className = "" }: BadgeProps) {
   return (
     <span
       className={`

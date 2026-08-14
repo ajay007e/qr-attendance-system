@@ -26,9 +26,7 @@ export default function useEnrolledCourses() {
       setCourses([]);
       handleError(error);
 
-      setError(
-        error instanceof Error ? error.message : "Unable to load your courses.",
-      );
+      setError(error instanceof Error ? error.message : "Unable to load your courses.");
     } finally {
       setLoading(false);
     }

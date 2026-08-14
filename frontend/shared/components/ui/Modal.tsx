@@ -5,14 +5,7 @@ import { useEffect } from "react";
 import { ModalProps } from "./types";
 import { Button } from "@/shared";
 
-export default function Modal({
-  open,
-  onClose,
-  title,
-  children,
-  footer,
-  size = "md",
-}: ModalProps) {
+export default function Modal({ open, onClose, title, children, footer, size = "md" }: ModalProps) {
   useEffect(() => {
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -71,27 +64,15 @@ export default function Modal({
           <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-4 sm:px-6">
             <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
 
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              aria-label="Close modal"
-            >
+            <Button type="button" variant="ghost" size="icon" onClick={onClose} aria-label="Close modal">
               <X size={20} />
             </Button>
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6">
-          {children}
-        </div>
+        <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6">{children}</div>
 
-        {footer && (
-          <div className="shrink-0 border-t border-gray-100 px-5 py-4 sm:px-6">
-            {footer}
-          </div>
-        )}
+        {footer && <div className="shrink-0 border-t border-gray-100 px-5 py-4 sm:px-6">{footer}</div>}
       </div>
     </div>
   );

@@ -46,11 +46,7 @@ export function StatusTab({ course, refresh, onClose }: StatusTabProps) {
           rounded-xl
           border
           p-5
-          ${
-            isActive
-              ? "border-red-200 bg-red-50"
-              : "border-green-200 bg-green-50"
-          }
+          ${isActive ? "border-red-200 bg-red-50" : "border-green-200 bg-green-50"}
         `}
       >
         <h3
@@ -82,11 +78,7 @@ export function StatusTab({ course, refresh, onClose }: StatusTabProps) {
           fullWidth
           className="mt-4"
         >
-          {loading
-            ? "Updating..."
-            : isActive
-              ? "Deactivate Course"
-              : "Activate Course"}
+          {loading ? "Updating..." : isActive ? "Deactivate Course" : "Activate Course"}
         </Button>
       </div>
     </div>

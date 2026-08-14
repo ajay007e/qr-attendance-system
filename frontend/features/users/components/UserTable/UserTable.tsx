@@ -15,21 +15,11 @@ export default function UserTable({ users, onEdit }: UserTableProps) {
           <table className="min-w-full">
             <thead className="bg-gray-50 text-gray-900">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Name
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Email
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Role
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Status
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Actions
-                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Name</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Email</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Role</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Status</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -74,9 +64,7 @@ function UserCard({ user, onEdit }: UserActionProps) {
       </div>
       <div className="mt-4 flex justify-between border-t pt-4">
         <Badge variant="blue">{getUserRoleLabel(user.role)}</Badge>
-        <Badge variant={user.is_active ? "green" : "red"}>
-          {user.is_active ? "Active" : "Inactive"}
-        </Badge>
+        <Badge variant={user.is_active ? "green" : "red"}>{user.is_active ? "Active" : "Inactive"}</Badge>
       </div>
     </div>
   );
@@ -94,9 +82,7 @@ function UserTableRow({ user, onEdit }: UserActionProps) {
         <Badge variant="blue">{getUserRoleLabel(user.role)}</Badge>
       </td>
       <td className="px-6 py-4">
-        <Badge variant={user.is_active ? "green" : "red"}>
-          {user.is_active ? "Active" : "Inactive"}
-        </Badge>
+        <Badge variant={user.is_active ? "green" : "red"}>{user.is_active ? "Active" : "Inactive"}</Badge>
       </td>
       <td className="px-6 py-4">
         <Button
