@@ -1,51 +1,24 @@
-export interface User {
-  id: number;
+import type { Role } from "@/utils";
+import type { BaseUser, PaginationQuery } from "@/types";
 
+export interface User extends BaseUser {
   first_name: string;
   last_name: string | null;
-
-  email: string;
   password: string;
-
-  role: string;
-
   is_active: boolean;
-
   created_at: Date;
   updated_at: Date;
 }
 
-export interface PaginatedUsers {
-  data: User[];
-  pagination: {
-    page: number;
-    limit: number;
-    count: number;
-    total: number;
-    totalPages: number;
-    hasPrevious: boolean;
-    hasNext: boolean;
-  };
-}
-
-export interface CreateUserRequest {
-  first_name: string;
+export type CreateUserRequest = Pick<User, "first_name" | "email" | "password" | "role"> & {
   last_name?: string;
+};
 
-  email: string;
-  password: string;
+export type CreateUserData = CreateUserRequest;
 
-  role: string;
-}
-
-export interface UpdateUserRequest {
-  first_name: string;
+export type UpdateUserRequest = Pick<User, "first_name" | "email" | "role"> & {
   last_name?: string;
-
-  email: string;
-
-  role: string;
-}
+};
 
 export interface UpdateUserStatusRequest {
   isActive: boolean;
@@ -55,25 +28,10 @@ export interface UpdatePasswordRequest {
   password: string;
 }
 
-export interface CreateUserData {
-  first_name: string;
-  last_name?: string;
-
-  email: string;
-  password: string;
-
-  role: string;
-}
-
-export interface UserQuery {
+export interface UserQuery extends PaginationQuery {
   search?: string;
-  role?: "SUPER_ADMIN" | "ADMIN" | "LECTURER" | "STUDENT";
+  role?: Role;
   status?: "ACTIVE" | "INACTIVE";
-  page?: number;
-  limit?: number;
 }
 
-export interface LecturerSearchQuery {
-  search?: string;
-  limit?: number;
-}
+export type LecturerSearchQuery = Pick<UserQuery, "search" | "limit">;

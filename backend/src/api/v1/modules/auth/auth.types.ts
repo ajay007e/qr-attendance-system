@@ -1,4 +1,4 @@
-import type { Role } from "@/utils";
+import type { BaseUser } from "@/types";
 
 export interface BootstrapRequest {
   firstName: string;
@@ -9,21 +9,7 @@ export interface BootstrapRequest {
 
 export type LoginRequest = Pick<BootstrapRequest, "email" | "password">;
 
-export interface SessionUser {
-  id: number;
-  email: string;
-  role: Role;
-}
-
-export interface LoginResponse {
-  id: number;
+export interface LoginResponse extends BaseUser {
   firstName: string;
-  lastName: string;
-  email: string;
-  role: Role;
-}
-
-export interface BootstrapResponse {
-  success: true;
-  message: string;
+  lastName: string | null;
 }
