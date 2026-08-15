@@ -1,16 +1,16 @@
 "use client";
 
-import { User } from "@/shared";
+import type { SessionUser } from "@/shared";
 import { createContext } from "react";
 
 export interface AuthContextType {
-  user: User | null;
+  user: SessionUser | null;
   loading: boolean;
   isAuthenticated: boolean;
 
-  login: (email: string, password: string) => Promise<User>;
+  login: (email: string, password: string) => Promise<SessionUser>;
   logout: () => Promise<void>;
-  refresh: () => Promise<User | null>;
+  refresh: () => Promise<SessionUser | null>;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);

@@ -10,3 +10,5 @@ export interface User {
   lastName: string | null;
   isActive: boolean;
 }
+
+export type SessionUser = Pick<User, "id" | "email" | "role">;
