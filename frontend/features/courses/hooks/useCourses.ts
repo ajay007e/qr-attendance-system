@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { PaginationMeta, DEFAULT_PAGINATION, useError } from "@/shared";
+import { PaginationMeta, DEFAULT_PAGINATION_META, useError } from "@/shared";
 import { CourseService } from "../api/course.service";
 import type { Course, CourseQuery } from "../types";
 
@@ -19,7 +19,7 @@ export function useCourses(query: CourseQuery) {
   const isInitialLoad = useRef(true);
   const { handleError } = useError();
   const [courses, setCourses] = useState<Course[]>([]);
-  const [pagination, setPagination] = useState<PaginationMeta>(DEFAULT_PAGINATION);
+  const [pagination, setPagination] = useState<PaginationMeta>(DEFAULT_PAGINATION_META);
   const [loading, setLoading] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,11 +37,11 @@ export function useCourses(query: CourseQuery) {
       setError(null);
       const response = await CourseService.list(query);
       setCourses(response.data ?? []);
-      setPagination(response.pagination ?? DEFAULT_PAGINATION);
+      setPagination(response.pagination ?? DEFAULT_PAGINATION_META);
       setLoadedQueryKey(queryKey);
     } catch (err) {
       setCourses([]);
-      setPagination(DEFAULT_PAGINATION);
+      setPagination(DEFAULT_PAGINATION_META);
       handleError(err);
       setError(err instanceof Error ? err.message : "Unable to load courses.");
     } finally {

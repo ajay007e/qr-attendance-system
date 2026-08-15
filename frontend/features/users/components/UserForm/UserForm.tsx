@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 
 import { AppError } from "@/shared/errors/AppError";
 import { Button, FormError, Field, UI_USER_ROLE_OPTIONS, USER_ROLES, UserRole } from "@/shared";
-import { UserFormProps } from "../../types";
+import { UserFormProps } from "./types";
 
 export default function UserForm({ onSubmit }: UserFormProps) {
   const [firstName, setFirstName] = useState("");
@@ -25,8 +25,8 @@ export default function UserForm({ onSubmit }: UserFormProps) {
     try {
       setLoading(true);
       await onSubmit({
-        first_name: firstName,
-        last_name: lastName,
+        firstName: firstName,
+        lastName: lastName,
         email,
         password,
         role,

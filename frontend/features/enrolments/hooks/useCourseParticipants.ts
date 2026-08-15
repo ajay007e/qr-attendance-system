@@ -6,6 +6,7 @@ import { Participant } from "@/features/courses/components/CourseLanding/compone
 
 import { enrolmentService } from "../api/enrolment.service";
 import type { ParticipantQuery } from "./useParticipantQuery";
+import { DEFAULT_PAGINATION_META, PaginationMeta } from "@/shared";
 
 const PARTICIPANTS_PER_PAGE = 10;
 
@@ -15,7 +16,7 @@ export default function useCourseParticipants(courseId: number, query: Participa
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [hasLoaded, setHasLoaded] = useState(false);
-  const [pagination, setPagination] = useState();
+  const [pagination, setPagination] = useState<PaginationMeta>(DEFAULT_PAGINATION_META);
 
   const fetchParticipants = useCallback(async () => {
     try {
@@ -28,8 +29,8 @@ export default function useCourseParticipants(courseId: number, query: Participa
         limit: PARTICIPANTS_PER_PAGE,
       });
 
-      setParticipants(response.data.data);
-      setPagination(response.data.pagination);
+      setParticipants(response.data.items);
+      setPagination(response.data.meta);
       setHasLoaded(true);
     } catch (err) {
       setError(err instanceof Error ? err : new Error("Unable to load participants"));
@@ -55,8 +56,8 @@ export default function useCourseParticipants(courseId: number, query: Participa
         });
 
         if (!cancelled) {
-          setParticipants(response.data.data);
-          setPagination(response.data.pagination);
+          setParticipants(response.data.items);
+          setPagination(response.data.meta);
           setHasLoaded(true);
         }
       } catch (err) {

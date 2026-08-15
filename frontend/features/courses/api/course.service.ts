@@ -1,7 +1,12 @@
-import api from "@/shared/lib/api";
-import { AssignLecturerRequest, CreateCourseRequest, CourseQuery, UpdateCourseRequest } from "../types";
-
-import { Course, CourseLecturer } from "../types";
+import { api } from "@/shared";
+import type {
+  Course,
+  CourseLecturer,
+  AssignLecturerRequest,
+  CreateCourseRequest,
+  CourseQuery,
+  UpdateCourseRequest,
+} from "../types";
 
 export class CourseService {
   static async list(query: CourseQuery) {

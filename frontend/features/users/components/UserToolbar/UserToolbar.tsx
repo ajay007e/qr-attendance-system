@@ -2,8 +2,8 @@ import { Search } from "lucide-react";
 
 import { Field } from "@/shared";
 
-import { UserToolbarProps } from "../../types";
-import { USER_ROLE_FILTER_OPTIONS, USER_STATUS_FILTER_OPTIONS } from "../../constants";
+import { USER_ROLE_FILTER_OPTIONS, USER_STATUS_FILTER_OPTIONS } from "@/features/users";
+import type { UserToolbarProps } from "./types";
 
 export default function UserToolbar({ filters, onFiltersChange }: UserToolbarProps) {
   const updateFilter = <K extends keyof typeof filters>(key: K, value: (typeof filters)[K]) => {

@@ -1,5 +1,5 @@
-import { ApiResponse, PaginatedResponse } from "@/shared";
-import api from "@/shared/lib/api";
+import type { ApiResponse, PaginatedData } from "@/shared";
+import { api } from "@/shared";
 
 import type { AssignedCourse, StudentCourse } from "../types";
 
@@ -55,9 +55,12 @@ export const enrolmentService = {
       limit?: number;
     },
   ) {
-    const response = await api.get<PaginatedResponse<Participant[]>>(`/enrolments/courses/${courseId}/students`, {
-      params,
-    });
+    const response = await api.get<ApiResponse<PaginatedData<Participant>>>(
+      `/enrolments/courses/${courseId}/students`,
+      {
+        params,
+      },
+    );
 
     return response.data;
   },

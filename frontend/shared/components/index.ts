@@ -21,4 +21,6 @@ export { default as Button } from "./ui/button";
 export { default as Field } from "./form/field";
 
 export { default as Pagination } from "./navigation/pagination/Pagination";
+
+export type * from "./navigation/tabs/tabs.types";
 export { default as Tabs } from "./navigation/tabs/Tabs";

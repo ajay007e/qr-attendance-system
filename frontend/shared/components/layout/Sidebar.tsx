@@ -6,7 +6,7 @@ import { ChevronDown, LogOut, Settings, User } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useAuth } from "@/features/auth";
-import { menus } from "@/shared/navigation/menu";
+import { MENUS } from "@/shared";
 import { getUserRoleLabel } from "@/shared";
 
 import { SidebarProps } from "./types";
@@ -32,7 +32,7 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
     };
   }, []);
 
-  const items = useMemo(() => (user ? (menus[user.role as keyof typeof menus] ?? []) : []), [user]);
+  const items = useMemo(() => (user ? (MENUS[user.role as keyof typeof MENUS] ?? []) : []), [user]);
 
   if (!user) return null;
 

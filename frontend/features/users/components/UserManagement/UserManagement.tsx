@@ -141,8 +141,8 @@ export default function UserManagement() {
                 page={pagination.page}
                 totalPages={pagination.totalPages}
                 total={pagination.total}
-                hasPrevious={pagination.hasPrevious}
-                hasNext={pagination.hasNext}
+                hasPrevious={pagination.page > 1}
+                hasNext={pagination.page < pagination.totalPages}
                 onPrevious={() =>
                   setQuery((previous) => ({
                     ...previous,
@@ -183,7 +183,7 @@ export default function UserManagement() {
             }}
             onStatusChange={async (status) => {
               await changeStatus(selectedUser.id, {
-                is_active: status,
+                isActive: status,
               });
               setSelectedUser(null);
             }}

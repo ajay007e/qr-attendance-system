@@ -12,7 +12,8 @@ import type {
   UserQuery,
 } from "../types";
 
-import { PaginationMeta, DEFAULT_PAGINATION, useError, User } from "@/shared";
+import { DEFAULT_PAGINATION_META, useError } from "@/shared";
+import type { PaginationMeta, User } from "@/shared";
 
 function getQueryKey(query: UserQuery) {
   return JSON.stringify({
@@ -29,7 +30,7 @@ export default function useUsers(query: UserQuery) {
   const { handleError } = useError();
 
   const [users, setUsers] = useState<User[]>([]);
-  const [pagination, setPagination] = useState<PaginationMeta>(DEFAULT_PAGINATION);
+  const [pagination, setPagination] = useState<PaginationMeta>(DEFAULT_PAGINATION_META);
   const [loading, setLoading] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,12 +47,12 @@ export default function useUsers(query: UserQuery) {
       }
       setError(null);
       const response = await userService.getUsers(query);
-      setUsers(response.data);
-      setPagination(response.pagination);
+      setUsers(response.data.items);
+      setPagination(response.data.meta);
       setLoadedQueryKey(queryKey);
     } catch (error) {
       setUsers([]);
-      setPagination(DEFAULT_PAGINATION);
+      setPagination(DEFAULT_PAGINATION_META);
       handleError(error);
       if (error instanceof Error) {
         setError(error.message);
