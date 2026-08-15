@@ -5,12 +5,12 @@ import { useEffect, useState } from "react";
 import { useDebounce } from "@/shared";
 
 import { userService } from "../api/user.service";
-import { CourseLecturer } from "@/features/courses";
+import { Lecturer } from "@/features/courses";
 
 export default function useLecturerSearch() {
   const [query, setQuery] = useState("");
 
-  const [results, setResults] = useState<CourseLecturer[]>([]);
+  const [results, setResults] = useState<Lecturer[]>([]);
 
   const [loading, setLoading] = useState(false);
 
@@ -31,9 +31,9 @@ export default function useLecturerSearch() {
 
         setError(null);
 
-        const lecturers = await userService.searchLecturers(debouncedQuery);
+        const response = await userService.searchLecturers(debouncedQuery);
 
-        setResults(lecturers);
+        setResults(response.data);
       } catch (error) {
         setResults([]);
 

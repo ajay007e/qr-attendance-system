@@ -6,12 +6,12 @@ import { useError } from "@/shared";
 
 import { CourseService } from "../api/course.service";
 
-import type { AssignLecturerRequest, CourseLecturer } from "../types";
+import type { AssignLecturerRequest, Lecturer } from "../types";
 
 export function useCourseLecturers(courseId: number) {
   const { handleError } = useError();
 
-  const [lecturers, setLecturers] = useState<CourseLecturer[]>([]);
+  const [lecturers, setLecturers] = useState<Lecturer[]>([]);
 
   const [loading, setLoading] = useState(true);
 
@@ -24,12 +24,9 @@ export function useCourseLecturers(courseId: number) {
   const loadLecturers = useCallback(async () => {
     try {
       setLoading(true);
-
       setError(null);
-
-      const data = await CourseService.getLecturers(courseId);
-
-      setLecturers(data);
+      const response = await CourseService.getLecturers(courseId);
+      setLecturers(response.data);
     } catch (error) {
       handleError(error);
 
@@ -41,7 +38,6 @@ export function useCourseLecturers(courseId: number) {
 
   const assignLecturer = async (data: AssignLecturerRequest) => {
     try {
-      console.log(data);
       setAssigning(true);
 
       setError(null);
@@ -87,10 +83,10 @@ export function useCourseLecturers(courseId: number) {
         setLoading(true);
         setError(null);
 
-        const data = await CourseService.getLecturers(courseId);
+        const response = await CourseService.getLecturers(courseId);
 
         if (!cancelled) {
-          setLecturers(data);
+          setLecturers(response.data);
         }
       } catch (error) {
         if (!cancelled) {

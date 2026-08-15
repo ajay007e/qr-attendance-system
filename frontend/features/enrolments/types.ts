@@ -1,8 +1,9 @@
-import type { Course } from "../courses/types";
+import { Course } from "@/shared";
+import { LecturerRole } from "../courses";
 
 export type CourseCardCourse = Pick<
   Course,
-  "id" | "course_code" | "course_name" | "description" | "credits" | "session" | "is_active"
+  "id" | "courseCode" | "courseName" | "description" | "credits" | "session" | "isActive"
 >;
 
 export interface StudentCourse extends CourseCardCourse {
@@ -10,7 +11,7 @@ export interface StudentCourse extends CourseCardCourse {
 }
 
 export interface AssignedCourse extends CourseCardCourse {
-  lecturer_role: "PRIMARY" | "SECONDARY" | "TUTOR";
+  lecturer_role: LecturerRole;
   assigned_at: string;
 }
 

@@ -1,4 +1,4 @@
-import { CourseTableProps } from "../../types";
+import { CourseTableProps } from "./types";
 import { CourseCard } from "./CourseCard";
 import { CourseTableRow } from "./CourseTableRow";
 

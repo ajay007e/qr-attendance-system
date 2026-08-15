@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { PaginationMeta, DEFAULT_PAGINATION_META, useError } from "@/shared";
+import { DEFAULT_PAGINATION_META, useError } from "@/shared";
+import type { PaginationMeta, Course } from "@/shared";
 import { CourseService } from "../api/course.service";
-import type { Course, CourseQuery } from "../types";
+import type { CourseQuery } from "../types";
 
 function getQueryKey(query: CourseQuery) {
   return JSON.stringify({
@@ -35,9 +36,9 @@ export function useCourses(query: CourseQuery) {
         setIsFetching(true);
       }
       setError(null);
-      const response = await CourseService.list(query);
-      setCourses(response.data ?? []);
-      setPagination(response.pagination ?? DEFAULT_PAGINATION_META);
+      const response = await CourseService.getCourses(query);
+      setCourses(response.data.items ?? []);
+      setPagination(response.data.meta ?? DEFAULT_PAGINATION_META);
       setLoadedQueryKey(queryKey);
     } catch (err) {
       setCourses([]);

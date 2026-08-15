@@ -14,26 +14,25 @@ SELECT
 
 
 INSERT INTO users (first_name, last_name, email, password, role) VALUES
--- ('System', 'Administrator', 'admin@qrattendance.com', @password, 'SUPER_ADMIN'),
-('John', 'Smith', 'john.smith@university.edu', @password, 'LECTURER'),
-('Emily', 'Johnson', 'emily.johnson@university.edu', @password, 'LECTURER'),
-('Michael', 'Brown', 'michael.brown@university.edu', @password, 'LECTURER'),
-('Sarah', 'Wilson', 'sarah.wilson@university.edu', @password, 'LECTURER'),
-('David', 'Taylor', 'david.taylor@university.edu', @password, 'LECTURER'),
-('Jessica', 'Anderson', 'jessica.anderson@university.edu', @password, 'LECTURER'),
+-- ('System', 'Administrator', 'admin@qrattendance.com', @password, 'super_admin'),
+('John', 'Smith', 'john.smith@university.edu', @password, 'lecturer'),
+('Emily', 'Johnson', 'emily.johnson@university.edu', @password, 'lecturer'),
+('Michael', 'Brown', 'michael.brown@university.edu', @password, 'lecturer'),
+('Sarah', 'Wilson', 'sarah.wilson@university.edu', @password, 'lecturer'),
+('David', 'Taylor', 'david.taylor@university.edu', @password, 'lecturer'),
+('Jessica', 'Anderson', 'jessica.anderson@university.edu', @password, 'lecturer'),
 
-('Liam', 'Wilson', 'liam.wilson@student.edu', @password, 'STUDENT'),
-('Olivia', 'Taylor', 'olivia.taylor@student.edu', @password, 'STUDENT'),
-('Noah', 'Thomas', 'noah.thomas@student.edu', @password, 'STUDENT'),
-('Emma', 'Moore', 'emma.moore@student.edu', @password, 'STUDENT'),
-('William', 'Martin', 'william.martin@student.edu', @password, 'STUDENT'),
-('Ava', 'Lee', 'ava.lee@student.edu', @password, 'STUDENT'),
-('James', 'Walker', 'james.walker@student.edu', @password, 'STUDENT'),
-('Sophia', 'Hall', 'sophia.hall@student.edu', @password, 'STUDENT'),
-('Benjamin', 'Allen', 'benjamin.allen@student.edu', @password, 'STUDENT'),
-('Mia', 'Young', 'mia.young@student.edu', @password, 'STUDENT'),
-('Lucas', 'King', 'lucas.king@student.edu', @password, 'STUDENT');
-
+('Liam', 'Wilson', 'liam.wilson@student.edu', @password, 'student'),
+('Olivia', 'Taylor', 'olivia.taylor@student.edu', @password, 'student'),
+('Noah', 'Thomas', 'noah.thomas@student.edu', @password, 'student'),
+('Emma', 'Moore', 'emma.moore@student.edu', @password, 'student'),
+('William', 'Martin', 'william.martin@student.edu', @password, 'student'),
+('Ava', 'Lee', 'ava.lee@student.edu', @password, 'student'),
+('James', 'Walker', 'james.walker@student.edu', @password, 'student'),
+('Sophia', 'Hall', 'sophia.hall@student.edu', @password, 'student'),
+('Benjamin', 'Allen', 'benjamin.allen@student.edu', @password, 'student'),
+('Mia', 'Young', 'mia.young@student.edu', @password, 'student'),
+('Lucas', 'King', 'lucas.king@student.edu', @password, 'student');
 -- ==========================================
 -- Seed Courses
 -- ==========================================

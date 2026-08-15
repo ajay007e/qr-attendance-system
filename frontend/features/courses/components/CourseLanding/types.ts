@@ -1,4 +1,4 @@
-import { Course } from "../../types";
+import type { Course } from "@/shared";
 
 export type CourseTab = "site" | "participants" | "grades" | "attendance";
 

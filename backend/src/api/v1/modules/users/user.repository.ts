@@ -17,8 +17,8 @@ import type {
 
 export class UserRepository {
   async findAll(query: UserQuery): Promise<PaginatedData<DatabaseUserWithoutPassword>> {
-    const page = Math.max(1, query.page ?? DEFAULT_PAGE);
-    const limit = Math.min(DEFAULT_MAX_LIMIT, Math.max(1, query.limit ?? DEFAULT_LIMIT));
+    const page = Math.max(1, Number(query.page ?? DEFAULT_PAGE));
+    const limit = Math.min(DEFAULT_MAX_LIMIT, Math.max(1, Number(query.limit ?? DEFAULT_LIMIT)));
     const offset = (page - 1) * limit;
 
     let where = "WHERE 1 = 1";
@@ -34,7 +34,6 @@ export class UserRepository {
       `;
 
       const keyword = `%${query.search}%`;
-
       params.push(keyword, keyword, keyword);
     }
 
@@ -63,13 +62,13 @@ export class UserRepository {
     const [rows] = await db.execute<RowDataPacket[]>(
       `
         SELECT
-          ${USER_COLUMNS}
+        ${USER_COLUMNS}
         FROM users
         ${where}
         ORDER BY created_at DESC
-        LIMIT ? OFFSET ?
+        LIMIT ${limit} OFFSET ${offset}
       `,
-      [...params, limit, offset],
+      params,
     );
 
     return {
@@ -210,36 +209,38 @@ export class UserRepository {
 
   async searchLecturers(search?: string, limit = 10): Promise<DatabaseLecturerListItem[]> {
     let where = `
-      WHERE role = ?
-        AND is_active = TRUE
-    `;
+    WHERE role = ?
+      AND is_active = TRUE
+  `;
 
     const params: ExecuteValues[] = [ROLES.LECTURER];
 
-    if (search) {
+    if (search?.trim()) {
       where += `
-        AND (
-          first_name LIKE ?
-          OR last_name LIKE ?
-          OR email LIKE ?
-        )
-      `;
+      AND (
+        first_name LIKE ?
+        OR last_name LIKE ?
+        OR email LIKE ?
+      )
+    `;
 
-      const keyword = `%${search}%`;
+      const keyword = `%${search.trim()}%`;
 
       params.push(keyword, keyword, keyword);
     }
 
+    const safeLimit = Math.min(DEFAULT_MAX_LIMIT, Math.max(1, Number(limit ?? DEFAULT_LIMIT)));
+
     const [rows] = await db.execute<RowDataPacket[]>(
       `
-        SELECT
-          ${LECTURER_COLUMNS}
-        FROM users
-        ${where}
-        ORDER BY first_name ASC
-        LIMIT ?
-      `,
-      [...params, limit],
+      SELECT
+        ${LECTURER_COLUMNS}
+      FROM users
+      ${where}
+      ORDER BY first_name ASC
+      LIMIT ${safeLimit}
+    `,
+      params,
     );
 
     return rows as DatabaseLecturerListItem[];

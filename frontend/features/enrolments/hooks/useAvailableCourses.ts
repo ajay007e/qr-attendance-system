@@ -39,7 +39,7 @@ export default function useAvailableCourses(search: string) {
       const response = await enrolmentService.getAvailable(query);
 
       if (currentRequest === requestId.current) {
-        setCourses(response.data);
+        setCourses(response.data.items);
       }
     } catch (error) {
       if (currentRequest !== requestId.current) {

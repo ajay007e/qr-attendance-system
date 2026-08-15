@@ -31,7 +31,7 @@ export default function EditUserForm({ user, onUpdate, onPasswordChange, onStatu
 
       {activeTab === "password" && <PasswordForm userId={user.id} onSubmit={onPasswordChange} />}
 
-      {activeTab === "delete" && <DeleteUserTab onDelete={() => onStatusChange(false)} />}
+      {activeTab === "delete" && <DeleteUserTab isActive={user.isActive} onDelete={(flag) => onStatusChange(flag)} />}
     </div>
   );
 }

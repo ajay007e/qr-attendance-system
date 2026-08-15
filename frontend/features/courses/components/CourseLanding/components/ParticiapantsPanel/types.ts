@@ -1,11 +1,6 @@
-import { Course } from "@/features/courses/types";
+import { Course, User } from "@/shared";
 
-export interface Participant {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-}
+export type Participant = Pick<User, "id" | "firstName" | "lastName" | "email">;
 
 export interface ParticipantToolbarProps {
   search: string;

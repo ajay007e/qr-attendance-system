@@ -8,7 +8,6 @@ import { getCourseCardGradient } from "../../../enrolments/utils";
 import { useCourse } from "../../hooks/useCourse";
 
 import { ParticipantsTab } from "./components/ParticiapantsPanel/ParticipantsPanel";
-import { GradesTab } from "./components/GradesPanel/GradesPanel";
 import { AttendanceTab } from "./components/AttendancePanel/AttendancePanel";
 import { SiteTab } from "./components/SitePanel/SitePanel";
 
@@ -38,7 +37,7 @@ export default function CourseLanding({ courseId, backHref }: CourseLandingProps
     );
   }
 
-  const gradient = getCourseCardGradient(course.course_code);
+  const gradient = getCourseCardGradient(course.courseCode);
 
   return (
     <div className="space-y-5">
@@ -64,8 +63,6 @@ export default function CourseLanding({ courseId, backHref }: CourseLandingProps
       {activeTab === "site" && <SiteTab course={course} gradient={gradient} />}
 
       {activeTab === "participants" && <ParticipantsTab course={course} />}
-
-      {activeTab === "grades" && <GradesTab />}
 
       {activeTab === "attendance" && <AttendanceTab />}
     </div>

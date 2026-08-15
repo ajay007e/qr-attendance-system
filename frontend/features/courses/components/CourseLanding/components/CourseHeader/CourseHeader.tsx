@@ -14,9 +14,9 @@ export function CourseHeader({ course, gradient }: CourseHeaderProps) {
             </div>
 
             <div>
-              <p className="text-sm font-semibold text-gray-600">{course.course_code}</p>
+              <p className="text-sm font-semibold text-gray-600">{course.courseCode}</p>
 
-              <h1 className="mt-1 text-2xl font-bold tracking-tight text-gray-900 md:text-3xl">{course.course_name}</h1>
+              <h1 className="mt-1 text-2xl font-bold tracking-tight text-gray-900 md:text-3xl">{course.courseName}</h1>
 
               <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-600">
                 {course.description || "Course information and learning resources."}

@@ -2,19 +2,20 @@
 
 import { FormEvent, useState } from "react";
 
-import { FormError, Field, Button } from "@/shared";
+import { FormError, Field, Button, CourseSession } from "@/shared";
 
 import { AppError } from "@/shared/errors/AppError";
 
-import type { CourseFormProps, CourseSession } from "../../types";
+import type { CourseFormProps } from "./types";
 
 import { COURSE_SESSION_FILTER_OPTIONS } from "../../constants";
+import { CreateCourseRequest } from "../../types";
 
-const INITIAL_FORM = {
+const INITIAL_FORM: CreateCourseRequest = {
   courseCode: "",
   courseName: "",
   description: "",
-  credits: "",
+  credits: 0,
   session: "ANNUAL" as CourseSession,
 };
 
@@ -78,7 +79,7 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
               min={1}
               placeholder="Enter credits"
               value={form.credits}
-              onChange={(event) => updateField("credits", event.target.value)}
+              onChange={(event) => updateField("credits", Number(event.target.value))}
             />
           </Field>
         </div>
@@ -93,7 +94,7 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
 
         <Field label="Description">
           <Field.Textarea
-            value={form.description}
+            value={form.description ?? ""}
             onChange={(event) => updateField("description", event.target.value)}
             placeholder="Enter course description"
             rows={4}

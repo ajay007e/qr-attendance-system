@@ -1,10 +1,8 @@
-import type { User, UserRole } from "@/shared";
+import type { PaginationQuery, User, UserRole } from "@/shared";
 
 export type UserStatus = "ACTIVE" | "INACTIVE";
 
-export interface UserQuery {
-  page?: number;
-  limit?: number;
+export interface UserQuery extends PaginationQuery {
   search: string;
   role: UserRole | "ALL";
   status: UserStatus | "ALL";

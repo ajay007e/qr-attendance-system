@@ -28,7 +28,7 @@ export const enrolmentService = {
         }
       : undefined;
 
-    const response = await api.get<ApiResponse<StudentCourse[]>>("/enrolments/available", { params });
+    const response = await api.get<ApiResponse<PaginatedData<StudentCourse>>>("/enrolments/available", { params });
 
     return response.data;
   },

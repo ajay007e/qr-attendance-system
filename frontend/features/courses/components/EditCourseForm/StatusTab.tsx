@@ -6,14 +6,14 @@ import { FormError, Button } from "@/shared";
 import { AppError } from "@/shared/errors/AppError";
 
 import { useCourseMutation } from "../../hooks/useCourseMutation";
-import { StatusTabProps } from "../../types";
+import { StatusTabProps } from "./types";
 
 export function StatusTab({ course, refresh, onClose }: StatusTabProps) {
   const { updateStatus, loading } = useCourseMutation(refresh);
 
   const [error, setError] = useState("");
 
-  const isActive = course.is_active;
+  const isActive = course.isActive;
 
   async function handleStatusChange() {
     if (loading) return;
@@ -23,7 +23,7 @@ export function StatusTab({ course, refresh, onClose }: StatusTabProps) {
     try {
       await updateStatus({
         ...course,
-        is_active: !isActive,
+        isActive: !isActive,
       });
       onClose();
     } catch (err) {

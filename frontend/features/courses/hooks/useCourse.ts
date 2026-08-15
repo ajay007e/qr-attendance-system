@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { CourseService } from "../api/course.service";
-import type { Course } from "../types";
+import type { Course } from "@/shared";
 
 export function useCourse(courseId: number) {
   const [course, setCourse] = useState<Course | null>(null);
@@ -18,10 +18,10 @@ export function useCourse(courseId: number) {
         setLoading(true);
         setError(null);
 
-        const data = await CourseService.get(courseId);
+        const response = await CourseService.getCourse(courseId);
 
         if (!cancelled) {
-          setCourse(data);
+          setCourse(response.data);
         }
       } catch (err) {
         if (!cancelled) {
@@ -46,8 +46,8 @@ export function useCourse(courseId: number) {
       setLoading(true);
       setError(null);
 
-      const data = await CourseService.get(courseId);
-      setCourse(data);
+      const response = await CourseService.getCourse(courseId);
+      setCourse(response.data);
     } catch (err) {
       setError(err instanceof Error ? err : new Error("Unable to load course"));
     } finally {

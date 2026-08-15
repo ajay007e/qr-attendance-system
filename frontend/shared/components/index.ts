@@ -17,6 +17,7 @@ export { default as SectionHeader } from "./layout/SectionHeader";
 export { default as Modal } from "./ui/Modal";
 export { default as Badge } from "./ui/Badge";
 export { default as Button } from "./ui/button";
+export type * from "./ui/types";
 
 export { default as Field } from "./form/field";
 

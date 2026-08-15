@@ -52,35 +52,35 @@ export class EnrolmentRepository {
     const offset = (page - 1) * limit;
 
     let where = `
-      WHERE c.is_active = TRUE
-        AND c.id NOT IN (
-          SELECT course_id
-          FROM course_enrolments
-          WHERE user_id = ?
-        )
-    `;
+    WHERE c.is_active = TRUE
+      AND c.id NOT IN (
+        SELECT course_id
+        FROM course_enrolments
+        WHERE user_id = ?
+      )
+  `;
 
     const params: ExecuteValues[] = [userId];
 
-    if (query.search) {
+    if (query.search?.trim()) {
       where += `
-        AND (
-          c.course_code LIKE ?
-          OR c.course_name LIKE ?
-        )
-      `;
+      AND (
+        c.course_code LIKE ?
+        OR c.course_name LIKE ?
+      )
+    `;
 
-      const keyword = `%${query.search}%`;
+      const keyword = `%${query.search.trim()}%`;
 
       params.push(keyword, keyword);
     }
 
     const [countRows] = await db.execute<RowDataPacket[]>(
       `
-        SELECT COUNT(*) AS total
-        FROM courses c
-        ${where}
-      `,
+      SELECT COUNT(*) AS total
+      FROM courses c
+      ${where}
+    `,
       params,
     );
 
@@ -89,22 +89,22 @@ export class EnrolmentRepository {
 
     const [rows] = await db.execute<RowDataPacket[]>(
       `
-        SELECT
-          c.id,
-          c.course_code,
-          c.course_name,
-          c.description,
-          c.credits,
-          c.session,
-          c.is_active,
-          NULL AS enrolled_at
-        FROM courses c
-        ${where}
-        ORDER BY c.course_code ASC
-        LIMIT ?
-        OFFSET ?
-      `,
-      [...params, limit, offset],
+      SELECT
+        c.id,
+        c.course_code,
+        c.course_name,
+        c.description,
+        c.credits,
+        c.session,
+        c.is_active,
+        NULL AS enrolled_at
+      FROM courses c
+      ${where}
+      ORDER BY c.course_code ASC
+      LIMIT ${limit}
+      OFFSET ${offset}
+    `,
+      params,
     );
 
     return {
@@ -211,7 +211,7 @@ export class EnrolmentRepository {
 
     const params: ExecuteValues[] = [courseId];
 
-    if (query.search) {
+    if (query.search?.trim()) {
       where += `
         AND (
           u.first_name LIKE ?
@@ -220,19 +220,19 @@ export class EnrolmentRepository {
         )
       `;
 
-      const keyword = `%${query.search}%`;
+      const keyword = `%${query.search.trim()}%`;
 
       params.push(keyword, keyword, keyword);
     }
 
     const [countRows] = await db.execute<RowDataPacket[]>(
       `
-        SELECT COUNT(*) AS total
-        FROM course_enrolments ce
-        INNER JOIN users u
-          ON u.id = ce.user_id
-        ${where}
-      `,
+      SELECT COUNT(*) AS total
+      FROM course_enrolments ce
+      INNER JOIN users u
+        ON u.id = ce.user_id
+      ${where}
+    `,
       params,
     );
 
@@ -241,22 +241,22 @@ export class EnrolmentRepository {
 
     const [rows] = await db.execute<RowDataPacket[]>(
       `
-        SELECT
-          u.id,
-          u.first_name,
-          u.last_name,
-          u.email,
-          u.role,
-          ce.created_at AS enrolled_at
-        FROM course_enrolments ce
-        INNER JOIN users u
-          ON u.id = ce.user_id
-        ${where}
-        ORDER BY u.first_name ASC, u.last_name ASC
-        LIMIT ?
-        OFFSET ?
-      `,
-      [...params, limit, offset],
+      SELECT
+        u.id,
+        u.first_name,
+        u.last_name,
+        u.email,
+        u.role,
+        ce.created_at AS enrolled_at
+      FROM course_enrolments ce
+      INNER JOIN users u
+        ON u.id = ce.user_id
+      ${where}
+      ORDER BY u.first_name ASC, u.last_name ASC
+      LIMIT ${limit}
+      OFFSET ${offset}
+    `,
+      params,
     );
 
     return {

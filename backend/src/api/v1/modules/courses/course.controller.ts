@@ -109,7 +109,7 @@ export class CourseController {
     try {
       const body = req.body as AssignLecturerRequest;
 
-      await this.service.assignLecturer(Number(req.params.id), body.userId, body.role);
+      await this.service.assignLecturer(Number(req.params.id), body.id, body.role);
 
       res.status(201).json({
         success: true,

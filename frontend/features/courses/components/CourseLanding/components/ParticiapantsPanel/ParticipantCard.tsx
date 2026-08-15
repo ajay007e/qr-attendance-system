@@ -1,9 +1,8 @@
 import { ParticipantCardProps } from "./types";
 
 export function ParticipantCard({ participant }: ParticipantCardProps) {
-  const initials = [participant.first_name, participant.last_name]
-    .filter(Boolean)
-    .map((name) => name[0])
+  const initials = [participant.firstName, participant.lastName]
+    .map((name) => name?.[0] ?? "")
     .join("")
     .slice(0, 2)
     .toUpperCase();
@@ -25,7 +24,7 @@ export function ParticipantCard({ participant }: ParticipantCardProps) {
 
         <div className="min-w-0">
           <h3 className="font-semibold text-gray-900">
-            {participant.first_name} {participant.last_name}
+            {participant.firstName} {participant.lastName}
           </h3>
 
           <p className="mt-1 text-sm text-gray-500">{participant.email}</p>

@@ -1,13 +1,11 @@
 import { ParticipantTableRowProps } from "./types";
 
 export function ParticipantTableRow({ participant }: ParticipantTableRowProps) {
-  const initials = [participant.first_name, participant.last_name]
-    .filter(Boolean)
-    .map((name) => name[0])
+  const initials = [participant.firstName, participant.lastName]
+    .map((name) => name?.[0] ?? "")
     .join("")
     .slice(0, 2)
     .toUpperCase();
-
   return (
     <tr
       className="
@@ -22,7 +20,7 @@ export function ParticipantTableRow({ participant }: ParticipantTableRowProps) {
           </div>
 
           <span className="text-sm font-medium text-gray-700">
-            {participant.first_name} {participant.last_name}
+            {participant.firstName} {participant.lastName}
           </span>
         </div>
       </td>

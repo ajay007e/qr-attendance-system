@@ -26,11 +26,11 @@ export class CourseRepository {
 
     if (query.search) {
       where += `
-        AND (
-          course_code LIKE ?
-          OR course_name LIKE ?
-        )
-      `;
+      AND (
+        course_code LIKE ?
+        OR course_name LIKE ?
+      )
+    `;
 
       const keyword = `%${query.search}%`;
 
@@ -49,10 +49,10 @@ export class CourseRepository {
 
     const [countRows] = await db.execute<RowDataPacket[]>(
       `
-        SELECT COUNT(*) AS total
-        FROM courses
-        ${where}
-      `,
+      SELECT COUNT(*) AS total
+      FROM courses
+      ${where}
+    `,
       params,
     );
 
@@ -61,14 +61,14 @@ export class CourseRepository {
 
     const [rows] = await db.execute<RowDataPacket[]>(
       `
-        SELECT
-          ${COURSE_COLUMNS}
-        FROM courses
-        ${where}
-        ORDER BY created_at DESC
-        LIMIT ? OFFSET ?
-      `,
-      [...params, limit, offset],
+      SELECT
+        ${COURSE_COLUMNS}
+      FROM courses
+      ${where}
+      ORDER BY created_at DESC
+      LIMIT ${limit} OFFSET ${offset}
+    `,
+      params,
     );
 
     return {

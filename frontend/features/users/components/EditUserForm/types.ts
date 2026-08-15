@@ -23,3 +23,7 @@ export interface PasswordFormProps {
   userId: User["id"];
   onSubmit: (data: ChangePasswordPayload) => Promise<void> | void;
 }
+export type DeleteUserTabProps = {
+  onDelete: (isActive: boolean) => void;
+  isActive: boolean;
+};

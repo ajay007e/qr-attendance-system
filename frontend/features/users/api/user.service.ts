@@ -7,6 +7,7 @@ import type {
   UserQuery,
 } from "../types";
 import { api } from "@/shared";
+import type { Lecturer } from "@/features/courses";
 
 export const userService = {
   async getUsers(query?: UserQuery) {
@@ -51,12 +52,12 @@ export const userService = {
   },
 
   async searchLecturers(search?: string) {
-    const response = await api.get("/users/lecturers/search", {
+    const response = await api.get<ApiResponse<Lecturer[]>>("/users/lecturers/search", {
       params: {
         search,
       },
     });
 
-    return response.data.data;
+    return response.data;
   },
 };
