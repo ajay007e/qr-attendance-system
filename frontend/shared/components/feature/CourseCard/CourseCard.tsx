@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
-
-import type { CourseCardProps } from "../../types";
-import { getCourseCardGradient } from "../../utils";
+import { CourseCardProps } from "./types";
+import { getGradient } from "@/shared";
 
 export default function CourseCard({ course, action, href }: CourseCardProps) {
-  const gradient = getCourseCardGradient(course.courseCode);
+  const gradient = getGradient(course.courseCode);
 
   const card = (
     <div className="flex h-full min-h-64 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-md">

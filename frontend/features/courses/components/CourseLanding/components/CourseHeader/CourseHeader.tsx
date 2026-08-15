@@ -1,9 +1,9 @@
 import { BookOpen } from "lucide-react";
 import { CourseHeaderProps } from "../../types";
-import { getSessionLabel } from "@/features/courses/constants";
-import { Badge } from "@/shared";
+import { Badge, getGradient, getSessionLabel } from "@/shared";
 
-export function CourseHeader({ course, gradient }: CourseHeaderProps) {
+export function CourseHeader({ course }: CourseHeaderProps) {
+  const gradient = getGradient(course.courseCode);
   return (
     <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
       <div className={`flex min-h-52 items-center bg-gradient-to-br ${gradient} px-6 py-8 md:px-10`}>

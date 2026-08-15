@@ -2,8 +2,7 @@
 
 import { Search } from "lucide-react";
 
-import { Field } from "@/shared";
-import { useAutocompleteContext } from "@/shared/components/form/field/autocomplete/autocomplete.context";
+import { Field, useAutocompleteContext } from "@/shared";
 
 import { COURSE_SEARCH_MIN_LENGTH } from "../../constants";
 import type { CourseSearchProps, StudentCourse } from "../../types";

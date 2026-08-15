@@ -1,6 +1,4 @@
-import { Course, User } from "@/shared";
-
-export type Participant = Pick<User, "id" | "firstName" | "lastName" | "email">;
+import type { Course, Participant } from "@/shared";
 
 export interface ParticipantToolbarProps {
   search: string;
@@ -20,5 +18,5 @@ export interface ParticipantTableProps {
 }
 
 export interface ParticipantsTabProps {
-  course: Course;
+  courseId: Course["id"];
 }

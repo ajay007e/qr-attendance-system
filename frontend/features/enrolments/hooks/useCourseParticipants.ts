@@ -2,11 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import { Participant } from "@/features/courses/components/CourseLanding/components/ParticiapantsPanel/types";
-
 import { enrolmentService } from "../api/enrolment.service";
 import type { ParticipantQuery } from "./useParticipantQuery";
-import { DEFAULT_PAGINATION_META, PaginationMeta } from "@/shared";
+import type { Participant, PaginationMeta } from "@/shared";
+import { DEFAULT_PAGINATION_META } from "@/shared";
 
 const PARTICIPANTS_PER_PAGE = 10;
 

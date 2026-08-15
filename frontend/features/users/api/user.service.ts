@@ -1,4 +1,4 @@
-import type { ApiResponse, PaginatedData, User } from "@/shared";
+import type { ApiResponse, Lecturer, PaginatedData, User } from "@/shared";
 import type {
   CreateUserRequest,
   UpdateUserRequest,
@@ -7,7 +7,6 @@ import type {
   UserQuery,
 } from "../types";
 import { api } from "@/shared";
-import type { Lecturer } from "@/features/courses";
 
 export const userService = {
   async getUsers(query?: UserQuery) {

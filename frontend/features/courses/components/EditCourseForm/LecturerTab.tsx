@@ -3,28 +3,22 @@
 import { useState } from "react";
 import { Search, Trash2, UserPlus, X } from "lucide-react";
 
-import { Badge, Button, Field, FormError } from "@/shared";
-import { AppError } from "@/shared/errors/AppError";
+import type { Lecturer, LecturerRole } from "@/shared";
+import { AppError, Badge, Button, Field, FormError, useAutocompleteContext } from "@/shared";
 
 import { LECTURER_ROLE, LECTURER_ROLE_OPTIONS } from "../../constants";
 import { useCourseLecturers } from "../../hooks/useCourseLecturers";
 
-import { useLecturerSearch } from "@/features/users";
-
-import { useAutocompleteContext } from "@/shared/components/form/field/autocomplete/autocomplete.context";
 import type { LecturerTabProps } from "./types";
-import type { Lecturer, LecturerRole } from "../../types";
 
-export function LecturersTab({ courseId }: LecturerTabProps) {
+export function LecturersTab({ courseId, lecturerSearch }: LecturerTabProps) {
+  const { query, results, loading, selectedLecturer, onQueryChange, onSelect } = lecturerSearch;
+
   const {
     lecturers: assignedLecturers,
     assignLecturer: assignCourseLecturer,
     removeLecturer: removeCourseLecturer,
   } = useCourseLecturers(courseId);
-
-  const { query, setQuery, results, loading } = useLecturerSearch();
-
-  const [selectedLecturer, setSelectedLecturer] = useState<Lecturer | null>(null);
 
   const [selectedRole, setSelectedRole] = useState<LecturerRole>(LECTURER_ROLE.PRIMARY);
 
@@ -56,9 +50,9 @@ export function LecturersTab({ courseId }: LecturerTabProps) {
         role: selectedRole,
       });
 
-      setSelectedLecturer(null);
+      onSelect(null);
       setSelectedRole(LECTURER_ROLE.PRIMARY);
-      setQuery("");
+      onQueryChange("");
     } catch (err) {
       console.error(err);
 
@@ -133,7 +127,7 @@ export function LecturersTab({ courseId }: LecturerTabProps) {
               <Field.Autocomplete<Lecturer>
                 value={query}
                 onChange={(value) => {
-                  setQuery(value);
+                  onQueryChange(value);
                   setError("");
                 }}
                 options={results}
@@ -142,8 +136,8 @@ export function LecturersTab({ courseId }: LecturerTabProps) {
                 leftIcon={<Search size={18} className="text-gray-500" />}
                 getOptionLabel={(lecturer) => `${lecturer.firstName} ${lecturer.lastName ?? ""}`}
                 onSelect={(lecturer) => {
-                  setSelectedLecturer(lecturer);
-                  setQuery("");
+                  onSelect(lecturer);
+                  onQueryChange("");
                   setError("");
                 }}
               >
@@ -175,7 +169,7 @@ export function LecturersTab({ courseId }: LecturerTabProps) {
               <p className="text-sm text-gray-600">{selectedLecturer.email}</p>
             </div>
 
-            <Button type="button" variant="ghost" size="icon" onClick={() => setSelectedLecturer(null)}>
+            <Button type="button" variant="ghost" size="icon" onClick={() => onSelect(null)}>
               <X size={18} />
             </Button>
           </div>

@@ -2,9 +2,8 @@
 
 import { useRouter } from "next/navigation";
 
-import { EmptyState, ErrorFallback, PageLoader, Section, SectionHeader } from "@/shared";
+import { EmptyState, ErrorFallback, PageLoader, Section, SectionHeader, CourseCard } from "@/shared";
 
-import CourseCard from "../CourseCard";
 import useEnrolledCourses from "../../hooks/useEnrolledCourses";
 
 export default function StudentDashboard() {

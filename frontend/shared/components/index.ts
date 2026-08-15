@@ -20,8 +20,11 @@ export { default as Button } from "./ui/button";
 export type * from "./ui/types";
 
 export { default as Field } from "./form/field";
+export { default as useAutocompleteContext } from "./form/field/autocomplete/autocomplete.context";
 
 export { default as Pagination } from "./navigation/pagination/Pagination";
 
 export type * from "./navigation/tabs/tabs.types";
 export { default as Tabs } from "./navigation/tabs/Tabs";
+
+export { default as CourseCard } from "./feature/CourseCard";

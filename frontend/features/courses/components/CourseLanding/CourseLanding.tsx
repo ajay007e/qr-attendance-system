@@ -4,10 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
-import { getCourseCardGradient } from "../../../enrolments/utils";
 import { useCourse } from "../../hooks/useCourse";
 
-import { ParticipantsTab } from "./components/ParticiapantsPanel/ParticipantsPanel";
 import { AttendanceTab } from "./components/AttendancePanel/AttendancePanel";
 import { SiteTab } from "./components/SitePanel/SitePanel";
 
@@ -16,7 +14,7 @@ import { Tabs, PageLoader, ErrorFallback } from "@/shared";
 import { COURSE_TABS } from "./constants";
 import type { CourseLandingProps, CourseTab } from "./types";
 
-export default function CourseLanding({ courseId, backHref }: CourseLandingProps) {
+export default function CourseLanding({ courseId, backHref, participantsTab }: CourseLandingProps) {
   const [activeTab, setActiveTab] = useState<CourseTab>("site");
 
   const { course, loading, error, refresh } = useCourse(courseId);
@@ -36,8 +34,6 @@ export default function CourseLanding({ courseId, backHref }: CourseLandingProps
       />
     );
   }
-
-  const gradient = getCourseCardGradient(course.courseCode);
 
   return (
     <div className="space-y-5">
@@ -60,9 +56,9 @@ export default function CourseLanding({ courseId, backHref }: CourseLandingProps
         scrollable
       />
 
-      {activeTab === "site" && <SiteTab course={course} gradient={gradient} />}
+      {activeTab === "site" && <SiteTab course={course} />}
 
-      {activeTab === "participants" && <ParticipantsTab course={course} />}
+      {activeTab === "participants" && participantsTab?.(courseId)}
 
       {activeTab === "attendance" && <AttendanceTab />}
     </div>

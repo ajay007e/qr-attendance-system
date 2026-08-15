@@ -1,12 +1,17 @@
 import { CourseLanding } from "@/features/courses";
+import { ParticipantsTab } from "@/features/enrolments";
 import { Container } from "@/shared";
 
-export default async function StudnetCoursePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function StudentCoursePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const courseId = Number(id);
   return (
     <Container>
-      <CourseLanding courseId={courseId} backHref="/student" />
+      <CourseLanding
+        courseId={courseId}
+        backHref="/lecturer"
+        participantsTab={(id) => <ParticipantsTab courseId={id} />}
+      />
     </Container>
   );
 }

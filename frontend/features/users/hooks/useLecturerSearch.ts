@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react";
 
-import { useDebounce } from "@/shared";
+import { Lecturer, useDebounce } from "@/shared";
 
 import { userService } from "../api/user.service";
-import { Lecturer } from "@/features/courses";
 
 export default function useLecturerSearch() {
   const [query, setQuery] = useState("");

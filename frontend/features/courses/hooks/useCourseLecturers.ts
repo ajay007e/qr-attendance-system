@@ -2,11 +2,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import { useError } from "@/shared";
+import { type Lecturer, useError } from "@/shared";
 
 import { CourseService } from "../api/course.service";
 
-import type { AssignLecturerRequest, Lecturer } from "../types";
+import type { AssignLecturerRequest } from "../types";
 
 export function useCourseLecturers(courseId: number) {
   const { handleError } = useError();

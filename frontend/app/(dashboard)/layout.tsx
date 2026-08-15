@@ -3,17 +3,18 @@
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/features/auth";
-import { DashboardShell, getDashboardRoute, PageLoader } from "@/shared";
+import { DashboardShell, getDashboardRoute, PageLoader, MENUS } from "@/shared";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { loading, user } = useAuth();
+  const { loading, user, logout } = useAuth();
 
   const expectedRoute = user ? getDashboardRoute(user.role) : null;
 
   const isAuthorizedRoute = expectedRoute && (pathname === expectedRoute || pathname.startsWith(`${expectedRoute}/`));
+  const items = user ? (MENUS[user.role] ?? []) : [];
 
   useEffect(() => {
     if (loading) return;
@@ -35,6 +36,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (!user || !expectedRoute || !isAuthorizedRoute) {
     return null;
   }
-
-  return <DashboardShell>{children}</DashboardShell>;
+  return (
+    <DashboardShell user={user} items={items} onLogout={logout}>
+      {children}
+    </DashboardShell>
+  );
 }

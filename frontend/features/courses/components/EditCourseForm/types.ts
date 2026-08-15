@@ -1,25 +1,14 @@
-import type { Course } from "@/shared";
-import type { Lecturer, LecturerRole, UpdateCourseRequest } from "../../types";
+import type { Course, Lecturer, LecturerRole } from "@/shared";
+import type { LecturerSearchProps, UpdateCourseRequest } from "../../types";
 
 export interface LecturerTabProps {
   courseId: Course["id"];
+  lecturerSearch: LecturerSearchProps;
 }
 
 export interface LecturerRoleSelectProps {
   value: LecturerRole;
   onChange: (role: LecturerRole) => void;
-}
-
-export interface LecturerSearchProps {
-  query: string;
-  results: Lecturer[];
-  loading: boolean;
-  selectedLecturer: Lecturer | null;
-  onQueryChange: (value: string) => void;
-  onSelect: (lecturer: Lecturer) => void;
-  onClear: () => void;
-  onFocus: () => void;
-  open: boolean;
 }
 
 export interface AssignedLecturerListProps {
@@ -35,6 +24,8 @@ export interface EditCourseFormProps {
   refresh: () => Promise<void>;
 
   onClose: () => void;
+
+  lecturerSearch: LecturerSearchProps;
 }
 
 export interface DetailsTabProps {

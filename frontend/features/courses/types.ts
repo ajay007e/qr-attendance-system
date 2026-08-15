@@ -1,6 +1,4 @@
-import type { User, Course, CourseSession, PaginationQuery } from "@/shared";
-
-export type Lecturer = Pick<User, "id" | "firstName" | "lastName" | "email"> & { role?: LecturerRole };
+import type { Course, CourseSession, Lecturer, PaginationQuery } from "@/shared";
 
 export type CreateCourseRequest = Pick<Course, "courseName" | "courseCode" | "description" | "credits" | "session">;
 
@@ -16,4 +14,14 @@ export interface CourseQuery extends PaginationQuery {
   status: "ALL" | "ACTIVE" | "INACTIVE";
 }
 
-export type LecturerRole = "PRIMARY" | "SECONDARY" | "TUTOR";
+export interface LecturerSearchProps {
+  query: string;
+  results: Lecturer[];
+  loading: boolean;
+  selectedLecturer: Lecturer | null;
+  onQueryChange: (value: string) => void;
+  onSelect: (lecturer: Lecturer | null) => void;
+  onClear: () => void;
+  onFocus: () => void;
+  open: boolean;
+}

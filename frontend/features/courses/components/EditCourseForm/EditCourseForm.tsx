@@ -13,7 +13,7 @@ import { COURSE_TABS } from "../../constants";
 import type { UpdateCourseRequest } from "../../types";
 import type { CourseEditTab, EditCourseFormProps } from "./types";
 
-export default function EditCourseForm({ course, refresh, onClose }: EditCourseFormProps) {
+export default function EditCourseForm({ course, refresh, onClose, lecturerSearch }: EditCourseFormProps) {
   const [activeTab, setActiveTab] = useState<CourseEditTab>("details");
 
   const { updateCourse } = useCourseMutation(refresh);
@@ -38,7 +38,7 @@ export default function EditCourseForm({ course, refresh, onClose }: EditCourseF
 
       {activeTab === "details" && <DetailsTab course={course} refresh={refresh} onSubmit={handleUpdate} />}
 
-      {activeTab === "lecturers" && <LecturersTab courseId={course.id} />}
+      {activeTab === "lecturers" && <LecturersTab courseId={course.id} lecturerSearch={lecturerSearch} />}
 
       {activeTab === "status" && <StatusTab course={course} refresh={refresh} onClose={onClose} />}
     </div>

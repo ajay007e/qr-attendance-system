@@ -6,7 +6,7 @@ import type { AutocompleteContextValue, AutocompleteContextValueBase } from "./a
 
 export const AutocompleteContext = React.createContext<AutocompleteContextValueBase | null>(null);
 
-export function useAutocompleteContext<T>() {
+export default function useAutocompleteContext<T>() {
   const context = React.useContext(AutocompleteContext) as AutocompleteContextValue<T> | null;
 
   if (!context) {

@@ -2,13 +2,13 @@
 
 import { FormEvent, useState } from "react";
 
-import { Button, FormError, Field, CourseSession } from "@/shared";
+import { AppError, Button, COURSE_SESSION_FILTER_OPTIONS, FormError, Field } from "@/shared";
 
-import { AppError } from "@/shared/errors/AppError";
+import type { CourseSession } from "@/shared";
 
 import type { UpdateCourseRequest } from "../../types";
 
-import { COURSE_SESSION_FILTER_OPTIONS } from "../../constants";
+import {} from "../../constants";
 import type { DetailsTabProps } from "./types";
 
 export function DetailsTab({ course, onSubmit }: DetailsTabProps) {

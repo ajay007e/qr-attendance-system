@@ -4,10 +4,10 @@ import { Section, SectionHeader } from "@/shared";
 import { CourseHeader } from "../CourseHeader/CourseHeader";
 import { SiteTabProps } from "../../types";
 
-export function SiteTab({ course, gradient }: SiteTabProps) {
+export function SiteTab({ course }: SiteTabProps) {
   return (
     <Section>
-      <CourseHeader course={course} gradient={gradient} />
+      <CourseHeader course={course} />
       <SectionHeader title="Course Site" subtitle="Course materials, learning resources and assessment information." />
       {SITE_SECTIONS.map((section, index) => {
         const Icon = section.icon;

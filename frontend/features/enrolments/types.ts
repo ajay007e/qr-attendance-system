@@ -1,28 +1,16 @@
-import { Course } from "@/shared";
-import { LecturerRole } from "../courses";
+import type { Course, LecturerRole } from "@/shared";
 
-export type CourseCardCourse = Pick<
-  Course,
-  "id" | "courseCode" | "courseName" | "description" | "credits" | "session" | "isActive"
->;
-
-export interface StudentCourse extends CourseCardCourse {
+export interface StudentCourse extends Course {
   enrolled_at: string | null;
 }
 
-export interface AssignedCourse extends CourseCardCourse {
+export interface AssignedCourse extends Course {
   lecturer_role: LecturerRole;
   assigned_at: string;
 }
 
 export interface EnrolRequest {
   courseId: number;
-}
-
-export interface CourseCardProps {
-  course: CourseCardCourse;
-  action?: React.ReactNode;
-  href?: string;
 }
 
 export interface CourseSearchProps {

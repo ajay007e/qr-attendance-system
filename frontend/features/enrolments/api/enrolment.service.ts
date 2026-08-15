@@ -1,10 +1,9 @@
-import type { ApiResponse, PaginatedData } from "@/shared";
+import type { ApiResponse, PaginatedData, Participant } from "@/shared";
 import { api } from "@/shared";
 
 import type { AssignedCourse, StudentCourse } from "../types";
 
 import { COURSE_SEARCH_LIMIT } from "../constants";
-import { Participant } from "@/features/courses/components/CourseLanding/components/ParticiapantsPanel/types";
 
 export const enrolmentService = {
   async getEnrolled() {

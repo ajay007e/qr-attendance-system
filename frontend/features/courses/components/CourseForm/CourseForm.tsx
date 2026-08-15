@@ -2,13 +2,12 @@
 
 import { FormEvent, useState } from "react";
 
-import { FormError, Field, Button, CourseSession } from "@/shared";
+import { AppError, FormError, Field, Button, COURSE_SESSION_FILTER_OPTIONS } from "@/shared";
 
-import { AppError } from "@/shared/errors/AppError";
+import type { CourseSession } from "@/shared";
 
 import type { CourseFormProps } from "./types";
 
-import { COURSE_SESSION_FILTER_OPTIONS } from "../../constants";
 import { CreateCourseRequest } from "../../types";
 
 const INITIAL_FORM: CreateCourseRequest = {

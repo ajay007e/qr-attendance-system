@@ -1,6 +1,7 @@
 import { USER_ROLES } from "@/shared";
 
 export const MENUS = {
+  [USER_ROLES.ADMIN]: [],
   [USER_ROLES.SUPER_ADMIN]: [
     {
       title: "Dashboard",

@@ -1,7 +1,7 @@
 "use client";
 
-import { CourseCard, useAssignedCourses } from "@/features/enrolments";
-import { EmptyState, ErrorFallback, PageLoader, Section, SectionHeader } from "@/shared";
+import { useAssignedCourses } from "@/features/enrolments";
+import { EmptyState, ErrorFallback, PageLoader, Section, SectionHeader, CourseCard } from "@/shared";
 
 export default function LecturerDashboard() {
   const { courses, loading, error, refresh } = useAssignedCourses();

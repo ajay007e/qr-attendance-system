@@ -1,5 +1,3 @@
-"use client";
-
 import { Bell, Menu } from "lucide-react";
 
 import { TopbarProps } from "./types";

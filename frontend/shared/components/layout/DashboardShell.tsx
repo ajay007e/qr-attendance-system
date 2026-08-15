@@ -9,7 +9,7 @@ import Topbar from "./Topbar";
 import type { DashboardShellProps } from "./types";
 import Button from "../ui/button";
 
-export default function DashboardShell({ children }: DashboardShellProps) {
+export default function DashboardShell({ children, user, items, onLogout }: DashboardShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
       <div className="flex min-h-0 flex-1 overflow-hidden">
         {/* Desktop Sidebar */}
         <aside className="hidden h-full w-72 shrink-0 border-r border-gray-200 bg-white shadow-sm lg:flex">
-          <Sidebar />
+          <Sidebar user={user} items={items} onLogout={onLogout} />
         </aside>
 
         {/* Mobile Overlay */}
@@ -59,7 +59,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
           </div>
 
           <div className="min-h-0 flex-1 overflow-y-auto">
-            <Sidebar onNavigate={() => setSidebarOpen(false)} />
+            <Sidebar user={user} items={items} onLogout={onLogout} onNavigate={() => setSidebarOpen(false)} />
           </div>
         </aside>
 

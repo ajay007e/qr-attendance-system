@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 
-import { Button, EmptyState, ErrorFallback, PageLoader, useError, Section, SectionHeader } from "@/shared";
+import { Button, EmptyState, ErrorFallback, PageLoader, useError, Section, SectionHeader, CourseCard } from "@/shared";
 
-import CourseCard from "../CourseCard";
 import CourseSearch from "../CourseSearch";
 import useAvailableCourses from "../../hooks/useAvailableCourses";
 import useEnrolledCourses from "../../hooks/useEnrolledCourses";
