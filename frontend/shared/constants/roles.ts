@@ -1,6 +1,6 @@
 export const USER_ROLES = {
-  SUPER_ADMIN: "SUPER_ADMIN",
-  ADMIN: "ADMIN",
-  LECTURER: "LECTURER",
-  STUDENT: "STUDENT",
+  SUPER_ADMIN: "super_admin",
+  ADMIN: "admin",
+  LECTURER: "lecturer",
+  STUDENT: "student",
 } as const;

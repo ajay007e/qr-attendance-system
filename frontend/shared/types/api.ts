@@ -1,27 +1,34 @@
-export interface ApiResponse<T> {
-  success: boolean;
-  message: string;
+export interface SuccessResponse<T> {
+  success: true;
   data: T;
+  message?: string;
+}
+
+export interface MessageResponse {
+  success: true;
+  message: string;
+}
+
+export interface ErrorResponse {
+  success: false;
+  message: string;
+}
+
+export type ApiResponse<T> = SuccessResponse<T> | MessageResponse | ErrorResponse;
+
+export interface PaginationQuery {
+  page?: number;
+  limit?: number;
 }
 
 export interface PaginationMeta {
   page: number;
   limit: number;
-  count: number;
   total: number;
   totalPages: number;
-  hasPrevious: boolean;
-  hasNext: boolean;
 }
 
-export interface PaginatedResponse<T> {
-  success: boolean;
-  data: T[];
-  pagination: PaginationMeta;
-  message?: string;
-}
-
-export interface LoginPayload {
-  email: string;
-  password: string;
+export interface PaginatedData<T> {
+  items: T[];
+  meta: PaginationMeta;
 }

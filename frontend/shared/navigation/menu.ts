@@ -1,5 +1,7 @@
-export const menus = {
-  SUPER_ADMIN: [
+import { USER_ROLES } from "@/shared";
+
+export const MENUS = {
+  [USER_ROLES.SUPER_ADMIN]: [
     {
       title: "Dashboard",
       href: "/dashboard",
@@ -14,7 +16,7 @@ export const menus = {
     },
   ],
 
-  LECTURER: [
+  [USER_ROLES.LECTURER]: [
     {
       title: "Dashboard",
       href: "/lecturer",
@@ -25,7 +27,7 @@ export const menus = {
     },
   ],
 
-  STUDENT: [
+  [USER_ROLES.STUDENT]: [
     {
       title: "Dashboard",
       href: "/student",
@@ -39,4 +41,4 @@ export const menus = {
       href: "/student/calendar",
     },
   ],
-};
+} as const;

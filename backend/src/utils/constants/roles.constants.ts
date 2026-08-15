@@ -1,8 +1,9 @@
-export const ROLES = {
-  SUPER_ADMIN: "SUPER_ADMIN",
-  ADMIN: "ADMIN",
-  LECTURER: "LECTURER",
-  STUDENT: "STUDENT",
+export const roles = {
+  super_admin: "super_admin",
+  admin: "admin",
+  lecturer: "lecturer",
+  student: "student",
 } as const;
 
-export type Role = (typeof ROLES)[keyof typeof ROLES];
+// TODO: move to shared types
+export type role = (typeof roles)[keyof typeof roles];

@@ -1,5 +1,6 @@
 import axios from "axios";
-import { AppError } from "../errors/AppError";
+
+import { AppError } from "@/shared";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -12,21 +13,22 @@ const api = axios.create({
 
 api.interceptors.response.use(
   (response) => response,
+  (error: unknown) => {
+    if (!axios.isAxiosError(error)) {
+      throw new AppError("UNKNOWN", "Something went wrong.");
+    }
 
-  (error) => {
-    // No response = network problem
     if (!error.response) {
       throw new AppError("NETWORK", "Unable to connect to server.");
     }
 
-    const status = error.response.status;
-
-    const message = error.response.data?.message ?? "Something went wrong.";
+    const { status, data } = error.response;
+    const message = data?.message ?? "Something went wrong.";
 
     switch (status) {
       case 400:
       case 422:
-        throw new AppError("VALIDATION", message, status, error.response.data?.details);
+        throw new AppError("VALIDATION", message, status, data?.details);
 
       case 401:
         throw new AppError("AUTH", message, status);
