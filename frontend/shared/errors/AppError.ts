@@ -1,4 +1,4 @@
-import { ErrorType } from "../types";
+import { ErrorType } from "@/shared";
 
 export class AppError extends Error {
   constructor(

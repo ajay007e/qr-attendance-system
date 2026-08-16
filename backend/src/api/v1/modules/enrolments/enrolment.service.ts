@@ -1,10 +1,12 @@
-import { AppError } from "../../../../utils/app.error";
+import { AppError } from "@/utils";
+import type { PaginatedData } from "@/types";
 
-import { CourseRepository } from "../courses/course.repository";
+import { CourseRepository } from "../courses";
 
 import { EnrolmentRepository } from "./enrolment.repository";
-
-import { CourseStudent, EnrolledCourse, Pagination } from "./enrolment.types";
+import { toAssignedCourse, toEnrolledCourse, toStudent } from "./enrolment.mapper";
+import type { AssignedCourse, EnrolmentQuery, EnrolledCourse, Student } from "./enrolment.types";
+import { validateCourseId } from "./enrolment.utils";
 
 export class EnrolmentService {
   constructor(
@@ -12,24 +14,25 @@ export class EnrolmentService {
     private readonly courses: CourseRepository,
   ) {}
 
-  /* =====================================================
-   * Student Enrolment
-   * ===================================================== */
-
   async getEnrolledCourses(userId: number): Promise<EnrolledCourse[]> {
-    return this.repository.findEnrolledCourses(userId);
+    const courses = await this.repository.findEnrolledCourses(userId);
+
+    return courses.map(toEnrolledCourse);
   }
 
-  async getAvailableCourses(
-    userId: number,
-    search: string | undefined,
-    pagination: Pagination,
-  ): Promise<EnrolledCourse[]> {
-    return this.repository.findAvailableCourses(userId, search, pagination);
+  async getAvailableCourses(userId: number, query: EnrolmentQuery): Promise<PaginatedData<EnrolledCourse>> {
+    const result = await this.repository.findAvailableCourses(userId, query);
+
+    return {
+      items: result.items.map(toEnrolledCourse),
+      meta: result.meta,
+    };
   }
 
   async enrol(courseId: number, userId: number): Promise<void> {
-    const course = await this.courses.findById(courseId);
+    const validatedCourseId = validateCourseId(courseId);
+
+    const course = await this.courses.findById(validatedCourseId);
 
     if (!course) {
       throw new AppError("Course not found", 404);
@@ -39,10 +42,7 @@ export class EnrolmentService {
       throw new AppError("Course is not open for enrolment", 400);
     }
 
-    // Let the (course_id, user_id) primary key reject duplicates; the
-    // repository reports the collision so we can return a clean 409 instead of
-    // surfacing a raw database error as a 500.
-    const enrolled = await this.repository.enrol(courseId, userId);
+    const enrolled = await this.repository.enrol(validatedCourseId, userId);
 
     if (!enrolled) {
       throw new AppError("Already enrolled in this course", 409);
@@ -50,29 +50,37 @@ export class EnrolmentService {
   }
 
   async unenrol(courseId: number, userId: number): Promise<void> {
-    const enrolled = await this.repository.isEnrolled(courseId, userId);
+    const validatedCourseId = validateCourseId(courseId);
+
+    const enrolled = await this.repository.isEnrolled(validatedCourseId, userId);
 
     if (!enrolled) {
       throw new AppError("Not enrolled in this course", 404);
     }
 
-    await this.repository.unenrol(courseId, userId);
+    await this.repository.unenrol(validatedCourseId, userId);
   }
 
-  /* =====================================================
-   * Course Roster
-   * ===================================================== */
+  async getAssignedCourses(userId: number): Promise<AssignedCourse[]> {
+    const courses = await this.repository.findAssignedCourses(userId);
 
-  async getStudents(
-    courseId: number,
-    pagination: Pagination,
-  ): Promise<CourseStudent[]> {
-    const course = await this.courses.findById(courseId);
+    return courses.map(toAssignedCourse);
+  }
+
+  async getStudents(courseId: number, query: EnrolmentQuery): Promise<PaginatedData<Student>> {
+    const validatedCourseId = validateCourseId(courseId);
+
+    const course = await this.courses.findById(validatedCourseId);
 
     if (!course) {
       throw new AppError("Course not found", 404);
     }
 
-    return this.repository.getStudents(courseId, pagination);
+    const result = await this.repository.getStudents(validatedCourseId, query);
+
+    return {
+      items: result.items.map(toStudent),
+      meta: result.meta,
+    };
   }
 }

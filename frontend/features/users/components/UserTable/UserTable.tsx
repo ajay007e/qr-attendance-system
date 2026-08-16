@@ -1,6 +1,6 @@
 import { Pencil } from "lucide-react";
 import { Badge, Button, getUserRoleLabel, USER_ROLES } from "@/shared";
-import { UserActionProps, UserTableProps } from "../../types";
+import type { UserActionProps, UserTableProps } from "./types";
 
 export default function UserTable({ users, onEdit }: UserTableProps) {
   return (
@@ -15,21 +15,11 @@ export default function UserTable({ users, onEdit }: UserTableProps) {
           <table className="min-w-full">
             <thead className="bg-gray-50 text-gray-900">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Name
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Email
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Role
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Status
-                </th>
-                <th className="px-6 py-4 text-left text-sm font-semibold">
-                  Actions
-                </th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Name</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Email</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Role</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Status</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -51,12 +41,12 @@ function UserCard({ user, onEdit }: UserActionProps) {
       <div className="flex items-start justify-between">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-blue-100 font-semibold text-blue-600">
-            {user.first_name[0]}
-            {user.last_name?.[0]}
+            {user.firstName[0]}
+            {user.lastName?.[0]}
           </div>
           <div className="min-w-0">
             <h3 className="truncate font-semibold text-gray-900">
-              {user.first_name} {user.last_name}
+              {user.firstName} {user.lastName}
             </h3>
             <p className="truncate text-sm text-gray-500">{user.email}</p>
           </div>
@@ -66,7 +56,7 @@ function UserCard({ user, onEdit }: UserActionProps) {
           variant="ghost"
           onClick={() => onEdit(user)}
           disabled={disabled}
-          aria-label={`Edit ${user.first_name}`}
+          aria-label={`Edit ${user.firstName}`}
           title={disabled ? "Super Admin users cannot be edited" : "Edit User"}
         >
           <Pencil size={18} />
@@ -74,9 +64,7 @@ function UserCard({ user, onEdit }: UserActionProps) {
       </div>
       <div className="mt-4 flex justify-between border-t pt-4">
         <Badge variant="blue">{getUserRoleLabel(user.role)}</Badge>
-        <Badge variant={user.is_active ? "green" : "red"}>
-          {user.is_active ? "Active" : "Inactive"}
-        </Badge>
+        <Badge variant={user.isActive ? "green" : "red"}>{user.isActive ? "Active" : "Inactive"}</Badge>
       </div>
     </div>
   );
@@ -87,16 +75,14 @@ function UserTableRow({ user, onEdit }: UserActionProps) {
   return (
     <tr className="transition-colors hover:bg-gray-50">
       <td className="px-6 py-4 text-sm font-medium text-gray-700">
-        {user.first_name} {user.last_name}
+        {user.firstName} {user.lastName}
       </td>
       <td className="px-6 py-4 text-sm text-gray-600">{user.email}</td>
       <td className="px-6 py-4">
         <Badge variant="blue">{getUserRoleLabel(user.role)}</Badge>
       </td>
       <td className="px-6 py-4">
-        <Badge variant={user.is_active ? "green" : "red"}>
-          {user.is_active ? "Active" : "Inactive"}
-        </Badge>
+        <Badge variant={user.isActive ? "green" : "red"}>{user.isActive ? "Active" : "Inactive"}</Badge>
       </td>
       <td className="px-6 py-4">
         <Button
@@ -104,7 +90,7 @@ function UserTableRow({ user, onEdit }: UserActionProps) {
           variant="ghost"
           onClick={() => onEdit(user)}
           disabled={disabled}
-          aria-label={`Edit ${user.first_name}`}
+          aria-label={`Edit ${user.firstName}`}
           title={disabled ? "Super Admin users cannot be edited" : "Edit User"}
         >
           <Pencil size={18} />

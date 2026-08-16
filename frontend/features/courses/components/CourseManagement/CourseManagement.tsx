@@ -23,8 +23,9 @@ import CourseForm from "../CourseForm";
 import EditCourseForm from "../EditCourseForm/EditCourseForm";
 import { useCourseMutation } from "../../hooks/useCourseMutation";
 import { Plus, BookOpen } from "lucide-react";
+import { CourseManagementProps } from "./types";
 
-export default function CourseManagement() {
+export default function CourseManagement({ lecturerSearch }: CourseManagementProps) {
   const { query, setQuery, resetQuery } = useCourseQuery();
 
   const { showCreateCourse, selectedCourse, openCreateCourse, closeCreateCourse, openEditCourse, closeEditCourse } =
@@ -122,13 +123,13 @@ export default function CourseManagement() {
                 onPrevious={() =>
                   setQuery({
                     ...query,
-                    page: query.page! - 1,
+                    page: query.page - 1,
                   })
                 }
                 onNext={() =>
                   setQuery({
                     ...query,
-                    page: query.page! + 1,
+                    page: query.page + 1,
                   })
                 }
               />
@@ -147,7 +148,14 @@ export default function CourseManagement() {
       </Modal>
 
       <Modal open={!!selectedCourse} onClose={closeEditCourse} title="Edit Course">
-        {selectedCourse && <EditCourseForm course={selectedCourse} refresh={refresh} onClose={closeEditCourse} />}
+        {selectedCourse && (
+          <EditCourseForm
+            course={selectedCourse}
+            refresh={refresh}
+            onClose={closeEditCourse}
+            lecturerSearch={lecturerSearch}
+          />
+        )}
       </Modal>
     </div>
   );

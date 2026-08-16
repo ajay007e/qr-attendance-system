@@ -11,9 +11,7 @@ export default function Footer() {
         text-gray-500
       "
     >
-      <span>
-        © {new Date().getFullYear()} University Attendance Management System
-      </span>
+      <span>© {new Date().getFullYear()} University Attendance Management System</span>
     </footer>
   );
 }

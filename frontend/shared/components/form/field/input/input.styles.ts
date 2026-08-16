@@ -1,21 +1,7 @@
 import { cva } from "class-variance-authority";
 
 export const inputWrapperVariants = cva(
-  [
-    "relative",
-    "flex",
-    "items-center",
-
-    "rounded-xl",
-
-    "border",
-
-    "bg-white",
-
-    "transition",
-
-    "focus-within:ring-4",
-  ],
+  ["relative", "flex", "items-center", "rounded-xl", "border", "bg-white", "transition", "focus-within:ring-4"],
   {
     variants: {
       fullWidth: {
@@ -30,13 +16,7 @@ export const inputWrapperVariants = cva(
       },
 
       variant: {
-        outline: [
-          "border-slate-300",
-
-          "focus-within:border-blue-600",
-
-          "focus-within:ring-blue-100",
-        ].join(" "),
+        outline: ["border-slate-300", "focus-within:border-blue-600", "focus-within:ring-blue-100"].join(" "),
 
         filled: [
           "border-transparent",

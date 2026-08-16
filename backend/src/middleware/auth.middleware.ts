@@ -1,11 +1,9 @@
-import { NextFunction, Request, Response } from "express";
-import { AppError } from "../utils/app.error";
+import type { RequestHandler } from "express";
 
-export const isAuthenticated = (
-  req: Request,
-  _res: Response,
-  next: NextFunction,
-) => {
+import { AppError } from "@/utils";
+import type { Role } from "@/types";
+
+export const isAuthenticated: RequestHandler = (req, _res, next) => {
   if (!req.session.user) {
     return next(new AppError("Not authenticated", 401));
   }
@@ -15,8 +13,8 @@ export const isAuthenticated = (
   next();
 };
 
-export const authorize = (...roles: string[]) => {
-  return (req: Request, _res: Response, next: NextFunction) => {
+export const authorize = (...roles: Role[]): RequestHandler => {
+  return (req, _res, next) => {
     if (!req.user) {
       return next(new AppError("Not authenticated", 401));
     }

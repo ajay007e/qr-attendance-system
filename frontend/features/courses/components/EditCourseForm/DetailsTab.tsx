@@ -2,18 +2,19 @@
 
 import { FormEvent, useState } from "react";
 
-import { Button, FormError, Field } from "@/shared";
+import { AppError, Button, COURSE_SESSION_FILTER_OPTIONS, FormError, Field } from "@/shared";
 
-import { AppError } from "@/shared/errors/AppError";
+import type { CourseSession } from "@/shared";
 
-import type { CourseSession, UpdateCourseRequest, DetailsTabProps } from "../../types";
+import type { UpdateCourseRequest } from "../../types";
 
-import { COURSE_SESSION_FILTER_OPTIONS } from "../../constants";
+import {} from "../../constants";
+import type { DetailsTabProps } from "./types";
 
 export function DetailsTab({ course, onSubmit }: DetailsTabProps) {
-  const [courseCode, setCourseCode] = useState(course.course_code);
+  const [courseCode, setCourseCode] = useState(course.courseCode);
 
-  const [courseName, setCourseName] = useState(course.course_name);
+  const [courseName, setCourseName] = useState(course.courseName);
 
   const [description, setDescription] = useState(course.description ?? "");
 

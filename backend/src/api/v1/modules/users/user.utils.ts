@@ -1,19 +1,15 @@
-import { AppError } from "../../../../utils/app.error";
-import {
-  validateEmail,
-  validateName,
-  validatePassword,
-} from "../../../../utils/validators";
-import { CreateUserRequest, UpdateUserRequest } from "./user.types";
+import { AppError, validateEmail, validateName, validatePassword } from "@/utils";
 
-export function validateCreateUserRequest(data: CreateUserRequest) {
+import type { CreateUserRequest, UpdateUserRequest } from "./user.types";
+
+export function validateCreateUserRequest(data: CreateUserRequest): CreateUserRequest {
   if (!data) {
     throw new AppError("Request body is required", 400);
   }
 
-  const firstName = data.first_name?.trim();
-  const lastName = data.last_name?.trim();
-  const email = data.email?.trim().toLowerCase();
+  const firstName = data.firstName.trim();
+  const lastName = data.lastName?.trim();
+  const email = data.email.trim().toLowerCase();
   const password = data.password;
 
   if (!firstName) {
@@ -42,52 +38,52 @@ export function validateCreateUserRequest(data: CreateUserRequest) {
   validatePassword(password);
 
   return {
-    ...data,
     firstName,
     lastName,
     email,
     password,
+    role: data.role,
   };
 }
 
-export function validateUpdateUserRequest(data: UpdateUserRequest) {
+export function validateUpdateUserRequest(data: UpdateUserRequest): UpdateUserRequest {
   if (!data) {
     throw new AppError("Request body is required", 400);
   }
 
-  const firstName = data.first_name?.trim();
-  const lastName = data.last_name?.trim();
+  const firstName = data.firstName?.trim();
+  const lastName = data.lastName?.trim();
   const email = data.email?.trim().toLowerCase();
 
-  if (firstName !== undefined) {
-    validateName(firstName, "First name");
+  if (!firstName) {
+    throw new AppError("First name is required", 400);
   }
 
-  if (lastName !== undefined && lastName !== "") {
-    validateName(lastName, "Last name", false);
+  if (!email) {
+    throw new AppError("Email is required", 400);
   }
 
-  if (email !== undefined) {
-    validateEmail(email);
-  }
-
-  if (data.role !== undefined && !data.role) {
+  if (!data.role) {
     throw new AppError("Role is required", 400);
   }
 
+  validateName(firstName, "First name");
+
+  if (lastName) {
+    validateName(lastName, "Last name", false);
+  }
+
+  validateEmail(email);
+
   return {
-    ...data,
-    ...(firstName !== undefined && { firstName }),
-    ...(lastName !== undefined && { lastName }),
-    ...(email !== undefined && { email }),
+    firstName,
+    lastName: lastName || null,
+    email,
+    role: data.role,
   };
 }
 
-export function validateSetActiveRequest(
-  id: number,
-  isActive: boolean,
-  currentUserId: number,
-) {
+export function validateSetActiveRequest(id: number, isActive: boolean, currentUserId: number) {
   if (!id || id <= 0) {
     throw new AppError("Invalid user id", 400);
   }

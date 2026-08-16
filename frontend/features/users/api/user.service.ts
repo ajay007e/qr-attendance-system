@@ -1,4 +1,4 @@
-import { ApiResponse, PaginatedResponse, User } from "@/shared";
+import type { ApiResponse, Lecturer, PaginatedData, User } from "@/shared";
 import type {
   CreateUserRequest,
   UpdateUserRequest,
@@ -6,16 +6,14 @@ import type {
   ChangeUserStatusRequest,
   UserQuery,
 } from "../types";
-import api from "@/shared/lib/api";
+import { api } from "@/shared";
 
 export const userService = {
   async getUsers(query?: UserQuery) {
     const params = Object.fromEntries(
-      Object.entries(query ?? {}).filter(
-        ([, value]) => value !== undefined && value !== "" && value !== "ALL",
-      ),
+      Object.entries(query ?? {}).filter(([, value]) => value !== undefined && value !== "" && value !== "ALL"),
     );
-    const response = await api.get<PaginatedResponse<User>>("/users", {
+    const response = await api.get<ApiResponse<PaginatedData<User>>>("/users", {
       params,
     });
 
@@ -41,30 +39,24 @@ export const userService = {
   },
 
   async changeStatus(id: number, data: ChangeUserStatusRequest) {
-    const response = await api.patch<ApiResponse<User>>(
-      `/users/${id}/status`,
-      data,
-    );
+    const response = await api.patch<ApiResponse<User>>(`/users/${id}/status`, data);
 
     return response.data;
   },
 
   async changePassword(id: number, data: ChangePasswordRequest) {
-    const response = await api.patch<ApiResponse<void>>(
-      `/users/${id}/password`,
-      data,
-    );
+    const response = await api.patch<ApiResponse<void>>(`/users/${id}/password`, data);
 
     return response.data;
   },
 
   async searchLecturers(search?: string) {
-    const response = await api.get("/users/lecturers/search", {
+    const response = await api.get<ApiResponse<Lecturer[]>>("/users/lecturers/search", {
       params: {
         search,
       },
     });
 
-    return response.data.data;
+    return response.data;
   },
 };

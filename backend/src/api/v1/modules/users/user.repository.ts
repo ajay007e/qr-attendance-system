@@ -1,199 +1,186 @@
-import { ResultSetHeader, RowDataPacket, ExecuteValues } from "mysql2";
+import type { ExecuteValues, ResultSetHeader, RowDataPacket } from "mysql2";
 
-import { db } from "../../../../config/database";
-import {
+import { db } from "@/config/database";
+import type { PaginatedData } from "@/types";
+import { DEFAULT_LIMIT, DEFAULT_MAX_LIMIT, DEFAULT_PAGE, ROLES } from "@/utils";
+
+import { LECTURER_COLUMNS, USER_COLUMNS, USER_COLUMNS_WITH_PASSWORD } from "./user.constants";
+
+import type {
   CreateUserData,
-  PaginatedUsers,
-  UpdateUserRequest,
-  User,
+  DatabaseLecturerListItem,
+  DatabaseUser,
+  DatabaseUserWithoutPassword,
+  UpdateUserData,
   UserQuery,
 } from "./user.types";
-import { Role } from "../../../../utils/constants/roles";
 
 export class UserRepository {
-  async findAll(query: UserQuery): Promise<PaginatedUsers> {
-    const page = query.page ?? 1;
-    const limit = query.limit ?? 10;
+  async findAll(query: UserQuery): Promise<PaginatedData<DatabaseUserWithoutPassword>> {
+    const page = Math.max(1, Number(query.page ?? DEFAULT_PAGE));
+    const limit = Math.min(DEFAULT_MAX_LIMIT, Math.max(1, Number(query.limit ?? DEFAULT_LIMIT)));
     const offset = (page - 1) * limit;
 
-    let where = `WHERE 1 = 1`;
+    let where = "WHERE 1 = 1";
     const params: ExecuteValues[] = [];
 
     if (query.search) {
       where += `
-      AND (
-        first_name LIKE ?
-        OR last_name LIKE ?
-        OR email LIKE ?
-      )
-    `;
+        AND (
+          first_name LIKE ?
+          OR last_name LIKE ?
+          OR email LIKE ?
+        )
+      `;
 
       const keyword = `%${query.search}%`;
       params.push(keyword, keyword, keyword);
     }
 
     if (query.role) {
-      where += ` AND role = ?`;
+      where += " AND role = ?";
       params.push(query.role);
     }
 
     if (query.status) {
-      where += ` AND is_active = ?`;
+      where += " AND is_active = ?";
       params.push(query.status === "ACTIVE");
     }
 
-    // Count query
     const [countRows] = await db.execute<RowDataPacket[]>(
       `
-      SELECT COUNT(*) AS total
-      FROM users
-      ${where}
-    `,
+        SELECT COUNT(*) AS total
+        FROM users
+        ${where}
+      `,
       params,
     );
 
-    const total = Number(countRows[0].total);
-    // Data query
-    const [rows] = await db.query<RowDataPacket[]>(
+    const total = Number(countRows[0]?.total ?? 0);
+    const totalPages = Math.ceil(total / limit);
+
+    const [rows] = await db.execute<RowDataPacket[]>(
       `
-    SELECT
-      id,
-      first_name,
-      last_name,
-      email,
-      role,
-      is_active,
-      created_at,
-      updated_at
-    FROM users
-    ${where}
-    ORDER BY created_at DESC
-    LIMIT ${limit}
-    OFFSET ${offset}
-  `,
+        SELECT
+        ${USER_COLUMNS}
+        FROM users
+        ${where}
+        ORDER BY created_at DESC
+        LIMIT ${limit} OFFSET ${offset}
+      `,
       params,
     );
 
     return {
-      data: rows as User[],
-      pagination: {
+      items: rows as DatabaseUserWithoutPassword[],
+      meta: {
         page,
         limit,
-        count: rows.length,
         total,
-        totalPages: Math.ceil(total / limit),
-        hasPrevious: page > 1,
-        hasNext: page < Math.ceil(total / limit),
+        totalPages,
       },
     };
   }
 
-  async findById(id: number): Promise<User | null> {
+  async findById(id: number): Promise<DatabaseUserWithoutPassword | null> {
     const [rows] = await db.execute<RowDataPacket[]>(
       `
         SELECT
-            id,
-            first_name,
-            last_name,
-            email,
-            role,
-            is_active,
-            created_at,
-            updated_at
+          ${USER_COLUMNS}
         FROM users
         WHERE id = ?
         LIMIT 1
-        `,
+      `,
       [id],
     );
 
-    return (rows[0] as User) ?? null;
+    return (rows[0] as DatabaseUserWithoutPassword) ?? null;
   }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string): Promise<DatabaseUser | null> {
     const [rows] = await db.execute<RowDataPacket[]>(
       `
-            SELECT *
-            FROM users
-            WHERE email = ?
-            LIMIT 1
-            `,
+        SELECT
+          ${USER_COLUMNS_WITH_PASSWORD}
+        FROM users
+        WHERE email = ?
+        LIMIT 1
+      `,
       [email],
     );
 
-    return (rows[0] as User) ?? null;
+    return (rows[0] as DatabaseUser) ?? null;
   }
 
-  async findSuperAdmin(): Promise<User | null> {
+  async findSuperAdmin(): Promise<DatabaseUser | null> {
     const [rows] = await db.execute<RowDataPacket[]>(
       `
-            SELECT *
-            FROM users
-            WHERE role = 'SUPER_ADMIN'
-            LIMIT 1
-            `,
+        SELECT
+          ${USER_COLUMNS_WITH_PASSWORD}
+        FROM users
+        WHERE role = ?
+        LIMIT 1
+      `,
+      [ROLES.SUPER_ADMIN],
     );
 
-    return (rows[0] as User) ?? null;
+    return (rows[0] as DatabaseUser) ?? null;
   }
 
   async countSuperAdmins(): Promise<number> {
-    const [rows] = await db.execute<RowDataPacket[]>(`
-            SELECT COUNT(*) AS total
-            FROM users
-            WHERE role = 'SUPER_ADMIN'
-            AND is_active = TRUE
-        `);
+    const [rows] = await db.execute<RowDataPacket[]>(
+      `
+        SELECT COUNT(*) AS total
+        FROM users
+        WHERE role = ?
+          AND is_active = TRUE
+      `,
+      [ROLES.SUPER_ADMIN],
+    );
 
-    return rows[0].total;
+    return Number(rows[0]?.total ?? 0);
   }
 
   async create(data: CreateUserData): Promise<number> {
     const [result] = await db.execute<ResultSetHeader>(
       `
-            INSERT INTO users (
-                first_name,
-                last_name,
-                email,
-                password,
-                role
-            )
-            VALUES (?, ?, ?, ?, ?)
-            `,
-      [
-        data.first_name,
-        data.last_name ?? null,
-        data.email,
-        data.password,
-        data.role,
-      ],
+        INSERT INTO users (
+          first_name,
+          last_name,
+          email,
+          password,
+          role
+        )
+        VALUES (?, ?, ?, ?, ?)
+      `,
+      [data.first_name, data.last_name, data.email, data.password, data.role],
     );
 
     return result.insertId;
   }
 
-  async update(id: number, data: UpdateUserRequest): Promise<void> {
+  async update(id: number, data: UpdateUserData): Promise<void> {
     await db.execute(
       `
-            UPDATE users
-            SET
-                first_name = ?,
-                last_name = ?,
-                email = ?,
-                role = ?
-            WHERE id = ?
-            `,
-      [data.first_name, data.last_name ?? null, data.email, data.role, id],
+        UPDATE users
+        SET
+          first_name = ?,
+          last_name = ?,
+          email = ?,
+          role = ?
+        WHERE id = ?
+      `,
+      [data.first_name, data.last_name, data.email, data.role, id],
     );
   }
 
   async updateStatus(id: number, isActive: boolean): Promise<void> {
     await db.execute(
       `
-            UPDATE users
-            SET is_active = ?
-            WHERE id = ?
-            `,
+        UPDATE users
+        SET is_active = ?
+        WHERE id = ?
+      `,
       [isActive, id],
     );
   }
@@ -201,10 +188,10 @@ export class UserRepository {
   async updatePassword(id: number, hashedPassword: string): Promise<void> {
     await db.execute(
       `
-            UPDATE users
-            SET password = ?
-            WHERE id = ?
-            `,
+        UPDATE users
+        SET password = ?
+        WHERE id = ?
+      `,
       [hashedPassword, id],
     );
   }
@@ -212,23 +199,23 @@ export class UserRepository {
   async updateLastLogin(id: number): Promise<void> {
     await db.execute(
       `
-            UPDATE users
-            SET last_login_at = NOW()
-            WHERE id = ?
-            `,
+        UPDATE users
+        SET last_login_at = NOW()
+        WHERE id = ?
+      `,
       [id],
     );
   }
 
-  async searchLecturers(search?: string, limit = 10): Promise<User[]> {
+  async searchLecturers(search?: string, limit = 10): Promise<DatabaseLecturerListItem[]> {
     let where = `
     WHERE role = ?
-    AND is_active = TRUE
+      AND is_active = TRUE
   `;
 
-    const params: ExecuteValues[] = [Role.LECTURER];
+    const params: ExecuteValues[] = [ROLES.LECTURER];
 
-    if (search) {
+    if (search?.trim()) {
       where += `
       AND (
         first_name LIKE ?
@@ -237,27 +224,25 @@ export class UserRepository {
       )
     `;
 
-      const keyword = `%${search}%`;
+      const keyword = `%${search.trim()}%`;
 
       params.push(keyword, keyword, keyword);
     }
 
-    const [rows] = await db.query<RowDataPacket[]>(
+    const safeLimit = Math.min(DEFAULT_MAX_LIMIT, Math.max(1, Number(limit ?? DEFAULT_LIMIT)));
+
+    const [rows] = await db.execute<RowDataPacket[]>(
       `
-    SELECT
-      id,
-      first_name,
-      last_name,
-      email,
-      role
-    FROM users
-    ${where}
-    ORDER BY first_name ASC
-    LIMIT ${limit}
+      SELECT
+        ${LECTURER_COLUMNS}
+      FROM users
+      ${where}
+      ORDER BY first_name ASC
+      LIMIT ${safeLimit}
     `,
       params,
     );
 
-    return rows as User[];
+    return rows as DatabaseLecturerListItem[];
   }
 }

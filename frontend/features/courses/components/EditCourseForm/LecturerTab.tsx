@@ -3,30 +3,24 @@
 import { useState } from "react";
 import { Search, Trash2, UserPlus, X } from "lucide-react";
 
-import { Badge, Button, Field, FormError } from "@/shared";
-import { AppError } from "@/shared/errors/AppError";
+import type { Lecturer, LecturerRole } from "@/shared";
+import { AppError, Badge, Button, Field, FormError, useAutocompleteContext } from "@/shared";
 
-import { LECTURER_ROLE_OPTIONS } from "../../constants";
+import { LECTURER_ROLE, LECTURER_ROLE_OPTIONS } from "../../constants";
 import { useCourseLecturers } from "../../hooks/useCourseLecturers";
 
-import type { LecturerRole, LecturerSearchResult, LecturerTabProps } from "../../types";
+import type { LecturerTabProps } from "./types";
 
-import { useLecturerSearch } from "@/features/users";
+export function LecturersTab({ courseId, lecturerSearch }: LecturerTabProps) {
+  const { query, results, loading, selectedLecturer, onQueryChange, onSelect } = lecturerSearch;
 
-import { useAutocompleteContext } from "@/shared/components/form/field/autocomplete/autocomplete.context";
-
-export function LecturersTab({ course }: LecturerTabProps) {
   const {
     lecturers: assignedLecturers,
     assignLecturer: assignCourseLecturer,
     removeLecturer: removeCourseLecturer,
-  } = useCourseLecturers(course.id);
+  } = useCourseLecturers(courseId);
 
-  const { query, setQuery, results, loading } = useLecturerSearch();
-
-  const [selectedLecturer, setSelectedLecturer] = useState<LecturerSearchResult | null>(null);
-
-  const [selectedRole, setSelectedRole] = useState<LecturerRole | "">("");
+  const [selectedRole, setSelectedRole] = useState<LecturerRole>(LECTURER_ROLE.PRIMARY);
 
   const [error, setError] = useState("");
 
@@ -52,12 +46,13 @@ export function LecturersTab({ course }: LecturerTabProps) {
 
     try {
       await assignCourseLecturer({
-        userId: selectedLecturer.id,
+        id: selectedLecturer.id,
         role: selectedRole,
       });
 
-      setSelectedLecturer(null);
-      setSelectedRole("");
+      onSelect(null);
+      setSelectedRole(LECTURER_ROLE.PRIMARY);
+      onQueryChange("");
     } catch (err) {
       console.error(err);
 
@@ -129,20 +124,20 @@ export function LecturersTab({ course }: LecturerTabProps) {
         {!selectedLecturer && (
           <div className="mt-5">
             <Field label="Search Lecturer">
-              <Field.Autocomplete<LecturerSearchResult>
+              <Field.Autocomplete<Lecturer>
                 value={query}
                 onChange={(value) => {
-                  setQuery(value);
+                  onQueryChange(value);
                   setError("");
                 }}
                 options={results}
                 loading={loading}
                 placeholder="Search by name or email"
                 leftIcon={<Search size={18} className="text-gray-500" />}
-                getOptionLabel={(lecturer) => `${lecturer.first_name} ${lecturer.last_name ?? ""}`}
+                getOptionLabel={(lecturer) => `${lecturer.firstName} ${lecturer.lastName ?? ""}`}
                 onSelect={(lecturer) => {
-                  setSelectedLecturer(lecturer);
-                  setQuery("");
+                  onSelect(lecturer);
+                  onQueryChange("");
                   setError("");
                 }}
               >
@@ -168,13 +163,13 @@ export function LecturersTab({ course }: LecturerTabProps) {
           >
             <div>
               <p className="font-semibold text-gray-900">
-                {selectedLecturer.first_name} {selectedLecturer.last_name}
+                {selectedLecturer.firstName} {selectedLecturer.lastName}
               </p>
 
               <p className="text-sm text-gray-600">{selectedLecturer.email}</p>
             </div>
 
-            <Button type="button" variant="ghost" size="icon" onClick={() => setSelectedLecturer(null)}>
+            <Button type="button" variant="ghost" size="icon" onClick={() => onSelect(null)}>
               <X size={18} />
             </Button>
           </div>
@@ -293,9 +288,9 @@ export function LecturersTab({ course }: LecturerTabProps) {
                 text-gray-700
               "
                 >
-                  {lecturer.first_name[0]}
+                  {lecturer.firstName[0]}
 
-                  {lecturer.last_name?.[0]}
+                  {lecturer.lastName?.[0]}
                 </div>
 
                 <div className="min-w-0">
@@ -306,7 +301,7 @@ export function LecturersTab({ course }: LecturerTabProps) {
                   text-gray-900
                 "
                   >
-                    {lecturer.first_name} {lecturer.last_name}
+                    {lecturer.firstName} {lecturer.lastName}
                   </p>
 
                   <p
@@ -365,7 +360,7 @@ export function LecturersTab({ course }: LecturerTabProps) {
 }
 
 function LecturerDropdown() {
-  const { filteredOptions, selectOption, highlightedIndex } = useAutocompleteContext<LecturerSearchResult>();
+  const { filteredOptions, selectOption, highlightedIndex } = useAutocompleteContext<Lecturer>();
 
   if (!filteredOptions.length) {
     return null;
@@ -418,13 +413,13 @@ function LecturerDropdown() {
               text-blue-700
             "
           >
-            {lecturer.first_name[0]}
-            {lecturer.last_name?.[0]}
+            {lecturer.firstName[0]}
+            {lecturer.lastName?.[0]}
           </div>
 
           <div className="min-w-0">
             <p className="truncate text-sm font-medium text-gray-900">
-              {lecturer.first_name} {lecturer.last_name}
+              {lecturer.firstName} {lecturer.lastName}
             </p>
 
             <p className="truncate text-sm text-gray-600">{lecturer.email}</p>

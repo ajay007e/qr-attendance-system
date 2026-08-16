@@ -1,8 +1,7 @@
-import { UserQuery, TabItem } from "./types";
+import type { TabItem } from "@/shared";
+import type { UserQuery } from "./types";
 
 export const USER_STATUS = ["ACTIVE", "INACTIVE"] as const;
-
-export type UserStatus = (typeof USER_STATUS)[number];
 
 export const DEFAULT_USER_QUERY: UserQuery = {
   page: 1,
@@ -12,7 +11,7 @@ export const DEFAULT_USER_QUERY: UserQuery = {
   status: "ALL",
 };
 
-export const TABS: TabItem[] = [
+export const USER_TABS: TabItem[] = [
   { key: "details", label: "Details" },
   { key: "password", label: "Password" },
   { key: "delete", label: "Delete" },
@@ -25,15 +24,15 @@ export const USER_ROLE_FILTER_OPTIONS = [
   },
   {
     label: "Admin",
-    value: "SUPER_ADMIN",
+    value: "super_admin",
   },
   {
     label: "Lecturer",
-    value: "LECTURER",
+    value: "lecturer",
   },
   {
     label: "Student",
-    value: "STUDENT",
+    value: "student",
   },
 ] as const;
 

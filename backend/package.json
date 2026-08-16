@@ -4,9 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc",
-    "test": "tsc -p tsconfig.test.json && node --test dist-test/test/enrolments/enrolment.service.test.js",
+    "dev": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/server.ts",
+    "build": "tsc && tsc-alias -p tsconfig.json",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "test": "tsc -p tsconfig.test.json && tsc-alias -p tsconfig.test.json && node --test dist-test/test/enrolments/enrolment.service.test.js",
     "start": "node dist/server.js"
   },
   "keywords": [],
@@ -22,12 +27,21 @@
     "mysql2": "^3.23.2"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/express-session": "^1.19.0",
     "@types/node": "^26.1.2",
+    "eslint": "^10.8.1",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-boundaries": "^7.2.0",
+    "prettier": "3.9.6",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.9.3"
+    "tsc-alias": "^1.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.67.0"
   }
 }

@@ -55,7 +55,7 @@ curl -X POST http://localhost:5000/api/v1/auth/bootstrap \
   -d '{
     "firstName": "System",
     "lastName": "Administrator",
-    "email": "admin@example.com",
+    "email": "admin@test.com",
     "password": "Password@123"
   }'
 ```

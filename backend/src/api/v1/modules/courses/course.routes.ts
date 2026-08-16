@@ -1,40 +1,27 @@
 import { Router } from "express";
 
+import { authorize, isAuthenticated } from "@/middleware";
+import { ROLES } from "@/utils";
+
 import { controller } from ".";
-
-import {
-  authorize,
-  isAuthenticated,
-} from "../../../../middleware/auth.middleware";
-
-import { Role } from "../../../../utils/constants/roles";
 
 export const courseRouter = Router();
 
 courseRouter.use(isAuthenticated);
 
-courseRouter.use(authorize(Role.SUPER_ADMIN));
+// Public/authenticated course access
+courseRouter.get("/:id", authorize(ROLES.SUPER_ADMIN, ROLES.LECTURER, ROLES.STUDENT), controller.get);
 
-/* ======================================================
- * Lecturer Assignment
- * ====================================================== */
+// Super Admin only
+courseRouter.use(authorize(ROLES.SUPER_ADMIN));
 
-courseRouter.get("/:id/lecturers", controller.getLecturers);
-
-courseRouter.post("/:id/lecturers", controller.assignLecturer);
-
-courseRouter.delete("/:id/lecturers/:userId", controller.removeLecturer);
-
-/* ======================================================
- * Course CRUD
- * ====================================================== */
-
+// Course CRUD
 courseRouter.get("/", controller.list);
-
-courseRouter.get("/:id", controller.get);
-
 courseRouter.post("/", controller.create);
-
 courseRouter.put("/:id", controller.update);
-
 courseRouter.patch("/:id/status", controller.setActive);
+
+// Lecturer assignment
+courseRouter.get("/:id/lecturers", controller.getLecturers);
+courseRouter.post("/:id/lecturers", controller.assignLecturer);
+courseRouter.delete("/:id/lecturers/:userId", controller.removeLecturer);

@@ -14,10 +14,23 @@
 
     "skipLibCheck": true,
 
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "noUncheckedSideEffectImports": true,
+
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false
   },
 
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

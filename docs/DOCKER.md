@@ -46,10 +46,30 @@ xxxxxxx        mysql:8.4  qr-attendance-mysql   Up
 
 ## Import the Database
 
-After the container has started, import the project database.
+After the container has started, import the project database schema.
 
 ```bash
 docker exec -i qr-attendance-mysql mysql -uroot -proot < backend/database/scripts.sql
+```
+
+## Populate the Database with Seed Data
+
+After importing the database schema, populate the database with the initial seed data.
+
+```bash
+docker exec -i qr-attendance-mysql mysql -uroot -proot < backend/database/seed.sql
+```
+
+> **Note:** Make sure to import `scripts.sql` before `seed.sql`, as the seed data requires the database tables to already exist.
+
+### Recommended Order
+
+Run the following commands in order:
+
+```bash
+docker exec -i qr-attendance-mysql mysql -uroot -proot < backend/database/scripts.sql
+
+docker exec -i qr-attendance-mysql mysql -uroot -proot < backend/database/seed.sql
 ```
 
 ## Connect to MySQL
@@ -107,6 +127,12 @@ Re-import the database:
 
 ```bash
 docker exec -i qr-attendance-mysql mysql -uroot -proot < backend/database/scripts.sql
+```
+
+Populate the database:
+
+```bash
+docker exec -i qr-attendance-mysql mysql -uroot -proot < backend/database/seed.sql
 ```
 
 ## Useful Commands

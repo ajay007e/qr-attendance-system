@@ -1,23 +1,24 @@
-import { AppError } from "../../../../utils/app.error";
-import {
-  validateEmail,
-  validateName,
-  validatePassword,
-} from "../../../../utils/validators";
+import { AppError, validateEmail, validateName, validatePassword } from "@/utils";
 
-export function validateBootstrapRequest(data: any) {
-  if (!data) {
+import type { BootstrapRequest, LoginRequest } from "./auth.types";
+
+export function validateBootstrapRequest(data: unknown): BootstrapRequest {
+  if (!data || typeof data !== "object") {
     throw new AppError("Request body is required", 400);
   }
 
-  const firstName = data.firstName?.trim();
-  const lastName = data.lastName?.trim();
-  const email = data.email?.trim().toLowerCase();
-  const password = data.password?.trim();
+  const body = data as Record<string, unknown>;
+
+  const firstName = typeof body.firstName === "string" ? body.firstName.trim() : "";
+  const lastName = typeof body.lastName === "string" ? body.lastName.trim() : undefined;
+  const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+  const password = typeof body.password === "string" ? body.password.trim() : "";
 
   if (!firstName) {
     throw new AppError("First name is required", 400);
   }
+
+  validateName(firstName, "First name");
 
   if (!email) {
     throw new AppError("Email is required", 400);
@@ -26,8 +27,6 @@ export function validateBootstrapRequest(data: any) {
   if (!password) {
     throw new AppError("Password is required", 400);
   }
-
-  validateName(firstName, "First name");
 
   if (lastName) {
     validateName(lastName, "Last name", false);
@@ -44,13 +43,15 @@ export function validateBootstrapRequest(data: any) {
   };
 }
 
-export function validateLoginRequest(data: any) {
-  if (!data) {
+export function validateLoginRequest(data: unknown): LoginRequest {
+  if (!data || typeof data !== "object") {
     throw new AppError("Request body is required", 400);
   }
 
-  const email = data.email?.trim().toLowerCase();
-  const password = data.password;
+  const body = data as Record<string, unknown>;
+
+  const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+  const password = typeof body.password === "string" ? body.password : "";
 
   if (!email) {
     throw new AppError("Email is required", 400);

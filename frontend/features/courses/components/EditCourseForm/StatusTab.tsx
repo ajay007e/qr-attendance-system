@@ -6,14 +6,14 @@ import { FormError, Button } from "@/shared";
 import { AppError } from "@/shared/errors/AppError";
 
 import { useCourseMutation } from "../../hooks/useCourseMutation";
-import { StatusTabProps } from "../../types";
+import { StatusTabProps } from "./types";
 
 export function StatusTab({ course, refresh, onClose }: StatusTabProps) {
   const { updateStatus, loading } = useCourseMutation(refresh);
 
   const [error, setError] = useState("");
 
-  const isActive = course.is_active;
+  const isActive = course.isActive;
 
   async function handleStatusChange() {
     if (loading) return;
@@ -23,7 +23,7 @@ export function StatusTab({ course, refresh, onClose }: StatusTabProps) {
     try {
       await updateStatus({
         ...course,
-        is_active: !isActive,
+        isActive: !isActive,
       });
       onClose();
     } catch (err) {
@@ -46,11 +46,7 @@ export function StatusTab({ course, refresh, onClose }: StatusTabProps) {
           rounded-xl
           border
           p-5
-          ${
-            isActive
-              ? "border-red-200 bg-red-50"
-              : "border-green-200 bg-green-50"
-          }
+          ${isActive ? "border-red-200 bg-red-50" : "border-green-200 bg-green-50"}
         `}
       >
         <h3
@@ -82,11 +78,7 @@ export function StatusTab({ course, refresh, onClose }: StatusTabProps) {
           fullWidth
           className="mt-4"
         >
-          {loading
-            ? "Updating..."
-            : isActive
-              ? "Deactivate Course"
-              : "Activate Course"}
+          {loading ? "Updating..." : isActive ? "Deactivate Course" : "Activate Course"}
         </Button>
       </div>
     </div>

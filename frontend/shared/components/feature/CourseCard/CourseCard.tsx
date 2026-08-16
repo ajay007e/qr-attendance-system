@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
+import { CourseCardProps } from "./types";
+import { getGradient } from "@/shared";
 
-import type { CourseCardProps } from "../../types";
-import { getCourseCardGradient } from "../../utils";
-
-export default function CourseCard({ course, action }: CourseCardProps) {
-  const gradient = getCourseCardGradient(course.course_code);
+export default function CourseCard({ course, action, href }: CourseCardProps) {
+  const gradient = getGradient(course.courseCode);
 
   const card = (
     <div className="flex h-full min-h-64 flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-md">
@@ -16,10 +15,10 @@ export default function CourseCard({ course, action }: CourseCardProps) {
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        <span className="text-sm font-semibold text-gray-500">{course.course_code}</span>
+        <span className="text-sm font-semibold text-gray-500">{course.courseCode}</span>
 
-        <h3 className="mt-1 truncate text-base font-semibold leading-snug text-gray-900" title={course.course_name}>
-          {course.course_name}
+        <h3 className="mt-1 truncate text-base font-semibold leading-snug text-gray-900" title={course.courseName}>
+          {course.courseName}
         </h3>
 
         {action && <div className="mt-auto pt-5">{action}</div>}
@@ -31,10 +30,14 @@ export default function CourseCard({ course, action }: CourseCardProps) {
     return card;
   }
 
+  if (!href) {
+    return card;
+  }
+
   return (
     <Link
-      href={`/course/${course.id}`}
-      aria-label={`View ${course.course_code} details`}
+      href={href}
+      aria-label={`View ${course.courseCode} details`}
       className="block h-full rounded-2xl focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
     >
       {card}

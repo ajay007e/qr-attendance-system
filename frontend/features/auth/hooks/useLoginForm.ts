@@ -58,6 +58,7 @@ export function useLoginForm() {
     } catch (err) {
       if (err instanceof AppError) {
         switch (err.type) {
+          case "AUTH":
           case "FORBIDDEN":
           case "VALIDATION":
             setError(err.message);

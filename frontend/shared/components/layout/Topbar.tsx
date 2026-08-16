@@ -1,5 +1,3 @@
-"use client";
-
 import { Bell, Menu } from "lucide-react";
 
 import { TopbarProps } from "./types";
@@ -22,20 +20,12 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
           <Menu size={22} />
         </Button>
 
-        <h1 className="truncate text-base font-bold text-gray-900 sm:text-lg">
-          Attendance System
-        </h1>
+        <h1 className="truncate text-base font-bold text-gray-900 sm:text-lg">Attendance System</h1>
       </div>
 
       {/* Right */}
       <div className="flex items-center gap-2">
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          aria-label="Notifications"
-          className="hover:text-blue-600"
-        >
+        <Button type="button" variant="ghost" size="icon" aria-label="Notifications" className="hover:text-blue-600">
           <Bell size={21} />
         </Button>
       </div>

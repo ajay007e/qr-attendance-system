@@ -1,14 +1,10 @@
-import { NextFunction, Request, Response } from "express";
+import type { RequestHandler } from "express";
 
-import { AppError } from "../utils/app.error";
-import { env } from "../config/env";
+import { env } from "@/config";
+import { AppError, ADMIN_API_KEY_HEADER } from "@/utils";
 
-export const verifyApiKey = (
-  req: Request,
-  _res: Response,
-  next: NextFunction,
-) => {
-  const apiKey = req.header("x-admin-api-key");
+export const verifyApiKey: RequestHandler = (req, _res, next) => {
+  const apiKey = req.header(ADMIN_API_KEY_HEADER);
 
   if (!apiKey) {
     return next(new AppError("API key missing", 401));

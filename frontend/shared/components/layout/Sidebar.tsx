@@ -3,17 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronDown, LogOut, Settings, User } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
-
-import { useAuth } from "@/features/auth";
-import { menus } from "@/shared/navigation/menu";
-import { getUserRoleLabel } from "@/shared";
+import { useEffect, useRef, useState } from "react";
 
 import { SidebarProps } from "./types";
+import { getUserRoleLabel } from "@/shared";
 
-export default function Sidebar({ onNavigate }: SidebarProps) {
+export default function Sidebar({ user, items, onLogout, onNavigate }: SidebarProps) {
   const pathname = usePathname();
-  const { user, logout } = useAuth();
 
   const [open, setOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
@@ -31,8 +27,6 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, []);
-
-  const items = useMemo(() => (user ? (menus[user.role as keyof typeof menus] ?? []) : []), [user]);
 
   if (!user) return null;
 
@@ -83,7 +77,7 @@ export default function Sidebar({ onNavigate }: SidebarProps) {
             <div className="border-t border-gray-100" />
 
             <button
-              onClick={logout}
+              onClick={onLogout}
               className="flex w-full items-center gap-3 px-4 py-3 text-sm text-red-600 transition-colors hover:bg-red-50 cursor-pointer"
             >
               <LogOut size={18} />

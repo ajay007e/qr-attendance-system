@@ -1,26 +1,16 @@
-import type { Course } from "../courses/types";
+import type { Course, LecturerRole, PaginationQuery } from "@/shared";
 
-export interface StudentCourse
-  extends Pick<
-    Course,
-    | "id"
-    | "course_code"
-    | "course_name"
-    | "description"
-    | "credits"
-    | "session"
-    | "is_active"
-  > {
+export interface StudentCourse extends Course {
   enrolled_at: string | null;
+}
+
+export interface AssignedCourse extends Course {
+  lecturer_role: LecturerRole;
+  assigned_at: string;
 }
 
 export interface EnrolRequest {
   courseId: number;
-}
-
-export interface CourseCardProps {
-  course: StudentCourse;
-  action?: React.ReactNode;
 }
 
 export interface CourseSearchProps {
@@ -29,4 +19,8 @@ export interface CourseSearchProps {
   loading?: boolean;
   onChange: (value: string) => void;
   onSelect: (course: StudentCourse) => void;
+}
+
+export interface ParticipantQuery extends PaginationQuery {
+  search: string;
 }

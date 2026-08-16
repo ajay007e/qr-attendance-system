@@ -1,101 +1,19 @@
-import { UserRole, User } from "@/shared";
+import type { PaginationQuery, User, UserRole } from "@/shared";
 
-export type CreateUserRequest = Pick<
-  User,
-  "first_name" | "last_name" | "email" | "role"
-> & {
-  password: string;
-};
+export type UserStatus = "ACTIVE" | "INACTIVE";
 
-export type UpdateUserRequest = Pick<
-  User,
-  "first_name" | "last_name" | "email" | "role"
->;
-
-export interface ChangeUserStatusRequest {
-  is_active: boolean;
-}
-
-export interface ChangePasswordRequest {
-  password: string;
-}
-
-export interface UserQuery {
-  page?: number;
-  limit?: number;
+export interface UserQuery extends PaginationQuery {
   search: string;
   role: UserRole | "ALL";
-  status: "ALL" | "ACTIVE" | "INACTIVE";
+  status: UserStatus | "ALL";
 }
 
-export interface UserToolbarProps {
-  filters: UserQuery;
-  onFiltersChange: (filters: UserQuery) => void;
-}
-
-export interface UserTableProps {
-  users: User[];
-  onEdit: (user: User) => void;
-}
-
-export interface UserActionProps {
-  user: User;
-  onEdit: (user: User) => void;
-}
-
-export interface UserPaginationProps {
-  total: number;
-  page?: number;
-  totalPages?: number;
-  onPrevious?: () => void;
-  onNext?: () => void;
-  disabled?: boolean;
-  hasPrevious?: boolean;
-  hasNext?: boolean;
-}
-
-export interface UserFormProps {
-  onSubmit: (data: CreateUserRequest) => Promise<void> | void;
-}
-
-export interface EmptyUserStateProps {
-  onCreate: () => void;
-}
-
-export type Tab = "details" | "password" | "delete";
-
-export interface TabItem {
-  key: Tab;
-  label: string;
-}
-
-export interface TabsProps {
-  activeTab: Tab;
-  onChange: (tab: Tab) => void;
-}
-export type UpdateUserPayload = Pick<
-  User,
-  "id" | "first_name" | "last_name" | "email" | "role"
->;
-
-export type ChangePasswordPayload = {
-  id: number;
+export type CreateUserRequest = Pick<User, "firstName" | "lastName" | "email" | "role"> & {
   password: string;
 };
 
-export type EditUserFormProps = {
-  user: User;
-  onUpdate: (data: UpdateUserPayload) => void;
-  onPasswordChange: (data: ChangePasswordPayload) => void;
-  onStatusChange: (active: boolean) => void;
-};
+export type UpdateUserRequest = Omit<CreateUserRequest, "password">;
 
-export interface DetailsFormProps {
-  user: User;
-  onSubmit: (data: UpdateUserPayload) => Promise<void> | void;
-}
+export type ChangeUserStatusRequest = Pick<User, "isActive">;
 
-export interface PasswordFormProps {
-  userId: User["id"];
-  onSubmit: (data: ChangePasswordPayload) => Promise<void> | void;
-}
+export type ChangePasswordRequest = Pick<CreateUserRequest, "password">;

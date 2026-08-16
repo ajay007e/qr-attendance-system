@@ -1,24 +1,18 @@
-import { BookOpenCheck } from "lucide-react";
-
-import { ComingSoon, PageHeader } from "@/shared";
+import { LecturerDashboard } from "@/features/enrolments";
+import { ComingSoon, Container, Section } from "@/shared";
 
 export default function LecturerDashboardPage() {
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-5 sm:space-y-6">
-      <PageHeader
-        title="Lecturer Dashboard"
-        subtitle="Manage your assigned courses, attendance sessions, and student records."
-      />
-
-      <section>
+    <Container>
+      <LecturerDashboard />
+      <Section className="grid gap-4 lg:grid-cols-2">
         <ComingSoon
-          icon={<BookOpenCheck />}
-          title="Lecturer Dashboard Coming Soon"
-          message="Soon you will be able to manage your assigned courses, start attendance sessions, review attendance history, and monitor student participation from one place."
-          status="Under Development"
-          size="md"
+          title="Timeline Coming Soon"
+          message="Your upcoming classes and attendance sessions will appear here."
+          size="sm"
         />
-      </section>
-    </div>
+        <ComingSoon title="Calendar Coming Soon" message="A calendar view of your schedule is on the way." size="sm" />
+      </Section>
+    </Container>
   );
 }

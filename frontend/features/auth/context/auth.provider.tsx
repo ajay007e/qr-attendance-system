@@ -1,19 +1,21 @@
 "use client";
 
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import type { ReactNode } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { User } from "@/shared";
+import type { SessionUser } from "@/shared";
+
 import { authService } from "../api/auth.service";
 import { AuthContext } from "./auth.context";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
 
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<SessionUser | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const refresh = useCallback(async (): Promise<User | null> => {
+  const refresh = useCallback(async (): Promise<SessionUser | null> => {
     try {
       const response = await authService.me();
       const currentUser = response.data.data;
@@ -28,17 +30,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  async function login(email: string, password: string): Promise<User> {
+  async function login(email: string, password: string): Promise<SessionUser> {
     const response = await authService.login({
       email,
       password,
     });
-    const currentUser = response.data.user;
-    setUser(currentUser);
-    return currentUser;
+
+    const currentUser = response.data.data;
+
+    const sessionUser: SessionUser = {
+      id: currentUser.id,
+      email: currentUser.email,
+      role: currentUser.role,
+    };
+
+    setUser(sessionUser);
+
+    return sessionUser;
   }
 
-  async function logout() {
+  async function logout(): Promise<void> {
     try {
       await authService.logout();
     } finally {

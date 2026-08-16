@@ -1,5 +1,4 @@
-import { UserRole } from "..";
-import { USER_ROLES } from "./roles";
+import { type UserRole, USER_ROLES } from "@/shared";
 
 export const USER_ROLE_OPTIONS = [
   {
@@ -37,6 +36,6 @@ export const UI_USER_ROLE_OPTIONS = [
   label: string;
 }>;
 
-export const getUserRoleLabel = (role: UserRole) => {
+export function getUserRoleLabel(role: UserRole): string {
   return USER_ROLE_OPTIONS.find((item) => item.value === role)?.label ?? role;
-};
+}

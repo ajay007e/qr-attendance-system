@@ -1,3 +1,4 @@
+import { SessionUser } from "@/shared";
 import { ReactNode } from "react";
 
 export interface PageHeaderProps {
@@ -6,13 +7,24 @@ export interface PageHeaderProps {
   action?: ReactNode;
 }
 
-export interface DashboardShellProps {
-  children: ReactNode;
-}
+export type DashboardShellProps = {
+  children: React.ReactNode;
+  user: SessionUser;
+  items: readonly SidebarItem[];
+  onLogout: () => void;
+};
 
-export interface SidebarProps {
+export type SidebarItem = {
+  title: string;
+  href: string;
+};
+
+export type SidebarProps = {
+  user: SessionUser;
+  items: readonly SidebarItem[];
+  onLogout: () => void;
   onNavigate?: () => void;
-}
+};
 
 export interface TopbarProps {
   onMenuClick?: () => void;

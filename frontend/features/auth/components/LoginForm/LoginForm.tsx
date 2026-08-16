@@ -7,9 +7,11 @@ import { useLoginForm } from "../../hooks/useLoginForm";
 
 export function LoginForm() {
   const { email, password, loading, error, handleEmailChange, handlePasswordChange, handleSubmit } = useLoginForm();
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4" aria-busy={loading}>
       {error && <FormError message={error} />}
+
       <Field label="Email" required>
         <Field.Input
           type="email"
@@ -21,6 +23,7 @@ export function LoginForm() {
           onChange={(event) => handleEmailChange(event.target.value)}
         />
       </Field>
+
       <Field label="Password" required>
         <Field.Input
           type="password"
@@ -33,6 +36,7 @@ export function LoginForm() {
           showPasswordToggle
         />
       </Field>
+
       <Button type="submit" size="lg" loading={loading} fullWidth>
         {loading ? "Signing in..." : "Sign in"}
       </Button>

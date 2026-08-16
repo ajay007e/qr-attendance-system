@@ -8,8 +8,8 @@ import { DetailsForm } from "./DetailsTab";
 import { PasswordForm } from "./PasswordTab";
 import { DeleteUserTab } from "./DeleteTab";
 
-import { TABS } from "../../constants";
-import type { EditUserFormProps, Tab } from "../../types";
+import { USER_TABS } from "../../constants";
+import { EditUserFormProps, Tab } from "./types";
 
 export default function EditUserForm({ user, onUpdate, onPasswordChange, onStatusChange }: EditUserFormProps) {
   const [activeTab, setActiveTab] = useState<Tab>("details");
@@ -17,9 +17,9 @@ export default function EditUserForm({ user, onUpdate, onPasswordChange, onStatu
   return (
     <div className="space-y-5">
       <Tabs
-        tabs={TABS}
+        tabs={USER_TABS}
         value={activeTab}
-        onChange={setActiveTab}
+        onChange={(value) => setActiveTab(value as Tab)}
         variant="segmented"
         size="md"
         width="full"
@@ -31,7 +31,7 @@ export default function EditUserForm({ user, onUpdate, onPasswordChange, onStatu
 
       {activeTab === "password" && <PasswordForm userId={user.id} onSubmit={onPasswordChange} />}
 
-      {activeTab === "delete" && <DeleteUserTab onDelete={() => onStatusChange(false)} />}
+      {activeTab === "delete" && <DeleteUserTab isActive={user.isActive} onDelete={(flag) => onStatusChange(flag)} />}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { Badge, Button } from "@/shared";
-import { CourseActionProps } from "../../types";
+import { CourseActionProps } from "./types";
 import { Pencil } from "lucide-react";
 import { formatSession } from "./course-table.utils";
 
@@ -17,19 +17,17 @@ export function CourseCard({ course, onEdit }: CourseActionProps) {
     >
       <div className="flex justify-between">
         <div className="min-w-0">
-          <h3 className="font-semibold text-gray-900">{course.course_code}</h3>
+          <h3 className="font-semibold text-gray-900">{course.courseCode}</h3>
 
-          <p className="mt-1 font-medium text-gray-700">{course.course_name}</p>
+          <p className="mt-1 font-medium text-gray-700">{course.courseName}</p>
 
-          {course.description && (
-            <p className="mt-1 text-sm text-gray-500">{course.description}</p>
-          )}
+          {course.description && <p className="mt-1 text-sm text-gray-500">{course.description}</p>}
         </div>
         <Button
           size="icon"
           variant="ghost"
           onClick={() => onEdit(course)}
-          aria-label={`Edit ${course.course_name}`}
+          aria-label={`Edit ${course.courseName}`}
           title={"Edit User"}
         >
           <Pencil size={18} />
@@ -59,9 +57,7 @@ export function CourseCard({ course, onEdit }: CourseActionProps) {
         <div className="flex justify-between">
           <span className="text-gray-500 text-sm">Status</span>
 
-          <Badge variant={course.is_active ? "green" : "red"}>
-            {course.is_active ? "Active" : "Inactive"}
-          </Badge>
+          <Badge variant={course.isActive ? "green" : "red"}>{course.isActive ? "Active" : "Inactive"}</Badge>
         </div>
       </div>
     </div>

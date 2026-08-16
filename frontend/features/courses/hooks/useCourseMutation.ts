@@ -1,14 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useError } from "@/shared";
+import { Course, useError } from "@/shared";
 import { CourseService } from "../api/course.service";
 
-import type {
-  Course,
-  CreateCourseRequest,
-  UpdateCourseRequest,
-} from "../types";
+import type { CreateCourseRequest, UpdateCourseRequest } from "../types";
 
 export function useCourseMutation(refresh: () => Promise<void>) {
   const { handleError } = useError();
@@ -32,17 +28,15 @@ export function useCourseMutation(refresh: () => Promise<void>) {
   }
 
   async function createCourse(data: CreateCourseRequest) {
-    return execute(() => CourseService.create(data));
+    return execute(() => CourseService.createCourse(data));
   }
 
   async function updateCourse(id: number, data: UpdateCourseRequest) {
-    return execute(() => CourseService.update(id, data));
+    return execute(() => CourseService.updateCourse(id, data));
   }
 
   async function updateStatus(course: Course) {
-    return execute(() =>
-      CourseService.updateStatus(course.id, course.is_active),
-    );
+    return execute(() => CourseService.changeStatus(course.id, course.isActive));
   }
 
   return {

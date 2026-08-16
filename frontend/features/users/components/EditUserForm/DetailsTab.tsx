@@ -3,11 +3,11 @@
 import { FormEvent, useState } from "react";
 import { AppError } from "@/shared/errors/AppError";
 import { Button, FormError, Field, UI_USER_ROLE_OPTIONS } from "@/shared";
-import { DetailsFormProps } from "../../types";
+import { DetailsFormProps } from "./types";
 
 export function DetailsForm({ user, onSubmit }: DetailsFormProps) {
-  const [firstName, setFirstName] = useState(user.first_name);
-  const [lastName, setLastName] = useState(user.last_name ?? "");
+  const [firstName, setFirstName] = useState(user.firstName);
+  const [lastName, setLastName] = useState(user.lastName ?? "");
   const [email, setEmail] = useState(user.email);
   const [role, setRole] = useState(user.role);
 
@@ -26,8 +26,8 @@ export function DetailsForm({ user, onSubmit }: DetailsFormProps) {
 
       await onSubmit({
         id: user.id,
-        first_name: firstName,
-        last_name: lastName,
+        firstName: firstName,
+        lastName: lastName,
         email,
         role,
       });

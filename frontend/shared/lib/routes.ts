@@ -1,12 +1,12 @@
-import { UserRole } from "..";
+import type { UserRole } from "@/shared";
 
 export const DASHBOARD_ROUTES: Record<UserRole, string> = {
-  SUPER_ADMIN: "/dashboard",
-  ADMIN: "/admin",
-  LECTURER: "/lecturer",
-  STUDENT: "/student",
+  super_admin: "/dashboard",
+  admin: "/dashboard",
+  lecturer: "/lecturer",
+  student: "/student",
 };
 
-export function getDashboardRoute(role: UserRole) {
+export function getDashboardRoute(role: UserRole): string {
   return DASHBOARD_ROUTES[role];
 }

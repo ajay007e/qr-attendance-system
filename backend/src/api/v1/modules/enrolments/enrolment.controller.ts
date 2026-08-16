@@ -1,47 +1,24 @@
-import { NextFunction, Request, Response } from "express";
+import type { RequestHandler } from "express";
 
-import { AppError } from "../../../../utils/app.error";
+import { AppError, parseQueryNumber, parseQueryString } from "@/utils";
 
 import { EnrolmentService } from "./enrolment.service";
-import { Pagination } from "./enrolment.types";
-
-const DEFAULT_LIMIT = 20;
-const MAX_LIMIT = 100;
+import { validateCourseId, validateEnrolRequest } from "./enrolment.utils";
 
 export class EnrolmentController {
   constructor(private readonly service: EnrolmentService) {}
 
-  // Single auth guard kept on purpose: the middleware already populates
-  // req.user, but this fails loud if that ever regresses instead of reading
-  // an id off undefined.
-  private currentUserId(req: Request): number {
+  private currentUserId = (req: Parameters<RequestHandler>[0]): number => {
     if (!req.user) {
       throw new AppError("Not authenticated", 401);
     }
 
     return req.user.id;
-  }
+  };
 
-  private pagination(req: Request): Pagination {
-    const rawLimit = Number(req.query.limit);
-    const rawOffset = Number(req.query.offset);
-
-    const limit =
-      Number.isFinite(rawLimit) && rawLimit > 0
-        ? Math.min(Math.floor(rawLimit), MAX_LIMIT)
-        : DEFAULT_LIMIT;
-
-    const offset =
-      Number.isFinite(rawOffset) && rawOffset > 0 ? Math.floor(rawOffset) : 0;
-
-    return { limit, offset };
-  }
-
-  listEnrolled = async (req: Request, res: Response, next: NextFunction) => {
+  listEnrolled: RequestHandler = async (req, res, next) => {
     try {
-      const courses = await this.service.getEnrolledCourses(
-        this.currentUserId(req),
-      );
+      const courses = await this.service.getEnrolledCourses(this.currentUserId(req));
 
       res.json({
         success: true,
@@ -52,16 +29,13 @@ export class EnrolmentController {
     }
   };
 
-  listAvailable = async (req: Request, res: Response, next: NextFunction) => {
+  listAvailable: RequestHandler = async (req, res, next) => {
     try {
-      const search =
-        typeof req.query.search === "string" ? req.query.search : undefined;
+      const page = parseQueryNumber(req.query.page, 1);
+      const limit = parseQueryNumber(req.query.limit, 20);
+      const search = parseQueryString(req.query.search);
 
-      const courses = await this.service.getAvailableCourses(
-        this.currentUserId(req),
-        search,
-        this.pagination(req),
-      );
+      const courses = await this.service.getAvailableCourses(this.currentUserId(req), { search, page, limit });
 
       res.json({
         success: true,
@@ -72,9 +46,11 @@ export class EnrolmentController {
     }
   };
 
-  enrol = async (req: Request, res: Response, next: NextFunction) => {
+  enrol: RequestHandler = async (req, res, next) => {
     try {
-      await this.service.enrol(Number(req.body.courseId), this.currentUserId(req));
+      const { courseId } = validateEnrolRequest(req.body);
+
+      await this.service.enrol(courseId, this.currentUserId(req));
 
       res.status(201).json({
         success: true,
@@ -85,12 +61,11 @@ export class EnrolmentController {
     }
   };
 
-  unenrol = async (req: Request, res: Response, next: NextFunction) => {
+  unenrol: RequestHandler = async (req, res, next) => {
     try {
-      await this.service.unenrol(
-        Number(req.params.courseId),
-        this.currentUserId(req),
-      );
+      const courseId = validateCourseId(Number(req.params.courseId));
+
+      await this.service.unenrol(courseId, this.currentUserId(req));
 
       res.json({
         success: true,
@@ -101,12 +76,32 @@ export class EnrolmentController {
     }
   };
 
-  getStudents = async (req: Request, res: Response, next: NextFunction) => {
+  listAssigned: RequestHandler = async (req, res, next) => {
     try {
-      const students = await this.service.getStudents(
-        Number(req.params.courseId),
-        this.pagination(req),
-      );
+      const courses = await this.service.getAssignedCourses(this.currentUserId(req));
+
+      res.json({
+        success: true,
+        data: courses,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getStudents: RequestHandler = async (req, res, next) => {
+    try {
+      const courseId = validateCourseId(Number(req.params.courseId));
+
+      const page = parseQueryNumber(req.query.page, 1);
+      const limit = parseQueryNumber(req.query.limit, 10);
+      const search = parseQueryString(req.query.search);
+
+      const students = await this.service.getStudents(courseId, {
+        page,
+        limit,
+        search,
+      });
 
       res.json({
         success: true,

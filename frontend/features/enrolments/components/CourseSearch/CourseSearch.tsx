@@ -2,8 +2,7 @@
 
 import { Search } from "lucide-react";
 
-import { Field } from "@/shared";
-import { useAutocompleteContext } from "@/shared/components/form/field/autocomplete/autocomplete.context";
+import { Field, useAutocompleteContext } from "@/shared";
 
 import { COURSE_SEARCH_MIN_LENGTH } from "../../constants";
 import type { CourseSearchProps, StudentCourse } from "../../types";
@@ -23,7 +22,7 @@ export default function CourseSearch({ value, courses, loading, onChange, onSele
         loading={loading}
         placeholder="Search courses by code or name"
         leftIcon={<Search size={18} className="text-gray-500" />}
-        getOptionLabel={(course) => `${course.course_code} ${course.course_name}`}
+        getOptionLabel={(course) => `${course.courseCode} ${course.courseName}`}
         onSelect={onSelect}
       >
         <CourseDropdown />
@@ -64,11 +63,11 @@ function CourseDropdown() {
                   ${isHighlighted ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-500 group-hover:bg-gray-200"}
                 `}
               >
-                {course.course_code?.slice(0, 2)}
+                {course.courseCode?.slice(0, 2)}
               </div>
 
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold">{course.course_code}</p>
+                <p className="truncate text-sm font-semibold">{course.courseCode}</p>
 
                 <p
                   className={`
@@ -76,7 +75,7 @@ function CourseDropdown() {
                     ${isHighlighted ? "text-blue-700" : "text-gray-500"}
                   `}
                 >
-                  {course.course_name}
+                  {course.courseName}
                 </p>
               </div>
 
