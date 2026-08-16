@@ -1,9 +1,7 @@
 import type { RequestHandler } from "express";
 
 import { env } from "@/config";
-import { AppError } from "@/utils";
-
-import { ADMIN_API_KEY_HEADER } from "@/utils";
+import { AppError, ADMIN_API_KEY_HEADER } from "@/utils";
 
 export const verifyApiKey: RequestHandler = (req, _res, next) => {
   const apiKey = req.header(ADMIN_API_KEY_HEADER);

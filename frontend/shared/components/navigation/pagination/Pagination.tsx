@@ -21,12 +21,10 @@ export default function Pagination({
   totalPages,
   onPrevious,
   onNext,
-  hasPrevious = true,
-  hasNext = true,
   disabled = false,
 }: PaginationProps) {
-  const previousDisabled = disabled || !hasPrevious || page <= 1;
-  const nextDisabled = disabled || !hasNext || page >= totalPages;
+  const previousDisabled = disabled || page <= 1;
+  const nextDisabled = disabled || page >= totalPages;
 
   return (
     <div

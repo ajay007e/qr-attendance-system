@@ -5,8 +5,8 @@ export interface ApiResponse<T> {
 }
 
 export interface PaginationQuery {
-  page?: number;
-  limit?: number;
+  page: number;
+  limit: number;
 }
 
 export interface PaginationMeta {

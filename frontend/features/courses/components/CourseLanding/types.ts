@@ -6,7 +6,7 @@ export type CourseTab = "site" | "participants" | "grades" | "attendance";
 export interface CourseLandingProps {
   courseId: number;
   backHref: string;
-  participantsTab: (courseId: number) => ReactNode;
+  participantsTab: ReactNode;
 }
 
 type CourseComponentProps = {

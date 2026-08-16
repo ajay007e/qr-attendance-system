@@ -7,4 +7,4 @@ export type {
   PaginationQuery,
 } from "./api.types";
 
-export type { SessionUser, BaseUser } from "./user.types";
+export type { SessionUser, BaseUser, Role } from "./user.types";

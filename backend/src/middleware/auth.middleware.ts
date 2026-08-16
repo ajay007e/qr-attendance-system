@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
 
 import { AppError } from "@/utils";
-import { type Role } from "@/utils";
+import type { Role } from "@/types";
 
 export const isAuthenticated: RequestHandler = (req, _res, next) => {
   if (!req.session.user) {

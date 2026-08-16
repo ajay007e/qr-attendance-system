@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { controller } from ".";
 
-import { authorize, isAuthenticated } from "../../../../middleware/auth.middleware";
+import { authorize, isAuthenticated } from "@/middleware";
 import { ROLES } from "@/utils";
 
 export const enrolmentRouter = Router();

@@ -1,61 +1,1239 @@
 USE qr_attendance_system;
 
--- ==========================================
--- Seed Users
--- ==========================================
+-- ==========================================================
+-- REALISTIC SEED DATA
+-- ==========================================================
+-- IMPORTANT:
+-- These names are fictional seed identities intended for
+-- development/testing. They are not intended to represent
+-- real individuals.
+--
+-- Requirements:
+--   30 lecturers
+--   180 students
+--   24 courses
+--   24 PRIMARY assignments
+--   15 SECONDARY assignments
+--   30 TUTOR assignments
+--   576 enrolments
+--   24 students per course
+--   3-4 courses per student
+--
+-- Requires MySQL 8.0+
+-- ==========================================================
 
-SET @password = (SELECT password FROM users WHERE role = 'SUPER_ADMIN' LIMIT 1);
+
+-- ==========================================================
+-- PASSWORD
+-- ==========================================================
+
+SET @password = (
+    SELECT password
+    FROM users
+    WHERE role = 'SUPER_ADMIN'
+    LIMIT 1
+);
 
 SELECT
     CASE
-        WHEN @password IS NOT NULL THEN 'SUPER_ADMIN found'
-        ELSE CAST('ERROR: SUPER_ADMIN user does not exist' AS UNSIGNED)
+        WHEN @password IS NOT NULL
+            THEN 'Password found - seed can continue'
+        ELSE
+            'ERROR: SUPER_ADMIN password not found'
     END AS validation;
 
 
-INSERT INTO users (first_name, last_name, email, password, role) VALUES
--- ('System', 'Administrator', 'admin@qrattendance.com', @password, 'super_admin'),
-('John', 'Smith', 'john.smith@university.edu', @password, 'lecturer'),
-('Emily', 'Johnson', 'emily.johnson@university.edu', @password, 'lecturer'),
-('Michael', 'Brown', 'michael.brown@university.edu', @password, 'lecturer'),
-('Sarah', 'Wilson', 'sarah.wilson@university.edu', @password, 'lecturer'),
-('David', 'Taylor', 'david.taylor@university.edu', @password, 'lecturer'),
-('Jessica', 'Anderson', 'jessica.anderson@university.edu', @password, 'lecturer'),
+-- ==========================================================
+-- 1. LECTURERS
+-- ==========================================================
+-- 30 realistic fictional university lecturers
+-- ==========================================================
 
-('Liam', 'Wilson', 'liam.wilson@student.edu', @password, 'student'),
-('Olivia', 'Taylor', 'olivia.taylor@student.edu', @password, 'student'),
-('Noah', 'Thomas', 'noah.thomas@student.edu', @password, 'student'),
-('Emma', 'Moore', 'emma.moore@student.edu', @password, 'student'),
-('William', 'Martin', 'william.martin@student.edu', @password, 'student'),
-('Ava', 'Lee', 'ava.lee@student.edu', @password, 'student'),
-('James', 'Walker', 'james.walker@student.edu', @password, 'student'),
-('Sophia', 'Hall', 'sophia.hall@student.edu', @password, 'student'),
-('Benjamin', 'Allen', 'benjamin.allen@student.edu', @password, 'student'),
-('Mia', 'Young', 'mia.young@student.edu', @password, 'student'),
-('Lucas', 'King', 'lucas.king@student.edu', @password, 'student');
--- ==========================================
--- Seed Courses
--- ==========================================
+INSERT INTO users (
+    first_name,
+    last_name,
+    email,
+    password,
+    role,
+    is_active
+) VALUES
 
-INSERT INTO courses (course_code, course_name, description, credits, session) VALUES
-('CS101', 'Introduction to Programming', 'Programming fundamentals, algorithms and problem solving', 3, 'SPRING'),
-('CS201', 'Database Systems', 'SQL, relational modelling, normalization and transactions', 3, 'AUTUMN'),
-('CS220', 'Data Structures and Algorithms', 'Core data structures and algorithm analysis', 4, 'SPRING'),
-('CS301', 'Software Engineering', 'Software design, development methodologies and testing', 3, 'AUTUMN'),
-('CS310', 'Web Application Development', 'Frontend and backend web technologies', 3, 'SUMMER'),
-('CS401', 'Artificial Intelligence', 'Machine learning and AI fundamentals', 4, 'WINTER');
+('Daniel', 'Mitchell', 'daniel.mitchell@university.edu', @password, 'lecturer', TRUE),
+('Sarah', 'Thompson', 'sarah.thompson@university.edu', @password, 'lecturer', TRUE),
+('Michael', 'Anderson', 'michael.anderson@university.edu', @password, 'lecturer', TRUE),
+('Emily', 'Roberts', 'emily.roberts@university.edu', @password, 'lecturer', TRUE),
+('James', 'Campbell', 'james.campbell@university.edu', @password, 'lecturer', TRUE),
+('Jessica', 'Morgan', 'jessica.morgan@university.edu', @password, 'lecturer', TRUE),
+('Andrew', 'Richardson', 'andrew.richardson@university.edu', @password, 'lecturer', TRUE),
+('Rachel', 'Turner', 'rachel.turner@university.edu', @password, 'lecturer', TRUE),
+('Matthew', 'Phillips', 'matthew.phillips@university.edu', @password, 'lecturer', TRUE),
+('Laura', 'Parker', 'laura.parker@university.edu', @password, 'lecturer', TRUE),
+('Christopher', 'Evans', 'christopher.evans@university.edu', @password, 'lecturer', TRUE),
+('Rebecca', 'Edwards', 'rebecca.edwards@university.edu', @password, 'lecturer', TRUE),
+('Thomas', 'Collins', 'thomas.collins@university.edu', @password, 'lecturer', TRUE),
+('Hannah', 'Stewart', 'hannah.stewart@university.edu', @password, 'lecturer', TRUE),
+('William', 'Sanchez', 'william.sanchez@university.edu', @password, 'lecturer', TRUE),
+('Sophie', 'Morris', 'sophie.morris@university.edu', @password, 'lecturer', TRUE),
+('Benjamin', 'Rogers', 'benjamin.rogers@university.edu', @password, 'lecturer', TRUE),
+('Olivia', 'Reed', 'olivia.reed@university.edu', @password, 'lecturer', TRUE),
+('Alexander', 'Cook', 'alexander.cook@university.edu', @password, 'lecturer', TRUE),
+('Charlotte', 'Bailey', 'charlotte.bailey@university.edu', @password, 'lecturer', TRUE),
+('Jonathan', 'Cooper', 'jonathan.cooper@university.edu', @password, 'lecturer', TRUE),
+('Grace', 'Richardson', 'grace.richardson@university.edu', @password, 'lecturer', TRUE),
+('Nicholas', 'Cox', 'nicholas.cox@university.edu', @password, 'lecturer', TRUE),
+('Amelia', 'Howard', 'amelia.howard@university.edu', @password, 'lecturer', TRUE),
+('Samuel', 'Ward', 'samuel.ward@university.edu', @password, 'lecturer', TRUE),
+('Megan', 'Brooks', 'megan.brooks@university.edu', @password, 'lecturer', TRUE),
+('Ethan', 'Bennett', 'ethan.bennett@university.edu', @password, 'lecturer', TRUE),
+('Victoria', 'Gray', 'victoria.gray@university.edu', @password, 'lecturer', TRUE),
+('Henry', 'James', 'henry.james@university.edu', @password, 'lecturer', TRUE),
+('Natalie', 'Foster', 'natalie.foster@university.edu', @password, 'lecturer', TRUE);
 
 
--- ==========================================
--- Seed Course Lecturers
--- ==========================================
+-- ==========================================================
+-- 2. STUDENTS
+-- ==========================================================
+-- 180 realistic fictional university students
+-- ==========================================================
 
-INSERT INTO course_lecturers (course_id, user_id, role) SELECT c.id, u.id, 'PRIMARY' FROM courses c JOIN users u ON u.email = 'john.smith@university.edu' WHERE c.course_code = 'CS101';
-INSERT INTO course_lecturers (course_id, user_id, role) SELECT c.id, u.id, 'PRIMARY' FROM courses c JOIN users u ON u.email = 'emily.johnson@university.edu' WHERE c.course_code = 'CS201';
-INSERT INTO course_lecturers (course_id, user_id, role) SELECT c.id, u.id, 'PRIMARY' FROM courses c JOIN users u ON u.email = 'michael.brown@university.edu' WHERE c.course_code = 'CS220';
-INSERT INTO course_lecturers (course_id, user_id, role) SELECT c.id, u.id, 'PRIMARY' FROM courses c JOIN users u ON u.email = 'sarah.wilson@university.edu' WHERE c.course_code = 'CS301';
-INSERT INTO course_lecturers (course_id, user_id, role) SELECT c.id, u.id, 'PRIMARY' FROM courses c JOIN users u ON u.email = 'david.taylor@university.edu' WHERE c.course_code = 'CS310';
-INSERT INTO course_lecturers (course_id, user_id, role) SELECT c.id, u.id, 'PRIMARY' FROM courses c JOIN users u ON u.email = 'jessica.anderson@university.edu' WHERE c.course_code = 'CS401';
+INSERT INTO users (
+    first_name,
+    last_name,
+    email,
+    password,
+    role,
+    is_active
+) VALUES
+
+('Liam', 'Wilson', 'liam.wilson@student.edu', @password, 'student', TRUE),
+('Olivia', 'Taylor', 'olivia.taylor@student.edu', @password, 'student', TRUE),
+('Noah', 'Thomas', 'noah.thomas@student.edu', @password, 'student', TRUE),
+('Emma', 'Moore', 'emma.moore@student.edu', @password, 'student', TRUE),
+('William', 'Martin', 'william.martin@student.edu', @password, 'student', TRUE),
+('Ava', 'Lee', 'ava.lee@student.edu', @password, 'student', TRUE),
+('James', 'Walker', 'james.walker@student.edu', @password, 'student', TRUE),
+('Sophia', 'Hall', 'sophia.hall@student.edu', @password, 'student', TRUE),
+('Benjamin', 'Allen', 'benjamin.allen@student.edu', @password, 'student', TRUE),
+('Mia', 'Young', 'mia.young@student.edu', @password, 'student', TRUE),
+('Lucas', 'King', 'lucas.king@student.edu', @password, 'student', TRUE),
+('Charlotte', 'Wright', 'charlotte.wright@student.edu', @password, 'student', TRUE),
+('Henry', 'Scott', 'henry.scott@student.edu', @password, 'student', TRUE),
+('Amelia', 'Green', 'amelia.green@student.edu', @password, 'student', TRUE),
+('Alexander', 'Baker', 'alexander.baker@student.edu', @password, 'student', TRUE),
+('Harper', 'Adams', 'harper.adams@student.edu', @password, 'student', TRUE),
+('Daniel', 'Nelson', 'daniel.nelson@student.edu', @password, 'student', TRUE),
+('Evelyn', 'Carter', 'evelyn.carter@student.edu', @password, 'student', TRUE),
+('Michael', 'Mitchell', 'michael.mitchell@student.edu', @password, 'student', TRUE),
+('Ella', 'Perez', 'ella.perez@student.edu', @password, 'student', TRUE),
+('Sebastian', 'Roberts', 'sebastian.roberts@student.edu', @password, 'student', TRUE),
+('Camila', 'Turner', 'camila.turner@student.edu', @password, 'student', TRUE),
+('Jack', 'Phillips', 'jack.phillips@student.edu', @password, 'student', TRUE),
+('Luna', 'Campbell', 'luna.campbell@student.edu', @password, 'student', TRUE),
+('Owen', 'Parker', 'owen.parker@student.edu', @password, 'student', TRUE),
+('Aria', 'Evans', 'aria.evans@student.edu', @password, 'student', TRUE),
+('Theodore', 'Edwards', 'theodore.edwards@student.edu', @password, 'student', TRUE),
+('Scarlett', 'Collins', 'scarlett.collins@student.edu', @password, 'student', TRUE),
+('Aiden', 'Stewart', 'aiden.stewart@student.edu', @password, 'student', TRUE),
+('Victoria', 'Sanchez', 'victoria.sanchez@student.edu', @password, 'student', TRUE),
+('Matthew', 'Morris', 'matthew.morris@student.edu', @password, 'student', TRUE),
+('Nora', 'Rogers', 'nora.rogers@student.edu', @password, 'student', TRUE),
+('Joseph', 'Reed', 'joseph.reed@student.edu', @password, 'student', TRUE),
+('Layla', 'Cook', 'layla.cook@student.edu', @password, 'student', TRUE),
+('David', 'Morgan', 'david.morgan@student.edu', @password, 'student', TRUE),
+('Grace', 'Bell', 'grace.bell@student.edu', @password, 'student', TRUE),
+('Wyatt', 'Murphy', 'wyatt.murphy@student.edu', @password, 'student', TRUE),
+('Chloe', 'Bailey', 'chloe.bailey@student.edu', @password, 'student', TRUE),
+('John', 'Rivera', 'john.rivera@student.edu', @password, 'student', TRUE),
+('Penelope', 'Cooper', 'penelope.cooper@student.edu', @password, 'student', TRUE),
+('Jack', 'Richardson', 'jack.richardson@student.edu', @password, 'student', TRUE),
+('Riley', 'Cox', 'riley.cox@student.edu', @password, 'student', TRUE),
+('Luke', 'Howard', 'luke.howard@student.edu', @password, 'student', TRUE),
+('Zoey', 'Ward', 'zoey.ward@student.edu', @password, 'student', TRUE),
+('Gabriel', 'Torres', 'gabriel.torres@student.edu', @password, 'student', TRUE),
+('Mila', 'Peterson', 'mila.peterson@student.edu', @password, 'student', TRUE),
+('Anthony', 'Gray', 'anthony.gray@student.edu', @password, 'student', TRUE),
+('Lily', 'Ramirez', 'lily.ramirez@student.edu', @password, 'student', TRUE),
+('Isaac', 'James', 'isaac.james@student.edu', @password, 'student', TRUE),
+('Hannah', 'Watson', 'hannah.watson@student.edu', @password, 'student', TRUE),
+('Dylan', 'Brooks', 'dylan.brooks@student.edu', @password, 'student', TRUE),
+('Lillian', 'Kelly', 'lillian.kelly@student.edu', @password, 'student', TRUE),
+('Thomas', 'Sanders', 'thomas.sanders@student.edu', @password, 'student', TRUE),
+('Addison', 'Price', 'addison.price@student.edu', @password, 'student', TRUE),
+('Caleb', 'Bennett', 'caleb.bennett@student.edu', @password, 'student', TRUE),
+('Aubrey', 'Wood', 'aubrey.wood@student.edu', @password, 'student', TRUE),
+('Nathan', 'Barnes', 'nathan.barnes@student.edu', @password, 'student', TRUE),
+('Ellie', 'Ross', 'ellie.ross@student.edu', @password, 'student', TRUE),
+('Ryan', 'Henderson', 'ryan.henderson@student.edu', @password, 'student', TRUE),
+('Stella', 'Coleman', 'stella.coleman@student.edu', @password, 'student', TRUE),
+('Adrian', 'Jenkins', 'adrian.jenkins@student.edu', @password, 'student', TRUE),
+('Natalie', 'Perry', 'natalie.perry@student.edu', @password, 'student', TRUE),
+('Christian', 'Powell', 'christian.powell@student.edu', @password, 'student', TRUE),
+('Zoe', 'Long', 'zoe.long@student.edu', @password, 'student', TRUE),
+('Aaron', 'Patterson', 'aaron.patterson@student.edu', @password, 'student', TRUE),
+('Leah', 'Hughes', 'leah.hughes@student.edu', @password, 'student', TRUE),
+('Eli', 'Flores', 'eli.flores@student.edu', @password, 'student', TRUE),
+('Hazel', 'Washington', 'hazel.washington@student.edu', @password, 'student', TRUE),
+('Lincoln', 'Butler', 'lincoln.butler@student.edu', @password, 'student', TRUE),
+('Violet', 'Simmons', 'violet.simmons@student.edu', @password, 'student', TRUE),
+('Jaxon', 'Foster', 'jaxon.foster@student.edu', @password, 'student', TRUE),
+('Aurora', 'Gonzales', 'aurora.gonzales@student.edu', @password, 'student', TRUE),
+('Dominic', 'Bryant', 'dominic.bryant@student.edu', @password, 'student', TRUE),
+('Savannah', 'Alexander', 'savannah.alexander@student.edu', @password, 'student', TRUE),
+('Charles', 'Russell', 'charles.russell@student.edu', @password, 'student', TRUE),
+('Audrey', 'Griffin', 'audrey.griffin@student.edu', @password, 'student', TRUE),
+('Ian', 'Diaz', 'ian.diaz@student.edu', @password, 'student', TRUE),
+('Bella', 'Hayes', 'bella.hayes@student.edu', @password, 'student', TRUE),
+('Jeremiah', 'Myers', 'jeremiah.myers@student.edu', @password, 'student', TRUE),
+('Claire', 'Ford', 'claire.ford@student.edu', @password, 'student', TRUE),
+('Thomas', 'Hamilton', 'thomas.hamilton@student.edu', @password, 'student', TRUE),
+('Skylar', 'Graham', 'skylar.graham@student.edu', @password, 'student', TRUE),
+('Hudson', 'Sullivan', 'hudson.sullivan@student.edu', @password, 'student', TRUE),
+('Lucy', 'Wallace', 'lucy.wallace@student.edu', @password, 'student', TRUE),
+('Cooper', 'Woods', 'cooper.woods@student.edu', @password, 'student', TRUE),
+('Anna', 'Cole', 'anna.cole@student.edu', @password, 'student', TRUE),
+('Ezra', 'West', 'ezra.west@student.edu', @password, 'student', TRUE),
+('Caroline', 'Jordan', 'caroline.jordan@student.edu', @password, 'student', TRUE),
+('Lincoln', 'Owens', 'lincoln.owens@student.edu', @password, 'student', TRUE),
+('Maya', 'Reynolds', 'maya.reynolds@student.edu', @password, 'student', TRUE),
+('Asher', 'Fisher', 'asher.fisher@student.edu', @password, 'student', TRUE),
+('Madison', 'Ellis', 'madison.ellis@student.edu', @password, 'student', TRUE),
+('Leo', 'Harrison', 'leo.harrison@student.edu', @password, 'student', TRUE),
+('Ruby', 'Gibson', 'ruby.gibson@student.edu', @password, 'student', TRUE),
+('James', 'Mcdonald', 'james.mcdonald@student.edu', @password, 'student', TRUE),
+('Alice', 'Cruz', 'alice.cruz@student.edu', @password, 'student', TRUE),
+('Mason', 'Marshall', 'mason.marshall@student.edu', @password, 'student', TRUE),
+('Ivy', 'Ortiz', 'ivy.ortiz@student.edu', @password, 'student', TRUE),
+('Ethan', 'Gomez', 'ethan.gomez@student.edu', @password, 'student', TRUE),
+('Elena', 'Murray', 'elena.murray@student.edu', @password, 'student', TRUE),
+('Logan', 'Freeman', 'logan.freeman@student.edu', @password, 'student', TRUE),
+('Sophie', 'Wells', 'sophie.wells@student.edu', @password, 'student', TRUE),
+('Jackson', 'Webb', 'jackson.webb@student.edu', @password, 'student', TRUE),
+('Isla', 'Simpson', 'isla.simpson@student.edu', @password, 'student', TRUE),
+('Mateo', 'Stevens', 'mateo.stevens@student.edu', @password, 'student', TRUE),
+('Sadie', 'Tucker', 'sadie.tucker@student.edu', @password, 'student', TRUE),
+('Sebastian', 'Porter', 'sebastian.porter@student.edu', @password, 'student', TRUE),
+('Piper', 'Hunter', 'piper.hunter@student.edu', @password, 'student', TRUE),
+('Carter', 'Hicks', 'carter.hicks@student.edu', @password, 'student', TRUE),
+('Naomi', 'Crawford', 'naomi.crawford@student.edu', @password, 'student', TRUE),
+('Julian', 'Henry', 'julian.henry@student.edu', @password, 'student', TRUE),
+('Maya', 'Boyd', 'maya.boyd@student.edu', @password, 'student', TRUE),
+('Grayson', 'Mason', 'grayson.mason@student.edu', @password, 'student', TRUE),
+('Eliza', 'Morales', 'eliza.morales@student.edu', @password, 'student', TRUE),
+('Nolan', 'Kennedy', 'nolan.kennedy@student.edu', @password, 'student', TRUE),
+('Lydia', 'Warren', 'lydia.warren@student.edu', @password, 'student', TRUE),
+('Lincoln', 'Dixon', 'lincoln.dixon@student.edu', @password, 'student', TRUE),
+('Julia', 'Ramos', 'julia.ramos@student.edu', @password, 'student', TRUE),
+('Miles', 'Reyes', 'miles.reyes@student.edu', @password, 'student', TRUE),
+('Eva', 'Burns', 'eva.burns@student.edu', @password, 'student', TRUE),
+('Hudson', 'Gordon', 'hudson.gordon@student.edu', @password, 'student', TRUE),
+('Clara', 'Shaw', 'clara.shaw@student.edu', @password, 'student', TRUE),
+('Lincoln', 'Holmes', 'lincoln.holmes@student.edu', @password, 'student', TRUE),
+('Rose', 'Rice', 'rose.rice@student.edu', @password, 'student', TRUE),
+('Connor', 'Robertson', 'connor.robertson@student.edu', @password, 'student', TRUE),
+('Naomi', 'Hunt', 'naomi.hunt@student.edu', @password, 'student', TRUE),
+('Adam', 'Black', 'adam.black@student.edu', @password, 'student', TRUE),
+('Sarah', 'Daniels', 'sarah.daniels@student.edu', @password, 'student', TRUE),
+('Cameron', 'Palmer', 'cameron.palmer@student.edu', @password, 'student', TRUE),
+('Molly', 'Mills', 'molly.mills@student.edu', @password, 'student', TRUE),
+('Nathaniel', 'Nichols', 'nathaniel.nichols@student.edu', @password, 'student', TRUE),
+('Lucy', 'Grant', 'lucy.grant@student.edu', @password, 'student', TRUE),
+('Robert', 'Knight', 'robert.knight@student.edu', @password, 'student', TRUE),
+('Amy', 'Ferguson', 'amy.ferguson@student.edu', @password, 'student', TRUE),
+('Isaiah', 'Rose', 'isaiah.rose@student.edu', @password, 'student', TRUE),
+('Isabella', 'Stone', 'isabella.stone@student.edu', @password, 'student', TRUE),
+('Colton', 'Hawkins', 'colton.hawkins@student.edu', @password, 'student', TRUE),
+('Samantha', 'Dunn', 'samantha.dunn@student.edu', @password, 'student', TRUE),
+('Maxwell', 'Perkins', 'maxwell.perkins@student.edu', @password, 'student', TRUE),
+('Julia', 'Hudson', 'julia.hudson@student.edu', @password, 'student', TRUE),
+('Christopher', 'Spencer', 'christopher.spencer@student.edu', @password, 'student', TRUE),
+('Aaliyah', 'Gardner', 'aaliyah.gardner@student.edu', @password, 'student', TRUE),
+('Joshua', 'Stephens', 'joshua.stephens@student.edu', @password, 'student', TRUE),
+('Claire', 'Payne', 'claire.payne@student.edu', @password, 'student', TRUE),
+('Andrew', 'Pierce', 'andrew.pierce@student.edu', @password, 'student', TRUE),
+('Madeline', 'Berry', 'madeline.berry@student.edu', @password, 'student', TRUE),
+('Nathan', 'Matthews', 'nathan.matthews@student.edu', @password, 'student', TRUE),
+('Kayla', 'Arnold', 'kayla.arnold@student.edu', @password, 'student', TRUE),
+('Aaron', 'Wagner', 'aaron.wagner@student.edu', @password, 'student', TRUE),
+('Natalia', 'Willis', 'natalia.willis@student.edu', @password, 'student', TRUE),
+('Evan', 'Ray', 'evan.ray@student.edu', @password, 'student', TRUE),
+('Jasmine', 'Watkins', 'jasmine.watkins@student.edu', @password, 'student', TRUE),
+('Brandon', 'Olson', 'brandon.olson@student.edu', @password, 'student', TRUE),
+('Ariana', 'Carroll', 'ariana.carroll@student.edu', @password, 'student', TRUE),
+('Zachary', 'Duncan', 'zachary.duncan@student.edu', @password, 'student', TRUE),
+('Melanie', 'Snyder', 'melanie.snyder@student.edu', @password, 'student', TRUE),
+('Jason', 'Hart', 'jason.hart@student.edu', @password, 'student', TRUE),
+('Brianna', 'Cunningham', 'brianna.cunningham@student.edu', @password, 'student', TRUE),
+('Tyler', 'Bradley', 'tyler.bradley@student.edu', @password, 'student', TRUE),
+('Nicole', 'Lane', 'nicole.lane@student.edu', @password, 'student', TRUE),
+('Kevin', 'Harper', 'kevin.harper@student.edu', @password, 'student', TRUE),
+('Kaylee', 'Stone', 'kaylee.stone@student.edu', @password, 'student', TRUE),
+('Justin', 'Mendoza', 'justin.mendoza@student.edu', @password, 'student', TRUE),
+('Brooklyn', 'Parks', 'brooklyn.parks@student.edu', @password, 'student', TRUE),
+('Brandon', 'McCarthy', 'brandon.mccarthy@student.edu', @password, 'student', TRUE),
+('Hailey', 'Vaughn', 'hailey.vaughn@student.edu', @password, 'student', TRUE),
+('Jordan', 'Chapman', 'jordan.chapman@student.edu', @password, 'student', TRUE),
+('Lauren', 'Bishop', 'lauren.bishop@student.edu', @password, 'student', TRUE),
+('Derek', 'Montgomery', 'derek.montgomery@student.edu', @password, 'student', TRUE),
+('Katherine', 'Morrison', 'katherine.morrison@student.edu', @password, 'student', TRUE),
+('Marcus', 'Franklin', 'marcus.franklin@student.edu', @password, 'student', TRUE),
+('Sienna', 'Mcdowell', 'sienna.mcdowell@student.edu', @password, 'student', TRUE),
+('Eric', 'Lynch', 'eric.lynch@student.edu', @password, 'student', TRUE),
+('Rebecca', 'Wilkins', 'rebecca.wilkins@student.edu', @password, 'student', TRUE),
+('Patrick', 'Cross', 'patrick.cross@student.edu', @password, 'student', TRUE),
+('Alyssa', 'Fitzgerald', 'alyssa.fitzgerald@student.edu', @password, 'student', TRUE),
+('Sean', 'Mccormick', 'sean.mccormick@student.edu', @password, 'student', TRUE),
+('Morgan', 'Leach', 'morgan.leach@student.edu', @password, 'student', TRUE),
+('Dylan', 'Murray', 'dylan.murray@student.edu', @password, 'student', TRUE),
+('Rachel', 'Holt', 'rachel.holt@student.edu', @password, 'student', TRUE),
+('Cody', 'Mayer', 'cody.mayer@student.edu', @password, 'student', TRUE),
+('Erin', 'Keller', 'erin.keller@student.edu', @password, 'student', TRUE),
+('Adam', 'Mann', 'adam.mann@student.edu', @password, 'student', TRUE),
+('Brooke', 'Sampson', 'brooke.sampson@student.edu', @password, 'student', TRUE),
+('Connor', 'Fleming', 'connor.fleming@student.edu', @password, 'student', TRUE),
+('Mackenzie', 'Hines', 'mackenzie.hines@student.edu', @password, 'student', TRUE),
+('Ryan', 'Davenport', 'ryan.davenport@student.edu', @password, 'student', TRUE),
+('Kylie', 'Fowler', 'kylie.fowler@student.edu', @password, 'student', TRUE),
+('Marcus', 'Wilcox', 'marcus.wilcox@student.edu', @password, 'student', TRUE),
+('Jenna', 'Phelps', 'jenna.phelps@student.edu', @password, 'student', TRUE),
+('Cameron', 'Bates', 'cameron.bates@student.edu', @password, 'student', TRUE),
+('Tessa', 'Mack', 'tessa.mack@student.edu', @password, 'student', TRUE),
+('Nathan', 'Moss', 'nathan.moss@student.edu', @password, 'student', TRUE),
+('Paige', 'Higgins', 'paige.higgins@student.edu', @password, 'student', TRUE),
+('Jordan', 'Knox', 'jordan.knox@student.edu', @password, 'student', TRUE),
+('Kayla', 'Savage', 'kayla.savage@student.edu', @password, 'student', TRUE),
+('Alex', 'Morrow', 'alex.morrow@student.edu', @password, 'student', TRUE),
+('Madison', 'Sutton', 'madison.sutton@student.edu', @password, 'student', TRUE),
+('Blake', 'Goodwin', 'blake.goodwin@student.edu', @password, 'student', TRUE),
+('Avery', 'Mclean', 'avery.mclean@student.edu', @password, 'student', TRUE),
+('Casey', 'Dawson', 'casey.dawson@student.edu', @password, 'student', TRUE),
+('Taylor', 'Morrison', 'taylor.morrison@student.edu', @password, 'student', TRUE),
+('Reese', 'Harding', 'reese.harding@student.edu', @password, 'student', TRUE),
+('Carter', 'Atkinson', 'carter.atkinson@student.edu', @password, 'student', TRUE),
+('Sydney', 'Baldwin', 'sydney.baldwin@student.edu', @password, 'student', TRUE),
+('Peyton', 'Walsh', 'peyton.walsh@student.edu', @password, 'student', TRUE),
+('Alexis', 'Donovan', 'alexis.donovan@student.edu', @password, 'student', TRUE),
+('Jordan', 'Mckenzie', 'jordan.mckenzie@student.edu', @password, 'student', TRUE),
+('Riley', 'Madden', 'riley.madden@student.edu', @password, 'student', TRUE),
+('Emery', 'Finch', 'emery.finch@student.edu', @password, 'student', TRUE),
+('Logan', 'Conway', 'logan.conway@student.edu', @password, 'student', TRUE),
+('Parker', 'Caldwell', 'parker.caldwell@student.edu', @password, 'student', TRUE),
+('Quinn', 'Sullivan', 'quinn.sullivan@student.edu', @password, 'student', TRUE),
+('Morgan', 'Barrett', 'morgan.barrett@student.edu', @password, 'student', TRUE),
+('Cameron', 'Dalton', 'cameron.dalton@student.edu', @password, 'student', TRUE),
+('Jamie', 'Kendall', 'jamie.kendall@student.edu', @password, 'student', TRUE),
+('Alexis', 'Monroe', 'alexis.monroe@student.edu', @password, 'student', TRUE),
+('Drew', 'Holland', 'drew.holland@student.edu', @password, 'student', TRUE),
+('Bailey', 'Frost', 'bailey.frost@student.edu', @password, 'student', TRUE),
+('Finley', 'Harrison', 'finley.harrison@student.edu', @password, 'student', TRUE),
+('Rowan', 'Baxter', 'rowan.baxter@student.edu', @password, 'student', TRUE),
+('Blair', 'Mercer', 'blair.mercer@student.edu', @password, 'student', TRUE),
+('Reagan', 'Morrison', 'reagan.morrison@student.edu', @password, 'student', TRUE),
+('Dakota', 'Palmer', 'dakota.palmer@student.edu', @password, 'student', TRUE),
+('Emerson', 'Holland', 'emerson.holland@student.edu', @password, 'student', TRUE),
+('Skyler', 'Bennett', 'skyler.bennett@student.edu', @password, 'student', TRUE),
+('Kendall', 'Browning', 'kendall.browning@student.edu', @password, 'student', TRUE),
+('Hayden', 'Chambers', 'hayden.chambers@student.edu', @password, 'student', TRUE),
+('Peyton', 'Mercer', 'peyton.mercer@student.edu', @password, 'student', TRUE),
+('Marley', 'Norton', 'marley.norton@student.edu', @password, 'student', TRUE),
+('Sage', 'Whitaker', 'sage.whitaker@student.edu', @password, 'student', TRUE),
+('Charlie', 'Madden', 'charlie.madden@student.edu', @password, 'student', TRUE),
+('Frankie', 'Benson', 'frankie.benson@student.edu', @password, 'student', TRUE),
+('River', 'Hendricks', 'river.hendricks@student.edu', @password, 'student', TRUE),
+('Micah', 'Sullivan', 'micah.sullivan@student.edu', @password, 'student', TRUE),
+('Jules', 'Carter', 'jules.carter@student.edu', @password, 'student', TRUE);
 
 
+-- ==========================================================
+-- 3. COURSES
+-- ==========================================================
+-- 24 realistic university courses
+-- ==========================================================
 
+INSERT INTO courses (
+    course_code,
+    course_name,
+    description,
+    credits,
+    session,
+    is_active
+) VALUES
+
+(
+    'CS101',
+    'Introduction to Programming',
+    'Fundamentals of programming, computational thinking, algorithms, variables, control structures, functions and basic software development.',
+    3,
+    'SPRING',
+    TRUE
+),
+
+(
+    'CS102',
+    'Computer Systems Fundamentals',
+    'Introduction to computer architecture, operating systems, binary representation, memory, processors and system software.',
+    3,
+    'AUTUMN',
+    TRUE
+),
+
+(
+    'CS103',
+    'Discrete Mathematics',
+    'Logic, sets, relations, functions, combinatorics, graphs and mathematical foundations for computer science.',
+    3,
+    'SPRING',
+    TRUE
+),
+
+(
+    'CS104',
+    'Object-Oriented Programming',
+    'Object-oriented programming principles including classes, inheritance, polymorphism, encapsulation and design patterns.',
+    3,
+    'SUMMER',
+    TRUE
+),
+
+(
+    'CS201',
+    'Database Management Systems',
+    'Relational database design, SQL, normalization, transactions, indexing, constraints and database administration.',
+    3,
+    'AUTUMN',
+    TRUE
+),
+
+(
+    'CS202',
+    'Computer Networks',
+    'Network architectures, TCP/IP, routing, switching, network security, wireless communication and network administration.',
+    3,
+    'SPRING',
+    TRUE
+),
+
+(
+    'CS203',
+    'Data Structures',
+    'Arrays, linked lists, stacks, queues, trees, hash tables, heaps and efficient data organization.',
+    3,
+    'AUTUMN',
+    TRUE
+),
+
+(
+    'CS204',
+    'Web Development',
+    'Modern web development using HTML, CSS, JavaScript, REST APIs and server-side application development.',
+    3,
+    'SUMMER',
+    TRUE
+),
+
+(
+    'CS205',
+    'Software Testing',
+    'Software quality assurance, unit testing, integration testing, system testing, automation and test-driven development.',
+    3,
+    'WINTER',
+    TRUE
+),
+
+(
+    'CS206',
+    'Human Computer Interaction',
+    'User interface design, usability engineering, accessibility, user research, prototyping and interaction design.',
+    3,
+    'SPRING',
+    TRUE
+),
+
+(
+    'CS207',
+    'Operating Systems',
+    'Processes, threads, scheduling, memory management, file systems, synchronization and operating system architecture.',
+    4,
+    'AUTUMN',
+    TRUE
+),
+
+(
+    'CS208',
+    'Computer Security',
+    'Cybersecurity principles, authentication, authorization, cryptography, vulnerabilities, secure software and network security.',
+    3,
+    'WINTER',
+    TRUE
+),
+
+(
+    'CS301',
+    'Software Engineering',
+    'Software development methodologies, requirements engineering, architecture, project management, version control and testing.',
+    3,
+    'AUTUMN',
+    TRUE
+),
+
+(
+    'CS302',
+    'Algorithms and Complexity',
+    'Algorithm design and analysis, sorting, searching, graph algorithms, dynamic programming and computational complexity.',
+    4,
+    'SPRING',
+    TRUE
+),
+
+(
+    'CS303',
+    'Mobile Application Development',
+    'Design and development of mobile applications, mobile interfaces, application architecture, APIs and deployment.',
+    3,
+    'SUMMER',
+    TRUE
+),
+
+(
+    'CS304',
+    'Cloud Computing',
+    'Cloud architecture, virtualization, containers, distributed services, cloud storage and scalable application deployment.',
+    3,
+    'WINTER',
+    TRUE
+),
+
+(
+    'CS305',
+    'Artificial Intelligence',
+    'Artificial intelligence concepts including intelligent agents, search, reasoning, knowledge representation and machine learning.',
+    4,
+    'SPRING',
+    TRUE
+),
+
+(
+    'CS306',
+    'Machine Learning',
+    'Supervised and unsupervised learning, regression, classification, clustering, model evaluation and practical machine learning.',
+    4,
+    'AUTUMN',
+    TRUE
+),
+
+(
+    'CS307',
+    'Data Analytics',
+    'Data preparation, statistical analysis, visualization, exploratory analysis and data-driven decision making.',
+    3,
+    'SUMMER',
+    TRUE
+),
+
+(
+    'CS308',
+    'Information Systems',
+    'Information systems architecture, enterprise systems, business processes, information management and digital transformation.',
+    3,
+    'WINTER',
+    TRUE
+),
+
+(
+    'CS401',
+    'Advanced Software Architecture',
+    'Advanced software architecture, distributed systems, architectural patterns, scalability, reliability and maintainability.',
+    4,
+    'AUTUMN',
+    TRUE
+),
+
+(
+    'CS402',
+    'Cybersecurity Engineering',
+    'Security engineering, threat modelling, secure architecture, penetration testing, incident response and security operations.',
+    4,
+    'WINTER',
+    TRUE
+),
+
+(
+    'CS403',
+    'Distributed Systems',
+    'Distributed computation, communication, consensus, replication, fault tolerance and distributed system architectures.',
+    4,
+    'SPRING',
+    TRUE
+),
+
+(
+    'CS404',
+    'Final Year Computing Project',
+    'Independent computing project involving requirements analysis, system design, implementation, testing, documentation and presentation.',
+    6,
+    'ANNUAL',
+    TRUE
+);
+
+
+-- ==========================================================
+-- 4. PRIMARY LECTURERS
+-- ==========================================================
+-- One primary lecturer for every course.
+-- ==========================================================
+
+INSERT INTO course_lecturers (
+    course_id,
+    user_id,
+    role
+)
+SELECT
+    c.id,
+    u.id,
+    'PRIMARY'
+FROM courses c
+JOIN users u
+    ON u.email = CASE c.course_code
+
+        WHEN 'CS101'
+            THEN 'daniel.mitchell@university.edu'
+
+        WHEN 'CS102'
+            THEN 'sarah.thompson@university.edu'
+
+        WHEN 'CS103'
+            THEN 'michael.anderson@university.edu'
+
+        WHEN 'CS104'
+            THEN 'emily.roberts@university.edu'
+
+        WHEN 'CS201'
+            THEN 'james.campbell@university.edu'
+
+        WHEN 'CS202'
+            THEN 'jessica.morgan@university.edu'
+
+        WHEN 'CS203'
+            THEN 'andrew.richardson@university.edu'
+
+        WHEN 'CS204'
+            THEN 'rachel.turner@university.edu'
+
+        WHEN 'CS205'
+            THEN 'matthew.phillips@university.edu'
+
+        WHEN 'CS206'
+            THEN 'laura.parker@university.edu'
+
+        WHEN 'CS207'
+            THEN 'christopher.evans@university.edu'
+
+        WHEN 'CS208'
+            THEN 'rebecca.edwards@university.edu'
+
+        WHEN 'CS301'
+            THEN 'thomas.collins@university.edu'
+
+        WHEN 'CS302'
+            THEN 'hannah.stewart@university.edu'
+
+        WHEN 'CS303'
+            THEN 'william.sanchez@university.edu'
+
+        WHEN 'CS304'
+            THEN 'sophie.morris@university.edu'
+
+        WHEN 'CS305'
+            THEN 'benjamin.rogers@university.edu'
+
+        WHEN 'CS306'
+            THEN 'olivia.reed@university.edu'
+
+        WHEN 'CS307'
+            THEN 'alexander.cook@university.edu'
+
+        WHEN 'CS308'
+            THEN 'charlotte.bailey@university.edu'
+
+        WHEN 'CS401'
+            THEN 'jonathan.cooper@university.edu'
+
+        WHEN 'CS402'
+            THEN 'grace.richardson@university.edu'
+
+        WHEN 'CS403'
+            THEN 'nicholas.cox@university.edu'
+
+        WHEN 'CS404'
+            THEN 'amelia.howard@university.edu'
+
+    END;
+
+
+-- ==========================================================
+-- 5. SECONDARY LECTURERS
+-- ==========================================================
+-- Exactly 15 courses receive a secondary lecturer.
+-- ==========================================================
+
+INSERT INTO course_lecturers (
+    course_id,
+    user_id,
+    role
+)
+SELECT
+    c.id,
+    u.id,
+    'SECONDARY'
+FROM courses c
+JOIN users u
+    ON u.email = CASE c.course_code
+
+        WHEN 'CS101'
+            THEN 'sarah.thompson@university.edu'
+
+        WHEN 'CS102'
+            THEN 'michael.anderson@university.edu'
+
+        WHEN 'CS103'
+            THEN 'emily.roberts@university.edu'
+
+        WHEN 'CS104'
+            THEN 'james.campbell@university.edu'
+
+        WHEN 'CS201'
+            THEN 'jessica.morgan@university.edu'
+
+        WHEN 'CS202'
+            THEN 'andrew.richardson@university.edu'
+
+        WHEN 'CS203'
+            THEN 'rachel.turner@university.edu'
+
+        WHEN 'CS204'
+            THEN 'matthew.phillips@university.edu'
+
+        WHEN 'CS205'
+            THEN 'laura.parker@university.edu'
+
+        WHEN 'CS206'
+            THEN 'christopher.evans@university.edu'
+
+        WHEN 'CS207'
+            THEN 'rebecca.edwards@university.edu'
+
+        WHEN 'CS208'
+            THEN 'thomas.collins@university.edu'
+
+        WHEN 'CS301'
+            THEN 'hannah.stewart@university.edu'
+
+        WHEN 'CS302'
+            THEN 'william.sanchez@university.edu'
+
+        WHEN 'CS303'
+            THEN 'sophie.morris@university.edu'
+
+    END
+WHERE c.course_code IN (
+    'CS101',
+    'CS102',
+    'CS103',
+    'CS104',
+    'CS201',
+    'CS202',
+    'CS203',
+    'CS204',
+    'CS205',
+    'CS206',
+    'CS207',
+    'CS208',
+    'CS301',
+    'CS302',
+    'CS303'
+);
+
+
+-- ==========================================================
+-- 6. TUTORS
+-- ==========================================================
+-- 30 tutor assignments.
+--
+-- Every course receives at least one tutor.
+-- CS101-CS106 receive two tutors.
+-- ==========================================================
+
+INSERT INTO course_lecturers (
+    course_id,
+    user_id,
+    role
+)
+SELECT
+    c.id,
+    u.id,
+    'TUTOR'
+FROM courses c
+JOIN users u
+    ON u.email = CASE
+
+        WHEN c.course_code = 'CS101'
+            THEN 'nicholas.cox@university.edu'
+
+        WHEN c.course_code = 'CS102'
+            THEN 'amelia.howard@university.edu'
+
+        WHEN c.course_code = 'CS103'
+            THEN 'samuel.ward@university.edu'
+
+        WHEN c.course_code = 'CS104'
+            THEN 'megan.brooks@university.edu'
+
+        WHEN c.course_code = 'CS201'
+            THEN 'ethan.bennett@university.edu'
+
+        WHEN c.course_code = 'CS202'
+            THEN 'victoria.gray@university.edu'
+
+        WHEN c.course_code = 'CS203'
+            THEN 'henry.james@university.edu'
+
+        WHEN c.course_code = 'CS204'
+            THEN 'natalie.foster@university.edu'
+
+        WHEN c.course_code = 'CS205'
+            THEN 'daniel.mitchell@university.edu'
+
+        WHEN c.course_code = 'CS206'
+            THEN 'sarah.thompson@university.edu'
+
+        WHEN c.course_code = 'CS207'
+            THEN 'michael.anderson@university.edu'
+
+        WHEN c.course_code = 'CS208'
+            THEN 'emily.roberts@university.edu'
+
+        WHEN c.course_code = 'CS301'
+            THEN 'james.campbell@university.edu'
+
+        WHEN c.course_code = 'CS302'
+            THEN 'jessica.morgan@university.edu'
+
+        WHEN c.course_code = 'CS303'
+            THEN 'andrew.richardson@university.edu'
+
+        WHEN c.course_code = 'CS304'
+            THEN 'rachel.turner@university.edu'
+
+        WHEN c.course_code = 'CS305'
+            THEN 'matthew.phillips@university.edu'
+
+        WHEN c.course_code = 'CS306'
+            THEN 'laura.parker@university.edu'
+
+        WHEN c.course_code = 'CS307'
+            THEN 'christopher.evans@university.edu'
+
+        WHEN c.course_code = 'CS308'
+            THEN 'rebecca.edwards@university.edu'
+
+        WHEN c.course_code = 'CS401'
+            THEN 'thomas.collins@university.edu'
+
+        WHEN c.course_code = 'CS402'
+            THEN 'hannah.stewart@university.edu'
+
+        WHEN c.course_code = 'CS403'
+            THEN 'william.sanchez@university.edu'
+
+        WHEN c.course_code = 'CS404'
+            THEN 'sophie.morris@university.edu'
+
+    END;
+
+
+-- ==========================================================
+-- 7. SIX ADDITIONAL TUTOR ASSIGNMENTS
+-- ==========================================================
+-- Gives CS101-CS106 a second tutor.
+-- Total tutors = 30.
+-- ==========================================================
+
+INSERT INTO course_lecturers (
+    course_id,
+    user_id,
+    role
+)
+SELECT
+    c.id,
+    u.id,
+    'TUTOR'
+FROM courses c
+JOIN users u
+    ON u.email = CASE c.course_code
+
+        WHEN 'CS101'
+            THEN 'samuel.ward@university.edu'
+
+        WHEN 'CS102'
+            THEN 'megan.brooks@university.edu'
+
+        WHEN 'CS103'
+            THEN 'ethan.bennett@university.edu'
+
+        WHEN 'CS104'
+            THEN 'victoria.gray@university.edu'
+
+        WHEN 'CS201'
+            THEN 'henry.james@university.edu'
+
+        WHEN 'CS202'
+            THEN 'natalie.foster@university.edu'
+
+    END
+WHERE c.course_code IN (
+    'CS101',
+    'CS102',
+    'CS103',
+    'CS104',
+    'CS201',
+    'CS202'
+);
+
+
+-- ==========================================================
+-- 8. COURSE ENROLMENTS
+-- ==========================================================
+--
+-- 180 students
+-- 24 courses
+-- 24 students per course
+--
+-- Total:
+--   24 * 24 = 576 enrolments
+--
+-- Distribution:
+--   144 students = 3 courses
+--    36 students = 4 courses
+--
+-- Students are rotated through courses to provide an
+-- even distribution.
+-- ==========================================================
+
+INSERT INTO course_enrolments (
+    course_id,
+    user_id
+)
+WITH RECURSIVE
+
+course_numbers (n) AS (
+    SELECT 1
+
+    UNION ALL
+
+    SELECT n + 1
+    FROM course_numbers
+    WHERE n < 24
+),
+
+student_numbers (n) AS (
+    SELECT 1
+
+    UNION ALL
+
+    SELECT n + 1
+    FROM student_numbers
+    WHERE n < 180
+),
+
+course_ranked AS (
+    SELECT
+        id,
+        ROW_NUMBER() OVER (ORDER BY id) AS rn
+    FROM courses
+),
+
+student_ranked AS (
+    SELECT
+        id,
+        ROW_NUMBER() OVER (ORDER BY id) AS rn
+    FROM users
+    WHERE role = 'student'
+)
+
+SELECT
+    c.id,
+    s.id
+FROM course_numbers cn
+JOIN course_ranked c
+    ON c.rn = cn.n
+
+JOIN (
+    SELECT 1 AS slot
+    UNION ALL SELECT 2
+    UNION ALL SELECT 3
+    UNION ALL SELECT 4
+    UNION ALL SELECT 5
+    UNION ALL SELECT 6
+    UNION ALL SELECT 7
+    UNION ALL SELECT 8
+    UNION ALL SELECT 9
+    UNION ALL SELECT 10
+    UNION ALL SELECT 11
+    UNION ALL SELECT 12
+    UNION ALL SELECT 13
+    UNION ALL SELECT 14
+    UNION ALL SELECT 15
+    UNION ALL SELECT 16
+    UNION ALL SELECT 17
+    UNION ALL SELECT 18
+    UNION ALL SELECT 19
+    UNION ALL SELECT 20
+    UNION ALL SELECT 21
+    UNION ALL SELECT 22
+    UNION ALL SELECT 23
+    UNION ALL SELECT 24
+) slots
+
+JOIN student_ranked s
+    ON s.rn =
+        MOD(
+            ((c.rn - 1) * 24) + (slots.slot - 1),
+            180
+        ) + 1;
+
+
+-- ==========================================================
+-- 9. VALIDATION
+-- ==========================================================
+
+
+-- ----------------------------------------------------------
+-- USERS
+-- Expected:
+--   lecturer = 30
+--   student  = 180
+-- ----------------------------------------------------------
+
+SELECT
+    role,
+    COUNT(*) AS total
+FROM users
+WHERE role IN ('lecturer', 'student')
+GROUP BY role
+ORDER BY role;
+
+
+-- ----------------------------------------------------------
+-- COURSES
+-- Expected:
+--   24
+-- ----------------------------------------------------------
+
+SELECT
+    COUNT(*) AS total_courses
+FROM courses;
+
+
+-- ----------------------------------------------------------
+-- COURSE LECTURER ASSIGNMENTS
+-- Expected:
+--   PRIMARY   = 24
+--   SECONDARY = 15
+--   TUTOR     = 30
+-- ----------------------------------------------------------
+
+SELECT
+    role,
+    COUNT(*) AS total
+FROM course_lecturers
+GROUP BY role
+ORDER BY role;
+
+
+-- ----------------------------------------------------------
+-- STUDENTS PER COURSE
+-- Expected:
+--   Every course = 24
+-- ----------------------------------------------------------
+
+SELECT
+    c.course_code,
+    c.course_name,
+    COUNT(ce.user_id) AS student_count
+FROM courses c
+LEFT JOIN course_enrolments ce
+    ON ce.course_id = c.id
+GROUP BY
+    c.id,
+    c.course_code,
+    c.course_name
+ORDER BY c.id;
+
+
+-- ----------------------------------------------------------
+-- COURSES PER STUDENT
+-- Expected:
+--   Every student = 3 or 4
+-- ----------------------------------------------------------
+
+SELECT
+    u.email,
+    CONCAT(u.first_name, ' ', u.last_name) AS student_name,
+    COUNT(ce.course_id) AS course_count
+FROM users u
+LEFT JOIN course_enrolments ce
+    ON ce.user_id = u.id
+WHERE u.role = 'student'
+GROUP BY
+    u.id,
+    u.email,
+    u.first_name,
+    u.last_name
+ORDER BY
+    course_count,
+    u.last_name,
+    u.first_name;
+
+
+-- ----------------------------------------------------------
+-- STUDENTS WITH LESS THAN 3 COURSES
+-- Expected: 0 rows
+-- ----------------------------------------------------------
+
+SELECT
+    u.id,
+    u.email,
+    COUNT(ce.course_id) AS course_count
+FROM users u
+LEFT JOIN course_enrolments ce
+    ON ce.user_id = u.id
+WHERE u.role = 'student'
+GROUP BY
+    u.id,
+    u.email
+HAVING COUNT(ce.course_id) < 3;
+
+
+-- ----------------------------------------------------------
+-- STUDENTS WITH MORE THAN 4 COURSES
+-- Expected: 0 rows
+-- ----------------------------------------------------------
+
+SELECT
+    u.id,
+    u.email,
+    COUNT(ce.course_id) AS course_count
+FROM users u
+LEFT JOIN course_enrolments ce
+    ON ce.user_id = u.id
+WHERE u.role = 'student'
+GROUP BY
+    u.id,
+    u.email
+HAVING COUNT(ce.course_id) > 4;
+
+
+-- ----------------------------------------------------------
+-- COURSES WITH LESS THAN 24 STUDENTS
+-- Expected: 0 rows
+-- ----------------------------------------------------------
+
+SELECT
+    c.course_code,
+    COUNT(ce.user_id) AS student_count
+FROM courses c
+LEFT JOIN course_enrolments ce
+    ON ce.course_id = c.id
+GROUP BY
+    c.id,
+    c.course_code
+HAVING COUNT(ce.user_id) < 24;
+
+
+-- ==========================================================
+-- FINAL SUMMARY
+-- ==========================================================
+
+SELECT 'Lecturers' AS item, COUNT(*) AS total
+FROM users
+WHERE role = 'lecturer'
+
+UNION ALL
+
+SELECT 'Students', COUNT(*)
+FROM users
+WHERE role = 'student'
+
+UNION ALL
+
+SELECT 'Courses', COUNT(*)
+FROM courses
+
+UNION ALL
+
+SELECT 'Primary lecturer assignments', COUNT(*)
+FROM course_lecturers
+WHERE role = 'PRIMARY'
+
+UNION ALL
+
+SELECT 'Secondary lecturer assignments', COUNT(*)
+FROM course_lecturers
+WHERE role = 'SECONDARY'
+
+UNION ALL
+
+SELECT 'Tutor assignments', COUNT(*)
+FROM course_lecturers
+WHERE role = 'TUTOR'
+
+UNION ALL
+
+SELECT 'Course enrolments', COUNT(*)
+FROM course_enrolments;
+
+-- ==========================================================
+-- 10. TEST USERS
+-- ==========================================================
+-- Test lecturer:
+--   test.lecturer@university.edu
+--   Assigned to 4 courses as SECONDARY
+--
+-- Test student:
+--   test.student@student.edu
+--   Enrolled in 4 courses
+--
+-- Both use the SUPER_ADMIN password hash.
+-- ==========================================================
+
+INSERT INTO users (first_name, last_name, email, password, role, is_active) VALUES ('Test', 'Lecturer', 'lecturer@test.com', @password, 'lecturer', TRUE);
+
+INSERT INTO users (first_name, last_name, email, password, role, is_active) VALUES ('Test', 'Student', 'student@test.com', @password, 'student', TRUE);
+
+
+-- ==========================================================
+-- 11. TEST LECTURER COURSE ASSIGNMENTS
+-- ==========================================================
+-- Test lecturer is assigned to 4 courses.
+-- ==========================================================
+
+INSERT INTO course_lecturers (course_id, user_id, role) SELECT c.id, u.id, 'SECONDARY' FROM courses c CROSS JOIN users u WHERE u.email = 'lecturer@test.com' AND c.course_code IN ('CS101', 'CS201', 'CS301', 'CS401');
+
+
+-- ==========================================================
+-- 12. TEST STUDENT COURSE ENROLMENTS
+-- ==========================================================
+-- Test student is enrolled in 4 courses.
+-- ==========================================================
+
+INSERT INTO course_enrolments (course_id, user_id) SELECT c.id, u.id FROM courses c CROSS JOIN users u WHERE u.email = 'student@test.com' AND c.course_code IN ('CS101', 'CS201', 'CS301', 'CS401');
+
+
+-- ==========================================================
+-- 13. TEST DATA VALIDATION
+-- ==========================================================
+
+SELECT id, first_name, last_name, email, role FROM users WHERE email IN ('lecturer@test.com', 'student@test.com');
+
+SELECT u.email, c.course_code, c.course_name, cl.role FROM users u JOIN course_lecturers cl ON cl.user_id = u.id JOIN courses c ON c.id = cl.course_id WHERE u.email = 'test.lecturer@university.edu' ORDER BY c.course_code;
+
+SELECT u.email, c.course_code, c.course_name FROM users u JOIN course_enrolments ce ON ce.user_id = u.id JOIN courses c ON c.id = ce.course_id WHERE u.email = 'test.student@student.edu' ORDER BY c.course_code;

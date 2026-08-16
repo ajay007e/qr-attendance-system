@@ -3,9 +3,9 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { enrolmentService } from "../api/enrolment.service";
-import type { ParticipantQuery } from "./useParticipantQuery";
 import type { Participant, PaginationMeta } from "@/shared";
 import { DEFAULT_PAGINATION_META } from "@/shared";
+import { ParticipantQuery } from "../types";
 
 const PARTICIPANTS_PER_PAGE = 10;
 

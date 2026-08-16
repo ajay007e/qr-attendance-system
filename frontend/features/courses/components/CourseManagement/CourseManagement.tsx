@@ -123,13 +123,13 @@ export default function CourseManagement({ lecturerSearch }: CourseManagementPro
                 onPrevious={() =>
                   setQuery({
                     ...query,
-                    page: query.page! - 1,
+                    page: query.page - 1,
                   })
                 }
                 onNext={() =>
                   setQuery({
                     ...query,
-                    page: query.page! + 1,
+                    page: query.page + 1,
                   })
                 }
               />

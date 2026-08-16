@@ -1,4 +1,5 @@
-import { ROLES, type Role } from "./constants/roles.constants";
+import type { Role } from "@/types";
+import { ROLES } from "./constants/roles.constants";
 
 export function isValidRole(role: string): role is Role {
   return Object.values(ROLES).includes(role as Role);

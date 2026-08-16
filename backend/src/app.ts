@@ -4,8 +4,7 @@ import session from "express-session";
 
 import { sessionConfig } from "@/config";
 import { router } from "@/routes";
-import { errorHandler } from "@/utils";
-import { notFound } from "@/middleware";
+import { notFound, errorHandler } from "@/middleware";
 
 export const app = express();
 

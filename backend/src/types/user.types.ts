@@ -1,4 +1,4 @@
-import type { Role } from "@/utils";
+import { ROLES } from "@/utils";
 
 export interface BaseUser {
   id: number;
@@ -6,4 +6,5 @@ export interface BaseUser {
   role: Role;
 }
 
+export type Role = (typeof ROLES)[keyof typeof ROLES];
 export type SessionUser = BaseUser;

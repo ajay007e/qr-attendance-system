@@ -1,25 +1,27 @@
-import { useState } from "react";
+"use client";
+
+import { useCallback, useState } from "react";
 
 import type { CourseQuery } from "../types";
 import { DEFAULT_COURSE_QUERY } from "../constants";
 
 export function useCourseQuery() {
-  const [query, setQuery] = useState<CourseQuery>(DEFAULT_COURSE_QUERY);
+  const [query, setQueryState] = useState<CourseQuery>(DEFAULT_COURSE_QUERY);
 
-  function updateQuery(filters: CourseQuery) {
-    setQuery({
-      ...filters,
-      page: 1,
-    });
-  }
+  const setQuery = useCallback((updates: Partial<CourseQuery>) => {
+    setQueryState((current) => ({
+      ...current,
+      ...updates,
+    }));
+  }, []);
 
-  function resetQuery() {
-    setQuery(DEFAULT_COURSE_QUERY);
-  }
+  const resetQuery = useCallback(() => {
+    setQueryState(DEFAULT_COURSE_QUERY);
+  }, []);
 
   return {
     query,
-    setQuery: updateQuery,
+    setQuery,
     resetQuery,
   };
 }

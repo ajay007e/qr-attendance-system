@@ -1,16 +1,8 @@
 "use client";
 
 import { useCallback, useState } from "react";
-
-export interface ParticipantQuery {
-  search: string;
-  page: number;
-}
-
-const INITIAL_QUERY: ParticipantQuery = {
-  search: "",
-  page: 1,
-};
+import { ParticipantQuery } from "../types";
+import { INITIAL_QUERY } from "../constants";
 
 export default function useParticipantQuery() {
   const [query, setQueryState] = useState<ParticipantQuery>(INITIAL_QUERY);

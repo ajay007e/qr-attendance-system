@@ -1,4 +1,4 @@
-import type { Course, LecturerRole } from "@/shared";
+import type { Course, LecturerRole, PaginationQuery } from "@/shared";
 
 export interface StudentCourse extends Course {
   enrolled_at: string | null;
@@ -19,4 +19,8 @@ export interface CourseSearchProps {
   loading?: boolean;
   onChange: (value: string) => void;
   onSelect: (course: StudentCourse) => void;
+}
+
+export interface ParticipantQuery extends PaginationQuery {
+  search: string;
 }

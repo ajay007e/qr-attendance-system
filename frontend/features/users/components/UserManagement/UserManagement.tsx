@@ -146,13 +146,13 @@ export default function UserManagement() {
                 onPrevious={() =>
                   setQuery((previous) => ({
                     ...previous,
-                    page: previous.page! - 1,
+                    page: previous.page - 1,
                   }))
                 }
                 onNext={() =>
                   setQuery((previous) => ({
                     ...previous,
-                    page: previous.page! + 1,
+                    page: previous.page + 1,
                   }))
                 }
               />

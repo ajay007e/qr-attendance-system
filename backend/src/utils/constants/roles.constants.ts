@@ -4,6 +4,3 @@ export const ROLES = {
   LECTURER: "lecturer",
   STUDENT: "student",
 } as const;
-
-// TODO: move to shared types
-export type Role = (typeof ROLES)[keyof typeof ROLES];

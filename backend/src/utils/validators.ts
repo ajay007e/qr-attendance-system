@@ -1,4 +1,4 @@
-import { AppError } from "./app.error";
+import { AppError } from "@/utils";
 
 const NAME_MIN_LENGTH = 2;
 const NAME_MAX_LENGTH = 50;

@@ -1,5 +1,4 @@
-import type { BaseUser, PaginationQuery } from "@/types";
-import type { Role } from "@/utils";
+import type { BaseUser, PaginationQuery, Role } from "@/types";
 
 export interface User extends BaseUser {
   firstName: string;

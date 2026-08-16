@@ -58,7 +58,7 @@ export default function CourseLanding({ courseId, backHref, participantsTab }: C
 
       {activeTab === "site" && <SiteTab course={course} />}
 
-      {activeTab === "participants" && participantsTab?.(courseId)}
+      {activeTab === "participants" && participantsTab}
 
       {activeTab === "attendance" && <AttendanceTab />}
     </div>
