@@ -8,12 +8,11 @@ import { Tabs, PageLoader, ErrorFallback, Section } from "@/shared";
 
 import { useOffering } from "../../hooks/useOffering";
 
-import { AttendanceTab } from "./components/AttendancePanel/AttendancePanel";
 import { SiteTab } from "./components/SitePanel/SitePanel";
 import { COURSE_TABS } from "./constants";
 import type { CourseLandingProps, CourseTab } from "./types";
 
-export default function CourseLanding({ offeringId, backHref, participantsTab }: CourseLandingProps) {
+export default function CourseLanding({ offeringId, backHref, participantsTab, attendanceTab }: CourseLandingProps) {
   const [activeTab, setActiveTab] = useState<CourseTab>("site");
 
   const { course, loading, error, refresh } = useOffering(offeringId);
@@ -56,10 +55,8 @@ export default function CourseLanding({ offeringId, backHref, participantsTab }:
       />
 
       {activeTab === "site" && <SiteTab offering={course} />}
-
       {activeTab === "participants" && participantsTab}
-
-      {activeTab === "attendance" && <AttendanceTab />}
+      {activeTab === "attendance" && attendanceTab}
     </Section>
   );
 }
