@@ -6,7 +6,6 @@ import { ArrowLeft } from "lucide-react";
 
 import { useCourse } from "../../hooks/useCourse";
 
-import { AttendanceTab } from "./components/AttendancePanel/AttendancePanel";
 import { SiteTab } from "./components/SitePanel/SitePanel";
 
 import { Tabs, PageLoader, ErrorFallback } from "@/shared";
@@ -14,7 +13,7 @@ import { Tabs, PageLoader, ErrorFallback } from "@/shared";
 import { COURSE_TABS } from "./constants";
 import type { CourseLandingProps, CourseTab } from "./types";
 
-export default function CourseLanding({ courseId, backHref, participantsTab }: CourseLandingProps) {
+export default function CourseLanding({ courseId, backHref, participantsTab, attendanceTab }: CourseLandingProps) {
   const [activeTab, setActiveTab] = useState<CourseTab>("site");
 
   const { course, loading, error, refresh } = useCourse(courseId);
@@ -57,10 +56,8 @@ export default function CourseLanding({ courseId, backHref, participantsTab }: C
       />
 
       {activeTab === "site" && <SiteTab course={course} />}
-
       {activeTab === "participants" && participantsTab}
-
-      {activeTab === "attendance" && <AttendanceTab />}
+      {activeTab === "attendance" && attendanceTab}
     </div>
   );
 }
