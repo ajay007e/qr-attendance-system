@@ -342,6 +342,8 @@ INSERT INTO users (
 ('Micah', 'Sullivan', 'micah.sullivan@student.edu', @password, 'student', TRUE),
 ('Jules', 'Carter', 'jules.carter@student.edu', @password, 'student', TRUE);
 
+INSERT INTO users (first_name, last_name, email, password, role, is_active) VALUES ('Test', 'Lecturer', 'lecturer@test.com', @password, 'lecturer', TRUE);
+INSERT INTO users (first_name, last_name, email, password, role, is_active) VALUES ('Test', 'Student', 'student@test.com', @password, 'student', TRUE);
 
 -- ==========================================================
 -- 3. COURSES
@@ -354,7 +356,6 @@ INSERT INTO courses (
     course_name,
     description,
     credits,
-    session,
     is_active
 ) VALUES
 
@@ -363,7 +364,6 @@ INSERT INTO courses (
     'Introduction to Programming',
     'Fundamentals of programming, computational thinking, algorithms, variables, control structures, functions and basic software development.',
     3,
-    'SPRING',
     TRUE
 ),
 
@@ -372,7 +372,6 @@ INSERT INTO courses (
     'Computer Systems Fundamentals',
     'Introduction to computer architecture, operating systems, binary representation, memory, processors and system software.',
     3,
-    'AUTUMN',
     TRUE
 ),
 
@@ -381,7 +380,6 @@ INSERT INTO courses (
     'Discrete Mathematics',
     'Logic, sets, relations, functions, combinatorics, graphs and mathematical foundations for computer science.',
     3,
-    'SPRING',
     TRUE
 ),
 
@@ -390,7 +388,6 @@ INSERT INTO courses (
     'Object-Oriented Programming',
     'Object-oriented programming principles including classes, inheritance, polymorphism, encapsulation and design patterns.',
     3,
-    'SUMMER',
     TRUE
 ),
 
@@ -399,7 +396,6 @@ INSERT INTO courses (
     'Database Management Systems',
     'Relational database design, SQL, normalization, transactions, indexing, constraints and database administration.',
     3,
-    'AUTUMN',
     TRUE
 ),
 
@@ -408,7 +404,6 @@ INSERT INTO courses (
     'Computer Networks',
     'Network architectures, TCP/IP, routing, switching, network security, wireless communication and network administration.',
     3,
-    'SPRING',
     TRUE
 ),
 
@@ -417,7 +412,6 @@ INSERT INTO courses (
     'Data Structures',
     'Arrays, linked lists, stacks, queues, trees, hash tables, heaps and efficient data organization.',
     3,
-    'AUTUMN',
     TRUE
 ),
 
@@ -426,7 +420,6 @@ INSERT INTO courses (
     'Web Development',
     'Modern web development using HTML, CSS, JavaScript, REST APIs and server-side application development.',
     3,
-    'SUMMER',
     TRUE
 ),
 
@@ -435,7 +428,6 @@ INSERT INTO courses (
     'Software Testing',
     'Software quality assurance, unit testing, integration testing, system testing, automation and test-driven development.',
     3,
-    'WINTER',
     TRUE
 ),
 
@@ -444,7 +436,6 @@ INSERT INTO courses (
     'Human Computer Interaction',
     'User interface design, usability engineering, accessibility, user research, prototyping and interaction design.',
     3,
-    'SPRING',
     TRUE
 ),
 
@@ -453,7 +444,6 @@ INSERT INTO courses (
     'Operating Systems',
     'Processes, threads, scheduling, memory management, file systems, synchronization and operating system architecture.',
     4,
-    'AUTUMN',
     TRUE
 ),
 
@@ -462,7 +452,6 @@ INSERT INTO courses (
     'Computer Security',
     'Cybersecurity principles, authentication, authorization, cryptography, vulnerabilities, secure software and network security.',
     3,
-    'WINTER',
     TRUE
 ),
 
@@ -471,7 +460,6 @@ INSERT INTO courses (
     'Software Engineering',
     'Software development methodologies, requirements engineering, architecture, project management, version control and testing.',
     3,
-    'AUTUMN',
     TRUE
 ),
 
@@ -480,7 +468,6 @@ INSERT INTO courses (
     'Algorithms and Complexity',
     'Algorithm design and analysis, sorting, searching, graph algorithms, dynamic programming and computational complexity.',
     4,
-    'SPRING',
     TRUE
 ),
 
@@ -489,7 +476,6 @@ INSERT INTO courses (
     'Mobile Application Development',
     'Design and development of mobile applications, mobile interfaces, application architecture, APIs and deployment.',
     3,
-    'SUMMER',
     TRUE
 ),
 
@@ -498,7 +484,6 @@ INSERT INTO courses (
     'Cloud Computing',
     'Cloud architecture, virtualization, containers, distributed services, cloud storage and scalable application deployment.',
     3,
-    'WINTER',
     TRUE
 ),
 
@@ -507,7 +492,6 @@ INSERT INTO courses (
     'Artificial Intelligence',
     'Artificial intelligence concepts including intelligent agents, search, reasoning, knowledge representation and machine learning.',
     4,
-    'SPRING',
     TRUE
 ),
 
@@ -516,7 +500,6 @@ INSERT INTO courses (
     'Machine Learning',
     'Supervised and unsupervised learning, regression, classification, clustering, model evaluation and practical machine learning.',
     4,
-    'AUTUMN',
     TRUE
 ),
 
@@ -525,7 +508,6 @@ INSERT INTO courses (
     'Data Analytics',
     'Data preparation, statistical analysis, visualization, exploratory analysis and data-driven decision making.',
     3,
-    'SUMMER',
     TRUE
 ),
 
@@ -534,7 +516,6 @@ INSERT INTO courses (
     'Information Systems',
     'Information systems architecture, enterprise systems, business processes, information management and digital transformation.',
     3,
-    'WINTER',
     TRUE
 ),
 
@@ -543,7 +524,6 @@ INSERT INTO courses (
     'Advanced Software Architecture',
     'Advanced software architecture, distributed systems, architectural patterns, scalability, reliability and maintainability.',
     4,
-    'AUTUMN',
     TRUE
 ),
 
@@ -552,7 +532,6 @@ INSERT INTO courses (
     'Cybersecurity Engineering',
     'Security engineering, threat modelling, secure architecture, penetration testing, incident response and security operations.',
     4,
-    'WINTER',
     TRUE
 ),
 
@@ -561,7 +540,6 @@ INSERT INTO courses (
     'Distributed Systems',
     'Distributed computation, communication, consensus, replication, fault tolerance and distributed system architectures.',
     4,
-    'SPRING',
     TRUE
 ),
 
@@ -570,7 +548,6 @@ INSERT INTO courses (
     'Final Year Computing Project',
     'Independent computing project involving requirements analysis, system design, implementation, testing, documentation and presentation.',
     6,
-    'ANNUAL',
     TRUE
 );
 
@@ -1205,9 +1182,6 @@ FROM course_enrolments;
 -- Both use the SUPER_ADMIN password hash.
 -- ==========================================================
 
-INSERT INTO users (first_name, last_name, email, password, role, is_active) VALUES ('Test', 'Lecturer', 'lecturer@test.com', @password, 'lecturer', TRUE);
-
-INSERT INTO users (first_name, last_name, email, password, role, is_active) VALUES ('Test', 'Student', 'student@test.com', @password, 'student', TRUE);
 
 
 -- ==========================================================

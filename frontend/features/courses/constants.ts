@@ -1,4 +1,5 @@
 import type { LecturerRole, Option } from "@/shared";
+import type { CourseOfferingQuery } from "./types";
 
 export const COURSE_STATUS_FILTER_OPTIONS = [
   { label: "All Status", value: "ALL" },
@@ -43,6 +44,13 @@ export const getLecturerRoleLabel = (value: LecturerRole): string => LECTURER_RO
 
 export const COURSE_TABS = [
   { key: "details", label: "Details" },
-  { key: "lecturers", label: "Lecturers" },
   { key: "status", label: "Status" },
 ] as const;
+
+export const DEFAULT_OFFERING_QUERY: CourseOfferingQuery = {
+  search: "",
+  session: "ALL",
+  status: "ALL",
+  page: 1,
+  limit: 10,
+};

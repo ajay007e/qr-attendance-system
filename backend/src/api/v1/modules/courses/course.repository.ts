@@ -107,7 +107,7 @@ export class CourseRepository {
           course_code,
           course_name,
           description,
-          credits,
+          credits
         )
         VALUES (?, ?, ?, ?)
       `,
@@ -125,7 +125,7 @@ export class CourseRepository {
           course_code = ?,
           course_name = ?,
           description = ?,
-          credits = ?,
+          credits = ?
         WHERE id = ?
       `,
       [data.course_code, data.course_name, data.description, data.credits, id],

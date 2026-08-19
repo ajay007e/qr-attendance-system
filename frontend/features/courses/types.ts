@@ -1,6 +1,10 @@
-import type { Course, CourseSession, Lecturer, PaginationQuery } from "@/shared";
+import type { Course, Lecturer, PaginationQuery } from "@/shared";
 
-export type CreateCourseRequest = Pick<Course, "courseName" | "courseCode" | "description" | "credits" | "session">;
+// ==========================================
+// Course
+// ==========================================
+
+export type CreateCourseRequest = Pick<Course, "courseName" | "courseCode" | "description" | "credits">;
 
 export type UpdateCourseRequest = CreateCourseRequest;
 
@@ -10,7 +14,6 @@ export type AssignLecturerRequest = Pick<Lecturer, "role" | "id">;
 
 export interface CourseQuery extends PaginationQuery {
   search: string;
-  session: CourseSession | "ALL";
   status: "ALL" | "ACTIVE" | "INACTIVE";
 }
 
@@ -25,3 +28,48 @@ export interface LecturerSearchProps {
   onFocus: () => void;
   open: boolean;
 }
+
+// ==========================================
+// Course Offering
+// ==========================================
+
+export type CourseSession =
+  "annual" | "spring" | "summer" | "autumn" | "winter" | "trimester_1" | "trimester_2" | "trimester_3";
+
+export type CourseOfferingStatus = "enrol" | "started" | "completed" | "cancelled";
+
+export interface CourseOffering {
+  id: number;
+  courseId: number;
+  academicYear: number;
+  session: CourseSession;
+  startDate: string | null;
+  endDate: string | null;
+  status: CourseOfferingStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CourseOfferingListItem extends CourseOffering {
+  course: Pick<Course, "id" | "courseCode" | "courseName">;
+}
+
+export interface CreateCourseOfferingRequest {
+  courseId: number;
+  academicYear: number;
+  session: CourseSession;
+  startDate?: string;
+  endDate?: string;
+}
+
+export type UpdateCourseOfferingRequest = Omit<CreateCourseOfferingRequest, "courseId"> & {
+  courseId?: number;
+};
+
+export interface CourseOfferingQuery extends PaginationQuery {
+  search: string;
+  session: CourseSession | "ALL";
+  status: CourseOfferingStatus | "ALL";
+}
+
+export type AssignOfferingLecturerRequest = Pick<Lecturer, "role" | "id">;

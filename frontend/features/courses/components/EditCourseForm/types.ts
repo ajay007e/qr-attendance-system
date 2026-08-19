@@ -16,7 +16,7 @@ export interface AssignedLecturerListProps {
   onRemove: (id: number) => Promise<void>;
 }
 
-export type CourseEditTab = "details" | "lecturers" | "status";
+export type CourseEditTab = "details" | "status";
 
 export interface EditCourseFormProps {
   course: Course;
@@ -24,8 +24,6 @@ export interface EditCourseFormProps {
   refresh: () => Promise<void>;
 
   onClose: () => void;
-
-  lecturerSearch: LecturerSearchProps;
 }
 
 export interface DetailsTabProps {

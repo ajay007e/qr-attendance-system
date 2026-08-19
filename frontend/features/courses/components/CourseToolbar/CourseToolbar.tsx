@@ -56,14 +56,6 @@ export default function CourseToolbar({ filters, onFiltersChange }: CourseToolba
         >
           <div className="min-w-[180px]">
             <Field.Select
-              value={filters.session}
-              onChange={(value) => updateFilter("session", value)}
-              options={COURSE_SESSION_FILTER_OPTIONS}
-            />
-          </div>
-
-          <div className="min-w-[180px]">
-            <Field.Select
               value={filters.status}
               onChange={(value) => updateFilter("status", value)}
               options={COURSE_STATUS_FILTER_OPTIONS}

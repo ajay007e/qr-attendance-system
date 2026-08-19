@@ -1,49 +1,63 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { DEFAULT_PAGINATION_META, useError } from "@/shared";
-import type { PaginationMeta, Course } from "@/shared";
-import { CourseService } from "../api/course.service";
-import type { CourseQuery } from "../types";
 
-function getQueryKey(query: CourseQuery) {
+import { DEFAULT_PAGINATION_META, useError } from "@/shared";
+
+import type { PaginationMeta } from "@/shared";
+import type { CourseOfferingListItem } from "../types";
+
+import { OfferingService } from "../api/offering.service";
+import type { CourseOfferingQuery } from "../types";
+
+function getQueryKey(query: CourseOfferingQuery) {
   return JSON.stringify({
     search: query.search,
+    session: query.session,
     status: query.status,
     page: query.page,
     limit: query.limit,
   });
 }
 
-export function useCourses(query: CourseQuery) {
+export function useOfferings(query: CourseOfferingQuery) {
   const isInitialLoad = useRef(true);
   const { handleError } = useError();
-  const [courses, setCourses] = useState<Course[]>([]);
+
+  const [offerings, setOfferings] = useState<CourseOfferingListItem[]>([]);
   const [pagination, setPagination] = useState<PaginationMeta>(DEFAULT_PAGINATION_META);
+
   const [loading, setLoading] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [loadedQueryKey, setLoadedQueryKey] = useState<string | null>(null);
 
-  const loadCourses = useCallback(async () => {
+  const loadOfferings = useCallback(async () => {
     const queryKey = getQueryKey(query);
+
     try {
       if (isInitialLoad.current) {
         setLoading(true);
       } else {
         setIsFetching(true);
       }
+
       setError(null);
-      const response = await CourseService.getCourses(query);
-      setCourses(response.data.items ?? []);
+
+      const response = await OfferingService.getOfferings(query);
+
+      setOfferings(response.data.items ?? []);
       setPagination(response.data.meta ?? DEFAULT_PAGINATION_META);
+
       setLoadedQueryKey(queryKey);
     } catch (err) {
-      setCourses([]);
+      setOfferings([]);
       setPagination(DEFAULT_PAGINATION_META);
+
       handleError(err);
-      setError(err instanceof Error ? err.message : "Unable to load courses.");
+
+      setError(err instanceof Error ? err.message : "Unable to load course offerings.");
     } finally {
       if (isInitialLoad.current) {
         setLoading(false);
@@ -56,20 +70,20 @@ export function useCourses(query: CourseQuery) {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      void loadCourses();
+      void loadOfferings();
     }, 0);
 
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [loadCourses]);
+  }, [loadOfferings]);
 
   const currentQueryKey = getQueryKey(query);
 
   const hasLoadedCurrentQuery = loadedQueryKey === currentQueryKey;
 
   return {
-    courses,
+    offerings,
     pagination,
 
     loading,
@@ -78,6 +92,7 @@ export function useCourses(query: CourseQuery) {
     error,
 
     hasLoadedCurrentQuery,
-    refresh: loadCourses,
+
+    refresh: loadOfferings,
   };
 }

@@ -1,6 +1,6 @@
 import { api } from "@/shared";
-import type { ApiResponse, Course, Lecturer, PaginatedData } from "@/shared";
-import type { AssignLecturerRequest, CourseQuery, CreateCourseRequest, UpdateCourseRequest } from "../types";
+import type { ApiResponse, Course, PaginatedData } from "@/shared";
+import type { CourseQuery, CreateCourseRequest, UpdateCourseRequest } from "../types";
 
 export const CourseService = {
   async getCourses(query?: CourseQuery) {
@@ -29,21 +29,6 @@ export const CourseService = {
 
   async changeStatus(id: number, isActive: boolean) {
     const response = await api.patch<ApiResponse<Course>>(`/courses/${id}/status`, { isActive });
-    return response.data;
-  },
-
-  async getLecturers(id: number) {
-    const response = await api.get<ApiResponse<Lecturer[]>>(`/courses/${id}/lecturers`);
-    return response.data;
-  },
-
-  async assignLecturer(courseId: number, data: AssignLecturerRequest) {
-    const response = await api.post<ApiResponse<Lecturer>>(`/courses/${courseId}/lecturers`, data);
-    return response.data;
-  },
-
-  async removeLecturer(courseId: number, userId: number) {
-    const response = await api.delete<ApiResponse<void>>(`/courses/${courseId}/lecturers/${userId}`);
     return response.data;
   },
 };

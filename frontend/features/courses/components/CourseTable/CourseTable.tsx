@@ -37,8 +37,6 @@ export default function CourseTable({ courses, onEdit }: CourseTableProps) {
 
                 <th className="px-6 py-4 text-left text-sm font-semibold">Credits</th>
 
-                <th className="px-6 py-4 text-left text-sm font-semibold">Session</th>
-
                 <th className="px-6 py-4 text-left text-sm font-semibold">Status</th>
 
                 <th className="px-6 py-4 text-left text-sm font-semibold">Actions</th>

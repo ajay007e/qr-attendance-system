@@ -9,15 +9,15 @@ export const USER_ROLES = {
 } as const;
 
 export const COURSE_SESSION = {
-  ANNUAL: "ANNUAL",
-  SPRING: "SPRING",
-  SUMMER: "SUMMER",
-  AUTUMN: "AUTUMN",
-  WINTER: "WINTER",
-  TRIMESTER_1: "TRIMESTER_1",
-  TRIMESTER_2: "TRIMESTER_2",
-  TRIMESTER_3: "TRIMESTER_3",
-} as const satisfies Record<CourseSession, CourseSession>;
+  ANNUAL: "annual",
+  SPRING: "spring",
+  SUMMER: "summer",
+  AUTUMN: "autumn",
+  WINTER: "winter",
+  TRIMESTER_1: "trimester_1",
+  TRIMESTER_2: "trimester_2",
+  TRIMESTER_3: "trimester_3",
+} as const satisfies Record<string, CourseSession>;
 
 export const COURSE_SESSION_LABELS: Record<CourseSession, string> = {
   [COURSE_SESSION.ANNUAL]: "Annual",
