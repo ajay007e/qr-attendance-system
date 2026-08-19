@@ -14,10 +14,10 @@ export const DEFAULT_COURSE_QUERY = {
 } as const;
 
 export const LECTURER_ROLE = {
-  PRIMARY: "PRIMARY",
-  SECONDARY: "SECONDARY",
-  TUTOR: "TUTOR",
-} as const satisfies Record<LecturerRole, LecturerRole>;
+  PRIMARY: "primary",
+  SECONDARY: "secondary",
+  TUTOR: "tutor",
+} as const satisfies Record<string, LecturerRole>;
 
 export const LECTURER_ROLE_LABELS: Record<LecturerRole, string> = {
   [LECTURER_ROLE.PRIMARY]: "Primary",
@@ -46,6 +46,26 @@ export const COURSE_TABS = [
   { key: "details", label: "Details" },
   { key: "status", label: "Status" },
 ] as const;
+export const COURSE_OFFERING_STATUSES = ["enrol", "started", "completed", "cancelled"] as const;
+
+export const COURSE_OFFERING_STATUS_OPTIONS = [
+  {
+    label: "Enrol",
+    value: "enrol",
+  },
+  {
+    label: "Started",
+    value: "started",
+  },
+  {
+    label: "Completed",
+    value: "completed",
+  },
+  {
+    label: "Cancelled",
+    value: "cancelled",
+  },
+] as const;
 
 export const DEFAULT_OFFERING_QUERY: CourseOfferingQuery = {
   search: "",
@@ -54,3 +74,29 @@ export const DEFAULT_OFFERING_QUERY: CourseOfferingQuery = {
   page: 1,
   limit: 10,
 };
+export const OFFERING_TABS = [
+  {
+    key: "details",
+    label: "Details",
+    value: "details",
+  },
+  {
+    key: "lecturers",
+    label: "Lecturers",
+    value: "lecturers",
+  },
+  {
+    key: "status",
+    label: "Status",
+    value: "status",
+  },
+] as const;
+
+export const COURSE_LECTURER_ROLES = ["primary", "secondary", "tutor"] as const;
+export const COURSE_OFFERING_STATUS_FILTER_OPTIONS = [
+  {
+    label: "All Statuses",
+    value: "ALL",
+  },
+  ...COURSE_OFFERING_STATUS_OPTIONS,
+] as const;

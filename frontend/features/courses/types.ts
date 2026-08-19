@@ -40,7 +40,8 @@ export type CourseOfferingStatus = "enrol" | "started" | "completed" | "cancelle
 
 export interface CourseOffering {
   id: number;
-  courseId: number;
+  courseCode: string;
+  courseName: string;
   academicYear: number;
   session: CourseSession;
   startDate: string | null;
@@ -50,9 +51,7 @@ export interface CourseOffering {
   updatedAt: string;
 }
 
-export interface CourseOfferingListItem extends CourseOffering {
-  course: Pick<Course, "id" | "courseCode" | "courseName">;
-}
+export type CourseOfferingListItem = CourseOffering;
 
 export interface CreateCourseOfferingRequest {
   courseId: number;
@@ -62,8 +61,9 @@ export interface CreateCourseOfferingRequest {
   endDate?: string;
 }
 
-export type UpdateCourseOfferingRequest = Omit<CreateCourseOfferingRequest, "courseId"> & {
+export type UpdateCourseOfferingRequest = Partial<Omit<CreateCourseOfferingRequest, "courseId">> & {
   courseId?: number;
+  status?: CourseOfferingStatus;
 };
 
 export interface CourseOfferingQuery extends PaginationQuery {
@@ -73,3 +73,5 @@ export interface CourseOfferingQuery extends PaginationQuery {
 }
 
 export type AssignOfferingLecturerRequest = Pick<Lecturer, "role" | "id">;
+
+export type OfferingEditTab = "details" | "lecturers" | "status";

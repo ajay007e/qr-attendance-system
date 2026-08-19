@@ -84,7 +84,11 @@ export class OfferingService {
   }
 
   async update(id: number, data: UpdateCourseOfferingRequest): Promise<CourseOffering> {
-    await this.get(id);
+    const current = await this.repository.findById(id);
+
+    if (!current) {
+      throw new AppError("Course offering not found", 404);
+    }
 
     const validated = validateUpdateCourseOfferingRequest(data);
 
@@ -100,14 +104,10 @@ export class OfferingService {
       }
     }
 
-    const current = await this.repository.findById(id);
-
-    if (!current) {
-      throw new AppError("Course offering not found", 404);
-    }
-
     const courseId = validated.courseId ?? current.course_id;
+
     const academicYear = validated.academicYear ?? current.academic_year;
+
     const session = validated.session ?? current.session;
 
     const duplicate = await this.repository.findByCourseYearSession(courseId, academicYear, session);
@@ -120,8 +120,13 @@ export class OfferingService {
       course_id: validated.courseId,
       academic_year: validated.academicYear,
       session: validated.session,
-      start_date: validated.startDate ? new Date(validated.startDate) : validated.startDate === null ? null : undefined,
-      end_date: validated.endDate ? new Date(validated.endDate) : validated.endDate === null ? null : undefined,
+
+      start_date:
+        validated.startDate !== undefined ? (validated.startDate ? new Date(validated.startDate) : null) : undefined,
+
+      end_date: validated.endDate !== undefined ? (validated.endDate ? new Date(validated.endDate) : null) : undefined,
+
+      status: validated.status,
     });
 
     return this.get(id);

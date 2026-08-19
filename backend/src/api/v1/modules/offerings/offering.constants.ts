@@ -1,18 +1,17 @@
 export const COURSE_SESSIONS = [
-  "ANNUAL",
-  "SPRING",
-  "SUMMER",
-  "AUTUMN",
-  "WINTER",
-  "TRIMESTER_1",
-  "TRIMESTER_2",
-  "TRIMESTER_3",
+  "annual",
+  "spring",
+  "summer",
+  "autumn",
+  "winter",
+  "trimester_1",
+  "trimester_2",
+  "trimester_3",
 ] as const;
 
-export const COURSE_LECTURER_ROLES = ["PRIMARY", "SECONDARY", "TUTOR"] as const;
+export const COURSE_LECTURER_ROLES = ["primary", "secondary", "tutor"] as const;
 
-export const COURSE_OFFERING_STATUSES = ["ENROL", "STARTED", "COMPLETED", "CANCELLED"] as const;
-
+export const COURSE_OFFERING_STATUSES = ["enrol", "started", "completed", "cancelled"] as const;
 export const COURSE_LECTURER_COLUMNS = `
   u.id,
   u.first_name,

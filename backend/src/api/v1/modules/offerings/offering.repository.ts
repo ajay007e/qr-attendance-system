@@ -159,7 +159,7 @@ export class OfferingRepository {
           end_date,
           status
         )
-        VALUES (?, ?, ?, ?, ?, 'ENROL')
+        VALUES (?, ?, ?, ?, ?, 'enrol')
       `,
       [data.course_id, data.academic_year, data.session, data.start_date, data.end_date],
     );
@@ -196,6 +196,11 @@ export class OfferingRepository {
       params.push(data.end_date);
     }
 
+    if (data.status !== undefined) {
+      fields.push("status = ?");
+      params.push(data.status);
+    }
+
     if (fields.length === 0) {
       return;
     }
@@ -204,13 +209,14 @@ export class OfferingRepository {
 
     await db.execute(
       `
-        UPDATE course_offerings
-        SET ${fields.join(", ")}
-        WHERE id = ?
-      `,
+      UPDATE course_offerings
+      SET ${fields.join(", ")}
+      WHERE id = ?
+    `,
       params,
     );
   }
+
   async getLecturers(offeringId: number): Promise<DatabaseLecturer[]> {
     const [rows] = await db.execute<RowDataPacket[]>(
       `

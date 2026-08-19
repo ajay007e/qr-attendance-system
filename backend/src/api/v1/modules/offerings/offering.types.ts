@@ -109,6 +109,7 @@ export interface UpdateCourseOfferingRequest {
   session?: CourseSession;
   startDate?: string | null;
   endDate?: string | null;
+  status?: CourseOfferingStatus;
 }
 
 export type CreateCourseOfferingData = Pick<
@@ -116,7 +117,9 @@ export type CreateCourseOfferingData = Pick<
   "course_id" | "academic_year" | "session" | "start_date" | "end_date"
 >;
 
-export type UpdateCourseOfferingData = Partial<CreateCourseOfferingData>;
+export type UpdateCourseOfferingData = Partial<CreateCourseOfferingData> & {
+  status?: CourseOfferingStatus;
+};
 
 // ==========================================
 // Query

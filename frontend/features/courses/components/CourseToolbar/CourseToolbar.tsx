@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import { COURSE_STATUS_FILTER_OPTIONS } from "../../constants";
 
 import type { CourseToolbarProps } from "./types";
-import { COURSE_SESSION_FILTER_OPTIONS, Field } from "@/shared";
+import { Field } from "@/shared";
 
 export default function CourseToolbar({ filters, onFiltersChange }: CourseToolbarProps) {
   const updateFilter = <K extends keyof CourseToolbarProps["filters"]>(

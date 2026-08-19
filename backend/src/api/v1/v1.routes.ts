@@ -19,4 +19,4 @@ v1Router.use("/auth", authRouter);
 v1Router.use("/users", userRouter);
 v1Router.use("/courses", courseRouter);
 v1Router.use("/enrolments", enrolmentRouter);
-v1Router.use("/course-offerings", offeringRouter);
+v1Router.use("/offerings", offeringRouter);

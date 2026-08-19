@@ -108,8 +108,11 @@ export function validateUpdateCourseOfferingRequest(data: UpdateCourseOfferingRe
 
   const session = data.session !== undefined ? validateSession(data.session) : undefined;
 
-  const startDate = validateDate(data.startDate, "start date");
-  const endDate = validateDate(data.endDate, "end date");
+  const startDate = data.startDate !== undefined ? validateDate(data.startDate, "start date") : undefined;
+
+  const endDate = data.endDate !== undefined ? validateDate(data.endDate, "end date") : undefined;
+
+  const status = data.status !== undefined ? validateCourseOfferingStatus(data.status) : undefined;
 
   validateDateRange(startDate, endDate);
 
@@ -119,6 +122,7 @@ export function validateUpdateCourseOfferingRequest(data: UpdateCourseOfferingRe
     session,
     startDate,
     endDate,
+    status,
   };
 }
 
