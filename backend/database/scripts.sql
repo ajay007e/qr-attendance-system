@@ -136,3 +136,45 @@ CREATE TABLE IF NOT EXISTS course_enrolments (
 
     INDEX idx_course_enrolments_user (user_id)
 );
+
+
+-- ==========================================================
+-- Attendance Sessions
+-- ==========================================================
+
+CREATE TABLE IF NOT EXISTS attendance_sessions (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    course_id BIGINT UNSIGNED NOT NULL,
+    lecturer_id BIGINT UNSIGNED NOT NULL,
+
+    status ENUM('ACTIVE', 'ENDED', 'EXPIRED') NOT NULL DEFAULT 'ACTIVE',
+
+    session_date DATE NOT NULL DEFAULT (CURRENT_DATE),
+    start_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    end_time TIMESTAMP NULL DEFAULT NULL,
+
+    duration_minutes SMALLINT UNSIGNED NOT NULL DEFAULT 15,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_attendance_sessions_course
+        FOREIGN KEY (course_id)
+        REFERENCES courses(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_attendance_sessions_lecturer
+        FOREIGN KEY (lecturer_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    INDEX idx_attendance_sessions_course (course_id),
+    INDEX idx_attendance_sessions_lecturer (lecturer_id),
+    INDEX idx_attendance_sessions_status (status)
+);
+
+
+CREATE UNIQUE INDEX ux_attendance_sessions_one_active_per_course
+    ON attendance_sessions ((CASE WHEN status = 'ACTIVE' THEN course_id END));
