@@ -9,7 +9,6 @@ export const DEFAULT_COURSE_QUERY = {
   page: 1,
   limit: 10,
   search: "",
-  session: "ALL",
   status: "ALL",
 } as const;
 

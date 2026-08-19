@@ -1,16 +1,14 @@
-import { repository as userRepository } from "../users";
-
 import { CourseController } from "./course.controller";
 import { CourseRepository } from "./course.repository";
 import { CourseService } from "./course.service";
 
 const repository = new CourseRepository();
 
-const service = new CourseService(repository, userRepository);
+const service = new CourseService(repository);
 
 const controller = new CourseController(service);
 
 export { CourseRepository };
 export { repository, service, controller };
 
-export { Course, CourseLecturerRole, DatabaseCourse } from "./course.types";
+export { Course, DatabaseCourse } from "./course.types";

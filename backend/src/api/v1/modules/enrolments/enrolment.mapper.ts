@@ -14,7 +14,6 @@ export function toEnrolledCourse(course: DatabaseEnrolledCourse): EnrolledCourse
     courseName: course.course_name,
     description: course.description,
     credits: course.credits,
-    session: course.session,
     isActive: course.is_active,
     enrolledAt: course.enrolled_at,
   };
@@ -27,7 +26,6 @@ export function toAssignedCourse(course: DatabaseAssignedCourse): AssignedCourse
     courseName: course.course_name,
     description: course.description,
     credits: course.credits,
-    session: course.session,
     isActive: course.is_active,
     lecturerRole: course.lecturer_role,
     assignedAt: course.assigned_at,

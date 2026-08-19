@@ -5,21 +5,21 @@ import type { DatabaseUser, PublicUser } from "../users";
 
 export type EnrolledCourse = Pick<
   Course,
-  "id" | "courseCode" | "courseName" | "description" | "credits" | "session" | "isActive"
+  "id" | "courseCode" | "courseName" | "description" | "credits" | "isActive"
 > & {
   enrolledAt: Date;
 };
 
 export type DatabaseEnrolledCourse = Pick<
   DatabaseCourse,
-  "id" | "course_code" | "course_name" | "description" | "credits" | "session" | "is_active"
+  "id" | "course_code" | "course_name" | "description" | "credits" | "is_active"
 > & {
   enrolled_at: Date;
 };
 
 export type AssignedCourse = Pick<
   Course,
-  "id" | "courseCode" | "courseName" | "description" | "credits" | "session" | "isActive"
+  "id" | "courseCode" | "courseName" | "description" | "credits" | "isActive"
 > & {
   lecturerRole: CourseLecturerRole;
   assignedAt: Date;
@@ -27,7 +27,7 @@ export type AssignedCourse = Pick<
 
 export type DatabaseAssignedCourse = Pick<
   DatabaseCourse,
-  "id" | "course_code" | "course_name" | "description" | "credits" | "session" | "is_active"
+  "id" | "course_code" | "course_name" | "description" | "credits" | "is_active"
 > & {
   lecturer_role: CourseLecturerRole;
   assigned_at: Date;

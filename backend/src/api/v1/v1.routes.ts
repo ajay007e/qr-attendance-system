@@ -3,6 +3,7 @@ import { Router } from "express";
 import { authRouter } from "./modules/auth/auth.routes";
 import { userRouter } from "./modules/users/user.routes";
 import { courseRouter } from "./modules/courses/course.routes";
+import { offeringRouter } from "./modules/offerings/offering.routes";
 import { enrolmentRouter } from "./modules/enrolments/enrolment.routes";
 
 export const v1Router = Router();
@@ -18,3 +19,4 @@ v1Router.use("/auth", authRouter);
 v1Router.use("/users", userRouter);
 v1Router.use("/courses", courseRouter);
 v1Router.use("/enrolments", enrolmentRouter);
+v1Router.use("/course-offerings", offeringRouter);

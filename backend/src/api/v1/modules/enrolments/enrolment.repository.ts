@@ -31,7 +31,6 @@ export class EnrolmentRepository {
           c.course_name,
           c.description,
           c.credits,
-          c.session,
           c.is_active,
           ce.created_at AS enrolled_at
         FROM course_enrolments ce
@@ -95,7 +94,6 @@ export class EnrolmentRepository {
         c.course_name,
         c.description,
         c.credits,
-        c.session,
         c.is_active,
         NULL AS enrolled_at
       FROM courses c
@@ -180,7 +178,6 @@ export class EnrolmentRepository {
           c.course_name,
           c.description,
           c.credits,
-          c.session,
           c.is_active,
           cl.role AS lecturer_role,
           cl.created_at AS assigned_at
