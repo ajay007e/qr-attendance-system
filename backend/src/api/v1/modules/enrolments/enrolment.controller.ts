@@ -3,7 +3,7 @@ import type { RequestHandler } from "express";
 import { AppError, parseQueryNumber, parseQueryString } from "@/utils";
 
 import { EnrolmentService } from "./enrolment.service";
-import { validateCourseId, validateEnrolRequest } from "./enrolment.utils";
+import { validateCourseOfferingId, validateEnrolRequest } from "./enrolment.utils";
 
 export class EnrolmentController {
   constructor(private readonly service: EnrolmentService) {}
@@ -16,13 +16,17 @@ export class EnrolmentController {
     return req.user.id;
   };
 
+  // =====================================================
+  // Student Enrolment
+  // =====================================================
+
   listEnrolled: RequestHandler = async (req, res, next) => {
     try {
-      const courses = await this.service.getEnrolledCourses(this.currentUserId(req));
+      const offerings = await this.service.getEnrolledCourses(this.currentUserId(req));
 
       res.json({
         success: true,
-        data: courses,
+        data: offerings,
       });
     } catch (error) {
       next(error);
@@ -35,11 +39,15 @@ export class EnrolmentController {
       const limit = parseQueryNumber(req.query.limit, 20);
       const search = parseQueryString(req.query.search);
 
-      const courses = await this.service.getAvailableCourses(this.currentUserId(req), { search, page, limit });
+      const offerings = await this.service.getAvailableCourses(this.currentUserId(req), {
+        search,
+        page,
+        limit,
+      });
 
       res.json({
         success: true,
-        data: courses,
+        data: offerings,
       });
     } catch (error) {
       next(error);
@@ -48,9 +56,9 @@ export class EnrolmentController {
 
   enrol: RequestHandler = async (req, res, next) => {
     try {
-      const { courseId } = validateEnrolRequest(req.body);
+      const { courseOfferingId } = validateEnrolRequest(req.body);
 
-      await this.service.enrol(courseId, this.currentUserId(req));
+      await this.service.enrol(courseOfferingId, this.currentUserId(req));
 
       res.status(201).json({
         success: true,
@@ -63,9 +71,9 @@ export class EnrolmentController {
 
   unenrol: RequestHandler = async (req, res, next) => {
     try {
-      const courseId = validateCourseId(Number(req.params.courseId));
+      const courseOfferingId = validateCourseOfferingId(Number(req.params.courseOfferingId));
 
-      await this.service.unenrol(courseId, this.currentUserId(req));
+      await this.service.unenrol(courseOfferingId, this.currentUserId(req));
 
       res.json({
         success: true,
@@ -76,28 +84,36 @@ export class EnrolmentController {
     }
   };
 
+  // =====================================================
+  // Lecturer Offerings
+  // =====================================================
+
   listAssigned: RequestHandler = async (req, res, next) => {
     try {
-      const courses = await this.service.getAssignedCourses(this.currentUserId(req));
+      const offerings = await this.service.getAssignedCourses(this.currentUserId(req));
 
       res.json({
         success: true,
-        data: courses,
+        data: offerings,
       });
     } catch (error) {
       next(error);
     }
   };
 
+  // =====================================================
+  // Offering Roster
+  // =====================================================
+
   getStudents: RequestHandler = async (req, res, next) => {
     try {
-      const courseId = validateCourseId(Number(req.params.courseId));
+      const courseOfferingId = validateCourseOfferingId(Number(req.params.courseOfferingId));
 
       const page = parseQueryNumber(req.query.page, 1);
       const limit = parseQueryNumber(req.query.limit, 10);
       const search = parseQueryString(req.query.search);
 
-      const students = await this.service.getStudents(courseId, {
+      const students = await this.service.getStudents(courseOfferingId, {
         page,
         limit,
         search,

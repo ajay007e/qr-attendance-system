@@ -14,14 +14,4 @@ const controller = new OfferingController(service);
 
 export { OfferingRepository, repository, service, controller };
 
-export {
-  CourseOffering,
-  CourseOfferingListItem,
-  CourseOfferingStatus,
-  CourseSession,
-  CourseLecturerRole,
-  Lecturer,
-  DatabaseCourseOffering,
-  DatabaseCourseOfferingListItem,
-  DatabaseLecturer,
-} from "./offering.types";
+export { CourseLecturerRole, CourseOfferingStatus, CourseSession } from "./offering.types";

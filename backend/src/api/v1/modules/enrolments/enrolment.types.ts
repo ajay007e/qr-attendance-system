@@ -1,49 +1,126 @@
 import type { PaginationQuery } from "@/types";
 
-import type { Course, CourseLecturerRole, DatabaseCourse } from "../courses";
+import type { CourseLecturerRole, CourseOfferingStatus, CourseSession } from "../offerings";
+
 import type { DatabaseUser, PublicUser } from "../users";
 
-export type EnrolledCourse = Pick<
-  Course,
-  "id" | "courseCode" | "courseName" | "description" | "credits" | "isActive"
-> & {
+// ==========================================
+// Enrolment Status
+// ==========================================
+
+export const ENROLMENT_STATUSES = ["enrolled", "withdrawn", "completed", "unsuccessful"] as const;
+
+export type EnrolmentStatus = (typeof ENROLMENT_STATUSES)[number];
+
+// ==========================================
+// Enrolled Course Offering
+// ==========================================
+
+export interface EnrolledCourse {
+  courseOfferingId: number;
+
+  courseId: number;
+  courseCode: string;
+  courseName: string;
+  description: string | null;
+  credits: number;
+  isActive: boolean;
+
+  academicYear: number;
+  session: CourseSession;
+
+  offeringStatus: CourseOfferingStatus;
+  enrolmentStatus: EnrolmentStatus;
+
   enrolledAt: Date;
-};
+}
 
-export type DatabaseEnrolledCourse = Pick<
-  DatabaseCourse,
-  "id" | "course_code" | "course_name" | "description" | "credits" | "is_active"
-> & {
+export interface DatabaseEnrolledCourse {
+  course_offering_id: number;
+
+  course_id: number;
+  course_code: string;
+  course_name: string;
+  description: string | null;
+  credits: number;
+  is_active: boolean;
+
+  academic_year: number;
+  session: CourseSession;
+
+  offering_status: CourseOfferingStatus;
+  enrolment_status: EnrolmentStatus;
+
   enrolled_at: Date;
-};
+}
 
-export type AssignedCourse = Pick<
-  Course,
-  "id" | "courseCode" | "courseName" | "description" | "credits" | "isActive"
-> & {
+// ==========================================
+// Assigned Course Offering
+// ==========================================
+
+export interface AssignedCourse {
+  courseOfferingId: number;
+
+  courseId: number;
+  courseCode: string;
+  courseName: string;
+  description: string | null;
+  credits: number;
+  isActive: boolean;
+
+  academicYear: number;
+  session: CourseSession;
+
+  offeringStatus: CourseOfferingStatus;
+
   lecturerRole: CourseLecturerRole;
   assignedAt: Date;
-};
+}
 
-export type DatabaseAssignedCourse = Pick<
-  DatabaseCourse,
-  "id" | "course_code" | "course_name" | "description" | "credits" | "is_active"
-> & {
+export interface DatabaseAssignedCourse {
+  course_offering_id: number;
+
+  course_id: number;
+  course_code: string;
+  course_name: string;
+  description: string | null;
+  credits: number;
+  is_active: boolean;
+
+  academic_year: number;
+  session: CourseSession;
+
+  offering_status: CourseOfferingStatus;
+
   lecturer_role: CourseLecturerRole;
   assigned_at: Date;
-};
+}
+
+// ==========================================
+// Student
+// ==========================================
 
 export type Student = Pick<PublicUser, "id" | "firstName" | "lastName" | "email" | "role"> & {
   enrolledAt: Date;
+  enrolmentStatus: EnrolmentStatus;
 };
 
 export type DatabaseStudent = Pick<DatabaseUser, "id" | "first_name" | "last_name" | "email" | "role"> & {
   enrolled_at: Date;
+  enrolment_status: EnrolmentStatus;
 };
 
+// ==========================================
+// Enrolment Request
+// ==========================================
+
 export interface EnrolRequest {
-  courseId: number;
+  courseOfferingId: number;
 }
+
+// ==========================================
+// Enrolment Query
+// ==========================================
 
 export interface EnrolmentQuery extends PaginationQuery {
   search?: string;

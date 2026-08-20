@@ -328,4 +328,4 @@ CREATE INDEX idx_attendance_sessions_course_date
         course_offering_id,
         session_date,
         start_time
-    );
+);
