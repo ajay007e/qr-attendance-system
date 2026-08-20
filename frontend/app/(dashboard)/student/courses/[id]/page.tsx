@@ -8,9 +8,9 @@ export default async function StudentCoursePage({ params }: { params: Promise<{ 
   return (
     <Container>
       <CourseLanding
-        courseId={courseId}
+        offeringId={courseId}
         backHref="/lecturer"
-        participantsTab={<ParticipantsTab courseId={courseId} />}
+        participantsTab={<ParticipantsTab offeringId={courseId} />}
       />
     </Container>
   );

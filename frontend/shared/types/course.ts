@@ -9,3 +9,5 @@ export interface Course {
   credits: number;
   isActive: boolean;
 }
+
+export type CourseOfferingStatus = "enrol" | "started" | "completed" | "cancelled";

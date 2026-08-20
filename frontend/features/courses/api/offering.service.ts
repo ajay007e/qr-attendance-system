@@ -26,6 +26,7 @@ export const OfferingService = {
 
   async getOffering(id: number) {
     const response = await api.get<ApiResponse<CourseOffering>>(`/offerings/${id}`);
+    console.log(response);
 
     return response.data;
   },

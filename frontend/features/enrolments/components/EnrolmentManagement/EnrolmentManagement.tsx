@@ -50,6 +50,7 @@ export default function EnrolmentManagement() {
   };
 
   const handleWithdraw = async (courseId: number) => {
+    console.log(courseId);
     try {
       setPendingId(courseId);
 
@@ -104,8 +105,8 @@ export default function EnrolmentManagement() {
                     variant="primary"
                     size="md"
                     fullWidth
-                    onClick={() => handleEnrol(selectedCourse.id)}
-                    loading={pendingId === selectedCourse.id}
+                    onClick={() => handleEnrol(selectedCourse.courseOfferingId)}
+                    loading={pendingId === selectedCourse.courseOfferingId}
                   >
                     {pendingId === selectedCourse.id ? "Enrolling..." : "Enrol in Course"}
                   </Button>
@@ -128,7 +129,7 @@ export default function EnrolmentManagement() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {enrolledCourses.map((course) => (
               <CourseCard
-                key={course.id}
+                key={course.courseOfferingId}
                 course={course}
                 action={
                   <Button
@@ -136,8 +137,8 @@ export default function EnrolmentManagement() {
                     variant="danger-outline"
                     size="md"
                     fullWidth
-                    onClick={() => handleWithdraw(course.id)}
-                    loading={pendingId === course.id}
+                    onClick={() => handleWithdraw(course.courseOfferingId)}
+                    loading={pendingId === course.courseOfferingId}
                   >
                     Withdraw
                   </Button>

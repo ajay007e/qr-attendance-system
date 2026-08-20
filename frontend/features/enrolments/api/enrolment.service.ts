@@ -34,7 +34,7 @@ export const enrolmentService = {
 
   async enrol(courseId: number) {
     const response = await api.post<ApiResponse<void>>("/enrolments", {
-      courseId,
+      courseOfferingId: courseId,
     });
 
     return response.data;
@@ -55,7 +55,7 @@ export const enrolmentService = {
     },
   ) {
     const response = await api.get<ApiResponse<PaginatedData<Participant>>>(
-      `/enrolments/courses/${courseId}/students`,
+      `/enrolments/offerings/${courseId}/students`,
       {
         params,
       },

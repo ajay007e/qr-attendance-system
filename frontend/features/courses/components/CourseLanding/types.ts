@@ -1,16 +1,16 @@
-import type { Course } from "@/shared";
 import { ReactNode } from "react";
+import { CourseOffering } from "../../types";
 
 export type CourseTab = "site" | "participants" | "grades" | "attendance";
 
 export interface CourseLandingProps {
-  courseId: number;
+  offeringId: number;
   backHref: string;
   participantsTab: ReactNode;
 }
 
 type CourseComponentProps = {
-  course: Course;
+  offering: CourseOffering;
 };
 
 export type CourseHeaderProps = CourseComponentProps;

@@ -1,8 +1,14 @@
 import { BookOpen } from "lucide-react";
 import { CourseHeaderProps } from "../../types";
 import { Badge, getGradient, getSessionLabel } from "@/shared";
+import { useCourse } from "@/features/courses/hooks/useCourse";
 
-export function CourseHeader({ course }: CourseHeaderProps) {
+export function CourseHeader({ offering }: CourseHeaderProps) {
+  const { course, loading } = useCourse(offering.courseId);
+  if (loading || !course) {
+    return null;
+  }
+
   const gradient = getGradient(course.courseCode);
   return (
     <section className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
@@ -26,7 +32,8 @@ export function CourseHeader({ course }: CourseHeaderProps) {
 
           <div className="flex shrink-0 flex-wrap gap-2">
             <Badge variant="amber">{course.credits} credits</Badge>
-            <Badge variant="blue">{getSessionLabel(course.session)}</Badge>
+            <Badge variant="blue">{getSessionLabel(offering.session)}</Badge>
+            <Badge variant="green">{offering.academicYear}</Badge>
             {/*<Badge variant={course.is_active ? "green" : "red"}>{course.is_active ? "Active" : "Inactive"}</Badge>*/}
           </div>
         </div>

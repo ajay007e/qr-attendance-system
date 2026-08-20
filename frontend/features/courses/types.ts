@@ -1,4 +1,4 @@
-import type { Course, Lecturer, PaginationQuery } from "@/shared";
+import type { Course, CourseOfferingStatus, CourseSession, Lecturer, PaginationQuery } from "@/shared";
 
 // ==========================================
 // Course
@@ -33,13 +33,9 @@ export interface LecturerSearchProps {
 // Course Offering
 // ==========================================
 
-export type CourseSession =
-  "annual" | "spring" | "summer" | "autumn" | "winter" | "trimester_1" | "trimester_2" | "trimester_3";
-
-export type CourseOfferingStatus = "enrol" | "started" | "completed" | "cancelled";
-
 export interface CourseOffering {
   id: number;
+  courseId: number;
   courseCode: string;
   courseName: string;
   academicYear: number;

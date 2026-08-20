@@ -51,6 +51,8 @@ export class EnrolmentRepository {
           ON c.id = co.course_id
 
         WHERE ce.user_id = ?
+            AND ce.status <> 'withdrawn'
+
 
         ORDER BY
           co.academic_year DESC,

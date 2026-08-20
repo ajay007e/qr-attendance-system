@@ -9,11 +9,11 @@ export const offeringRouter = Router();
 
 offeringRouter.use(isAuthenticated);
 
+offeringRouter.get("/:id", authorize(ROLES.STUDENT, ROLES.LECTURER), controller.get);
 offeringRouter.use(authorize(ROLES.SUPER_ADMIN));
 
 // Offering CRUD
 offeringRouter.get("/", controller.list);
-offeringRouter.get("/:id", controller.get);
 offeringRouter.post("/", controller.create);
 offeringRouter.put("/:id", controller.update);
 

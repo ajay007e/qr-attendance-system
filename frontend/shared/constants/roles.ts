@@ -1,5 +1,5 @@
 import { Option } from "../components";
-import { CourseSession } from "../types";
+import { CourseOfferingStatus, CourseSession } from "../types";
 
 export const USER_ROLES = {
   SUPER_ADMIN: "super_admin",
@@ -73,3 +73,14 @@ export const COURSE_SESSION_FILTER_OPTIONS = [
 ] satisfies readonly Option<CourseSession | "ALL">[];
 
 export const UI_COURSE_SESSION_OPTIONS = COURSE_SESSION_FILTER_OPTIONS.filter((option) => option.value !== "ALL");
+
+export const COURSE_OFFERING_STATUS_LABELS: Record<CourseOfferingStatus, string> = {
+  enrol: "Enrol",
+  started: "Started",
+  completed: "Completed",
+  cancelled: "Cancelled",
+};
+
+export function getOfferingStatusLabel(status: CourseOfferingStatus): string {
+  return COURSE_OFFERING_STATUS_LABELS[status];
+}

@@ -7,13 +7,13 @@ import ParticipantToolbar from "./ParticipantToolbar";
 import { ParticipantsTabProps } from "./types";
 import { useCourseParticipants, useParticipantQuery } from "@/features/enrolments";
 
-export default function ParticipantsTab({ courseId }: ParticipantsTabProps) {
+export default function ParticipantsTab({ offeringId }: ParticipantsTabProps) {
   const { query, setQuery, resetQuery } = useParticipantQuery();
 
   const debouncedQuery = useDebounce(query, 400);
 
   const { participants, pagination, loading, isFetching, error, refresh, hasLoadedCurrentQuery } =
-    useCourseParticipants(courseId, debouncedQuery);
+    useCourseParticipants(offeringId, debouncedQuery);
 
   if (loading) {
     return <PageLoader />;

@@ -2,12 +2,11 @@
 
 import { useState } from "react";
 
-import { AppError, Button, Field, FormError } from "@/shared";
+import { AppError, Button, CourseOfferingStatus, Field, FormError } from "@/shared";
 
 import { COURSE_OFFERING_STATUS_OPTIONS } from "../../constants";
 import { useOfferingMutation } from "../../hooks/useOfferingMutation";
 
-import type { CourseOfferingStatus } from "../../types";
 import type { StatusTabProps } from "./types";
 
 export function StatusTab({ offering, refresh, onClose }: StatusTabProps) {

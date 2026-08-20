@@ -1,7 +1,7 @@
-import { Course } from "@/shared";
+import { StudentCourse, AssignedCourse } from "@/features/enrolments";
 
 export interface CourseCardProps {
-  course: Course;
+  course: StudentCourse | AssignedCourse;
   action?: React.ReactNode;
   href?: string;
 }

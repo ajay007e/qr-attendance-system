@@ -9,7 +9,7 @@ import { ParticipantQuery } from "../types";
 
 const PARTICIPANTS_PER_PAGE = 10;
 
-export default function useCourseParticipants(courseId: number, query: ParticipantQuery) {
+export default function useCourseParticipants(offeringId: number, query: ParticipantQuery) {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [loading, setLoading] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
@@ -22,7 +22,7 @@ export default function useCourseParticipants(courseId: number, query: Participa
       setError(null);
       setIsFetching(true);
 
-      const response = await enrolmentService.getCourseStudents(courseId, {
+      const response = await enrolmentService.getCourseStudents(offeringId, {
         search: query.search,
         page: query.page,
         limit: PARTICIPANTS_PER_PAGE,
@@ -38,7 +38,7 @@ export default function useCourseParticipants(courseId: number, query: Participa
       setLoading(false);
       setIsFetching(false);
     }
-  }, [courseId, query.search, query.page]);
+  }, [offeringId, query.search, query.page]);
 
   useEffect(() => {
     let cancelled = false;
@@ -48,7 +48,7 @@ export default function useCourseParticipants(courseId: number, query: Participa
         setError(null);
         setIsFetching(true);
 
-        const response = await enrolmentService.getCourseStudents(courseId, {
+        const response = await enrolmentService.getCourseStudents(offeringId, {
           search: query.search,
           page: query.page,
           limit: PARTICIPANTS_PER_PAGE,
@@ -77,7 +77,7 @@ export default function useCourseParticipants(courseId: number, query: Participa
     return () => {
       cancelled = true;
     };
-  }, [courseId, query.search, query.page]);
+  }, [offeringId, query.search, query.page]);
 
   return {
     participants,

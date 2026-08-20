@@ -18,5 +18,5 @@ export interface ParticipantTableProps {
 }
 
 export interface ParticipantsTabProps {
-  courseId: Course["id"];
+  offeringId: number;
 }
