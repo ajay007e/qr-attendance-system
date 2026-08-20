@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 
-import { Tabs, type Lecturer } from "@/shared";
+import { Tabs } from "@/shared";
+import type { Lecturer, CourseOffering } from "@/shared";
 
 import { OFFERING_TABS } from "../../constants";
 
@@ -10,7 +11,7 @@ import { DetailsTab } from "./DetailsTab";
 import { LecturersTab } from "./LecturerTab";
 import { StatusTab } from "./StatusTab";
 
-import type { CourseOffering, OfferingEditTab } from "../../types";
+import type { OfferingEditTab } from "../../types";
 
 interface EditOfferingFormProps {
   offering: CourseOffering;

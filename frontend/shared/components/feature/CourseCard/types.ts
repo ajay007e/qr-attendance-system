@@ -1,7 +1,7 @@
-import { StudentCourse, AssignedCourse } from "@/features/enrolments";
+import type { Course } from "@/shared";
 
 export interface CourseCardProps {
-  course: StudentCourse | AssignedCourse;
+  course: Pick<Course, "courseCode" | "courseName">;
   action?: React.ReactNode;
   href?: string;
 }

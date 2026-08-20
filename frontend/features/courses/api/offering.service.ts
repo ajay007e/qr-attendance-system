@@ -1,10 +1,9 @@
 import { api } from "@/shared";
 
-import type { ApiResponse, Lecturer, PaginatedData } from "@/shared";
+import type { ApiResponse, CourseOffering, Lecturer, PaginatedData } from "@/shared";
 
 import type {
   AssignOfferingLecturerRequest,
-  CourseOffering,
   CourseOfferingListItem,
   CourseOfferingQuery,
   CreateCourseOfferingRequest,

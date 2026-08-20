@@ -19,6 +19,7 @@ import { useState } from "react";
 import OfferingToolbar from "../OfferingToolbar";
 import OfferingTable from "../OfferingTable";
 import OfferingForm from "../OfferingForm";
+import EditOfferingForm from "../EditOfferingForm/EditOfferingForm";
 
 import { useOfferingModal } from "../../hooks/useOfferingModal";
 import { useOfferings } from "../../hooks/useOfferings";
@@ -27,8 +28,7 @@ import useCourseSearch from "../../hooks/useCourseSearch";
 
 import type { Lecturer } from "@/shared";
 import type { CourseOfferingQuery } from "../../types";
-import { useLecturerSearch } from "@/features/users";
-import EditOfferingForm from "../EditOfferingForm/EditOfferingForm";
+import type { OfferingManagementProps } from "./types";
 
 const INITIAL_QUERY: CourseOfferingQuery = {
   search: "",
@@ -38,7 +38,7 @@ const INITIAL_QUERY: CourseOfferingQuery = {
   limit: 10,
 };
 
-export default function OfferingManagement() {
+export default function OfferingManagement({ lecturerSearch: lecturerSearchApi }: OfferingManagementProps) {
   const [query, setQuery] = useState<CourseOfferingQuery>(INITIAL_QUERY);
 
   const [selectedLecturer, setSelectedLecturer] = useState<Lecturer | null>(null);
@@ -51,8 +51,8 @@ export default function OfferingManagement() {
     results: lecturerResults,
     loading: lecturerLoading,
     query: lecturerQuery,
-    setQuery: setLecturerQuery,
-  } = useLecturerSearch();
+    onQueryChange: setLecturerQuery,
+  } = lecturerSearchApi;
 
   const {
     showCreateOffering,
@@ -67,22 +67,6 @@ export default function OfferingManagement() {
     useOfferings(debouncedQuery);
 
   const { createOffering } = useOfferingMutation(refresh);
-
-  if (loading) {
-    return <PageLoader />;
-  }
-
-  if (error) {
-    return (
-      <ErrorFallback
-        title="Unable to load course offerings"
-        message="We couldn't retrieve the course offerings right now. Please try again."
-        error={error}
-        onRetry={refresh}
-        retryLabel="Retry Loading"
-      />
-    );
-  }
 
   const hasFilters = query.search.trim() !== "" || query.session !== "ALL" || query.status !== "ALL";
 
@@ -112,6 +96,22 @@ export default function OfferingManagement() {
     },
   };
 
+  if (loading) {
+    return <PageLoader />;
+  }
+
+  if (error) {
+    return (
+      <ErrorFallback
+        title="Unable to load course offerings"
+        message="We couldn't retrieve the course offerings right now. Please try again."
+        error={error}
+        onRetry={refresh}
+        retryLabel="Retry Loading"
+      />
+    );
+  }
+
   return (
     <div className="mx-auto w-full max-w-7xl space-y-5">
       <PageHeader
@@ -124,8 +124,8 @@ export default function OfferingManagement() {
               size="lg"
               fullWidth
               className="sm:w-auto"
-              leftIcon={<Plus size={18} />}
               onClick={openCreateOffering}
+              leftIcon={<Plus size={18} />}
             >
               Create Offering
             </Button>
@@ -173,16 +173,16 @@ export default function OfferingManagement() {
                 label="offerings"
                 {...pagination}
                 onPrevious={() =>
-                  setQuery((current) => ({
-                    ...current,
-                    page: current.page - 1,
-                  }))
+                  setQuery({
+                    ...query,
+                    page: query.page - 1,
+                  })
                 }
                 onNext={() =>
-                  setQuery((current) => ({
-                    ...current,
-                    page: current.page + 1,
-                  }))
+                  setQuery({
+                    ...query,
+                    page: query.page + 1,
+                  })
                 }
               />
             </>

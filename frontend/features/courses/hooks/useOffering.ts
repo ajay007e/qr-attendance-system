@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { OfferingService } from "../api/offering.service";
-import { CourseOffering } from "../types";
+import { CourseOffering } from "@/shared";
 
 export function useOffering(courseId: number) {
   const [course, setCourse] = useState<CourseOffering | null>(null);

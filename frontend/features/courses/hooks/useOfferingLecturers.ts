@@ -42,7 +42,6 @@ export function useOfferingLecturers(offeringId: number) {
       setError(null);
 
       await OfferingService.assignLecturer(offeringId, data);
-
       await loadLecturers();
     } catch (error) {
       handleError(error);
@@ -58,7 +57,6 @@ export function useOfferingLecturers(offeringId: number) {
       setError(null);
 
       await OfferingService.removeLecturer(offeringId, userId);
-
       await loadLecturers();
     } catch (error) {
       handleError(error);
@@ -69,8 +67,41 @@ export function useOfferingLecturers(offeringId: number) {
   };
 
   useEffect(() => {
-    void loadLecturers();
-  }, [loadLecturers]);
+    if (!offeringId) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const fetchLecturers = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await OfferingService.getLecturers(offeringId);
+
+        if (!cancelled) {
+          setLecturers(response.data);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          handleError(error);
+
+          setError(error instanceof Error ? error.message : "Unable to load lecturers.");
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    void fetchLecturers();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [offeringId, handleError]);
 
   return {
     lecturers,
@@ -78,9 +109,7 @@ export function useOfferingLecturers(offeringId: number) {
     assigning,
     removing,
     error,
-
     refresh: loadLecturers,
-
     assignLecturer,
     removeLecturer,
   };

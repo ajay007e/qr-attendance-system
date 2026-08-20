@@ -1,10 +1,19 @@
-import { OfferingManagement } from "@/features/courses";
-import { Container } from "@/shared";
+"use client";
 
-export default function CoursesPage() {
+import { OfferingManagement } from "@/features/courses";
+import { useLecturerSearch } from "@/features/users";
+
+export default function OfferingsPage() {
+  const lecturerSearch = useLecturerSearch();
+
   return (
-    <Container>
-      <OfferingManagement />
-    </Container>
+    <OfferingManagement
+      lecturerSearch={{
+        query: lecturerSearch.query,
+        results: lecturerSearch.results,
+        loading: lecturerSearch.loading,
+        onQueryChange: lecturerSearch.setQuery,
+      }}
+    />
   );
 }

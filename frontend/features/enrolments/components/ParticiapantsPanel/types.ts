@@ -1,4 +1,4 @@
-import type { Course, Participant } from "@/shared";
+import type { Participant } from "@/shared";
 
 export interface ParticipantToolbarProps {
   search: string;

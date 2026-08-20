@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { CourseOffering } from "../../types";
+import type { CourseOffering } from "@/shared";
 
 export type CourseTab = "site" | "participants" | "grades" | "attendance";
 
