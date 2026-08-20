@@ -4,8 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { DEFAULT_PAGINATION_META, useError } from "@/shared";
 
-import type { PaginationMeta } from "@/shared";
-import type { CourseOfferingListItem } from "../types";
+import type { CourseOffering, PaginationMeta } from "@/shared";
 
 import { OfferingService } from "../api/offering.service";
 import type { CourseOfferingQuery } from "../types";
@@ -24,7 +23,7 @@ export function useOfferings(query: CourseOfferingQuery) {
   const isInitialLoad = useRef(true);
   const { handleError } = useError();
 
-  const [offerings, setOfferings] = useState<CourseOfferingListItem[]>([]);
+  const [offerings, setOfferings] = useState<CourseOffering[]>([]);
   const [pagination, setPagination] = useState<PaginationMeta>(DEFAULT_PAGINATION_META);
 
   const [loading, setLoading] = useState(true);

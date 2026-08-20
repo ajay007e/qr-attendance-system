@@ -1,10 +1,24 @@
-import type { Lecturer } from "@/shared";
-import type { CourseOfferingListItem } from "../../types";
+import type { CourseOffering, Lecturer } from "@/shared";
 
 export type OfferingEditTab = "details" | "lecturers" | "status";
 
+export interface EditOfferingFormProps {
+  offering: CourseOffering;
+  refresh: () => Promise<void>;
+  onClose: () => void;
+
+  lecturerSearch: {
+    query: string;
+    results: Lecturer[];
+    loading: boolean;
+    selectedLecturer: Lecturer | null;
+    onQueryChange: (value: string) => void;
+    onSelect: (lecturer: Lecturer | null) => void;
+  };
+}
+
 export interface DetailsTabProps {
-  offering: CourseOfferingListItem;
+  offering: CourseOffering;
   refresh: () => Promise<void>;
   onClose: () => void;
 }
@@ -25,7 +39,7 @@ export interface LecturersTabProps {
 }
 
 export interface StatusTabProps {
-  offering: CourseOfferingListItem;
+  offering: CourseOffering;
   refresh: () => Promise<void>;
   onClose: () => void;
 }

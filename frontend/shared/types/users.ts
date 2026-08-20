@@ -15,5 +15,4 @@ export type SessionUser = Pick<User, "id" | "email" | "role">;
 
 export type LecturerRole = "primary" | "secondary" | "tutor";
 export type Lecturer = Pick<User, "id" | "firstName" | "lastName" | "email"> & { role?: LecturerRole };
-
 export type Participant = Pick<User, "id" | "firstName" | "lastName" | "email">;

@@ -63,8 +63,8 @@ export default function OfferingForm({ courseSearch, onSubmit }: OfferingFormPro
         courseId: selectedCourse.id,
         academicYear: Number(form.academicYear),
         session: form.session,
-        startDate: form.startDate || undefined,
-        endDate: form.endDate || undefined,
+        startDate: form.startDate,
+        endDate: form.endDate,
       });
 
       resetForm();

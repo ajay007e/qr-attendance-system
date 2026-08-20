@@ -4,7 +4,6 @@ import type { ApiResponse, CourseOffering, Lecturer, PaginatedData } from "@/sha
 
 import type {
   AssignOfferingLecturerRequest,
-  CourseOfferingListItem,
   CourseOfferingQuery,
   CreateCourseOfferingRequest,
   UpdateCourseOfferingRequest,
@@ -16,7 +15,7 @@ export const OfferingService = {
       Object.entries(query ?? {}).filter(([, value]) => value !== undefined && value !== "" && value !== "ALL"),
     );
 
-    const response = await api.get<ApiResponse<PaginatedData<CourseOfferingListItem>>>("/offerings", {
+    const response = await api.get<ApiResponse<PaginatedData<CourseOffering>>>("/offerings", {
       params,
     });
 

@@ -1,11 +1,11 @@
-import type { CourseOfferingListItem } from "../../types";
+import { CourseOffering } from "@/shared";
 
 export interface OfferingTableProps {
-  offerings: CourseOfferingListItem[];
-  onEdit: (offering: CourseOfferingListItem) => void;
+  offerings: CourseOffering[];
+  onEdit: (offering: CourseOffering) => void;
 }
 
 export type OfferingActionProps = {
-  offering: CourseOfferingListItem;
-  onEdit: (offering: CourseOfferingListItem) => void;
+  offering: CourseOffering;
+  onEdit: (offering: CourseOffering) => void;
 };

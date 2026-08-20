@@ -20,3 +20,7 @@ export interface PaginatedData<T> {
   items: T[];
   meta: PaginationMeta;
 }
+
+export type Status = "ACTIVE" | "INACTIVE";
+
+export type StatusFilter = Status | "ALL";
