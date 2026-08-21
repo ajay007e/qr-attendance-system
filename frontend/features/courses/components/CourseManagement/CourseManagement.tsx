@@ -1,5 +1,7 @@
 "use client";
 
+import { Plus, BookOpen } from "lucide-react";
+
 import {
   useDebounce,
   PageHeader,
@@ -14,16 +16,14 @@ import {
   Section,
 } from "@/shared";
 
-import { useCourses } from "../../hooks/useCourses";
-import { useCourseQuery } from "../../hooks/useCourseQuery";
 import { useCourseModal } from "../../hooks/useCourseModal";
-
-import CourseToolbar from "../CourseToolbar";
-import CourseTable from "../CourseTable";
-import CourseForm from "../CourseForm";
-import EditCourseForm from "../EditCourseForm/EditCourseForm";
 import { useCourseMutation } from "../../hooks/useCourseMutation";
-import { Plus, BookOpen } from "lucide-react";
+import { useCourseQuery } from "../../hooks/useCourseQuery";
+import { useCourses } from "../../hooks/useCourses";
+import CourseForm from "../CourseForm";
+import CourseTable from "../CourseTable";
+import CourseToolbar from "../CourseToolbar";
+import EditCourseForm from "../EditCourseForm/EditCourseForm";
 
 export default function CourseManagement() {
   const { query, setQuery, resetQuery } = useCourseQuery();

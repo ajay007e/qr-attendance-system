@@ -1,5 +1,6 @@
 import { api } from "@/shared";
 import type { ApiResponse, Course, PaginatedData } from "@/shared";
+
 import type { CourseQuery, CreateCourseRequest, UpdateCourseRequest } from "../types";
 
 export const CourseService = {

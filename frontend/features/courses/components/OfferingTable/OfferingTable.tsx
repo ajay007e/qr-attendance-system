@@ -1,6 +1,6 @@
-import type { OfferingTableProps } from "./types";
 import { OfferingCard } from "./OfferingCard";
 import { OfferingTableRow } from "./OfferingTableRow";
+import type { OfferingTableProps } from "./types";
 
 export default function OfferingTable({ offerings, onEdit }: OfferingTableProps) {
   return (

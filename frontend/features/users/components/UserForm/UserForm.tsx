@@ -2,8 +2,9 @@
 
 import { FormEvent, useState } from "react";
 
-import { AppError } from "@/shared/errors/AppError";
 import { Button, FormError, Field, UI_USER_ROLE_OPTIONS, USER_ROLES, UserRole } from "@/shared";
+import { AppError } from "@/shared/errors/AppError";
+
 import { UserFormProps } from "./types";
 
 export default function UserForm({ onSubmit }: UserFormProps) {

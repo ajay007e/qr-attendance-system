@@ -1,8 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+
 import { DEFAULT_PAGINATION_META, useError } from "@/shared";
 import type { PaginationMeta, Course } from "@/shared";
+
 import { CourseService } from "../api/course.service";
 import type { CourseQuery } from "../types";
 

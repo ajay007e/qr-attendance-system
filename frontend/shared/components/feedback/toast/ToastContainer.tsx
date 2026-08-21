@@ -1,7 +1,7 @@
 "use client";
 
-import { toastContainerStyles, toastPositionStyles } from "./toast.styles";
 import { Toast } from "./Toast";
+import { toastContainerStyles, toastPositionStyles } from "./toast.styles";
 import { ToastContainerProps } from "./toast.types";
 
 export function ToastContainer({ toasts, position, newestOn, maxToasts, onDismiss, onUpdate }: ToastContainerProps) {

@@ -1,4 +1,5 @@
 import type { Course } from "@/shared";
+
 import type { UpdateCourseRequest } from "../../types";
 
 export type CourseEditTab = "details" | "status";

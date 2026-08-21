@@ -1,20 +1,15 @@
+import { Loader2, X } from "lucide-react";
 import React from "react";
 
-import { Loader2, X } from "lucide-react";
-
 import Button from "@/shared/components/ui/button";
-
 import { cn } from "@/shared/lib/utils";
 
 import { useFieldContext } from "../field.context";
-
 import { inputWrapperVariants, inputVariants } from "../input/input.styles";
 
 import { AutocompleteContext } from "./autocomplete.context";
-
-import { useAutocomplete } from "./useAutocomplete";
-
 import type { AutocompleteContextValue, FieldAutocompleteProps } from "./autocomplete.types";
+import { useAutocomplete } from "./useAutocomplete";
 
 const FieldAutocomplete = React.forwardRef(
   <T,>(

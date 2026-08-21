@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { DEFAULT_PAGINATION_META, useError } from "@/shared";
-
 import type { CourseOffering, PaginationMeta } from "@/shared";
 
 import { OfferingService } from "../api/offering.service";

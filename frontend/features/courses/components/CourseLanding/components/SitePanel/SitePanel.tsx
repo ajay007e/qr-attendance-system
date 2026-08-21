@@ -1,8 +1,10 @@
 import { BookOpen, ChevronDown } from "lucide-react";
-import { SITE_SECTIONS } from "../../constants";
+
 import { Section, SectionHeader } from "@/shared";
-import { CourseHeader } from "../CourseHeader/CourseHeader";
+
+import { SITE_SECTIONS } from "../../constants";
 import { SiteTabProps } from "../../types";
+import { CourseHeader } from "../CourseHeader/CourseHeader";
 
 export function SiteTab({ offering }: SiteTabProps) {
   return (

@@ -1,7 +1,8 @@
 "use client";
 
-import type { SessionUser } from "@/shared";
 import { createContext } from "react";
+
+import type { SessionUser } from "@/shared";
 
 export interface AuthContextType {
   user: SessionUser | null;

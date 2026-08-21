@@ -4,11 +4,10 @@ import { useState } from "react";
 
 import { Button, EmptyState, ErrorFallback, PageLoader, useError, Section, SectionHeader, CourseCard } from "@/shared";
 
-import CourseSearch from "../CourseSearch";
 import useAvailableCourses from "../../hooks/useAvailableCourses";
 import useEnrolledCourses from "../../hooks/useEnrolledCourses";
-
 import type { StudentCourse } from "../../types";
+import CourseSearch from "../CourseSearch";
 
 export default function EnrolmentManagement() {
   const { handleError } = useError();

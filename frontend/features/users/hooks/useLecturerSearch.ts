@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { type Lecturer, useDebounce } from "@/shared";
+
 import { userService } from "../api/user.service";
 
 export default function useLecturerSearch() {

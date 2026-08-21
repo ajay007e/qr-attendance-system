@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import { useEffect, useState } from "react";
+
+import { Container } from "..";
+import Button from "../ui/button";
 
 import Footer from "./Footer";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import type { DashboardShellProps } from "./types";
-import Button from "../ui/button";
-import { Container } from "..";
 
 export default function DashboardShell({ children, user, items, onLogout }: DashboardShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);

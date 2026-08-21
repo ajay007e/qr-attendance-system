@@ -1,5 +1,6 @@
-import { SessionUser } from "@/shared";
 import { ReactNode } from "react";
+
+import { SessionUser } from "@/shared";
 
 export interface PageHeaderProps {
   title: string;

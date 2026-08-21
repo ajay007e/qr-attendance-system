@@ -1,4 +1,5 @@
 import type { Option, StatusFilter } from "@/shared";
+
 import type { CourseOfferingQuery, CourseQuery } from "./types";
 
 export const COURSE_STATUS_FILTER_OPTIONS = [

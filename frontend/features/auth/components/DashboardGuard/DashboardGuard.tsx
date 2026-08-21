@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
+
+import { useAuth } from "@/features/auth";
 import { DashboardShell, getDashboardRoute, PageLoader, MENUS } from "@/shared";
-import { useAuth } from "../../hooks/useAuth";
 
 export function DashboardGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();

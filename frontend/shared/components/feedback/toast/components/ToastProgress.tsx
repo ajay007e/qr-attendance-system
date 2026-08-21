@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import type { ToastProgressProps } from "../toast.types";
 import { toastProgressContainerStyles, toastProgressStyles, toastProgressVariantStyles } from "../toast.styles";
+import type { ToastProgressProps } from "../toast.types";
 
 export function ToastProgress({ duration, variant, paused = false }: ToastProgressProps) {
   const [progress, setProgress] = useState(100);

@@ -1,7 +1,9 @@
-import Link from "next/link";
 import { BookOpen } from "lucide-react";
-import { CourseCardProps } from "./types";
+import Link from "next/link";
+
 import { getGradient } from "@/shared";
+
+import { CourseCardProps } from "./types";
 
 export default function CourseCard({ course, action, href }: CourseCardProps) {
   const gradient = getGradient(course.courseCode);

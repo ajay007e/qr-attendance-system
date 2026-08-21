@@ -1,5 +1,7 @@
-import { Button, Badge } from "@/shared";
 import { Pencil } from "lucide-react";
+
+import { Button, Badge } from "@/shared";
+
 import { CourseActionProps } from "./types";
 
 export function CourseTableRow({ course, onEdit }: CourseActionProps) {

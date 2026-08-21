@@ -1,17 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-
-import { AttendanceTab } from "./components/AttendancePanel/AttendancePanel";
-import { SiteTab } from "./components/SitePanel/SitePanel";
+import Link from "next/link";
+import { useState } from "react";
 
 import { Tabs, PageLoader, ErrorFallback, Section } from "@/shared";
 
+import { useOffering } from "../../hooks/useOffering";
+
+import { AttendanceTab } from "./components/AttendancePanel/AttendancePanel";
+import { SiteTab } from "./components/SitePanel/SitePanel";
 import { COURSE_TABS } from "./constants";
 import type { CourseLandingProps, CourseTab } from "./types";
-import { useOffering } from "../../hooks/useOffering";
 
 export default function CourseLanding({ offeringId, backHref, participantsTab }: CourseLandingProps) {
   const [activeTab, setActiveTab] = useState<CourseTab>("site");

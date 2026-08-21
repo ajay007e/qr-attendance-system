@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
+import { useAuth } from "@/features/auth";
 import { getDashboardRoute, PageLoader } from "@/shared";
-import { useAuth } from "../../hooks/useAuth";
 
 export function AuthRedirect({ children }: { children: React.ReactNode }) {
   const router = useRouter();

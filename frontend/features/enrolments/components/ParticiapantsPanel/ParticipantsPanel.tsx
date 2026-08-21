@@ -1,11 +1,11 @@
 "use client";
 
+import { useCourseParticipants, useParticipantQuery } from "@/features/enrolments";
 import { useDebounce, EmptyState, ErrorFallback, Loader, NoResults, PageLoader, Pagination } from "@/shared";
 
 import ParticipantTable from "./ParticipantTable";
 import ParticipantToolbar from "./ParticipantToolbar";
 import { ParticipantsTabProps } from "./types";
-import { useCourseParticipants, useParticipantQuery } from "@/features/enrolments";
 
 export default function ParticipantsTab({ offeringId }: ParticipantsTabProps) {
   const { query, setQuery, resetQuery } = useParticipantQuery();

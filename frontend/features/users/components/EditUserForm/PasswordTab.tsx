@@ -1,8 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { AppError } from "@/shared/errors/AppError";
+
 import { Button, FormError, Field } from "@/shared";
+import { AppError } from "@/shared/errors/AppError";
+
 import { PasswordFormProps } from "./types";
 
 export function PasswordForm({ userId, onSubmit }: PasswordFormProps) {

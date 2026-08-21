@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { Tabs } from "@/shared";
+
 import { OFFERING_TABS } from "../../constants";
 
 import { DetailsTab } from "./DetailsTab";

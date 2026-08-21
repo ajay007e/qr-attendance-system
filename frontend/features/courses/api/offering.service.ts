@@ -1,5 +1,4 @@
 import { api } from "@/shared";
-
 import type { ApiResponse, CourseOffering, Lecturer, PaginatedData } from "@/shared";
 
 import type {

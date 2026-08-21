@@ -1,4 +1,5 @@
 import type { Course } from "@/shared";
+
 import type { CreateCourseOfferingRequest } from "../../types";
 
 export interface OfferingCourseSearch {

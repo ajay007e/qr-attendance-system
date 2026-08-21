@@ -2,7 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import type { CustomToastProps, ToastData, ToastProps } from "./toast.types";
+import Button from "../../ui/button";
+
+import { ToastCloseButton } from "./components/ToastCloseButton";
+import { ToastIcon } from "./components/ToastIcon";
+import { ToastProgress } from "./components/ToastProgress";
 import {
   toastContentStyles,
   toastEnterStyles,
@@ -10,10 +14,7 @@ import {
   toastStyles,
   toastVariantStyles,
 } from "./toast.styles";
-import { ToastCloseButton } from "./components/ToastCloseButton";
-import { ToastIcon } from "./components/ToastIcon";
-import { ToastProgress } from "./components/ToastProgress";
-import Button from "../../ui/button";
+import type { CustomToastProps, ToastData, ToastProps } from "./toast.types";
 
 export function Toast({ toast, onDismiss, onUpdate }: ToastProps) {
   const {

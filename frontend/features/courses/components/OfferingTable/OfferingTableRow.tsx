@@ -1,5 +1,6 @@
-import { Badge, Button, getSessionLabel } from "@/shared";
 import { Pencil } from "lucide-react";
+
+import { Badge, Button, getSessionLabel } from "@/shared";
 
 import type { OfferingActionProps } from "./types";
 

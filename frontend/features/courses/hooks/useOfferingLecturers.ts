@@ -5,7 +5,6 @@ import { useCallback, useEffect, useState } from "react";
 import { type Lecturer, useError } from "@/shared";
 
 import { OfferingService } from "../api/offering.service";
-
 import type { AssignOfferingLecturerRequest } from "../types";
 
 export function useOfferingLecturers(offeringId: number) {

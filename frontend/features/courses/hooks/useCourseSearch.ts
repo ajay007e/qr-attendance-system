@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { useDebounce, type Course } from "@/shared";
+
 import { CourseService } from "../api/course.service";
 
 export default function useCourseSearch() {

@@ -1,7 +1,9 @@
 import { BookOpen } from "lucide-react";
-import { CourseHeaderProps } from "../../types";
-import { Badge, getGradient, getSessionLabel } from "@/shared";
+
 import { useCourse } from "@/features/courses/hooks/useCourse";
+import { Badge, getGradient, getSessionLabel } from "@/shared";
+
+import { CourseHeaderProps } from "../../types";
 
 export function CourseHeader({ offering }: CourseHeaderProps) {
   const { course, loading } = useCourse(offering.courseId);

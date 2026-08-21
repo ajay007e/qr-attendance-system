@@ -3,7 +3,6 @@
 import { cn } from "@/shared/lib/utils";
 
 import { loaderHintVariants, loaderMessageVariants, loaderSpinnerVariants } from "./loader.styles";
-
 import type { PageLoaderProps } from "./loader.types";
 
 export default function PageLoader({ message = "Loading...", className, ...props }: PageLoaderProps) {

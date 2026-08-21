@@ -1,8 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { AppError } from "@/shared/errors/AppError";
+
 import { Button, FormError, Field, UI_USER_ROLE_OPTIONS } from "@/shared";
+import { AppError } from "@/shared/errors/AppError";
+
 import { DetailsFormProps } from "./types";
 
 export function DetailsForm({ user, onSubmit }: DetailsFormProps) {

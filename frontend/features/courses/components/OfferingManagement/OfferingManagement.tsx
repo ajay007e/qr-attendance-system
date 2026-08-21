@@ -1,5 +1,8 @@
 "use client";
 
+import { Plus, BookOpen } from "lucide-react";
+import { useState } from "react";
+
 import {
   useDebounce,
   PageHeader,
@@ -13,22 +16,18 @@ import {
   NoResults,
   Section,
 } from "@/shared";
-
-import { Plus, BookOpen } from "lucide-react";
-import { useState } from "react";
-
-import OfferingToolbar from "../OfferingToolbar";
-import OfferingTable from "../OfferingTable";
-import OfferingForm from "../OfferingForm";
-import EditOfferingForm from "../EditOfferingForm/EditOfferingForm";
-
-import { useOfferingModal } from "../../hooks/useOfferingModal";
-import { useOfferings } from "../../hooks/useOfferings";
-import { useOfferingMutation } from "../../hooks/useOfferingMutation";
-import useCourseSearch from "../../hooks/useCourseSearch";
-
 import type { Lecturer } from "@/shared";
+
+import useCourseSearch from "../../hooks/useCourseSearch";
+import { useOfferingModal } from "../../hooks/useOfferingModal";
+import { useOfferingMutation } from "../../hooks/useOfferingMutation";
+import { useOfferings } from "../../hooks/useOfferings";
 import type { CourseOfferingQuery } from "../../types";
+import EditOfferingForm from "../EditOfferingForm/EditOfferingForm";
+import OfferingForm from "../OfferingForm";
+import OfferingTable from "../OfferingTable";
+import OfferingToolbar from "../OfferingToolbar";
+
 import type { OfferingManagementProps } from "./types";
 
 const INITIAL_QUERY: CourseOfferingQuery = {

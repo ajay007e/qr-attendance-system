@@ -1,4 +1,5 @@
 import type { TabItem } from "@/shared";
+
 import type { UserQuery } from "./types";
 
 export const USER_STATUS = ["ACTIVE", "INACTIVE"] as const;

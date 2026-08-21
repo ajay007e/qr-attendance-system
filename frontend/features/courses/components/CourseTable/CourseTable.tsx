@@ -1,6 +1,6 @@
-import { CourseTableProps } from "./types";
 import { CourseCard } from "./CourseCard";
 import { CourseTableRow } from "./CourseTableRow";
+import { CourseTableProps } from "./types";
 
 export default function CourseTable({ courses, onEdit }: CourseTableProps) {
   return (

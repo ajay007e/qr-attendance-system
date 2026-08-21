@@ -1,6 +1,7 @@
 import { Search } from "lucide-react";
 
 import { COURSE_SESSION_FILTER_OPTIONS, Field } from "@/shared";
+
 import { COURSE_OFFERING_STATUS_FILTER_OPTIONS } from "../../constants";
 
 import type { OfferingToolbarProps } from "./types";

@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+
 import type { CourseOffering } from "@/shared";
 
 export type CourseTab = "site" | "participants" | "grades" | "attendance";

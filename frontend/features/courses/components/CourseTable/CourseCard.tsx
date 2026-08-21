@@ -1,6 +1,8 @@
-import { Badge, Button } from "@/shared";
-import { CourseActionProps } from "./types";
 import { Pencil } from "lucide-react";
+
+import { Badge, Button } from "@/shared";
+
+import { CourseActionProps } from "./types";
 
 export function CourseCard({ course, onEdit }: CourseActionProps) {
   return (

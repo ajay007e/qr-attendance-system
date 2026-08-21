@@ -1,4 +1,5 @@
 import { cn } from "@/shared";
+
 import { SectionHeaderProps } from "./types";
 
 export default function SectionHeader({ title, subtitle, action, className }: SectionHeaderProps) {

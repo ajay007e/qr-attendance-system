@@ -1,7 +1,8 @@
 "use client";
 
-import { CourseOffering } from "@/shared";
 import { useState } from "react";
+
+import { CourseOffering } from "@/shared";
 
 export function useOfferingModal() {
   const [showCreateOffering, setShowCreateOffering] = useState(false);

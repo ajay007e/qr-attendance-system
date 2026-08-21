@@ -2,8 +2,10 @@
 
 import { X } from "lucide-react";
 import { useEffect } from "react";
-import { ModalProps } from "./types";
+
 import { Button } from "@/shared";
+
+import { ModalProps } from "./types";
 
 export default function Modal({ open, onClose, title, children, footer, size = "md" }: ModalProps) {
   useEffect(() => {

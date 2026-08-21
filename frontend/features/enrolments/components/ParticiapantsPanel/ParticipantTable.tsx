@@ -1,6 +1,6 @@
-import { ParticipantTableProps } from "./types";
 import { ParticipantCard } from "./ParticipantCard";
 import { ParticipantTableRow } from "./ParticipantTableRow";
+import { ParticipantTableProps } from "./types";
 
 export default function ParticipantTable({ participants }: ParticipantTableProps) {
   return (

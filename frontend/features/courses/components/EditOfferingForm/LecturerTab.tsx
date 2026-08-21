@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { Search, Trash2, UserPlus, X } from "lucide-react";
+import { useState } from "react";
 
 import type { Lecturer, LecturerRole } from "@/shared";
-
 import { AppError, Badge, Button, Field, FormError, LECTURER_ROLE_OPTIONS, useAutocompleteContext } from "@/shared";
 
 import { useOfferingLecturers } from "../../hooks/useOfferingLecturers";
+
 import { LecturersTabProps } from "./types";
 
 export function LecturersTab({ offeringId, lecturerSearch }: LecturersTabProps) {

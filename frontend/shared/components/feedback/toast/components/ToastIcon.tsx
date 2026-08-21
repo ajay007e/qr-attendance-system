@@ -1,10 +1,10 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { AlertCircle, CheckCircle2, Info, LoaderCircle, TriangleAlert } from "lucide-react";
+import type { ReactNode } from "react";
 
-import type { ToastIconProps, ToastVariant } from "../toast.types";
 import { toastIconStyles, toastLoadingIconStyles } from "../toast.styles";
+import type { ToastIconProps, ToastVariant } from "../toast.types";
 
 const DEFAULT_ICONS: Record<ToastVariant, ReactNode> = {
   success: <CheckCircle2 />,

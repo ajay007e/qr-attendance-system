@@ -1,4 +1,5 @@
 import { Button } from "@/shared";
+
 import { DeleteUserTabProps } from "./types";
 
 export function DeleteUserTab({ onDelete, isActive }: DeleteUserTabProps) {

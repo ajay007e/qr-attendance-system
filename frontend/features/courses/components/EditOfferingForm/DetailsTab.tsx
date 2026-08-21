@@ -3,11 +3,12 @@
 import { FormEvent, useState } from "react";
 
 import { AppError, Button, Field, FormError } from "@/shared";
-
 import { COURSE_SESSION_OPTIONS } from "@/shared";
-import { DetailsTabProps } from "./types";
+
 import { useOfferingMutation } from "../../hooks/useOfferingMutation";
 import { UpdateCourseOfferingRequest } from "../../types";
+
+import { DetailsTabProps } from "./types";
 
 export function DetailsTab({ offering, refresh, onClose }: DetailsTabProps) {
   const { updateOffering, loading } = useOfferingMutation(refresh);

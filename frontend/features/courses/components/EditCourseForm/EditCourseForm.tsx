@@ -4,12 +4,12 @@ import { useState } from "react";
 
 import { Tabs } from "@/shared";
 
+import { COURSE_TABS } from "../../constants";
+import { useCourseMutation } from "../../hooks/useCourseMutation";
+import type { UpdateCourseRequest } from "../../types";
+
 import { DetailsTab } from "./DetailsTab";
 import { StatusTab } from "./StatusTab";
-
-import { useCourseMutation } from "../../hooks/useCourseMutation";
-import { COURSE_TABS } from "../../constants";
-import type { UpdateCourseRequest } from "../../types";
 import type { CourseEditTab, EditCourseFormProps } from "./types";
 
 export default function EditCourseForm({ course, refresh, onClose }: EditCourseFormProps) {

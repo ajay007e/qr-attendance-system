@@ -1,6 +1,7 @@
 "use client";
 
 import { useContext } from "react";
+
 import { ErrorContext } from "../context/error.context";
 
 export function useError() {

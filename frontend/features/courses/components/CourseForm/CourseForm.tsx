@@ -4,9 +4,9 @@ import { FormEvent, useState } from "react";
 
 import { AppError, FormError, Field, Button } from "@/shared";
 
-import type { CourseFormProps } from "./types";
-
 import { CreateCourseRequest } from "../../types";
+
+import type { CourseFormProps } from "./types";
 
 const INITIAL_FORM: CreateCourseRequest = {
   courseCode: "",

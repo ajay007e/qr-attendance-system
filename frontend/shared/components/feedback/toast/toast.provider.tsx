@@ -3,8 +3,6 @@
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 import type { ReactNode } from "react";
 
-import { ToastContext } from "./toast.context";
-import { ToastContainer } from "./ToastContainer";
 import {
   DEFAULT_TOAST_DISMISSIBLE,
   DEFAULT_TOAST_DURATIONS,
@@ -15,6 +13,7 @@ import {
   DEFAULT_TOAST_PROGRESS,
   TOAST_POSITIONS,
 } from "./toast.constants";
+import { ToastContext } from "./toast.context";
 import {
   addToast as storeAddToast,
   dismissAll as storeDismissAll,
@@ -33,6 +32,7 @@ import type {
   ToastProviderProps,
   ToastVariant,
 } from "./toast.types";
+import { ToastContainer } from "./ToastContainer";
 
 const EMPTY_TOASTS: ToastData[] = [];
 

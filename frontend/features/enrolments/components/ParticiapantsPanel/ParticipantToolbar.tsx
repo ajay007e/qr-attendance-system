@@ -1,5 +1,6 @@
-import { Field, SectionHeader } from "@/shared";
 import { Search } from "lucide-react";
+
+import { Field, SectionHeader } from "@/shared";
 
 import type { ParticipantToolbarProps } from "./types";
 

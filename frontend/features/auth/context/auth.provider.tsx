@@ -1,13 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
+import { authService, AuthContext } from "@/features/auth";
 import type { SessionUser } from "@/shared";
-
-import { authService } from "../api/auth.service";
-import { AuthContext } from "./auth.context";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();

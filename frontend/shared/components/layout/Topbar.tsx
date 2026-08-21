@@ -1,7 +1,8 @@
 import { Bell, Menu } from "lucide-react";
 
-import { TopbarProps } from "./types";
 import { Button } from "@/shared";
+
+import { TopbarProps } from "./types";
 
 export default function Topbar({ onMenuClick }: TopbarProps) {
   return (

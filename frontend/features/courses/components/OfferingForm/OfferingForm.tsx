@@ -1,10 +1,9 @@
 "use client";
 
-import { FormEvent, useState } from "react";
 import { Search, X } from "lucide-react";
+import { FormEvent, useState } from "react";
 
 import { AppError, Button, COURSE_SESSION_OPTIONS, Field, FormError, useAutocompleteContext } from "@/shared";
-
 import type { Course } from "@/shared";
 
 import type { CreateCourseOfferingRequest } from "../../types";

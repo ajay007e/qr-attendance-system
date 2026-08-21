@@ -1,11 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { useRouter } from "next/navigation";
 
+import { useAuth } from "@/features/auth";
 import { AppError, getDashboardRoute, useError } from "@/shared";
-import { useAuth } from "./useAuth";
 
 export function useLoginForm() {
   const router = useRouter();

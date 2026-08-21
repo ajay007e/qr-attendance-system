@@ -1,8 +1,9 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { AppError } from "../errors/AppError";
+
 import { ErrorContext } from "../context/error.context";
+import { AppError } from "../errors/AppError";
 import { ErrorProviderProps, ErrorState } from "../types";
 
 export function ErrorProvider({ children }: ErrorProviderProps) {
