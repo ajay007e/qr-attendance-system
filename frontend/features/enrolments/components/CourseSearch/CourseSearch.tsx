@@ -2,10 +2,9 @@
 
 import { Search } from "lucide-react";
 
+import { COURSE_SEARCH_MIN_LENGTH } from "@/features/enrolments";
+import type { CourseSearchProps, StudentCourse } from "@/features/enrolments";
 import { Field, useAutocompleteContext } from "@/shared";
-
-import { COURSE_SEARCH_MIN_LENGTH } from "../../constants";
-import type { CourseSearchProps, StudentCourse } from "../../types";
 
 export default function CourseSearch({ value, courses, loading, onChange, onSelect }: CourseSearchProps) {
   const canSearch = value.trim().length >= COURSE_SEARCH_MIN_LENGTH;

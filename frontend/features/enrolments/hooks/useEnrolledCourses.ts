@@ -2,12 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import { enrolmentService, type StudentCourse } from "@/features/enrolments";
 import { useError } from "@/shared";
 
-import { enrolmentService } from "../api/enrolment.service";
-import type { StudentCourse } from "../types";
-
-export default function useEnrolledCourses() {
+export function useEnrolledCourses() {
   const { handleError } = useError();
 
   const [courses, setCourses] = useState<StudentCourse[]>([]);

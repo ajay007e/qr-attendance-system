@@ -1,8 +1,7 @@
+import { COURSE_SEARCH_LIMIT } from "@/features/enrolments";
+import type { AssignedCourse, StudentCourse } from "@/features/enrolments";
 import type { ApiResponse, PaginatedData, Participant } from "@/shared";
 import { api } from "@/shared";
-
-import { COURSE_SEARCH_LIMIT } from "../constants";
-import type { AssignedCourse, StudentCourse } from "../types";
 
 export const enrolmentService = {
   async getEnrolled() {

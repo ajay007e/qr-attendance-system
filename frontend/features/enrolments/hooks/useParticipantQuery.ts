@@ -2,10 +2,9 @@
 
 import { useCallback, useState } from "react";
 
-import { INITIAL_QUERY } from "../constants";
-import { ParticipantQuery } from "../types";
+import { INITIAL_QUERY, type ParticipantQuery } from "@/features/enrolments";
 
-export default function useParticipantQuery() {
+export function useParticipantQuery() {
   const [query, setQueryState] = useState<ParticipantQuery>(INITIAL_QUERY);
 
   const setQuery = useCallback((updates: Partial<ParticipantQuery>) => {

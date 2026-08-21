@@ -2,15 +2,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import { enrolmentService, type ParticipantQuery } from "@/features/enrolments";
 import type { Participant, PaginationMeta } from "@/shared";
 import { DEFAULT_PAGINATION_META } from "@/shared";
 
-import { enrolmentService } from "../api/enrolment.service";
-import { ParticipantQuery } from "../types";
-
-const PARTICIPANTS_PER_PAGE = 10;
-
-export default function useCourseParticipants(offeringId: number, query: ParticipantQuery) {
+export function useCourseParticipants(offeringId: number, query: ParticipantQuery) {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [loading, setLoading] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
@@ -26,7 +22,7 @@ export default function useCourseParticipants(offeringId: number, query: Partici
       const response = await enrolmentService.getCourseStudents(offeringId, {
         search: query.search,
         page: query.page,
-        limit: PARTICIPANTS_PER_PAGE,
+        limit: DEFAULT_PAGINATION_META.limit,
       });
 
       setParticipants(response.data.items);
@@ -52,7 +48,7 @@ export default function useCourseParticipants(offeringId: number, query: Partici
         const response = await enrolmentService.getCourseStudents(offeringId, {
           search: query.search,
           page: query.page,
-          limit: PARTICIPANTS_PER_PAGE,
+          limit: DEFAULT_PAGINATION_META.limit,
         });
 
         if (!cancelled) {

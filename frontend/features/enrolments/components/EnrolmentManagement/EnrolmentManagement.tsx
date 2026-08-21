@@ -2,11 +2,9 @@
 
 import { useState } from "react";
 
+import { useAvailableCourses, useEnrolledCourses, type StudentCourse } from "@/features/enrolments";
 import { Button, EmptyState, ErrorFallback, PageLoader, useError, Section, SectionHeader, CourseCard } from "@/shared";
 
-import useAvailableCourses from "../../hooks/useAvailableCourses";
-import useEnrolledCourses from "../../hooks/useEnrolledCourses";
-import type { StudentCourse } from "../../types";
 import CourseSearch from "../CourseSearch";
 
 export default function EnrolmentManagement() {
