@@ -2,8 +2,7 @@
 
 import { FormEvent, useState } from "react";
 
-import { Button, FormError, Field } from "@/shared";
-import { AppError } from "@/shared/errors/AppError";
+import { AppError, Button, FormError, Field } from "@/shared";
 
 import { PasswordFormProps } from "./types";
 

@@ -2,8 +2,7 @@
 
 import { FormEvent, useState } from "react";
 
-import { Button, FormError, Field, UI_USER_ROLE_OPTIONS } from "@/shared";
-import { AppError } from "@/shared/errors/AppError";
+import { AppError, Button, FormError, Field, UI_USER_ROLE_OPTIONS } from "@/shared";
 
 import { DetailsFormProps } from "./types";
 

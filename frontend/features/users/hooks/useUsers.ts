@@ -2,17 +2,16 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { DEFAULT_PAGINATION_META, useError } from "@/shared";
-import type { PaginationMeta, User } from "@/shared";
-
-import { userService } from "../api/user.service";
+import { userService } from "@/features/users";
 import type {
   CreateUserRequest,
   UpdateUserRequest,
   ChangePasswordRequest,
   ChangeUserStatusRequest,
   UserQuery,
-} from "../types";
+} from "@/features/users";
+import { DEFAULT_PAGINATION_META, useError } from "@/shared";
+import type { PaginationMeta, User } from "@/shared";
 
 function getQueryKey(query: UserQuery) {
   return JSON.stringify({

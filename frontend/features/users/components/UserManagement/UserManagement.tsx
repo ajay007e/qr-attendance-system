@@ -3,6 +3,8 @@
 import { Plus, Users } from "lucide-react";
 import { useState } from "react";
 
+import { DEFAULT_USER_QUERY, useUsers, type UserQuery } from "@/features/users";
+import { EditUserForm, UserForm, UserTable, UserToolbar } from "@/features/users";
 import {
   Modal,
   PageLoader,
@@ -17,14 +19,6 @@ import {
   NoResults,
   Section,
 } from "@/shared";
-
-import { DEFAULT_USER_QUERY } from "../../constants";
-import useUsers from "../../hooks/useUsers";
-import { UserQuery } from "../../types";
-import { EditUserForm } from "../EditUserForm";
-import UserForm from "../UserForm/UserForm";
-import UserTable from "../UserTable/UserTable";
-import UserToolbar from "../UserToolbar/UserToolbar";
 
 export default function UserManagement() {
   const [query, setQuery] = useState<UserQuery>(DEFAULT_USER_QUERY);

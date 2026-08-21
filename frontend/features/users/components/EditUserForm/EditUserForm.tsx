@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 
+import { USER_TABS } from "@/features/users";
 import { Tabs } from "@/shared";
-
-import { USER_TABS } from "../../constants";
 
 import { DeleteUserTab } from "./DeleteTab";
 import { DetailsForm } from "./DetailsTab";

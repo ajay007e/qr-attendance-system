@@ -22,5 +22,5 @@ export interface PaginatedData<T> {
 }
 
 export type Status = "ACTIVE" | "INACTIVE";
-
-export type StatusFilter = Status | "ALL";
+export type WithAll<T> = T | "ALL";
+export type StatusFilter = WithAll<Status>;
