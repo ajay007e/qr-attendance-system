@@ -6,11 +6,8 @@ import type {
   Lecturer,
   PaginationQuery,
   StatusFilter,
+  WithAll,
 } from "@/shared";
-
-// ==========================================
-// Course
-// ==========================================
 
 export type CreateCourseRequest = Pick<Course, "courseName" | "courseCode" | "description" | "credits">;
 
@@ -20,10 +17,6 @@ export interface CourseQuery extends PaginationQuery {
   search: string;
   status: StatusFilter;
 }
-
-// ==========================================
-// Course Offering
-// ==========================================
 
 export type CreateCourseOfferingRequest = Pick<
   CourseOffering,
@@ -36,8 +29,8 @@ export type UpdateCourseOfferingRequest = Partial<CreateCourseOfferingRequest> &
 
 export interface CourseOfferingQuery extends PaginationQuery {
   search: string;
-  session: CourseSession | "ALL";
-  status: CourseOfferingStatus | "ALL";
+  session: WithAll<CourseSession>;
+  status: WithAll<CourseOfferingStatus>;
 }
 
 export type AssignOfferingLecturerRequest = Pick<Lecturer, "role" | "id">;

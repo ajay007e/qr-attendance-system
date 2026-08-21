@@ -2,6 +2,7 @@
 
 import { Plus, BookOpen } from "lucide-react";
 
+import { useCourseModal, useCourseMutation, useCourseQuery, useCourses } from "@/features/courses";
 import {
   useDebounce,
   PageHeader,
@@ -16,14 +17,10 @@ import {
   Section,
 } from "@/shared";
 
-import { useCourseModal } from "../../hooks/useCourseModal";
-import { useCourseMutation } from "../../hooks/useCourseMutation";
-import { useCourseQuery } from "../../hooks/useCourseQuery";
-import { useCourses } from "../../hooks/useCourses";
 import CourseForm from "../CourseForm";
 import CourseTable from "../CourseTable";
 import CourseToolbar from "../CourseToolbar";
-import EditCourseForm from "../EditCourseForm/EditCourseForm";
+import EditCourseForm from "../EditCourseForm";
 
 export default function CourseManagement() {
   const { query, setQuery, resetQuery } = useCourseQuery();

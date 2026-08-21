@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 
+import { OFFERING_TABS } from "@/features/courses";
 import { Tabs } from "@/shared";
-
-import { OFFERING_TABS } from "../../constants";
 
 import { DetailsTab } from "./DetailsTab";
 import { LecturersTab } from "./LecturerTab";

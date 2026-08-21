@@ -2,11 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { type CourseQuery, CourseService } from "@/features/courses";
 import { DEFAULT_PAGINATION_META, useError } from "@/shared";
 import type { PaginationMeta, Course } from "@/shared";
-
-import { CourseService } from "../api/course.service";
-import type { CourseQuery } from "../types";
 
 function getQueryKey(query: CourseQuery) {
   return JSON.stringify({

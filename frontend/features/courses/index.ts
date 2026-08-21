@@ -2,6 +2,9 @@ export * from "./types";
 export * from "./constants";
 
 export * from "./api/course.service";
+export * from "./api/offering.service";
+
+export * from "./hooks";
 
 export { default as CourseManagement } from "./components/CourseManagement";
 export { default as OfferingManagement } from "./components/OfferingManagement";

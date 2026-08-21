@@ -2,10 +2,8 @@
 
 import { useState } from "react";
 
+import { COURSE_OFFERING_STATUS_OPTIONS, useOfferingMutation } from "@/features/courses";
 import { AppError, Button, CourseOfferingStatus, Field, FormError } from "@/shared";
-
-import { COURSE_OFFERING_STATUS_OPTIONS } from "../../constants";
-import { useOfferingMutation } from "../../hooks/useOfferingMutation";
 
 import type { StatusTabProps } from "./types";
 

@@ -1,12 +1,11 @@
-import { api } from "@/shared";
-import type { ApiResponse, CourseOffering, Lecturer, PaginatedData } from "@/shared";
-
 import type {
   AssignOfferingLecturerRequest,
   CourseOfferingQuery,
   CreateCourseOfferingRequest,
   UpdateCourseOfferingRequest,
-} from "../types";
+} from "@/features/courses";
+import { api } from "@/shared";
+import type { ApiResponse, CourseOffering, Lecturer, PaginatedData } from "@/shared";
 
 export const OfferingService = {
   async getOfferings(query?: CourseOfferingQuery) {

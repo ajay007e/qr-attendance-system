@@ -2,11 +2,8 @@
 
 import { FormEvent, useState } from "react";
 
-import { AppError, Button, Field, FormError } from "@/shared";
-import { COURSE_SESSION_OPTIONS } from "@/shared";
-
-import { useOfferingMutation } from "../../hooks/useOfferingMutation";
-import { UpdateCourseOfferingRequest } from "../../types";
+import { type UpdateCourseOfferingRequest, useOfferingMutation } from "@/features/courses";
+import { AppError, Button, COURSE_SESSION_OPTIONS, Field, FormError } from "@/shared";
 
 import { DetailsTabProps } from "./types";
 

@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from "react";
 
+import { CourseService } from "@/features/courses";
 import { useDebounce, type Course } from "@/shared";
 
-import { CourseService } from "../api/course.service";
-
-export default function useCourseSearch() {
+export function useCourseSearch() {
   const [query, setQuery] = useState("");
 
   const [results, setResults] = useState<Course[]>([]);

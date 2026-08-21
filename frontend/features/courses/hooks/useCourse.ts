@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { CourseService } from "@/features/courses";
 import type { Course } from "@/shared";
-
-import { CourseService } from "../api/course.service";
 
 export function useCourse(courseId: number) {
   const [course, setCourse] = useState<Course | null>(null);

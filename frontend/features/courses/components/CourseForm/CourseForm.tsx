@@ -2,18 +2,10 @@
 
 import { FormEvent, useState } from "react";
 
+import { INITIAL_FORM } from "@/features/courses";
 import { AppError, FormError, Field, Button } from "@/shared";
 
-import { CreateCourseRequest } from "../../types";
-
 import type { CourseFormProps } from "./types";
-
-const INITIAL_FORM: CreateCourseRequest = {
-  courseCode: "",
-  courseName: "",
-  description: "",
-  credits: 0,
-};
 
 export default function CourseForm({ onSubmit }: CourseFormProps) {
   const [form, setForm] = useState(INITIAL_FORM);

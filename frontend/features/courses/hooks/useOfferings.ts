@@ -2,11 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { type CourseOfferingQuery, OfferingService } from "@/features/courses";
 import { DEFAULT_PAGINATION_META, useError } from "@/shared";
 import type { CourseOffering, PaginationMeta } from "@/shared";
-
-import { OfferingService } from "../api/offering.service";
-import type { CourseOfferingQuery } from "../types";
 
 function getQueryKey(query: CourseOfferingQuery) {
   return JSON.stringify({

@@ -2,7 +2,7 @@ import type { Course } from "@/shared";
 
 import type { CreateCourseOfferingRequest } from "../../types";
 
-export interface OfferingCourseSearch {
+interface OfferingCourseSearch {
   query: string;
   results: Course[];
   loading: boolean;

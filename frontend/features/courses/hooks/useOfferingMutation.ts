@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 
+import { OfferingService } from "@/features/courses";
+import type { CreateCourseOfferingRequest, UpdateCourseOfferingRequest } from "@/features/courses";
 import { useError } from "@/shared";
-
-import { OfferingService } from "../api/offering.service";
-import type { CreateCourseOfferingRequest, UpdateCourseOfferingRequest } from "../types";
 
 export function useOfferingMutation(refresh: () => Promise<void>) {
   const { handleError } = useError();

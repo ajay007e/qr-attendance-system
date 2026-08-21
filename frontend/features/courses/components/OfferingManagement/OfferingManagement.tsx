@@ -4,6 +4,14 @@ import { Plus, BookOpen } from "lucide-react";
 import { useState } from "react";
 
 import {
+  useOfferingModal,
+  useCourseSearch,
+  useOfferingMutation,
+  useOfferings,
+  INITIAL_QUERY,
+} from "@/features/courses";
+import type { CourseOfferingQuery } from "@/features/courses";
+import {
   useDebounce,
   PageHeader,
   ErrorFallback,
@@ -18,25 +26,12 @@ import {
 } from "@/shared";
 import type { Lecturer } from "@/shared";
 
-import useCourseSearch from "../../hooks/useCourseSearch";
-import { useOfferingModal } from "../../hooks/useOfferingModal";
-import { useOfferingMutation } from "../../hooks/useOfferingMutation";
-import { useOfferings } from "../../hooks/useOfferings";
-import type { CourseOfferingQuery } from "../../types";
-import EditOfferingForm from "../EditOfferingForm/EditOfferingForm";
+import EditOfferingForm from "../EditOfferingForm";
 import OfferingForm from "../OfferingForm";
 import OfferingTable from "../OfferingTable";
 import OfferingToolbar from "../OfferingToolbar";
 
 import type { OfferingManagementProps } from "./types";
-
-const INITIAL_QUERY: CourseOfferingQuery = {
-  search: "",
-  session: "ALL",
-  status: "ALL",
-  page: 1,
-  limit: 10,
-};
 
 export default function OfferingManagement({ lecturerSearch: lecturerSearchApi }: OfferingManagementProps) {
   const [query, setQuery] = useState<CourseOfferingQuery>(INITIAL_QUERY);

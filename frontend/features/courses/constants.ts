@@ -1,6 +1,5 @@
+import type { CourseOfferingQuery, CourseQuery, CreateCourseRequest } from "@/features/courses";
 import type { Option, StatusFilter } from "@/shared";
-
-import type { CourseOfferingQuery, CourseQuery } from "./types";
 
 export const COURSE_STATUS_FILTER_OPTIONS = [
   { label: "All Status", value: "ALL" },
@@ -15,6 +14,20 @@ export const DEFAULT_COURSE_QUERY: CourseQuery = {
   status: "ALL",
 };
 
+export const INITIAL_FORM: CreateCourseRequest = {
+  courseCode: "",
+  courseName: "",
+  description: "",
+  credits: 0,
+};
+
+export const INITIAL_QUERY: CourseOfferingQuery = {
+  search: "",
+  session: "ALL",
+  status: "ALL",
+  page: 1,
+  limit: 10,
+};
 export const COURSE_TABS = [
   { key: "details", label: "Details" },
   { key: "status", label: "Status" },

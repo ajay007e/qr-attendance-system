@@ -2,8 +2,7 @@
 
 import { useCallback, useState } from "react";
 
-import { DEFAULT_OFFERING_QUERY } from "../constants";
-import type { CourseOfferingQuery } from "../types";
+import { type CourseOfferingQuery, DEFAULT_OFFERING_QUERY } from "@/features/courses";
 
 export function useOfferingQuery() {
   const [query, setQueryState] = useState<CourseOfferingQuery>(DEFAULT_OFFERING_QUERY);
