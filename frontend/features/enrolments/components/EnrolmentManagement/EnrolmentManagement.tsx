@@ -65,11 +65,12 @@ export default function EnrolmentManagement() {
 
   return (
     <>
+      <SectionHeader
+        title="Find a Course"
+        subtitle="Search by course code or name. No courses load until you search."
+      />
+
       <Section>
-        <SectionHeader
-          title="Find a Course"
-          subtitle="Search by course code or name. No courses load until you search."
-        />
         {!selectedCourse && (
           <CourseSearch
             value={search}

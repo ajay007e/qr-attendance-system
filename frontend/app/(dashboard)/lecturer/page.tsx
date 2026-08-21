@@ -1,9 +1,9 @@
 import { LecturerDashboard } from "@/features/enrolments";
-import { ComingSoon, Container, Section } from "@/shared";
+import { ComingSoon, Section } from "@/shared";
 
 export default function LecturerDashboardPage() {
   return (
-    <Container>
+    <>
       <LecturerDashboard />
       <Section className="grid gap-4 lg:grid-cols-2">
         <ComingSoon
@@ -13,6 +13,6 @@ export default function LecturerDashboardPage() {
         />
         <ComingSoon title="Calendar Coming Soon" message="A calendar view of your schedule is on the way." size="sm" />
       </Section>
-    </Container>
+    </>
   );
 }

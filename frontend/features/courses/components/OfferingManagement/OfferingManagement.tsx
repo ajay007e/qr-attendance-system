@@ -11,6 +11,7 @@ import {
   EmptyState,
   Loader,
   NoResults,
+  Section,
 } from "@/shared";
 
 import { Plus, BookOpen } from "lucide-react";
@@ -113,7 +114,7 @@ export default function OfferingManagement({ lecturerSearch: lecturerSearchApi }
   }
 
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-5">
+    <>
       <PageHeader
         title="Course Offering Management"
         subtitle="Manage course offerings, sessions and lecturers."
@@ -133,62 +134,63 @@ export default function OfferingManagement({ lecturerSearch: lecturerSearchApi }
         }
       />
 
-      {showEmptyState && (
-        <EmptyState
-          icon={<BookOpen size={28} />}
-          title="No course offerings yet"
-          message="There are no course offerings available yet. Create a new offering to start managing courses, sessions and lecturers."
-          action={{
-            label: "Create Offering",
-            icon: <Plus size={18} />,
-            onClick: openCreateOffering,
-          }}
-        />
-      )}
+      <Section>
+        {showEmptyState && (
+          <EmptyState
+            icon={<BookOpen size={28} />}
+            title="No course offerings yet"
+            message="There are no course offerings available yet. Create a new offering to start managing courses, sessions and lecturers."
+            action={{
+              label: "Create Offering",
+              icon: <Plus size={18} />,
+              onClick: openCreateOffering,
+            }}
+          />
+        )}
 
-      {hasAnyOfferings && (
-        <>
-          <OfferingToolbar filters={query} onFiltersChange={setQuery} />
+        {hasAnyOfferings && (
+          <>
+            <OfferingToolbar filters={query} onFiltersChange={setQuery} />
 
-          {showNoResults && (
-            <NoResults
-              title="No offerings found"
-              message="Try changing your search or filters."
-              action={{
-                label: "Clear Filters",
-                onClick: () => setQuery(INITIAL_QUERY),
-              }}
-            />
-          )}
-
-          {hasResults && (
-            <>
-              <div className="relative">
-                {isFetching && <Loader overlay message="Loading offerings..." />}
-
-                <OfferingTable offerings={offerings} onEdit={openEditOffering} />
-              </div>
-
-              <Pagination
-                label="offerings"
-                {...pagination}
-                onPrevious={() =>
-                  setQuery({
-                    ...query,
-                    page: query.page - 1,
-                  })
-                }
-                onNext={() =>
-                  setQuery({
-                    ...query,
-                    page: query.page + 1,
-                  })
-                }
+            {showNoResults && (
+              <NoResults
+                title="No offerings found"
+                message="Try changing your search or filters."
+                action={{
+                  label: "Clear Filters",
+                  onClick: () => setQuery(INITIAL_QUERY),
+                }}
               />
-            </>
-          )}
-        </>
-      )}
+            )}
+
+            {hasResults && (
+              <>
+                <div className="relative">
+                  {isFetching && <Loader overlay message="Loading offerings..." />}
+                  <OfferingTable offerings={offerings} onEdit={openEditOffering} />
+                </div>
+
+                <Pagination
+                  label="offerings"
+                  {...pagination}
+                  onPrevious={() =>
+                    setQuery({
+                      ...query,
+                      page: query.page - 1,
+                    })
+                  }
+                  onNext={() =>
+                    setQuery({
+                      ...query,
+                      page: query.page + 1,
+                    })
+                  }
+                />
+              </>
+            )}
+          </>
+        )}
+      </Section>
 
       <Modal open={showCreateOffering} onClose={closeCreateOffering} title="Create Course Offering">
         <OfferingForm
@@ -210,6 +212,6 @@ export default function OfferingManagement({ lecturerSearch: lecturerSearchApi }
           />
         )}
       </Modal>
-    </div>
+    </>
   );
 }

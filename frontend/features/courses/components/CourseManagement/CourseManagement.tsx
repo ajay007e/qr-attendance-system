@@ -11,6 +11,7 @@ import {
   EmptyState,
   Loader,
   NoResults,
+  Section,
 } from "@/shared";
 
 import { useCourses } from "../../hooks/useCourses";
@@ -62,7 +63,7 @@ export default function CourseManagement() {
   const showNoResults = hasLoadedCurrentQuery && hasAnyCourses && !hasResults;
 
   return (
-    <div className="mx-auto w-full max-w-7xl space-y-5">
+    <>
       <PageHeader
         title="Course Management"
         subtitle="Manage courses, sessions and lecturers."
@@ -82,60 +83,62 @@ export default function CourseManagement() {
         }
       />
 
-      {showEmptyState && (
-        <EmptyState
-          icon={<BookOpen size={28} />}
-          title="No courses yet"
-          message="There are no courses available yet. Create a new course to start managing your academic sessions and lecturers."
-          action={{
-            label: "Create Course",
-            icon: <Plus size={18} />,
-            onClick: openCreateCourse,
-          }}
-        />
-      )}
+      <Section>
+        {showEmptyState && (
+          <EmptyState
+            icon={<BookOpen size={28} />}
+            title="No courses yet"
+            message="There are no courses available yet. Create a new course to start managing your academic sessions and lecturers."
+            action={{
+              label: "Create Course",
+              icon: <Plus size={18} />,
+              onClick: openCreateCourse,
+            }}
+          />
+        )}
 
-      {hasAnyCourses && (
-        <>
-          <CourseToolbar filters={query} onFiltersChange={setQuery} />
+        {hasAnyCourses && (
+          <>
+            <CourseToolbar filters={query} onFiltersChange={setQuery} />
 
-          {showNoResults && (
-            <NoResults
-              title="No courses found"
-              message="Try changing your search or filters."
-              action={{
-                label: "Clear Filters",
-                onClick: resetQuery,
-              }}
-            />
-          )}
-
-          {hasResults && (
-            <>
-              <div className="relative">
-                {isFetching && <Loader overlay message="Loading courses..." />}
-                <CourseTable courses={courses} onEdit={openEditCourse} />
-              </div>
-              <Pagination
-                label="courses"
-                {...pagination}
-                onPrevious={() =>
-                  setQuery({
-                    ...query,
-                    page: query.page - 1,
-                  })
-                }
-                onNext={() =>
-                  setQuery({
-                    ...query,
-                    page: query.page + 1,
-                  })
-                }
+            {showNoResults && (
+              <NoResults
+                title="No courses found"
+                message="Try changing your search or filters."
+                action={{
+                  label: "Clear Filters",
+                  onClick: resetQuery,
+                }}
               />
-            </>
-          )}
-        </>
-      )}
+            )}
+
+            {hasResults && (
+              <>
+                <div className="relative">
+                  {isFetching && <Loader overlay message="Loading courses..." />}
+                  <CourseTable courses={courses} onEdit={openEditCourse} />
+                </div>
+                <Pagination
+                  label="courses"
+                  {...pagination}
+                  onPrevious={() =>
+                    setQuery({
+                      ...query,
+                      page: query.page - 1,
+                    })
+                  }
+                  onNext={() =>
+                    setQuery({
+                      ...query,
+                      page: query.page + 1,
+                    })
+                  }
+                />
+              </>
+            )}
+          </>
+        )}
+      </Section>
 
       <Modal open={showCreateCourse} onClose={closeCreateCourse} title="Create Course">
         <CourseForm
@@ -149,6 +152,6 @@ export default function CourseManagement() {
       <Modal open={!!selectedCourse} onClose={closeEditCourse} title="Edit Course">
         {selectedCourse && <EditCourseForm course={selectedCourse} refresh={refresh} onClose={closeEditCourse} />}
       </Modal>
-    </div>
+    </>
   );
 }

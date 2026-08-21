@@ -1,8 +1,8 @@
-import { ComingSoon, Container, Section, PageHeader } from "@/shared";
+import { ComingSoon, Section, PageHeader } from "@/shared";
 
 export default function AdminPage() {
   return (
-    <Container>
+    <>
       <PageHeader title="Admin Dashboard" subtitle="Manage users, attendance records, courses, and system settings." />
       <Section>
         <ComingSoon
@@ -10,6 +10,6 @@ export default function AdminPage() {
           message="Attendance trends, performance insights, and detailed reports will be available here soon."
         />
       </Section>
-    </Container>
+    </>
   );
 }

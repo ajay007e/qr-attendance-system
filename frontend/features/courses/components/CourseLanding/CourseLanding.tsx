@@ -7,7 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { AttendanceTab } from "./components/AttendancePanel/AttendancePanel";
 import { SiteTab } from "./components/SitePanel/SitePanel";
 
-import { Tabs, PageLoader, ErrorFallback } from "@/shared";
+import { Tabs, PageLoader, ErrorFallback, Section } from "@/shared";
 
 import { COURSE_TABS } from "./constants";
 import type { CourseLandingProps, CourseTab } from "./types";
@@ -35,7 +35,7 @@ export default function CourseLanding({ offeringId, backHref, participantsTab }:
   }
 
   return (
-    <div className="space-y-5">
+    <Section>
       <Link
         href={backHref}
         className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition hover:text-gray-900"
@@ -60,6 +60,6 @@ export default function CourseLanding({ offeringId, backHref, participantsTab }:
       {activeTab === "participants" && participantsTab}
 
       {activeTab === "attendance" && <AttendanceTab />}
-    </div>
+    </Section>
   );
 }

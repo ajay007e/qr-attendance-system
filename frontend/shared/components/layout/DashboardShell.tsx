@@ -8,6 +8,7 @@ import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import type { DashboardShellProps } from "./types";
 import Button from "../ui/button";
+import { Container } from "..";
 
 export default function DashboardShell({ children, user, items, onLogout }: DashboardShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -65,7 +66,7 @@ export default function DashboardShell({ children, user, items, onLogout }: Dash
 
         {/* Main Content */}
         <main className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
-          {children}
+          <Container>{children}</Container>
         </main>
       </div>
 

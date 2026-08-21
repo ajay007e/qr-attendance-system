@@ -14,6 +14,7 @@ import {
   EmptyState,
   Loader,
   NoResults,
+  Section,
 } from "@/shared";
 import { UserQuery } from "../../types";
 import { DEFAULT_USER_QUERY } from "../../constants";
@@ -93,73 +94,77 @@ export default function UserManagement() {
         }
       />
 
-      {showEmptyState && (
-        <EmptyState
-          icon={<Users size={28} />}
-          title="No Users Available"
-          message="Create user accounts for students, lecturers, and administrators."
-          size="lg"
-          action={{
-            label: "Add User",
-            icon: <Plus size={18} />,
-            onClick: () => setShowCreateUser(true),
-          }}
-        />
-      )}
-      {hasAnyUsers && (
-        <>
-          <UserToolbar
-            filters={query}
-            onFiltersChange={(filters) =>
-              setQuery({
-                ...filters,
-                page: 1,
-              })
-            }
+      <Section>
+        {showEmptyState && (
+          <EmptyState
+            icon={<Users size={28} />}
+            title="No Users Available"
+            message="Create user accounts for students, lecturers, and administrators."
+            size="lg"
+            action={{
+              label: "Add User",
+              icon: <Plus size={18} />,
+              onClick: () => setShowCreateUser(true),
+            }}
           />
+        )}
 
-          {showNoResults && (
-            <NoResults
-              title="No users found"
-              message="Try changing your search or filters."
-              action={{
-                label: "Clear Filters",
-                onClick: () => setQuery(DEFAULT_USER_QUERY),
-              }}
+        {hasAnyUsers && (
+          <>
+            <UserToolbar
+              filters={query}
+              onFiltersChange={(filters) =>
+                setQuery({
+                  ...filters,
+                  page: 1,
+                })
+              }
             />
-          )}
 
-          {hasResults && (
-            <>
-              <div className="relative">
-                {isFetching && <Loader overlay message="Loading users..." />}
-                <UserTable users={users} onEdit={setSelectedUser} />
-              </div>
-
-              <Pagination
-                label="users"
-                page={pagination.page}
-                totalPages={pagination.totalPages}
-                total={pagination.total}
-                hasPrevious={pagination.page > 1}
-                hasNext={pagination.page < pagination.totalPages}
-                onPrevious={() =>
-                  setQuery((previous) => ({
-                    ...previous,
-                    page: previous.page - 1,
-                  }))
-                }
-                onNext={() =>
-                  setQuery((previous) => ({
-                    ...previous,
-                    page: previous.page + 1,
-                  }))
-                }
+            {showNoResults && (
+              <NoResults
+                title="No users found"
+                message="Try changing your search or filters."
+                action={{
+                  label: "Clear Filters",
+                  onClick: () => setQuery(DEFAULT_USER_QUERY),
+                }}
               />
-            </>
-          )}
-        </>
-      )}
+            )}
+
+            {hasResults && (
+              <>
+                <div className="relative">
+                  {isFetching && <Loader overlay message="Loading users..." />}
+                  <UserTable users={users} onEdit={setSelectedUser} />
+                </div>
+
+                <Pagination
+                  label="users"
+                  page={pagination.page}
+                  totalPages={pagination.totalPages}
+                  total={pagination.total}
+                  hasPrevious={pagination.page > 1}
+                  hasNext={pagination.page < pagination.totalPages}
+                  onPrevious={() =>
+                    setQuery((previous) => ({
+                      ...previous,
+                      page: previous.page - 1,
+                    }))
+                  }
+                  onNext={() =>
+                    setQuery((previous) => ({
+                      ...previous,
+                      page: previous.page + 1,
+                    }))
+                  }
+                />
+              </>
+            )}
+          </>
+        )}
+      </Section>
+
       <Modal open={showCreateUser} onClose={() => setShowCreateUser(false)} title="Create User" size="md">
         <UserForm
           onSubmit={async (data) => {
