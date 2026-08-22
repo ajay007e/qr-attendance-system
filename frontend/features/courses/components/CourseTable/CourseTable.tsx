@@ -1,6 +1,6 @@
-import { CourseTableProps } from "./types";
 import { CourseCard } from "./CourseCard";
 import { CourseTableRow } from "./CourseTableRow";
+import { CourseTableProps } from "./types";
 
 export default function CourseTable({ courses, onEdit }: CourseTableProps) {
   return (
@@ -36,8 +36,6 @@ export default function CourseTable({ courses, onEdit }: CourseTableProps) {
                 <th className="px-6 py-4 text-left text-sm font-semibold">Name</th>
 
                 <th className="px-6 py-4 text-left text-sm font-semibold">Credits</th>
-
-                <th className="px-6 py-4 text-left text-sm font-semibold">Session</th>
 
                 <th className="px-6 py-4 text-left text-sm font-semibold">Status</th>
 

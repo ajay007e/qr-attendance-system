@@ -1,17 +1,14 @@
 import { CourseLanding } from "@/features/courses";
 import { ParticipantsTab } from "@/features/enrolments";
-import { Container } from "@/shared";
 
 export default async function StudentCoursePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const courseId = Number(id);
   return (
-    <Container>
-      <CourseLanding
-        courseId={courseId}
-        backHref="/lecturer"
-        participantsTab={<ParticipantsTab courseId={courseId} />}
-      />
-    </Container>
+    <CourseLanding
+      offeringId={courseId}
+      backHref="/student"
+      participantsTab={<ParticipantsTab offeringId={courseId} />}
+    />
   );
 }

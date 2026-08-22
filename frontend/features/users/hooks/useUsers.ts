@@ -2,32 +2,14 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { userService } from "../api/user.service";
-
-import type {
-  CreateUserRequest,
-  UpdateUserRequest,
-  ChangePasswordRequest,
-  ChangeUserStatusRequest,
-  UserQuery,
-} from "../types";
-
-import { DEFAULT_PAGINATION_META, useError } from "@/shared";
+import { userService, type UserQuery } from "@/features/users";
+import { AppError, DEFAULT_PAGINATION_META, useError } from "@/shared";
 import type { PaginationMeta, User } from "@/shared";
 
-function getQueryKey(query: UserQuery) {
-  return JSON.stringify({
-    search: query.search,
-    role: query.role,
-    status: query.status,
-    page: query.page,
-    limit: query.limit,
-  });
-}
-
 export default function useUsers(query: UserQuery) {
-  const isInitialLoad = useRef(true);
   const { handleError } = useError();
+
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const [users, setUsers] = useState<User[]>([]);
   const [pagination, setPagination] = useState<PaginationMeta>(DEFAULT_PAGINATION_META);
@@ -35,76 +17,75 @@ export default function useUsers(query: UserQuery) {
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [loadedQueryKey, setLoadedQueryKey] = useState<string | null>(null);
+  const fetchUsers = useCallback(
+    async (controller: AbortController, initial = false) => {
+      try {
+        const response = await userService.getUsers(query, controller.signal);
 
-  const loadUsers = useCallback(async () => {
-    const queryKey = getQueryKey(query);
-    try {
-      if (isInitialLoad.current) {
-        setLoading(true);
-      } else {
-        setIsFetching(true);
-      }
-      setError(null);
-      const response = await userService.getUsers(query);
-      setUsers(response.data.items);
-      setPagination(response.data.meta);
-      setLoadedQueryKey(queryKey);
-    } catch (error) {
-      setUsers([]);
-      setPagination(DEFAULT_PAGINATION_META);
-      handleError(error);
-      if (error instanceof Error) {
-        setError(error.message);
-      } else {
+        if (controller.signal.aborted) {
+          return;
+        }
+
+        setUsers(response.data.items);
+        setPagination(response.data.meta);
+        setError(null);
+      } catch (err) {
+        if (controller.signal.aborted) {
+          return;
+        }
+
+        if (err instanceof AppError) {
+          if (err.type === "AUTH") {
+            handleError(err);
+            return;
+          }
+
+          setError(err.message);
+          return;
+        }
+
         setError("Unable to load users.");
+      } finally {
+        if (controller.signal.aborted) {
+          return;
+        }
+
+        if (initial) {
+          setLoading(false);
+        } else {
+          setIsFetching(false);
+        }
       }
-    } finally {
-      if (isInitialLoad.current) {
-        setLoading(false);
-
-        isInitialLoad.current = false;
-      } else {
-        setIsFetching(false);
-      }
-    }
-  }, [query, handleError]);
-
-  const createUser = async (data: CreateUserRequest) => {
-    await userService.createUser(data);
-
-    await loadUsers();
-  };
-
-  const updateUser = async (id: number, data: UpdateUserRequest) => {
-    await userService.updateUser(id, data);
-
-    await loadUsers();
-  };
-
-  const changeStatus = async (id: number, data: ChangeUserStatusRequest) => {
-    await userService.changeStatus(id, data);
-
-    await loadUsers();
-  };
-
-  const changePassword = async (id: number, data: ChangePasswordRequest) => {
-    await userService.changePassword(id, data);
-  };
+    },
+    [query, handleError],
+  );
 
   useEffect(() => {
+    abortControllerRef.current?.abort();
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     const timeoutId = setTimeout(() => {
-      void loadUsers();
+      void fetchUsers(controller, true);
     }, 0);
 
     return () => {
       clearTimeout(timeoutId);
+      controller.abort();
     };
-  }, [loadUsers]);
+  }, [fetchUsers]);
 
-  const currentQueryKey = getQueryKey(query);
+  const refresh = useCallback(async () => {
+    abortControllerRef.current?.abort();
 
-  const hasLoadedCurrentQuery = loadedQueryKey === currentQueryKey;
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
+    setIsFetching(true);
+
+    await fetchUsers(controller);
+  }, [fetchUsers]);
 
   return {
     users,
@@ -112,12 +93,6 @@ export default function useUsers(query: UserQuery) {
     loading,
     isFetching,
     error,
-    refresh: loadUsers,
-    createUser,
-    updateUser,
-    changeStatus,
-    changePassword,
-
-    hasLoadedCurrentQuery,
+    refresh,
   };
 }

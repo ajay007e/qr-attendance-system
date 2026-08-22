@@ -1,10 +1,5 @@
-import { Container } from "@/shared";
-import CoursesPageClient from "./CoursePageClient";
+import { CourseManagement } from "@/features/courses";
 
 export default function CoursesPage() {
-  return (
-    <Container>
-      <CoursesPageClient />
-    </Container>
-  );
+  return <CourseManagement />;
 }

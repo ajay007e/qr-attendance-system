@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Course, useError } from "@/shared";
-import { CourseService } from "../api/course.service";
 
-import type { CreateCourseRequest, UpdateCourseRequest } from "../types";
+import { CourseService } from "@/features/courses";
+import type { CreateCourseRequest, UpdateCourseRequest } from "@/features/courses";
+import { Course, useError } from "@/shared";
 
 export function useCourseMutation(refresh: () => Promise<void>) {
   const { handleError } = useError();

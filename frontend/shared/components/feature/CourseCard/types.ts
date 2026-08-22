@@ -1,7 +1,7 @@
-import { Course } from "@/shared";
+import type { Course } from "@/shared";
 
 export interface CourseCardProps {
-  course: Course;
+  course: Pick<Course, "courseCode" | "courseName">;
   action?: React.ReactNode;
   href?: string;
 }

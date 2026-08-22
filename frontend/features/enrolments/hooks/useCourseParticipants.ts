@@ -2,19 +2,15 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-import { enrolmentService } from "../api/enrolment.service";
+import { enrolmentService, type ParticipantQuery } from "@/features/enrolments";
 import type { Participant, PaginationMeta } from "@/shared";
 import { DEFAULT_PAGINATION_META } from "@/shared";
-import { ParticipantQuery } from "../types";
 
-const PARTICIPANTS_PER_PAGE = 10;
-
-export default function useCourseParticipants(courseId: number, query: ParticipantQuery) {
+export function useCourseParticipants(offeringId: number, query: ParticipantQuery) {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [loading, setLoading] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [hasLoaded, setHasLoaded] = useState(false);
   const [pagination, setPagination] = useState<PaginationMeta>(DEFAULT_PAGINATION_META);
 
   const fetchParticipants = useCallback(async () => {
@@ -22,23 +18,21 @@ export default function useCourseParticipants(courseId: number, query: Participa
       setError(null);
       setIsFetching(true);
 
-      const response = await enrolmentService.getCourseStudents(courseId, {
+      const response = await enrolmentService.getCourseStudents(offeringId, {
         search: query.search,
         page: query.page,
-        limit: PARTICIPANTS_PER_PAGE,
+        limit: DEFAULT_PAGINATION_META.limit,
       });
 
       setParticipants(response.data.items);
       setPagination(response.data.meta);
-      setHasLoaded(true);
     } catch (err) {
       setError(err instanceof Error ? err : new Error("Unable to load participants"));
-      setHasLoaded(true);
     } finally {
       setLoading(false);
       setIsFetching(false);
     }
-  }, [courseId, query.search, query.page]);
+  }, [offeringId, query.search, query.page]);
 
   useEffect(() => {
     let cancelled = false;
@@ -48,21 +42,19 @@ export default function useCourseParticipants(courseId: number, query: Participa
         setError(null);
         setIsFetching(true);
 
-        const response = await enrolmentService.getCourseStudents(courseId, {
+        const response = await enrolmentService.getCourseStudents(offeringId, {
           search: query.search,
           page: query.page,
-          limit: PARTICIPANTS_PER_PAGE,
+          limit: DEFAULT_PAGINATION_META.limit,
         });
 
         if (!cancelled) {
           setParticipants(response.data.items);
           setPagination(response.data.meta);
-          setHasLoaded(true);
         }
       } catch (err) {
         if (!cancelled) {
           setError(err instanceof Error ? err : new Error("Unable to load participants"));
-          setHasLoaded(true);
         }
       } finally {
         if (!cancelled) {
@@ -77,7 +69,7 @@ export default function useCourseParticipants(courseId: number, query: Participa
     return () => {
       cancelled = true;
     };
-  }, [courseId, query.search, query.page]);
+  }, [offeringId, query.search, query.page]);
 
   return {
     participants,
@@ -86,6 +78,5 @@ export default function useCourseParticipants(courseId: number, query: Participa
     isFetching,
     error,
     refresh: fetchParticipants,
-    hasLoadedCurrentQuery: hasLoaded,
   };
 }

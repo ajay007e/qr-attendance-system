@@ -1,9 +1,9 @@
 import { Search } from "lucide-react";
 
-import { COURSE_STATUS_FILTER_OPTIONS } from "../../constants";
+import { COURSE_STATUS_FILTER_OPTIONS } from "@/features/courses";
+import { Field } from "@/shared";
 
 import type { CourseToolbarProps } from "./types";
-import { COURSE_SESSION_FILTER_OPTIONS, Field } from "@/shared";
 
 export default function CourseToolbar({ filters, onFiltersChange }: CourseToolbarProps) {
   const updateFilter = <K extends keyof CourseToolbarProps["filters"]>(
@@ -54,14 +54,6 @@ export default function CourseToolbar({ filters, onFiltersChange }: CourseToolba
             sm:flex-row
           "
         >
-          <div className="min-w-[180px]">
-            <Field.Select
-              value={filters.session}
-              onChange={(value) => updateFilter("session", value)}
-              options={COURSE_SESSION_FILTER_OPTIONS}
-            />
-          </div>
-
           <div className="min-w-[180px]">
             <Field.Select
               value={filters.status}

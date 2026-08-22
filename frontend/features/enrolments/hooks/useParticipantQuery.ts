@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { ParticipantQuery } from "../types";
-import { INITIAL_QUERY } from "../constants";
 
-export default function useParticipantQuery() {
+import { INITIAL_QUERY, type ParticipantQuery } from "@/features/enrolments";
+
+export function useParticipantQuery() {
   const [query, setQueryState] = useState<ParticipantQuery>(INITIAL_QUERY);
 
   const setQuery = useCallback((updates: Partial<ParticipantQuery>) => {

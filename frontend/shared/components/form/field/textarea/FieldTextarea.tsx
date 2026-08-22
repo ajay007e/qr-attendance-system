@@ -1,6 +1,9 @@
 import React from "react";
+
 import { cn } from "@/shared/lib/utils";
+
 import { useFieldContext } from "../field.context";
+
 import { textareaVariants } from "./textarea.styles";
 import type { FieldTextareaProps } from "./textarea.types";
 

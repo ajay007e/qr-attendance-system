@@ -1,12 +1,13 @@
 "use client";
 
+import { ChevronDown, LogOut, Settings, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, LogOut, Settings, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { SidebarProps } from "./types";
 import { getUserRoleLabel } from "@/shared";
+
+import { SidebarProps } from "./types";
 
 export default function Sidebar({ user, items, onLogout, onNavigate }: SidebarProps) {
   const pathname = usePathname();

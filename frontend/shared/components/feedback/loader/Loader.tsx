@@ -3,7 +3,6 @@
 import { cn } from "@/shared/lib/utils";
 
 import { loaderMessageVariants, loaderOverlayVariants, loaderSpinnerVariants, loaderVariants } from "./loader.styles";
-
 import type { LoaderProps } from "./loader.types";
 
 export default function Loader({ size = "md", message, className, overlay = false, ...props }: LoaderProps) {

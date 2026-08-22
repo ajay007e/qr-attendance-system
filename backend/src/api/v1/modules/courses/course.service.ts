@@ -1,29 +1,12 @@
-import { AppError, ROLES } from "@/utils";
-
-import { UserRepository } from "../users";
+import { AppError } from "@/utils";
 
 import { CourseRepository } from "./course.repository";
-import { toCreateCourseData, toCourse, toLecturer, toUpdateCourseData } from "./course.mapper";
-import type {
-  Course,
-  CourseLecturerRole,
-  CourseQuery,
-  CreateCourseRequest,
-  Lecturer,
-  UpdateCourseRequest,
-} from "./course.types";
-import {
-  validateAssignLecturerRequest,
-  validateCreateCourseRequest,
-  validateCourseId,
-  validateUpdateCourseRequest,
-} from "./course.utils";
+import { toCreateCourseData, toCourse, toUpdateCourseData } from "./course.mapper";
+import type { Course, CourseQuery, CreateCourseRequest, UpdateCourseRequest } from "./course.types";
+import { validateCreateCourseRequest, validateCourseId, validateUpdateCourseRequest } from "./course.utils";
 
 export class CourseService {
-  constructor(
-    private readonly repository: CourseRepository,
-    private readonly users: UserRepository,
-  ) {}
+  constructor(private readonly repository: CourseRepository) {}
 
   async list(query: CourseQuery) {
     const result = await this.repository.findAll(query);
@@ -86,53 +69,5 @@ export class CourseService {
     await this.repository.updateStatus(id, isActive);
 
     return this.get(id);
-  }
-
-  async getLecturers(courseId: number): Promise<Lecturer[]> {
-    await this.get(courseId);
-
-    const lecturers = await this.repository.getLecturers(courseId);
-
-    return lecturers.map(toLecturer);
-  }
-
-  async assignLecturer(courseId: number, userId: number, role: CourseLecturerRole): Promise<void> {
-    await this.get(courseId);
-
-    const validated = validateAssignLecturerRequest(userId, role);
-
-    const lecturer = await this.users.findById(validated.userId);
-
-    if (!lecturer) {
-      throw new AppError("Lecturer not found", 404);
-    }
-
-    if (lecturer.role !== ROLES.LECTURER) {
-      throw new AppError("User is not a lecturer", 400);
-    }
-
-    const assigned = await this.repository.isLecturerAssigned(courseId, validated.userId);
-
-    if (assigned) {
-      throw new AppError("Lecturer already assigned", 409);
-    }
-
-    await this.repository.assignLecturer(courseId, validated.userId, validated.role);
-  }
-
-  async removeLecturer(courseId: number, userId: number): Promise<void> {
-    await this.get(courseId);
-
-    if (!Number.isInteger(userId) || userId <= 0) {
-      throw new AppError("Invalid user id", 400);
-    }
-
-    const assigned = await this.repository.isLecturerAssigned(courseId, userId);
-
-    if (!assigned) {
-      throw new AppError("Lecturer is not assigned to this course", 404);
-    }
-
-    await this.repository.removeLecturer(courseId, userId);
   }
 }

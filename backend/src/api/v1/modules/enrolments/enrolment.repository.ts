@@ -26,19 +26,38 @@ export class EnrolmentRepository {
     const [rows] = await db.execute<RowDataPacket[]>(
       `
         SELECT
-          c.id,
+          co.id AS course_offering_id,
+
+          c.id AS course_id,
           c.course_code,
           c.course_name,
           c.description,
           c.credits,
-          c.session,
           c.is_active,
+
+          co.academic_year,
+          co.session,
+          co.status AS offering_status,
+
+          ce.status AS enrolment_status,
           ce.created_at AS enrolled_at
+
         FROM course_enrolments ce
+
+        INNER JOIN course_offerings co
+          ON co.id = ce.course_offering_id
+
         INNER JOIN courses c
-          ON c.id = ce.course_id
+          ON c.id = co.course_id
+
         WHERE ce.user_id = ?
-        ORDER BY c.course_code ASC
+            AND ce.status <> 'withdrawn'
+
+
+        ORDER BY
+          co.academic_year DESC,
+          co.session ASC,
+          c.course_code ASC
       `,
       [userId],
     );
@@ -48,27 +67,32 @@ export class EnrolmentRepository {
 
   async findAvailableCourses(userId: number, query: EnrolmentQuery): Promise<PaginatedData<DatabaseEnrolledCourse>> {
     const page = Math.max(1, query.page ?? DEFAULT_PAGE);
+
     const limit = Math.min(DEFAULT_MAX_LIMIT, Math.max(1, query.limit ?? DEFAULT_LIMIT));
+
     const offset = (page - 1) * limit;
 
     let where = `
-    WHERE c.is_active = TRUE
-      AND c.id NOT IN (
-        SELECT course_id
-        FROM course_enrolments
-        WHERE user_id = ?
-      )
-  `;
+      WHERE c.is_active = TRUE
+        AND co.status = 'enrol'
+        AND NOT EXISTS (
+          SELECT 1
+          FROM course_enrolments ce_existing
+          WHERE ce_existing.course_offering_id = co.id
+            AND ce_existing.user_id = ?
+            AND ce_existing.status <> 'withdrawn'
+        )
+    `;
 
     const params: ExecuteValues[] = [userId];
 
     if (query.search?.trim()) {
       where += `
-      AND (
-        c.course_code LIKE ?
-        OR c.course_name LIKE ?
-      )
-    `;
+        AND (
+          c.course_code LIKE ?
+          OR c.course_name LIKE ?
+        )
+      `;
 
       const keyword = `%${query.search.trim()}%`;
 
@@ -77,10 +101,15 @@ export class EnrolmentRepository {
 
     const [countRows] = await db.execute<RowDataPacket[]>(
       `
-      SELECT COUNT(*) AS total
-      FROM courses c
-      ${where}
-    `,
+        SELECT COUNT(*) AS total
+
+        FROM course_offerings co
+
+        INNER JOIN courses c
+          ON c.id = co.course_id
+
+        ${where}
+      `,
       params,
     );
 
@@ -89,21 +118,38 @@ export class EnrolmentRepository {
 
     const [rows] = await db.execute<RowDataPacket[]>(
       `
-      SELECT
-        c.id,
-        c.course_code,
-        c.course_name,
-        c.description,
-        c.credits,
-        c.session,
-        c.is_active,
-        NULL AS enrolled_at
-      FROM courses c
-      ${where}
-      ORDER BY c.course_code ASC
-      LIMIT ${limit}
-      OFFSET ${offset}
-    `,
+        SELECT
+          co.id AS course_offering_id,
+
+          c.id AS course_id,
+          c.course_code,
+          c.course_name,
+          c.description,
+          c.credits,
+          c.is_active,
+
+          co.academic_year,
+          co.session,
+          co.status AS offering_status,
+
+          NULL AS enrolment_status,
+          NULL AS enrolled_at
+
+        FROM course_offerings co
+
+        INNER JOIN courses c
+          ON c.id = co.course_id
+
+        ${where}
+
+        ORDER BY
+          co.academic_year DESC,
+          co.session ASC,
+          c.course_code ASC
+
+        LIMIT ${limit}
+        OFFSET ${offset}
+      `,
       params,
     );
 
@@ -118,32 +164,59 @@ export class EnrolmentRepository {
     };
   }
 
-  async isEnrolled(courseId: number, userId: number): Promise<boolean> {
+  async isEnrolled(courseOfferingId: number, userId: number): Promise<boolean> {
     const [rows] = await db.execute<RowDataPacket[]>(
       `
         SELECT 1
         FROM course_enrolments
-        WHERE course_id = ?
+        WHERE course_offering_id = ?
           AND user_id = ?
+          AND status <> 'withdrawn'
         LIMIT 1
       `,
-      [courseId, userId],
+      [courseOfferingId, userId],
     );
 
     return rows.length > 0;
   }
 
-  async enrol(courseId: number, userId: number): Promise<boolean> {
+  async enrol(courseOfferingId: number, userId: number): Promise<boolean> {
     try {
+      /*
+       * A withdrawn enrolment already exists because the table
+       * has a composite primary key:
+       *
+       * course_offering_id + user_id
+       *
+       * Therefore we restore the existing enrolment instead
+       * of inserting another row.
+       */
+
+      const [result] = await db.execute<ResultSetHeader>(
+        `
+          UPDATE course_enrolments
+          SET status = 'enrolled'
+          WHERE course_offering_id = ?
+            AND user_id = ?
+            AND status = 'withdrawn'
+        `,
+        [courseOfferingId, userId],
+      );
+
+      if (result.affectedRows > 0) {
+        return true;
+      }
+
       await db.execute<ResultSetHeader>(
         `
           INSERT INTO course_enrolments (
-            course_id,
-            user_id
+            course_offering_id,
+            user_id,
+            status
           )
-          VALUES (?, ?)
+          VALUES (?, ?, 'enrolled')
         `,
-        [courseId, userId],
+        [courseOfferingId, userId],
       );
 
       return true;
@@ -156,39 +229,57 @@ export class EnrolmentRepository {
     }
   }
 
-  async unenrol(courseId: number, userId: number): Promise<void> {
+  async unenrol(courseOfferingId: number, userId: number): Promise<void> {
     await db.execute(
       `
-        DELETE FROM course_enrolments
-        WHERE course_id = ?
+        UPDATE course_enrolments
+        SET status = 'withdrawn'
+        WHERE course_offering_id = ?
           AND user_id = ?
+          AND status <> 'withdrawn'
       `,
-      [courseId, userId],
+      [courseOfferingId, userId],
     );
   }
 
   /* =====================================================
-   * Lecturer Courses
+   * Lecturer Course Offerings
    * ===================================================== */
 
   async findAssignedCourses(userId: number): Promise<DatabaseAssignedCourse[]> {
     const [rows] = await db.execute<RowDataPacket[]>(
       `
         SELECT
-          c.id,
+          co.id AS course_offering_id,
+
+          c.id AS course_id,
           c.course_code,
           c.course_name,
           c.description,
           c.credits,
-          c.session,
           c.is_active,
+
+          co.academic_year,
+          co.session,
+          co.status AS offering_status,
+
           cl.role AS lecturer_role,
           cl.created_at AS assigned_at
+
         FROM course_lecturers cl
+
+        INNER JOIN course_offerings co
+          ON co.id = cl.course_offering_id
+
         INNER JOIN courses c
-          ON c.id = cl.course_id
+          ON c.id = co.course_id
+
         WHERE cl.user_id = ?
-        ORDER BY c.course_code ASC
+
+        ORDER BY
+          co.academic_year DESC,
+          co.session ASC,
+          c.course_code ASC
       `,
       [userId],
     );
@@ -197,34 +288,38 @@ export class EnrolmentRepository {
   }
 
   /* =====================================================
-   * Course Roster
+   * Course Offering Roster
    * ===================================================== */
 
-  async getStudents(courseId: number, query: EnrolmentQuery): Promise<PaginatedData<DatabaseStudent>> {
+  async getStudents(courseOfferingId: number, query: EnrolmentQuery): Promise<PaginatedData<DatabaseStudent>> {
     const page = Math.max(1, query.page ?? DEFAULT_PAGE);
     const limit = Math.min(DEFAULT_MAX_LIMIT, Math.max(1, query.limit ?? DEFAULT_LIMIT));
+
     const offset = (page - 1) * limit;
 
-    let where = `
-      WHERE ce.course_id = ?
-    `;
+    const baseWhere = `
+    WHERE ce.course_offering_id = ?
+      AND ce.status <> 'withdrawn'
+  `;
 
-    const params: ExecuteValues[] = [courseId];
+    let where = baseWhere;
+    const params: ExecuteValues[] = [courseOfferingId];
 
     if (query.search?.trim()) {
       where += `
-        AND (
-          u.first_name LIKE ?
-          OR u.last_name LIKE ?
-          OR u.email LIKE ?
-        )
-      `;
+      AND (
+        u.first_name LIKE ?
+        OR u.last_name LIKE ?
+        OR u.email LIKE ?
+      )
+    `;
 
       const keyword = `%${query.search.trim()}%`;
 
       params.push(keyword, keyword, keyword);
     }
 
+    // Filtered total
     const [countRows] = await db.execute<RowDataPacket[]>(
       `
       SELECT COUNT(*) AS total
@@ -239,6 +334,18 @@ export class EnrolmentRepository {
     const total = Number(countRows[0]?.total ?? 0);
     const totalPages = Math.ceil(total / limit);
 
+    // Unfiltered total for hasData
+    const [dataCountRows] = await db.execute<RowDataPacket[]>(
+      `
+      SELECT COUNT(*) AS total
+      FROM course_enrolments ce
+      ${baseWhere}
+    `,
+      [courseOfferingId],
+    );
+
+    const dataCount = Number(dataCountRows[0]?.total ?? 0);
+
     const [rows] = await db.execute<RowDataPacket[]>(
       `
       SELECT
@@ -247,12 +354,21 @@ export class EnrolmentRepository {
         u.last_name,
         u.email,
         u.role,
+
+        ce.status AS enrolment_status,
         ce.created_at AS enrolled_at
+
       FROM course_enrolments ce
+
       INNER JOIN users u
         ON u.id = ce.user_id
+
       ${where}
-      ORDER BY u.first_name ASC, u.last_name ASC
+
+      ORDER BY
+        u.first_name ASC,
+        u.last_name ASC
+
       LIMIT ${limit}
       OFFSET ${offset}
     `,
@@ -266,6 +382,7 @@ export class EnrolmentRepository {
         limit,
         total,
         totalPages,
+        hasData: dataCount > 0,
       },
     };
   }

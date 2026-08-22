@@ -2,8 +2,8 @@
 
 import { Lock, Mail } from "lucide-react";
 
+import { useLoginForm } from "@/features/auth";
 import { Button, Field, FormError } from "@/shared";
-import { useLoginForm } from "../../hooks/useLoginForm";
 
 export function LoginForm() {
   const { email, password, loading, error, handleEmailChange, handlePasswordChange, handleSubmit } = useLoginForm();

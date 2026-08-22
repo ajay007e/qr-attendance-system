@@ -1,6 +1,7 @@
 "use client";
 
 import { EmptyState } from "@/shared";
+
 import type { NoResultsProps } from "./no-results.types";
 
 export default function NoResults({

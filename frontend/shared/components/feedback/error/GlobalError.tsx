@@ -4,8 +4,8 @@ import { useEffect } from "react";
 
 import { useError } from "@/shared";
 
-import LoginRequiredModal from "./components/LoginRequiredModal";
 import ErrorToast from "./components/ErrorToast";
+import LoginRequiredModal from "./components/LoginRequiredModal";
 
 export default function GlobalError() {
   const { error, clearError } = useError();

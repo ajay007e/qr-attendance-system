@@ -1,4 +1,4 @@
-import type { Course, Participant } from "@/shared";
+import type { Participant } from "@/shared";
 
 export interface ParticipantToolbarProps {
   search: string;
@@ -18,5 +18,5 @@ export interface ParticipantTableProps {
 }
 
 export interface ParticipantsTabProps {
-  courseId: Course["id"];
+  offeringId: number;
 }

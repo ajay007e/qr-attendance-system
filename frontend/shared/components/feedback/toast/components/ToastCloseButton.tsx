@@ -2,8 +2,9 @@
 
 import { X } from "lucide-react";
 
-import { ToastCloseButtonProps } from "../toast.types";
 import { Button } from "@/shared";
+
+import { ToastCloseButtonProps } from "../toast.types";
 
 export function ToastCloseButton({ onClick, label = "Close notification" }: ToastCloseButtonProps) {
   return (

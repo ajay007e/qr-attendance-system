@@ -2,13 +2,12 @@
 
 import { useState } from "react";
 
+import { USER_TABS } from "@/features/users";
 import { Tabs } from "@/shared";
 
+import { DeleteUserTab } from "./DeleteTab";
 import { DetailsForm } from "./DetailsTab";
 import { PasswordForm } from "./PasswordTab";
-import { DeleteUserTab } from "./DeleteTab";
-
-import { USER_TABS } from "../../constants";
 import { EditUserFormProps, Tab } from "./types";
 
 export default function EditUserForm({ user, onUpdate, onPasswordChange, onStatusChange }: EditUserFormProps) {

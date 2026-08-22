@@ -2,13 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { type StudentCourse, COURSE_SEARCH_MIN_LENGTH, enrolmentService } from "@/features/enrolments";
 import { useDebounce, useError } from "@/shared";
 
-import { enrolmentService } from "../api/enrolment.service";
-import { COURSE_SEARCH_MIN_LENGTH } from "../constants";
-import type { StudentCourse } from "../types";
-
-export default function useAvailableCourses(search: string) {
+export function useAvailableCourses(search: string) {
   const { handleError } = useError();
 
   const requestId = useRef(0);

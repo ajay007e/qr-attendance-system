@@ -2,12 +2,12 @@ import { AppError } from "@/utils";
 
 import type { EnrolRequest } from "./enrolment.types";
 
-export function validateCourseId(courseId: number): number {
-  if (!Number.isInteger(courseId) || courseId <= 0) {
-    throw new AppError("Invalid course id", 400);
+export function validateCourseOfferingId(courseOfferingId: number): number {
+  if (!Number.isInteger(courseOfferingId) || courseOfferingId <= 0) {
+    throw new AppError("Invalid course offering id", 400);
   }
 
-  return courseId;
+  return courseOfferingId;
 }
 
 export function validateEnrolRequest(data: EnrolRequest): EnrolRequest {
@@ -15,11 +15,11 @@ export function validateEnrolRequest(data: EnrolRequest): EnrolRequest {
     throw new AppError("Request body is required", 400);
   }
 
-  if (!Number.isInteger(data.courseId) || data.courseId <= 0) {
-    throw new AppError("Invalid course id", 400);
+  if (!Number.isInteger(data.courseOfferingId) || data.courseOfferingId <= 0) {
+    throw new AppError("Invalid course offering id", 400);
   }
 
   return {
-    courseId: data.courseId,
+    courseOfferingId: data.courseOfferingId,
   };
 }

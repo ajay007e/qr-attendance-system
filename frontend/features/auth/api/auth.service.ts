@@ -1,7 +1,6 @@
+import type { LoginPayload } from "@/features/auth";
 import { api } from "@/shared";
 import type { ApiResponse, SessionUser, User } from "@/shared";
-
-import type { LoginPayload } from "../types";
 
 export const authService = {
   login(data: LoginPayload) {

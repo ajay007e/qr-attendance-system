@@ -1,23 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 
-import { useCourse } from "../../hooks/useCourse";
+import { Tabs, PageLoader, ErrorFallback, Section } from "@/shared";
+
+import { useOffering } from "../../hooks/useOffering";
 
 import { AttendanceTab } from "./components/AttendancePanel/AttendancePanel";
 import { SiteTab } from "./components/SitePanel/SitePanel";
-
-import { Tabs, PageLoader, ErrorFallback } from "@/shared";
-
 import { COURSE_TABS } from "./constants";
 import type { CourseLandingProps, CourseTab } from "./types";
 
-export default function CourseLanding({ courseId, backHref, participantsTab }: CourseLandingProps) {
+export default function CourseLanding({ offeringId, backHref, participantsTab }: CourseLandingProps) {
   const [activeTab, setActiveTab] = useState<CourseTab>("site");
 
-  const { course, loading, error, refresh } = useCourse(courseId);
+  const { course, loading, error, refresh } = useOffering(offeringId);
 
   if (loading) {
     return <PageLoader />;
@@ -36,7 +35,7 @@ export default function CourseLanding({ courseId, backHref, participantsTab }: C
   }
 
   return (
-    <div className="space-y-5">
+    <Section>
       <Link
         href={backHref}
         className="inline-flex items-center gap-2 text-sm font-medium text-gray-600 transition hover:text-gray-900"
@@ -56,11 +55,11 @@ export default function CourseLanding({ courseId, backHref, participantsTab }: C
         scrollable
       />
 
-      {activeTab === "site" && <SiteTab course={course} />}
+      {activeTab === "site" && <SiteTab offering={course} />}
 
       {activeTab === "participants" && participantsTab}
 
       {activeTab === "attendance" && <AttendanceTab />}
-    </div>
+    </Section>
   );
 }

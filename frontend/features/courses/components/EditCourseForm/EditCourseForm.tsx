@@ -4,16 +4,15 @@ import { useState } from "react";
 
 import { Tabs } from "@/shared";
 
-import { DetailsTab } from "./DetailsTab";
-import { LecturersTab } from "./LecturerTab";
-import { StatusTab } from "./StatusTab";
-
-import { useCourseMutation } from "../../hooks/useCourseMutation";
 import { COURSE_TABS } from "../../constants";
+import { useCourseMutation } from "../../hooks/useCourseMutation";
 import type { UpdateCourseRequest } from "../../types";
+
+import { DetailsTab } from "./DetailsTab";
+import { StatusTab } from "./StatusTab";
 import type { CourseEditTab, EditCourseFormProps } from "./types";
 
-export default function EditCourseForm({ course, refresh, onClose, lecturerSearch }: EditCourseFormProps) {
+export default function EditCourseForm({ course, refresh, onClose }: EditCourseFormProps) {
   const [activeTab, setActiveTab] = useState<CourseEditTab>("details");
 
   const { updateCourse } = useCourseMutation(refresh);
@@ -37,8 +36,6 @@ export default function EditCourseForm({ course, refresh, onClose, lecturerSearc
       />
 
       {activeTab === "details" && <DetailsTab course={course} refresh={refresh} onSubmit={handleUpdate} />}
-
-      {activeTab === "lecturers" && <LecturersTab courseId={course.id} lecturerSearch={lecturerSearch} />}
 
       {activeTab === "status" && <StatusTab course={course} refresh={refresh} onClose={onClose} />}
     </div>

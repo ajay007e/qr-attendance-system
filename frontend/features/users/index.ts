@@ -11,4 +11,5 @@ export * from "./constants";
 export * from "./api/user.service";
 
 export { default as useUsers } from "./hooks/useUsers";
+export { default as useUserMutations } from "./hooks/useUserMutations";
 export { default as useLecturerSearch } from "./hooks/useLecturerSearch";

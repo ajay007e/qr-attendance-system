@@ -6,6 +6,7 @@ import { FormError, Button } from "@/shared";
 import { AppError } from "@/shared/errors/AppError";
 
 import { useCourseMutation } from "../../hooks/useCourseMutation";
+
 import { StatusTabProps } from "./types";
 
 export function StatusTab({ course, refresh, onClose }: StatusTabProps) {

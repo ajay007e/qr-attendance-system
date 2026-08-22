@@ -1,6 +1,7 @@
-import { Button, Badge } from "@/shared";
 import { Pencil } from "lucide-react";
-import { formatSession } from "./course-table.utils";
+
+import { Button, Badge } from "@/shared";
+
 import { CourseActionProps } from "./types";
 
 export function CourseTableRow({ course, onEdit }: CourseActionProps) {
@@ -22,8 +23,6 @@ export function CourseTableRow({ course, onEdit }: CourseActionProps) {
       </td>
 
       <td className="px-6 py-4 text-sm text-gray-600">{course.credits}</td>
-
-      <td className="px-6 py-4 text-sm text-gray-600">{formatSession(course.session)}</td>
 
       <td className="px-6 py-4">
         <Badge variant={course.isActive ? "green" : "red"}>{course.isActive ? "Active" : "Inactive"}</Badge>

@@ -1,7 +1,15 @@
-import type { TabItem } from "@/shared";
-import type { UserQuery } from "./types";
+import type { CreateUserRequest, UserQuery } from "@/features/users";
+import { USER_ROLES, type TabItem } from "@/shared";
 
 export const USER_STATUS = ["ACTIVE", "INACTIVE"] as const;
+
+export const DEFAULT_USER_CREATE_DATA: CreateUserRequest = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  role: USER_ROLES.STUDENT,
+};
 
 export const DEFAULT_USER_QUERY: UserQuery = {
   page: 1,

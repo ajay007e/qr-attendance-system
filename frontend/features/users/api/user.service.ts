@@ -1,20 +1,21 @@
-import type { ApiResponse, Lecturer, PaginatedData, User } from "@/shared";
 import type {
   CreateUserRequest,
   UpdateUserRequest,
   ChangePasswordRequest,
   ChangeUserStatusRequest,
   UserQuery,
-} from "../types";
+} from "@/features/users";
+import type { ApiResponse, Lecturer, PaginatedData, User } from "@/shared";
 import { api } from "@/shared";
 
 export const userService = {
-  async getUsers(query?: UserQuery) {
+  async getUsers(query?: UserQuery, signal?: AbortSignal) {
     const params = Object.fromEntries(
       Object.entries(query ?? {}).filter(([, value]) => value !== undefined && value !== "" && value !== "ALL"),
     );
     const response = await api.get<ApiResponse<PaginatedData<User>>>("/users", {
       params,
+      signal,
     });
 
     return response.data;

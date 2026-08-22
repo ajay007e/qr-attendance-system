@@ -1,21 +1,23 @@
 "use client";
 
+import { useCourseParticipants, useParticipantQuery } from "@/features/enrolments";
 import { useDebounce, EmptyState, ErrorFallback, Loader, NoResults, PageLoader, Pagination } from "@/shared";
 
 import ParticipantTable from "./ParticipantTable";
 import ParticipantToolbar from "./ParticipantToolbar";
 import { ParticipantsTabProps } from "./types";
-import { useCourseParticipants, useParticipantQuery } from "@/features/enrolments";
 
-export default function ParticipantsTab({ courseId }: ParticipantsTabProps) {
+export default function ParticipantsTab({ offeringId }: ParticipantsTabProps) {
   const { query, setQuery, resetQuery } = useParticipantQuery();
 
   const debouncedQuery = useDebounce(query, 400);
 
-  const { participants, pagination, loading, isFetching, error, refresh, hasLoadedCurrentQuery } =
-    useCourseParticipants(courseId, debouncedQuery);
+  const { participants, pagination, loading, isFetching, error, refresh } = useCourseParticipants(
+    offeringId,
+    debouncedQuery,
+  );
 
-  if (loading) {
+  if (loading && !error) {
     return <PageLoader />;
   }
 
@@ -30,14 +32,10 @@ export default function ParticipantsTab({ courseId }: ParticipantsTabProps) {
     );
   }
 
-  const hasSearch = query.search.trim() !== "";
-
-  const hasAnyParticipants = !hasSearch ? pagination.total > 0 : true;
-
-  const hasResults = participants.length > 0;
-
-  const showEmptyState = hasLoadedCurrentQuery && !hasAnyParticipants;
-  const showNoResults = hasLoadedCurrentQuery && hasAnyParticipants && !hasResults;
+  const hasResults = pagination.total > 0;
+  const hasData = pagination.hasData;
+  const showEmptyState = !isFetching && !hasData;
+  const showNoResults = !isFetching && hasData && !hasResults;
 
   return (
     <div className="space-y-4">
@@ -45,7 +43,7 @@ export default function ParticipantsTab({ courseId }: ParticipantsTabProps) {
         <EmptyState size="sm" title="No participants yet" message="There are no students enrolled in this course." />
       )}
 
-      {hasAnyParticipants && (
+      {hasData && (
         <>
           <ParticipantToolbar
             search={query.search}
@@ -67,6 +65,8 @@ export default function ParticipantsTab({ courseId }: ParticipantsTabProps) {
               }}
             />
           )}
+
+          {isFetching && !hasResults && <Loader message="Loading participants..." />}
 
           {hasResults && (
             <>

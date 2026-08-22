@@ -1,9 +1,7 @@
+import { COURSE_SEARCH_LIMIT } from "@/features/enrolments";
+import type { AssignedCourse, StudentCourse } from "@/features/enrolments";
 import type { ApiResponse, PaginatedData, Participant } from "@/shared";
 import { api } from "@/shared";
-
-import type { AssignedCourse, StudentCourse } from "../types";
-
-import { COURSE_SEARCH_LIMIT } from "../constants";
 
 export const enrolmentService = {
   async getEnrolled() {
@@ -34,7 +32,7 @@ export const enrolmentService = {
 
   async enrol(courseId: number) {
     const response = await api.post<ApiResponse<void>>("/enrolments", {
-      courseId,
+      courseOfferingId: courseId,
     });
 
     return response.data;
@@ -55,7 +53,7 @@ export const enrolmentService = {
     },
   ) {
     const response = await api.get<ApiResponse<PaginatedData<Participant>>>(
-      `/enrolments/courses/${courseId}/students`,
+      `/enrolments/offerings/${courseId}/students`,
       {
         params,
       },

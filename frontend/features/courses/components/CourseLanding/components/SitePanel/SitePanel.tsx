@@ -1,13 +1,15 @@
 import { BookOpen, ChevronDown } from "lucide-react";
-import { SITE_SECTIONS } from "../../constants";
-import { Section, SectionHeader } from "@/shared";
-import { CourseHeader } from "../CourseHeader/CourseHeader";
-import { SiteTabProps } from "../../types";
 
-export function SiteTab({ course }: SiteTabProps) {
+import { Section, SectionHeader } from "@/shared";
+
+import { SITE_SECTIONS } from "../../constants";
+import { SiteTabProps } from "../../types";
+import { CourseHeader } from "../CourseHeader/CourseHeader";
+
+export function SiteTab({ offering }: SiteTabProps) {
   return (
     <Section>
-      <CourseHeader course={course} />
+      <CourseHeader offering={offering} />
       <SectionHeader title="Course Site" subtitle="Course materials, learning resources and assessment information." />
       {SITE_SECTIONS.map((section, index) => {
         const Icon = section.icon;

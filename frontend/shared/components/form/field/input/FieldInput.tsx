@@ -1,15 +1,13 @@
+import { Loader2, Eye, EyeOff, X } from "lucide-react";
 import React from "react";
 
-import { Loader2, Eye, EyeOff, X } from "lucide-react";
-
+import Button from "@/shared/components/ui/button";
 import { cn } from "@/shared/lib/utils";
 
 import { useFieldContext } from "../field.context";
 
 import { inputWrapperVariants, inputVariants } from "./input.styles";
-
 import type { FieldInputProps } from "./input.types";
-import Button from "@/shared/components/ui/button";
 
 const FieldInput = React.forwardRef<HTMLInputElement, FieldInputProps>(
   (

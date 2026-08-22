@@ -1,13 +1,13 @@
 "use client";
 
-import React from "react";
 import { ChevronDown } from "lucide-react";
+import React from "react";
 
 import { cn } from "@/shared/lib/utils";
+
 import { useFieldContext } from "../field.context";
 
 import { selectButtonVariants, selectDropdownVariants, selectOptionVariants } from "./select.styles";
-
 import type { FieldSelectProps } from "./select.types";
 
 export default function FieldSelect<T>({

@@ -1,5 +1,8 @@
-import type { Course } from "@/shared";
+"use client";
+
 import { useState } from "react";
+
+import type { Course } from "@/shared";
 
 export function useCourseModal() {
   const [showCreateCourse, setShowCreateCourse] = useState(false);

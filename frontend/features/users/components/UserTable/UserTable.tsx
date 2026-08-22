@@ -1,5 +1,7 @@
 import { Pencil } from "lucide-react";
+
 import { Badge, Button, getUserRoleLabel, USER_ROLES } from "@/shared";
+
 import type { UserActionProps, UserTableProps } from "./types";
 
 export default function UserTable({ users, onEdit }: UserTableProps) {

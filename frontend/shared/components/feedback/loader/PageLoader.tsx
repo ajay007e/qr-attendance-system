@@ -3,7 +3,6 @@
 import { cn } from "@/shared/lib/utils";
 
 import { loaderHintVariants, loaderMessageVariants, loaderSpinnerVariants } from "./loader.styles";
-
 import type { PageLoaderProps } from "./loader.types";
 
 export default function PageLoader({ message = "Loading...", className, ...props }: PageLoaderProps) {
@@ -11,7 +10,7 @@ export default function PageLoader({ message = "Loading...", className, ...props
     <div
       role="status"
       aria-live="polite"
-      className={cn(`flex w-full min-h-screen items-center justify-center bg-white px-6`, className)}
+      className={cn(`flex w-full min-h-screen items-center justify-center px-6`, className)}
       {...props}
     >
       <div className="flex flex-col items-center">

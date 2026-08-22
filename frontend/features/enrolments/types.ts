@@ -1,16 +1,27 @@
-import type { Course, LecturerRole, PaginationQuery } from "@/shared";
+import type { Course, CourseOfferingStatus, CourseSession, LecturerRole, PaginationQuery } from "@/shared";
 
-export interface StudentCourse extends Course {
-  enrolled_at: string | null;
+export interface CourseOfferingContext {
+  courseOfferingId: number;
+  academicYear: number;
+  session: CourseSession;
 }
 
-export interface AssignedCourse extends Course {
-  lecturer_role: LecturerRole;
-  assigned_at: string;
+export type EnrolmentStatus = "enrolled" | "withdrawn" | "completed" | "unsuccessful";
+
+export interface StudentCourse extends Course, CourseOfferingContext {
+  offeringStatus: CourseOfferingStatus;
+  enrolmentStatus: EnrolmentStatus;
+  enrolledAt: string | null;
 }
 
-export interface EnrolRequest {
-  courseId: number;
+export interface AssignedCourse extends Course, CourseOfferingContext {
+  offeringStatus: CourseOfferingStatus;
+  lecturerRole: LecturerRole;
+  assignedAt: string;
+}
+
+export interface EnrolCourseRequest {
+  courseOfferingId: number;
 }
 
 export interface CourseSearchProps {

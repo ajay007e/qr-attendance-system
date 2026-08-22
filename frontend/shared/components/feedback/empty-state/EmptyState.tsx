@@ -3,7 +3,6 @@
 import { Button, cn } from "@/shared";
 
 import { emptyStateIconVariants, emptyStateVariants } from "./empty-state.styles";
-
 import type { EmptyStateProps } from "./empty-state.types";
 
 export default function EmptyState({ icon, title, message, action, size = "md", className }: EmptyStateProps) {

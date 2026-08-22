@@ -36,6 +36,17 @@ export default defineConfig([
       ],
     },
     rules: {
+      "import/order": [
+        "error",
+        {
+          alphabetize: {
+            order: "asc",
+            caseInsensitive: true,
+          },
+          groups: ["builtin", "external", "internal", "parent", "sibling", "index"],
+          "newlines-between": "always",
+        },
+      ],
       "boundaries/dependencies": [
         "error",
         {

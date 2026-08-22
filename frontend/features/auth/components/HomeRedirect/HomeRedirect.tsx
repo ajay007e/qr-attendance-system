@@ -1,0 +1,22 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
+import { useAuth } from "@/features/auth";
+import { getDashboardRoute } from "@/shared";
+
+export function HomeRedirect() {
+  const router = useRouter();
+  const { loading, user } = useAuth();
+
+  useEffect(() => {
+    if (loading) return;
+
+    const destination = user ? getDashboardRoute(user.role) : "/login";
+
+    router.replace(destination);
+  }, [loading, user, router]);
+
+  return null;
+}

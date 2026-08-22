@@ -1,8 +1,9 @@
-import React from "react";
 import { Loader2 } from "lucide-react";
+import React from "react";
+
+import { cn } from "@/shared/lib/utils";
 
 import { buttonVariants } from "./button.styles";
-import { cn } from "@/shared/lib/utils";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "success" | "link" | "danger-outline";

@@ -26,12 +26,12 @@ export class UserRepository {
 
     if (query.search) {
       where += `
-        AND (
-          first_name LIKE ?
-          OR last_name LIKE ?
-          OR email LIKE ?
-        )
-      `;
+      AND (
+        first_name LIKE ?
+        OR last_name LIKE ?
+        OR email LIKE ?
+      )
+    `;
 
       const keyword = `%${query.search}%`;
       params.push(keyword, keyword, keyword);
@@ -47,27 +47,37 @@ export class UserRepository {
       params.push(query.status === "ACTIVE");
     }
 
-    const [countRows] = await db.execute<RowDataPacket[]>(
-      `
+    const [[countRows], [totalCountRows]] = await Promise.all([
+      db.execute<RowDataPacket[]>(
+        `
         SELECT COUNT(*) AS total
         FROM users
         ${where}
       `,
-      params,
-    );
+        params,
+      ),
+
+      db.execute<RowDataPacket[]>(
+        `
+        SELECT COUNT(*) AS totalCount
+        FROM users
+      `,
+      ),
+    ]);
 
     const total = Number(countRows[0]?.total ?? 0);
+    const totalCount = Number(totalCountRows[0]?.totalCount ?? 0);
     const totalPages = Math.ceil(total / limit);
 
     const [rows] = await db.execute<RowDataPacket[]>(
       `
-        SELECT
-        ${USER_COLUMNS}
-        FROM users
-        ${where}
-        ORDER BY created_at DESC
-        LIMIT ${limit} OFFSET ${offset}
-      `,
+      SELECT
+      ${USER_COLUMNS}
+      FROM users
+      ${where}
+      ORDER BY created_at DESC
+      LIMIT ${limit} OFFSET ${offset}
+    `,
       params,
     );
 
@@ -78,6 +88,7 @@ export class UserRepository {
         limit,
         total,
         totalPages,
+        hasData: totalCount > 0,
       },
     };
   }

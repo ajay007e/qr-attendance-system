@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { AlertTriangle, X } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 import { useToast, Button } from "@/shared";
+
 import { ErrorToastProps } from "../error.types";
 
 export default function ErrorToast({ message, onDismiss, className }: ErrorToastProps) {

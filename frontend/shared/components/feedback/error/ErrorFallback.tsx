@@ -3,7 +3,6 @@
 import { AlertTriangle, RefreshCw } from "lucide-react";
 
 import { Button } from "@/shared";
-
 import { cn } from "@/shared/lib/utils";
 
 import {
@@ -13,7 +12,6 @@ import {
   errorFallbackTitleVariants,
   errorFallbackVariants,
 } from "./error.styles";
-
 import type { ErrorFallbackProps } from "./error.types";
 
 export default function ErrorFallback({

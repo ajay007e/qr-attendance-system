@@ -2,9 +2,7 @@
 
 import { FormEvent, useState } from "react";
 
-import { AppError, Button, COURSE_SESSION_FILTER_OPTIONS, FormError, Field } from "@/shared";
-
-import type { CourseSession } from "@/shared";
+import { AppError, Button, FormError, Field } from "@/shared";
 
 import type { UpdateCourseRequest } from "../../types";
 
@@ -19,8 +17,6 @@ export function DetailsTab({ course, onSubmit }: DetailsTabProps) {
   const [description, setDescription] = useState(course.description ?? "");
 
   const [credits, setCredits] = useState(String(course.credits));
-
-  const [session, setSession] = useState<CourseSession>(course.session);
 
   const [loading, setLoading] = useState(false);
 
@@ -38,7 +34,6 @@ export function DetailsTab({ course, onSubmit }: DetailsTabProps) {
       courseName,
       description,
       credits: Number(credits),
-      session,
     };
 
     try {
@@ -98,18 +93,6 @@ export function DetailsTab({ course, onSubmit }: DetailsTabProps) {
             rows={4}
           />
         </Field>
-
-        <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">Session</label>
-
-          <Field.Select
-            value={session}
-            onChange={(value) => setSession(value as CourseSession)}
-            options={COURSE_SESSION_FILTER_OPTIONS}
-            placeholder="Select course session"
-          />
-        </div>
-
         <Button type="submit" fullWidth loading={loading}>
           {loading ? "Saving Changes..." : "Save Changes"}
         </Button>

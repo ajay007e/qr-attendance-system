@@ -2,30 +2,27 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import { type AssignOfferingLecturerRequest, OfferingService } from "@/features/courses";
 import { type Lecturer, useError } from "@/shared";
 
-import { CourseService } from "../api/course.service";
-
-import type { AssignLecturerRequest } from "../types";
-
-export function useCourseLecturers(courseId: number) {
+export function useOfferingLecturers(offeringId: number) {
   const { handleError } = useError();
 
   const [lecturers, setLecturers] = useState<Lecturer[]>([]);
-
   const [loading, setLoading] = useState(true);
-
   const [assigning, setAssigning] = useState(false);
-
   const [removing, setRemoving] = useState(false);
-
   const [error, setError] = useState<string | null>(null);
 
   const loadLecturers = useCallback(async () => {
+    if (!offeringId) return;
+
     try {
       setLoading(true);
       setError(null);
-      const response = await CourseService.getLecturers(courseId);
+
+      const response = await OfferingService.getLecturers(offeringId);
+
       setLecturers(response.data);
     } catch (error) {
       handleError(error);
@@ -34,21 +31,17 @@ export function useCourseLecturers(courseId: number) {
     } finally {
       setLoading(false);
     }
-  }, [courseId, handleError]);
+  }, [offeringId, handleError]);
 
-  const assignLecturer = async (data: AssignLecturerRequest) => {
+  const assignLecturer = async (data: AssignOfferingLecturerRequest) => {
     try {
       setAssigning(true);
-
       setError(null);
 
-      await CourseService.assignLecturer(courseId, data);
-
+      await OfferingService.assignLecturer(offeringId, data);
       await loadLecturers();
     } catch (error) {
-      console.log(error);
       handleError(error);
-
       throw error;
     } finally {
       setAssigning(false);
@@ -58,15 +51,12 @@ export function useCourseLecturers(courseId: number) {
   const removeLecturer = async (userId: number) => {
     try {
       setRemoving(true);
-
       setError(null);
 
-      await CourseService.removeLecturer(courseId, userId);
-
+      await OfferingService.removeLecturer(offeringId, userId);
       await loadLecturers();
     } catch (error) {
       handleError(error);
-
       throw error;
     } finally {
       setRemoving(false);
@@ -74,16 +64,18 @@ export function useCourseLecturers(courseId: number) {
   };
 
   useEffect(() => {
-    if (!courseId) return;
+    if (!offeringId) {
+      return;
+    }
 
     let cancelled = false;
 
-    async function fetchLecturers() {
+    const fetchLecturers = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const response = await CourseService.getLecturers(courseId);
+        const response = await OfferingService.getLecturers(offeringId);
 
         if (!cancelled) {
           setLecturers(response.data);
@@ -99,30 +91,23 @@ export function useCourseLecturers(courseId: number) {
           setLoading(false);
         }
       }
-    }
+    };
 
-    fetchLecturers();
+    void fetchLecturers();
 
     return () => {
       cancelled = true;
     };
-  }, [courseId, handleError]);
+  }, [offeringId, handleError]);
 
   return {
     lecturers,
-
     loading,
-
     assigning,
-
     removing,
-
     error,
-
     refresh: loadLecturers,
-
     assignLecturer,
-
     removeLecturer,
   };
 }

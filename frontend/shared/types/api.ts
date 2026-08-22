@@ -14,9 +14,14 @@ export interface PaginationMeta {
   limit: number;
   total: number;
   totalPages: number;
+  hasData?: boolean;
 }
 
 export interface PaginatedData<T> {
   items: T[];
   meta: PaginationMeta;
 }
+
+export type Status = "ACTIVE" | "INACTIVE";
+export type WithAll<T> = T | "ALL";
+export type StatusFilter = WithAll<Status>;

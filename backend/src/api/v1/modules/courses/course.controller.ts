@@ -3,13 +3,7 @@ import type { RequestHandler } from "express";
 import { DEFAULT_LIMIT, DEFAULT_PAGE, parseQueryNumber, parseQueryString } from "@/utils";
 
 import { CourseService } from "./course.service";
-import type {
-  AssignLecturerRequest,
-  CourseQuery,
-  CreateCourseRequest,
-  UpdateCourseRequest,
-  UpdateCourseStatusRequest,
-} from "./course.types";
+import type { CourseQuery, CreateCourseRequest, UpdateCourseRequest, UpdateCourseStatusRequest } from "./course.types";
 
 export class CourseController {
   constructor(private readonly service: CourseService) {}
@@ -20,7 +14,6 @@ export class CourseController {
         page: parseQueryNumber(req.query.page, DEFAULT_PAGE),
         limit: parseQueryNumber(req.query.limit, DEFAULT_LIMIT),
         search: parseQueryString(req.query.search),
-        session: parseQueryString(req.query.session) as CourseQuery["session"],
         status: parseQueryString(req.query.status) as CourseQuery["status"],
       };
 
@@ -86,47 +79,6 @@ export class CourseController {
         success: true,
         message: "Course status updated successfully",
         data: course,
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  getLecturers: RequestHandler = async (req, res, next) => {
-    try {
-      const lecturers = await this.service.getLecturers(Number(req.params.id));
-
-      res.json({
-        success: true,
-        data: lecturers,
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  assignLecturer: RequestHandler = async (req, res, next) => {
-    try {
-      const body = req.body as AssignLecturerRequest;
-
-      await this.service.assignLecturer(Number(req.params.id), body.id, body.role);
-
-      res.status(201).json({
-        success: true,
-        message: "Lecturer assigned successfully",
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
-
-  removeLecturer: RequestHandler = async (req, res, next) => {
-    try {
-      await this.service.removeLecturer(Number(req.params.id), Number(req.params.userId));
-
-      res.json({
-        success: true,
-        message: "Lecturer removed successfully",
       });
     } catch (error) {
       next(error);

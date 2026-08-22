@@ -9,26 +9,41 @@ import type {
 
 export function toEnrolledCourse(course: DatabaseEnrolledCourse): EnrolledCourse {
   return {
-    id: course.id,
+    courseOfferingId: course.course_offering_id,
+
+    courseId: course.course_id,
     courseCode: course.course_code,
     courseName: course.course_name,
     description: course.description,
     credits: course.credits,
-    session: course.session,
     isActive: course.is_active,
+
+    academicYear: course.academic_year,
+    session: course.session,
+
+    offeringStatus: course.offering_status,
+    enrolmentStatus: course.enrolment_status,
+
     enrolledAt: course.enrolled_at,
   };
 }
 
 export function toAssignedCourse(course: DatabaseAssignedCourse): AssignedCourse {
   return {
-    id: course.id,
+    courseOfferingId: course.course_offering_id,
+
+    courseId: course.course_id,
     courseCode: course.course_code,
     courseName: course.course_name,
     description: course.description,
     credits: course.credits,
-    session: course.session,
     isActive: course.is_active,
+
+    academicYear: course.academic_year,
+    session: course.session,
+
+    offeringStatus: course.offering_status,
+
     lecturerRole: course.lecturer_role,
     assignedAt: course.assigned_at,
   };
@@ -41,6 +56,8 @@ export function toStudent(student: DatabaseStudent): Student {
     lastName: student.last_name,
     email: student.email,
     role: student.role,
+
     enrolledAt: student.enrolled_at,
+    enrolmentStatus: student.enrolment_status,
   };
 }

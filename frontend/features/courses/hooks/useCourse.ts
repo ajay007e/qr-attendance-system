@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { CourseService } from "../api/course.service";
+import { CourseService } from "@/features/courses";
 import type { Course } from "@/shared";
 
 export function useCourse(courseId: number) {

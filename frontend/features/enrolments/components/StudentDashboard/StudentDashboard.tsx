@@ -2,9 +2,8 @@
 
 import { useRouter } from "next/navigation";
 
+import { useEnrolledCourses } from "@/features/enrolments";
 import { EmptyState, ErrorFallback, PageLoader, Section, SectionHeader, CourseCard } from "@/shared";
-
-import useEnrolledCourses from "../../hooks/useEnrolledCourses";
 
 export default function StudentDashboard() {
   const router = useRouter();
@@ -47,7 +46,11 @@ export default function StudentDashboard() {
         ) : (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {courses.map((course) => (
-              <CourseCard key={course.id} course={course} href={`/student/courses/${course.id}`} />
+              <CourseCard
+                key={course.courseOfferingId}
+                course={course}
+                href={`/student/courses/${course.courseOfferingId}`}
+              />
             ))}
           </div>
         )}

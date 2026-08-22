@@ -15,6 +15,10 @@ export const MENUS = {
       title: "Courses",
       href: "/dashboard/courses",
     },
+    {
+      title: "Offerings",
+      href: "/dashboard/offerings",
+    },
   ],
 
   [USER_ROLES.LECTURER]: [

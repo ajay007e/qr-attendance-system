@@ -2,21 +2,10 @@
 
 import { FormEvent, useState } from "react";
 
-import { AppError, FormError, Field, Button, COURSE_SESSION_FILTER_OPTIONS } from "@/shared";
-
-import type { CourseSession } from "@/shared";
+import { INITIAL_FORM } from "@/features/courses";
+import { AppError, FormError, Field, Button } from "@/shared";
 
 import type { CourseFormProps } from "./types";
-
-import { CreateCourseRequest } from "../../types";
-
-const INITIAL_FORM: CreateCourseRequest = {
-  courseCode: "",
-  courseName: "",
-  description: "",
-  credits: 0,
-  session: "ANNUAL" as CourseSession,
-};
 
 export default function CourseForm({ onSubmit }: CourseFormProps) {
   const [form, setForm] = useState(INITIAL_FORM);
@@ -45,7 +34,6 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
         courseName: form.courseName,
         description: form.description,
         credits: Number(form.credits),
-        session: form.session,
       });
       resetForm();
     } catch (error) {
@@ -99,16 +87,6 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
             rows={4}
           />
         </Field>
-
-        <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">Session</label>
-          <Field.Select
-            value={form.session}
-            onChange={(value) => updateField("session", value as CourseSession)}
-            options={COURSE_SESSION_FILTER_OPTIONS}
-            placeholder="Select course session"
-          />
-        </div>
 
         <Button type="submit" size="lg" fullWidth loading={loading} className="mt-2">
           {loading ? "Creating Course..." : "Create Course"}

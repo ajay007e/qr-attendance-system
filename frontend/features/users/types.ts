@@ -1,11 +1,9 @@
-import type { PaginationQuery, User, UserRole } from "@/shared";
-
-export type UserStatus = "ACTIVE" | "INACTIVE";
+import type { PaginationQuery, StatusFilter, User, UserRole, WithAll } from "@/shared";
 
 export interface UserQuery extends PaginationQuery {
   search: string;
-  role: UserRole | "ALL";
-  status: UserStatus | "ALL";
+  role: WithAll<UserRole>;
+  status: StatusFilter;
 }
 
 export type CreateUserRequest = Pick<User, "firstName" | "lastName" | "email" | "role"> & {

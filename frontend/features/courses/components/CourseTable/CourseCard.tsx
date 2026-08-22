@@ -1,7 +1,8 @@
-import { Badge, Button } from "@/shared";
-import { CourseActionProps } from "./types";
 import { Pencil } from "lucide-react";
-import { formatSession } from "./course-table.utils";
+
+import { Badge, Button } from "@/shared";
+
+import { CourseActionProps } from "./types";
 
 export function CourseCard({ course, onEdit }: CourseActionProps) {
   return (
@@ -46,12 +47,6 @@ export function CourseCard({ course, onEdit }: CourseActionProps) {
           <span className="text-gray-500">Credits</span>
 
           <span className="font-medium">{course.credits}</span>
-        </div>
-
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-500">Session</span>
-
-          <span className="font-medium">{formatSession(course.session)}</span>
         </div>
 
         <div className="flex justify-between">

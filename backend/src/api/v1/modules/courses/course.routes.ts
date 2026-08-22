@@ -20,8 +20,3 @@ courseRouter.get("/", controller.list);
 courseRouter.post("/", controller.create);
 courseRouter.put("/:id", controller.update);
 courseRouter.patch("/:id/status", controller.setActive);
-
-// Lecturer assignment
-courseRouter.get("/:id/lecturers", controller.getLecturers);
-courseRouter.post("/:id/lecturers", controller.assignLecturer);
-courseRouter.delete("/:id/lecturers/:userId", controller.removeLecturer);
