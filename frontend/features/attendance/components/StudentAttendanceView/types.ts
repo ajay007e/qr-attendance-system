@@ -1,3 +1,3 @@
 export interface StudentAttendanceViewProps {
-  courseId: number;
+  offeringId: number;
 }

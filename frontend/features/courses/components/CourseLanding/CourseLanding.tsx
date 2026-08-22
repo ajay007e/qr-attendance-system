@@ -13,7 +13,7 @@ import { COURSE_TABS } from "./constants";
 import type { CourseLandingProps, CourseTab } from "./types";
 
 export default function CourseLanding({ offeringId, backHref, participantsTab, attendanceTab }: CourseLandingProps) {
-  const [activeTab, setActiveTab] = useState<CourseTab>("site");
+  const [activeTab, setActiveTab] = useState<CourseTab>("attendance");
 
   const { course, loading, error, refresh } = useOffering(offeringId);
 

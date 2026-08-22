@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
 export interface LecturerAttendanceViewProps {
-  courseId: number;
+  offeringId: number;
   sessionControls?: ReactNode;
 }

@@ -11,7 +11,7 @@ export default async function LecturerCoursePage({ params }: { params: Promise<{
       offeringId={offeringId}
       backHref="/lecturer"
       participantsTab={<ParticipantsTab offeringId={offeringId} />}
-      attendanceTab={<AttendancePanel courseId={offeringId} role="lecturer" />}
+      attendanceTab={<AttendancePanel offeringId={offeringId} role="lecturer" />}
     />
   );
 }

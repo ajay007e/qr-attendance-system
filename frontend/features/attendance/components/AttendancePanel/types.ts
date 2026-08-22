@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 export type AttendanceRole = Extract<UserRole, "lecturer" | "student">;
 
 export interface AttendancePanelProps {
-  courseId: number;
+  offeringId: number;
   role: AttendanceRole;
 
   /**

@@ -23,7 +23,7 @@ const ATTENDANCE_TABS = [
 
 type AttendanceTab = (typeof ATTENDANCE_TABS)[number]["key"];
 
-export function LecturerAttendanceView({ courseId }: LecturerAttendanceViewProps) {
+export function LecturerAttendanceView({ offeringId }: LecturerAttendanceViewProps) {
   const [activeTab, setActiveTab] = useState<AttendanceTab>("sessions");
 
   // Mock for now.

@@ -2,10 +2,10 @@ import { LecturerAttendanceView } from "../LecturerAttendanceView/LecturerAttend
 import { StudentAttendanceView } from "../StudentAttendanceView/StudentAttendanceView";
 import { AttendancePanelProps } from "./types";
 
-export function AttendancePanel({ courseId, role, sessionControls }: AttendancePanelProps) {
+export function AttendancePanel({ offeringId, role, sessionControls }: AttendancePanelProps) {
   if (role === "lecturer") {
-    return <LecturerAttendanceView courseId={courseId} sessionControls={sessionControls} />;
+    return <LecturerAttendanceView offeringId={offeringId} sessionControls={sessionControls} />;
   }
 
-  return <StudentAttendanceView courseId={courseId} />;
+  return <StudentAttendanceView offeringId={offeringId} />;
 }
