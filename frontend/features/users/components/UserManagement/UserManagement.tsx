@@ -3,8 +3,16 @@
 import { Plus, Users } from "lucide-react";
 import { useState } from "react";
 
-import { DEFAULT_USER_QUERY, useUsers, type UserQuery } from "@/features/users";
-import { EditUserForm, UserForm, UserTable, UserToolbar } from "@/features/users";
+import {
+  DEFAULT_USER_QUERY,
+  EditUserForm,
+  UserForm,
+  UserTable,
+  UserToolbar,
+  useUserMutations,
+  useUsers,
+  type UserQuery,
+} from "@/features/users";
 import {
   Modal,
   PageLoader,
@@ -27,34 +35,17 @@ export default function UserManagement() {
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const debouncedQuery = useDebounce(query, 400);
-  const {
-    users,
-    pagination,
-    loading,
-    isFetching,
-    error,
-    refresh,
-    createUser,
-    updateUser,
-    changePassword,
-    changeStatus,
-    hasLoadedCurrentQuery,
-  } = useUsers(debouncedQuery);
+  const { users, pagination, loading, isFetching, error, refresh } = useUsers(debouncedQuery);
+  const { createUser, updateUser, changePassword, changeStatus } = useUserMutations(refresh);
 
-  if (loading) {
+  if (loading && !error) {
     return <PageLoader />;
   }
 
-  const hasFilters =
-    debouncedQuery.search.trim() !== "" || debouncedQuery.role !== "ALL" || debouncedQuery.status !== "ALL";
-
   const hasResults = pagination.total > 0;
-
-  const hasAnyUsers = !hasFilters ? pagination.total > 0 : true;
-
-  const showEmptyState = hasLoadedCurrentQuery && !hasAnyUsers;
-
-  const showNoResults = hasLoadedCurrentQuery && hasAnyUsers && !hasResults;
+  const hasData = pagination.hasData;
+  const showEmptyState = !isFetching && !hasData;
+  const showNoResults = !isFetching && hasData && !hasResults;
 
   if (error) {
     return (
@@ -74,7 +65,7 @@ export default function UserManagement() {
         title="User Management"
         subtitle="Manage administrators, lecturers, and student accounts."
         action={
-          hasAnyUsers ? (
+          hasData ? (
             <Button
               type="button"
               size="lg"
@@ -104,7 +95,7 @@ export default function UserManagement() {
           />
         )}
 
-        {hasAnyUsers && (
+        {hasData && (
           <>
             <UserToolbar
               filters={query}
@@ -115,7 +106,7 @@ export default function UserManagement() {
                 })
               }
             />
-
+            {isFetching && !hasResults && <Loader message="Loading users..." />}
             {showNoResults && (
               <NoResults
                 title="No users found"

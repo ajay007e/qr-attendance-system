@@ -58,20 +58,14 @@ export default function OfferingManagement({ lecturerSearch: lecturerSearchApi }
     closeEditOffering,
   } = useOfferingModal();
 
-  const { offerings, pagination, loading, isFetching, error, refresh, hasLoadedCurrentQuery } =
-    useOfferings(debouncedQuery);
+  const { offerings, pagination, loading, isFetching, error, refresh } = useOfferings(debouncedQuery);
 
   const { createOffering } = useOfferingMutation(refresh);
 
-  const hasFilters = query.search.trim() !== "" || query.session !== "ALL" || query.status !== "ALL";
-
   const hasResults = pagination.total > 0;
-
-  const hasAnyOfferings = !hasFilters ? pagination.total > 0 : true;
-
-  const showEmptyState = hasLoadedCurrentQuery && !hasAnyOfferings;
-
-  const showNoResults = hasLoadedCurrentQuery && hasAnyOfferings && !hasResults;
+  const hasData = pagination.hasData;
+  const showEmptyState = !isFetching && !hasData;
+  const showNoResults = !isFetching && hasData && !hasResults;
 
   const lecturerSearch = {
     query: lecturerQuery,
@@ -91,7 +85,7 @@ export default function OfferingManagement({ lecturerSearch: lecturerSearchApi }
     },
   };
 
-  if (loading) {
+  if (loading && !error) {
     return <PageLoader />;
   }
 
@@ -113,7 +107,7 @@ export default function OfferingManagement({ lecturerSearch: lecturerSearchApi }
         title="Course Offering Management"
         subtitle="Manage course offerings, sessions and lecturers."
         action={
-          hasAnyOfferings ? (
+          hasData ? (
             <Button
               type="button"
               size="lg"
@@ -142,7 +136,7 @@ export default function OfferingManagement({ lecturerSearch: lecturerSearchApi }
           />
         )}
 
-        {hasAnyOfferings && (
+        {hasData && (
           <>
             <OfferingToolbar filters={query} onFiltersChange={setQuery} />
 
@@ -156,6 +150,8 @@ export default function OfferingManagement({ lecturerSearch: lecturerSearchApi }
                 }}
               />
             )}
+
+            {isFetching && !hasResults && <Loader message="Loading offerings..." />}
 
             {hasResults && (
               <>

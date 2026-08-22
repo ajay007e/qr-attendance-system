@@ -1,6 +1,6 @@
 import { Pencil } from "lucide-react";
 
-import { Badge, Button, getSessionLabel } from "@/shared";
+import { Badge, Button, getSessionLabel, getOfferingStatusLabel } from "@/shared";
 
 import type { OfferingActionProps } from "./types";
 
@@ -60,7 +60,7 @@ export function OfferingCard({ offering, onEdit }: OfferingActionProps) {
         <div className="flex justify-between">
           <span className="text-sm text-gray-500">Status</span>
 
-          <Badge variant="blue">{offering.status}</Badge>
+          <Badge variant="blue">{getOfferingStatusLabel(offering.status)}</Badge>
         </div>
       </div>
     </div>

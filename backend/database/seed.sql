@@ -10,26 +10,13 @@ USE qr_attendance_system;
 -- PASSWORD
 -- ==========================================================
 
-SET @password = (
-    SELECT password
-    FROM users
-    WHERE role = 'super_admin'
-    LIMIT 1
-);
-
+SET @password = (SELECT password FROM users WHERE role = 'super_admin' LIMIT 1);
 
 -- ==========================================================
 -- 1. LECTURERS
 -- ==========================================================
 
-INSERT INTO users (
-    first_name,
-    last_name,
-    email,
-    password,
-    role,
-    is_active
-) VALUES
+INSERT INTO users (first_name, last_name, email, password, role,is_active) VALUES
 ('Daniel', 'Mitchell', 'daniel.mitchell@university.edu', @password, 'lecturer', TRUE),
 ('Sarah', 'Thompson', 'sarah.thompson@university.edu', @password, 'lecturer', TRUE),
 ('Michael', 'Anderson', 'michael.anderson@university.edu', @password, 'lecturer', TRUE),
@@ -66,15 +53,7 @@ INSERT INTO users (
 -- 2. STUDENTS
 -- ==========================================================
 
-INSERT INTO users (
-    first_name,
-    last_name,
-    email,
-    password,
-    role,
-    is_active
-) VALUES
-
+INSERT INTO users (first_name, last_name, email, password, role, is_active) VALUES
 ('Liam', 'Wilson', 'liam.wilson@student.edu', @password, 'student', TRUE),
 ('Olivia', 'Taylor', 'olivia.taylor@student.edu', @password, 'student', TRUE),
 ('Noah', 'Thomas', 'noah.thomas@student.edu', @password, 'student', TRUE),
@@ -317,423 +296,165 @@ INSERT INTO users (
 -- 3. TEST USERS
 -- ==========================================================
 
-INSERT INTO users (
-    first_name,
-    last_name,
-    email,
-    password,
-    role,
-    is_active
-)
-VALUES
-(
-    'Test',
-    'Lecturer',
-    'lecturer@test.com',
-    @password,
-    'lecturer',
-    TRUE
-),
-(
-    'Test',
-    'Student',
-    'student@test.com',
-    @password,
-    'student',
-    TRUE
-);
+INSERT INTO users (first_name, last_name, email, password, role, is_active) VALUES
+('Test', 'Lecturer', 'lecturer@test.com', @password, 'lecturer', TRUE),
+('Test', 'Student', 'student@test.com', @password, 'student', TRUE);
 
 
 -- ==========================================================
 -- 4. COURSES
 -- ==========================================================
 
-INSERT INTO courses (
-    course_code,
-    course_name,
-    description,
-    credits,
-    is_active
-) VALUES
-
-('CS101', 'Introduction to Programming',
- 'Fundamentals of programming, computational thinking, algorithms, variables, control structures, functions and basic software development.', 3, TRUE),
-
-('CS102', 'Computer Systems Fundamentals',
- 'Introduction to computer architecture, operating systems, binary representation, memory, processors and system software.', 3, TRUE),
-
-('CS103', 'Discrete Mathematics',
- 'Logic, sets, relations, functions, combinatorics, graphs and mathematical foundations for computer science.', 3, TRUE),
-
-('CS104', 'Object-Oriented Programming',
- 'Object-oriented programming principles including classes, inheritance, polymorphism, encapsulation and design patterns.', 3, TRUE),
-
-('CS201', 'Database Management Systems',
- 'Relational database design, SQL, normalization, transactions, indexing, constraints and database administration.', 3, TRUE),
-
-('CS202', 'Computer Networks',
- 'Network architectures, TCP/IP, routing, switching, network security, wireless communication and network administration.', 3, TRUE),
-
-('CS203', 'Data Structures',
- 'Arrays, linked lists, stacks, queues, trees, hash tables, heaps and efficient data organization.', 3, TRUE),
-
-('CS204', 'Web Development',
- 'Modern web development using HTML, CSS, JavaScript, REST APIs and server-side application development.', 3, TRUE),
-
-('CS205', 'Software Testing',
- 'Software quality assurance, unit testing, integration testing, system testing, automation and test-driven development.', 3, TRUE),
-
-('CS206', 'Human Computer Interaction',
- 'User interface design, usability engineering, accessibility, user research, prototyping and interaction design.', 3, TRUE),
-
-('CS207', 'Operating Systems',
- 'Processes, threads, scheduling, memory management, file systems, synchronization and operating system architecture.', 4, TRUE),
-
-('CS208', 'Computer Security',
- 'Cybersecurity principles, authentication, authorization, cryptography, vulnerabilities, secure software and network security.', 3, TRUE),
-
-('CS301', 'Software Engineering',
- 'Software development methodologies, requirements engineering, architecture, project management, version control and testing.', 3, TRUE),
-
-('CS302', 'Algorithms and Complexity',
- 'Algorithm design and analysis, sorting, searching, graph algorithms, dynamic programming and computational complexity.', 4, TRUE),
-
-('CS303', 'Mobile Application Development',
- 'Design and development of mobile applications, mobile interfaces, application architecture, APIs and deployment.', 3, TRUE),
-
-('CS304', 'Cloud Computing',
- 'Cloud architecture, virtualization, containers, distributed services, cloud storage and scalable application deployment.', 3, TRUE),
-
-('CS305', 'Artificial Intelligence',
- 'Artificial intelligence concepts including intelligent agents, search, reasoning, knowledge representation and machine learning.', 4, TRUE),
-
-('CS306', 'Machine Learning',
- 'Supervised and unsupervised learning, regression, classification, clustering, model evaluation and practical machine learning.', 4, TRUE),
-
-('CS307', 'Data Analytics',
- 'Data preparation, statistical analysis, visualization, exploratory analysis and data-driven decision making.', 3, TRUE),
-
-('CS308', 'Information Systems',
- 'Information systems architecture, enterprise systems, business processes, information management and digital transformation.', 3, TRUE),
-
-('CS401', 'Advanced Software Architecture',
- 'Advanced software architecture, distributed systems, architectural patterns, scalability, reliability and maintainability.', 4, TRUE),
-
-('CS402', 'Cybersecurity Engineering',
- 'Security engineering, threat modelling, secure architecture, penetration testing, incident response and security operations.', 4, TRUE),
-
-('CS403', 'Distributed Systems',
- 'Distributed computation, communication, consensus, replication, fault tolerance and distributed system architectures.', 4, TRUE),
-
-('CS404', 'Final Year Computing Project',
- 'Independent computing project involving requirements analysis, system design, implementation, testing, documentation and presentation.', 6, TRUE);
-
+INSERT INTO courses (course_code, course_name, description, credits, is_active) VALUES
+('CS101', 'Introduction to Programming', 'Fundamentals of programming, computational thinking, algorithms, variables, control structures, functions and basic software development.', 3, TRUE),
+('CS102', 'Computer Systems Fundamentals', 'Introduction to computer architecture, operating systems, binary representation, memory, processors and system software.', 3, TRUE),
+('CS103', 'Discrete Mathematics', 'Logic, sets, relations, functions, combinatorics, graphs and mathematical foundations for computer science.', 3, TRUE),
+('CS104', 'Object-Oriented Programming', 'Object-oriented programming principles including classes, inheritance, polymorphism, encapsulation and design patterns.', 3, TRUE),
+('CS201', 'Database Management Systems', 'Relational database design, SQL, normalization, transactions, indexing, constraints and database administration.', 3, TRUE),
+('CS202', 'Computer Networks', 'Network architectures, TCP/IP, routing, switching, network security, wireless communication and network administration.', 3, TRUE),
+('CS203', 'Data Structures', 'Arrays, linked lists, stacks, queues, trees, hash tables, heaps and efficient data organization.', 3, TRUE),
+('CS204', 'Web Development', 'Modern web development using HTML, CSS, JavaScript, REST APIs and server-side application development.', 3, TRUE),
+('CS205', 'Software Testing', 'Software quality assurance, unit testing, integration testing, system testing, automation and test-driven development.', 3, TRUE),
+('CS206', 'Human Computer Interaction', 'User interface design, usability engineering, accessibility, user research, prototyping and interaction design.', 3, TRUE),
+('CS207', 'Operating Systems', 'Processes, threads, scheduling, memory management, file systems, synchronization and operating system architecture.', 4, TRUE),
+('CS208', 'Computer Security', 'Cybersecurity principles, authentication, authorization, cryptography, vulnerabilities, secure software and network security.', 3, TRUE),
+('CS301', 'Software Engineering', 'Software development methodologies, requirements engineering, architecture, project management, version control and testing.', 3, TRUE),
+('CS302', 'Algorithms and Complexity', 'Algorithm design and analysis, sorting, searching, graph algorithms, dynamic programming and computational complexity.', 4, TRUE),
+('CS303', 'Mobile Application Development', 'Design and development of mobile applications, mobile interfaces, application architecture, APIs and deployment.', 3, TRUE),
+('CS304', 'Cloud Computing', 'Cloud architecture, virtualization, containers, distributed services, cloud storage and scalable application deployment.', 3, TRUE),
+('CS305', 'Artificial Intelligence', 'Artificial intelligence concepts including intelligent agents, search, reasoning, knowledge representation and machine learning.', 4, TRUE),
+('CS306', 'Machine Learning', 'Supervised and unsupervised learning, regression, classification, clustering, model evaluation and practical machine learning.', 4, TRUE),
+('CS307', 'Data Analytics', 'Data preparation, statistical analysis, visualization, exploratory analysis and data-driven decision making.', 3, TRUE),
+('CS308', 'Information Systems', 'Information systems architecture, enterprise systems, business processes, information management and digital transformation.', 3, TRUE),
+('CS401', 'Advanced Software Architecture', 'Advanced software architecture, distributed systems, architectural patterns, scalability, reliability and maintainability.', 4, TRUE),
+('CS402', 'Cybersecurity Engineering', 'Security engineering, threat modelling, secure architecture, penetration testing, incident response and security operations.', 4, TRUE),
+('CS403', 'Distributed Systems', 'Distributed computation, communication, consensus, replication, fault tolerance and distributed system architectures.', 4, TRUE),
+('CS404', 'Final Year Computing Project', 'Independent computing project involving requirements analysis, system design, implementation, testing, documentation and presentation.', 6, TRUE);
 
 -- ==========================================================
 -- 5. CURRENT COURSE OFFERINGS
 -- ==========================================================
---
--- EXACTLY 16 CURRENT OFFERINGS:
---
--- 15 spring offerings:
---   CS101-CS104
---   CS201-CS208
---   CS301-CS303
---
--- 1 annual offering:
---   CS404
---
--- CS304-CS308 and CS401-CS403 are NOT currently offered.
---
--- session values are lowercase:
---   spring
---   annual
--- ==========================================================
 
-INSERT INTO course_offerings (
-    course_id,
-    academic_year,
-    session,
-    start_date,
-    end_date,
-    status
-)
-SELECT
-    c.id,
-
-    2026,
-
-    CASE
-        WHEN c.course_code = 'CS404'
-            THEN 'annual'
-        ELSE 'spring'
-    END,
-
-    CASE
-        WHEN c.course_code = 'CS404'
-            THEN '2026-02-23'
-        ELSE '2026-07-20'
-    END,
-
+INSERT INTO course_offerings (course_id, academic_year, session, start_date, end_date, status)
+SELECT c.id, 2026,
+    CASE WHEN c.course_code = 'CS404' THEN 'annual' ELSE 'spring' END,
+    CASE WHEN c.course_code = 'CS404' THEN '2026-02-23' ELSE '2026-07-20' END,
     '2026-11-20',
-
     'enrol'
-
 FROM courses c
-
-WHERE c.course_code IN (
-    'CS101',
-    'CS102',
-    'CS103',
-    'CS104',
-    'CS201',
-    'CS202',
-    'CS203',
-    'CS204',
-    'CS205',
-    'CS206',
-    'CS207',
-    'CS208',
-    'CS301',
-    'CS302',
-    'CS303',
-    'CS404'
-);
+WHERE c.course_code IN ('CS101', 'CS102', 'CS103', 'CS104', 'CS201', 'CS202', 'CS203', 'CS204', 'CS205', 'CS206', 'CS207', 'CS208', 'CS301', 'CS302', 'CS303', 'CS404');
 
 
 -- ==========================================================
 -- 6. PRIMARY LECTURERS
 -- ==========================================================
---
--- role = 'primary'
--- ==========================================================
 
-INSERT INTO course_lecturers (
-    course_offering_id,
-    user_id,
-    role
-)
-SELECT
-    co.id,
-    u.id,
-    'primary'
-
+INSERT INTO course_lecturers (course_offering_id, user_id, role)
+SELECT co.id, u.id, 'primary'
 FROM course_offerings co
-
-JOIN courses c
-    ON c.id = co.course_id
-
-JOIN users u
-    ON u.email = CASE c.course_code
-
-        WHEN 'CS101' THEN 'daniel.mitchell@university.edu'
-        WHEN 'CS102' THEN 'sarah.thompson@university.edu'
-        WHEN 'CS103' THEN 'michael.anderson@university.edu'
-        WHEN 'CS104' THEN 'emily.roberts@university.edu'
-        WHEN 'CS201' THEN 'james.campbell@university.edu'
-        WHEN 'CS202' THEN 'jessica.morgan@university.edu'
-        WHEN 'CS203' THEN 'andrew.richardson@university.edu'
-        WHEN 'CS204' THEN 'rachel.turner@university.edu'
-        WHEN 'CS205' THEN 'matthew.phillips@university.edu'
-        WHEN 'CS206' THEN 'laura.parker@university.edu'
-        WHEN 'CS207' THEN 'christopher.evans@university.edu'
-        WHEN 'CS208' THEN 'rebecca.edwards@university.edu'
-        WHEN 'CS301' THEN 'thomas.collins@university.edu'
-        WHEN 'CS302' THEN 'hannah.stewart@university.edu'
-        WHEN 'CS303' THEN 'william.sanchez@university.edu'
-        WHEN 'CS404' THEN 'amelia.howard@university.edu'
-
-    END
-
-WHERE co.academic_year = 2026
-  AND co.session IN ('spring', 'annual');
+JOIN courses c ON c.id = co.course_id
+JOIN users u ON u.email = CASE c.course_code
+    WHEN 'CS101' THEN 'daniel.mitchell@university.edu'
+    WHEN 'CS102' THEN 'sarah.thompson@university.edu'
+    WHEN 'CS103' THEN 'michael.anderson@university.edu'
+    WHEN 'CS104' THEN 'emily.roberts@university.edu'
+    WHEN 'CS201' THEN 'james.campbell@university.edu'
+    WHEN 'CS202' THEN 'jessica.morgan@university.edu'
+    WHEN 'CS203' THEN 'andrew.richardson@university.edu'
+    WHEN 'CS204' THEN 'rachel.turner@university.edu'
+    WHEN 'CS205' THEN 'matthew.phillips@university.edu'
+    WHEN 'CS206' THEN 'laura.parker@university.edu'
+    WHEN 'CS207' THEN 'christopher.evans@university.edu'
+    WHEN 'CS208' THEN 'rebecca.edwards@university.edu'
+    WHEN 'CS301' THEN 'thomas.collins@university.edu'
+    WHEN 'CS302' THEN 'hannah.stewart@university.edu'
+    WHEN 'CS303' THEN 'william.sanchez@university.edu'
+    WHEN 'CS404' THEN 'amelia.howard@university.edu'
+END
+WHERE co.academic_year = 2026 AND co.session IN ('spring', 'annual');
 
 
 -- ==========================================================
 -- 7. SECONDARY LECTURERS
 -- ==========================================================
---
--- role = 'secondary'
---
--- 10 spring offerings receive a secondary lecturer.
--- ==========================================================
 
-INSERT INTO course_lecturers (
-    course_offering_id,
-    user_id,
-    role
-)
-SELECT
-    co.id,
-    u.id,
-    'secondary'
-
+INSERT INTO course_lecturers (course_offering_id, user_id, role)
+SELECT co.id, u.id, 'secondary'
 FROM course_offerings co
-
-JOIN courses c
-    ON c.id = co.course_id
-
-JOIN users u
-    ON u.email = CASE c.course_code
-
-        WHEN 'CS101' THEN 'sarah.thompson@university.edu'
-        WHEN 'CS102' THEN 'michael.anderson@university.edu'
-        WHEN 'CS103' THEN 'emily.roberts@university.edu'
-        WHEN 'CS104' THEN 'james.campbell@university.edu'
-        WHEN 'CS201' THEN 'jessica.morgan@university.edu'
-        WHEN 'CS202' THEN 'andrew.richardson@university.edu'
-        WHEN 'CS203' THEN 'rachel.turner@university.edu'
-        WHEN 'CS204' THEN 'matthew.phillips@university.edu'
-        WHEN 'CS205' THEN 'laura.parker@university.edu'
-        WHEN 'CS206' THEN 'christopher.evans@university.edu'
-
-    END
-
+JOIN courses c ON c.id = co.course_id
+JOIN users u ON u.email = CASE c.course_code
+    WHEN 'CS101' THEN 'sarah.thompson@university.edu'
+    WHEN 'CS102' THEN 'michael.anderson@university.edu'
+    WHEN 'CS103' THEN 'emily.roberts@university.edu'
+    WHEN 'CS104' THEN 'james.campbell@university.edu'
+    WHEN 'CS201' THEN 'jessica.morgan@university.edu'
+    WHEN 'CS202' THEN 'andrew.richardson@university.edu'
+    WHEN 'CS203' THEN 'rachel.turner@university.edu'
+    WHEN 'CS204' THEN 'matthew.phillips@university.edu'
+    WHEN 'CS205' THEN 'laura.parker@university.edu'
+    WHEN 'CS206' THEN 'christopher.evans@university.edu'
+END
 WHERE co.academic_year = 2026
   AND co.session = 'spring'
-
-  AND c.course_code IN (
-      'CS101',
-      'CS102',
-      'CS103',
-      'CS104',
-      'CS201',
-      'CS202',
-      'CS203',
-      'CS204',
-      'CS205',
-      'CS206'
-  );
-
+  AND c.course_code IN ('CS101', 'CS102', 'CS103', 'CS104', 'CS201', 'CS202', 'CS203', 'CS204', 'CS205', 'CS206');
 
 -- ==========================================================
 -- 8. TUTORS
 -- ==========================================================
---
--- role = 'tutor'
---
--- One tutor for every current offering.
--- ==========================================================
 
-INSERT INTO course_lecturers (
-    course_offering_id,
-    user_id,
-    role
-)
-SELECT
-    co.id,
-    u.id,
-    'tutor'
-
+INSERT INTO course_lecturers (course_offering_id, user_id, role)
+SELECT co.id, u.id, 'tutor'
 FROM course_offerings co
-
-JOIN courses c
-    ON c.id = co.course_id
-
-JOIN users u
-    ON u.email = CASE c.course_code
-
-        WHEN 'CS101' THEN 'nicholas.cox@university.edu'
-        WHEN 'CS102' THEN 'amelia.howard@university.edu'
-        WHEN 'CS103' THEN 'samuel.ward@university.edu'
-        WHEN 'CS104' THEN 'megan.brooks@university.edu'
-        WHEN 'CS201' THEN 'ethan.bennett@university.edu'
-        WHEN 'CS202' THEN 'victoria.gray@university.edu'
-        WHEN 'CS203' THEN 'henry.james@university.edu'
-        WHEN 'CS204' THEN 'natalie.foster@university.edu'
-        WHEN 'CS205' THEN 'daniel.mitchell@university.edu'
-        WHEN 'CS206' THEN 'sarah.thompson@university.edu'
-        WHEN 'CS207' THEN 'michael.anderson@university.edu'
-        WHEN 'CS208' THEN 'emily.roberts@university.edu'
-        WHEN 'CS301' THEN 'james.campbell@university.edu'
-        WHEN 'CS302' THEN 'jessica.morgan@university.edu'
-        WHEN 'CS303' THEN 'andrew.richardson@university.edu'
-        WHEN 'CS404' THEN 'sophie.morris@university.edu'
-
-    END
-
+JOIN courses c ON c.id = co.course_id
+JOIN users u ON u.email = CASE c.course_code
+    WHEN 'CS101' THEN 'nicholas.cox@university.edu'
+    WHEN 'CS102' THEN 'amelia.howard@university.edu'
+    WHEN 'CS103' THEN 'samuel.ward@university.edu'
+    WHEN 'CS104' THEN 'megan.brooks@university.edu'
+    WHEN 'CS201' THEN 'ethan.bennett@university.edu'
+    WHEN 'CS202' THEN 'victoria.gray@university.edu'
+    WHEN 'CS203' THEN 'henry.james@university.edu'
+    WHEN 'CS204' THEN 'natalie.foster@university.edu'
+    WHEN 'CS205' THEN 'daniel.mitchell@university.edu'
+    WHEN 'CS206' THEN 'sarah.thompson@university.edu'
+    WHEN 'CS207' THEN 'michael.anderson@university.edu'
+    WHEN 'CS208' THEN 'emily.roberts@university.edu'
+    WHEN 'CS301' THEN 'james.campbell@university.edu'
+    WHEN 'CS302' THEN 'jessica.morgan@university.edu'
+    WHEN 'CS303' THEN 'andrew.richardson@university.edu'
+    WHEN 'CS404' THEN 'sophie.morris@university.edu'
+END
 WHERE co.academic_year = 2026
   AND co.session IN ('spring', 'annual');
-
 
 -- ==========================================================
 -- 9. ADDITIONAL TUTORS
 -- ==========================================================
---
--- role = 'tutor'
---
--- Six spring offerings receive a second tutor.
---
--- Total tutor assignments:
---   16 primary tutors
---   + 6 additional tutors
---   = 22 tutor assignments.
--- ==========================================================
 
-INSERT INTO course_lecturers (
-    course_offering_id,
-    user_id,
-    role
-)
-SELECT
-    co.id,
-    u.id,
-    'tutor'
-
+INSERT INTO course_lecturers (course_offering_id, user_id, role)
+SELECT co.id, u.id, 'tutor'
 FROM course_offerings co
-
-JOIN courses c
-    ON c.id = co.course_id
-
-JOIN users u
-    ON u.email = CASE c.course_code
-
-        WHEN 'CS101' THEN 'samuel.ward@university.edu'
-        WHEN 'CS102' THEN 'megan.brooks@university.edu'
-        WHEN 'CS103' THEN 'ethan.bennett@university.edu'
-        WHEN 'CS104' THEN 'victoria.gray@university.edu'
-        WHEN 'CS201' THEN 'henry.james@university.edu'
-        WHEN 'CS202' THEN 'natalie.foster@university.edu'
-
-    END
-
+JOIN courses c ON c.id = co.course_id
+JOIN users u ON u.email = CASE c.course_code
+    WHEN 'CS101' THEN 'samuel.ward@university.edu'
+    WHEN 'CS102' THEN 'megan.brooks@university.edu'
+    WHEN 'CS103' THEN 'ethan.bennett@university.edu'
+    WHEN 'CS104' THEN 'victoria.gray@university.edu'
+    WHEN 'CS201' THEN 'henry.james@university.edu'
+    WHEN 'CS202' THEN 'natalie.foster@university.edu'
+END
 WHERE co.academic_year = 2026
   AND co.session = 'spring'
-
-  AND c.course_code IN (
-      'CS101',
-      'CS102',
-      'CS103',
-      'CS104',
-      'CS201',
-      'CS202'
-  );
-
+  AND c.course_code IN ('CS101', 'CS102', 'CS103', 'CS104', 'CS201', 'CS202');
 
 -- ==========================================================
 -- 10. CURRENT SECTION ENROLMENTS
 -- ==========================================================
---
--- 16 current offerings
--- 24 students per offering
---
--- 16 * 24 = 384 enrolments.
---
--- 180 regular students are rotated through the 16 offerings.
--- Test student is excluded here.
--- ==========================================================
 
-INSERT INTO course_enrolments (
-    course_offering_id,
-    user_id,
-    status
-)
-WITH
-
-offering_ranked AS (
+INSERT INTO course_enrolments (course_offering_id, user_id, status)
+WITH offering_ranked AS (
     SELECT
         co.id AS offering_id,
-
         ROW_NUMBER() OVER (
             ORDER BY
                 CASE
@@ -742,173 +463,87 @@ offering_ranked AS (
                 END,
                 co.id
         ) AS rn
-
     FROM course_offerings co
-
     WHERE co.academic_year = 2026
       AND co.session IN ('spring', 'annual')
       AND co.status = 'enrol'
 ),
-
 student_ranked AS (
     SELECT
         u.id,
-
         ROW_NUMBER() OVER (
             ORDER BY u.id
         ) AS rn
-
     FROM users u
-
     WHERE u.role = 'student'
       AND u.is_active = TRUE
       AND u.email <> 'student@test.com'
 ),
-
 slots AS (
-    SELECT 1 AS slot
-    UNION ALL SELECT 2
-    UNION ALL SELECT 3
-    UNION ALL SELECT 4
-    UNION ALL SELECT 5
-    UNION ALL SELECT 6
-    UNION ALL SELECT 7
-    UNION ALL SELECT 8
-    UNION ALL SELECT 9
-    UNION ALL SELECT 10
-    UNION ALL SELECT 11
-    UNION ALL SELECT 12
-    UNION ALL SELECT 13
-    UNION ALL SELECT 14
-    UNION ALL SELECT 15
-    UNION ALL SELECT 16
-    UNION ALL SELECT 17
-    UNION ALL SELECT 18
-    UNION ALL SELECT 19
-    UNION ALL SELECT 20
-    UNION ALL SELECT 21
-    UNION ALL SELECT 22
-    UNION ALL SELECT 23
-    UNION ALL SELECT 24
+    SELECT 1 AS slot UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4
+    UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8
+    UNION ALL SELECT 9 UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12
+    UNION ALL SELECT 13 UNION ALL SELECT 14 UNION ALL SELECT 15 UNION ALL SELECT 16
+    UNION ALL SELECT 17 UNION ALL SELECT 18 UNION ALL SELECT 19 UNION ALL SELECT 20
+    UNION ALL SELECT 21 UNION ALL SELECT 22 UNION ALL SELECT 23 UNION ALL SELECT 24
 )
-
 SELECT
     o.offering_id,
     s.id,
     'enrol'
-
 FROM offering_ranked o
-
 CROSS JOIN slots
-
 JOIN student_ranked s
-    ON s.rn =
-       MOD(
-           ((o.rn - 1) * 24)
-           + (slots.slot - 1),
-           180
-       ) + 1;
-
+    ON s.rn = MOD(((o.rn - 1) * 24) + (slots.slot - 1), 180) + 1;
 
 -- ==========================================================
 -- 11. TEST LECTURER ASSIGNMENTS
 -- ==========================================================
---
--- Test lecturer:
---   lecturer@test.com
---
--- Assigned as 'secondary' to:
---   CS101 spring
---   CS201 spring
---   CS301 spring
---   CS404 annual
--- ==========================================================
 
-INSERT INTO course_lecturers (
-    course_offering_id,
-    user_id,
-    role
-)
+INSERT INTO course_lecturers (course_offering_id, user_id, role)
 SELECT
     co.id,
     u.id,
     'secondary'
-
 FROM course_offerings co
-
 JOIN courses c
     ON c.id = co.course_id
-
 CROSS JOIN users u
-
 WHERE u.email = 'lecturer@test.com'
-
   AND (
       (
-          c.course_code IN (
-              'CS101',
-              'CS201',
-              'CS301'
-          )
+          c.course_code IN ('CS101', 'CS201', 'CS301')
           AND co.session = 'spring'
       )
-      OR
-      (
+      OR (
           c.course_code = 'CS404'
           AND co.session = 'annual'
       )
   )
-
   AND co.academic_year = 2026;
-
 
 -- ==========================================================
 -- 12. TEST STUDENT ENROLMENT
 -- ==========================================================
---
--- Test student:
---   student@test.com
---
--- Enrolled in:
---   CS101 spring
---   CS201 spring
---   CS301 spring
---   CS404 annual
--- ==========================================================
 
-INSERT INTO course_enrolments (
-    course_offering_id,
-    user_id,
-    status
-)
+INSERT INTO course_enrolments (course_offering_id, user_id, status)
 SELECT
     co.id,
     u.id,
     'enrol'
-
 FROM course_offerings co
-
 JOIN courses c
     ON c.id = co.course_id
-
 CROSS JOIN users u
-
 WHERE u.email = 'student@test.com'
-
   AND (
       (
-          c.course_code IN (
-              'CS101',
-              'CS201',
-              'CS301'
-          )
+          c.course_code IN ('CS101', 'CS201', 'CS301')
           AND co.session = 'spring'
       )
-      OR
-      (
+      OR (
           c.course_code = 'CS404'
           AND co.session = 'annual'
       )
   )
-
   AND co.academic_year = 2026;

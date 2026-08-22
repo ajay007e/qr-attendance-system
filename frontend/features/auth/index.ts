@@ -1,4 +1,5 @@
 export * from "./types";
+export * from "./utils";
 export * from "./api/auth.service";
 
 export { AuthProvider } from "./context/auth.provider";

@@ -6,15 +6,6 @@ import { type CourseQuery, CourseService } from "@/features/courses";
 import { DEFAULT_PAGINATION_META, useError } from "@/shared";
 import type { PaginationMeta, Course } from "@/shared";
 
-function getQueryKey(query: CourseQuery) {
-  return JSON.stringify({
-    search: query.search,
-    status: query.status,
-    page: query.page,
-    limit: query.limit,
-  });
-}
-
 export function useCourses(query: CourseQuery) {
   const isInitialLoad = useRef(true);
   const { handleError } = useError();
@@ -24,10 +15,7 @@ export function useCourses(query: CourseQuery) {
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [loadedQueryKey, setLoadedQueryKey] = useState<string | null>(null);
-
   const loadCourses = useCallback(async () => {
-    const queryKey = getQueryKey(query);
     try {
       if (isInitialLoad.current) {
         setLoading(true);
@@ -38,7 +26,6 @@ export function useCourses(query: CourseQuery) {
       const response = await CourseService.getCourses(query);
       setCourses(response.data.items ?? []);
       setPagination(response.data.meta ?? DEFAULT_PAGINATION_META);
-      setLoadedQueryKey(queryKey);
     } catch (err) {
       setCourses([]);
       setPagination(DEFAULT_PAGINATION_META);
@@ -64,10 +51,6 @@ export function useCourses(query: CourseQuery) {
     };
   }, [loadCourses]);
 
-  const currentQueryKey = getQueryKey(query);
-
-  const hasLoadedCurrentQuery = loadedQueryKey === currentQueryKey;
-
   return {
     courses,
     pagination,
@@ -77,7 +60,6 @@ export function useCourses(query: CourseQuery) {
 
     error,
 
-    hasLoadedCurrentQuery,
     refresh: loadCourses,
   };
 }

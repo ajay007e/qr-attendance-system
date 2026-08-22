@@ -7,7 +7,7 @@ export interface User {
   email: string;
   role: UserRole;
   firstName: string;
-  lastName: string | null;
+  lastName: string;
   isActive: boolean;
 }
 

@@ -11,7 +11,6 @@ export function useCourseParticipants(offeringId: number, query: ParticipantQuer
   const [loading, setLoading] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [hasLoaded, setHasLoaded] = useState(false);
   const [pagination, setPagination] = useState<PaginationMeta>(DEFAULT_PAGINATION_META);
 
   const fetchParticipants = useCallback(async () => {
@@ -27,10 +26,8 @@ export function useCourseParticipants(offeringId: number, query: ParticipantQuer
 
       setParticipants(response.data.items);
       setPagination(response.data.meta);
-      setHasLoaded(true);
     } catch (err) {
       setError(err instanceof Error ? err : new Error("Unable to load participants"));
-      setHasLoaded(true);
     } finally {
       setLoading(false);
       setIsFetching(false);
@@ -54,12 +51,10 @@ export function useCourseParticipants(offeringId: number, query: ParticipantQuer
         if (!cancelled) {
           setParticipants(response.data.items);
           setPagination(response.data.meta);
-          setHasLoaded(true);
         }
       } catch (err) {
         if (!cancelled) {
           setError(err instanceof Error ? err : new Error("Unable to load participants"));
-          setHasLoaded(true);
         }
       } finally {
         if (!cancelled) {
@@ -83,6 +78,5 @@ export function useCourseParticipants(offeringId: number, query: ParticipantQuer
     isFetching,
     error,
     refresh: fetchParticipants,
-    hasLoadedCurrentQuery: hasLoaded,
   };
 }

@@ -45,7 +45,7 @@ function CourseDropdown() {
 
           return (
             <button
-              key={course.id}
+              key={course.courseOfferingId}
               type="button"
               onMouseDown={() => selectOption(course)}
               className={`

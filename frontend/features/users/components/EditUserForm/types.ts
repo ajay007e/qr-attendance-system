@@ -27,3 +27,8 @@ export type DeleteUserTabProps = {
   onDelete: (isActive: boolean) => void;
   isActive: boolean;
 };
+
+export type PasswordFormValues = {
+  password: string;
+  confirmPassword: string;
+};

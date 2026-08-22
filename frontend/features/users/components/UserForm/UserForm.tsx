@@ -1,60 +1,25 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-
-import { AppError, Button, FormError, Field, UI_USER_ROLE_OPTIONS, USER_ROLES, UserRole } from "@/shared";
+import { Button, Field, FormError, UI_USER_ROLE_OPTIONS } from "@/shared";
 
 import { UserFormProps } from "./types";
+import { useUserForm } from "./useUserForm";
 
 export default function UserForm({ onSubmit }: UserFormProps) {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const [role, setRole] = useState<UserRole>(USER_ROLES.STUDENT);
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (loading) return;
-    setError("");
-    try {
-      setLoading(true);
-      await onSubmit({
-        firstName: firstName,
-        lastName: lastName,
-        email,
-        password,
-        role,
-      });
-    } catch (err) {
-      if (err instanceof AppError) {
-        setError(err.message);
-      } else {
-        setError("Unable to create user. Please try again.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
+  const { values, loading, error, setValue, handleSubmit } = useUserForm({ onSubmit });
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5" aria-busy={loading}>
-      {/* Error */}
+    <form onSubmit={handleSubmit} className="space-y-6" aria-busy={loading} noValidate>
       {error && <FormError message={error} />}
 
-      {/* Name */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <Field label="First Name" required>
           <Field.Input
             disabled={loading}
             placeholder="Enter first name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
+            value={values.firstName}
+            onChange={(e) => setValue("firstName", e.target.value)}
+            autoComplete="given-name"
           />
         </Field>
 
@@ -62,8 +27,9 @@ export default function UserForm({ onSubmit }: UserFormProps) {
           <Field.Input
             disabled={loading}
             placeholder="Enter last name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
+            value={values.lastName}
+            onChange={(e) => setValue("lastName", e.target.value)}
+            autoComplete="family-name"
           />
         </Field>
       </div>
@@ -74,8 +40,8 @@ export default function UserForm({ onSubmit }: UserFormProps) {
           disabled={loading}
           autoComplete="email"
           placeholder="Enter email address"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={values.email}
+          onChange={(e) => setValue("email", e.target.value)}
         />
       </Field>
 
@@ -85,19 +51,23 @@ export default function UserForm({ onSubmit }: UserFormProps) {
           disabled={loading}
           autoComplete="new-password"
           placeholder="Enter password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={values.password}
+          onChange={(e) => setValue("password", e.target.value)}
           showPasswordToggle
         />
       </Field>
 
-      {/* Role */}
-      <div>
-        <label className="mb-2 block text-sm font-medium text-gray-700">Role</label>
-        <Field.Select value={role} onChange={setRole} placeholder="Select user role" options={UI_USER_ROLE_OPTIONS} />
-      </div>
+      <Field label="Role" required>
+        <Field.Select
+          disabled={loading}
+          value={values.role}
+          onChange={(value) => setValue("role", value)}
+          placeholder="Select user role"
+          options={UI_USER_ROLE_OPTIONS}
+        />
+      </Field>
 
-      <Button type="submit" size="lg" fullWidth loading={loading} disabled={!role} className="mt-2">
+      <Button type="submit" size="lg" fullWidth loading={loading} disabled={loading || !values.role} className="mt-2">
         {loading ? "Creating User..." : "Create User"}
       </Button>
     </form>

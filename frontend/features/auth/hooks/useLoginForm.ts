@@ -1,8 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import type { FormEvent } from "react";
+import { FormEvent, useCallback, useState } from "react";
 
 import { useAuth } from "@/features/auth";
 import { AppError, getDashboardRoute, useError } from "@/shared";
@@ -19,57 +18,66 @@ export function useLoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  function handleEmailChange(value: string) {
+  const handleEmailChange = useCallback((value: string) => {
     setEmail(value);
-  }
+    setError("");
+  }, []);
 
-  function handlePasswordChange(value: string) {
+  const handlePasswordChange = useCallback((value: string) => {
     setPassword(value);
-  }
+    setError("");
+  }, []);
 
-  function validate() {
+  const validate = useCallback(() => {
     if (!email.trim()) {
       setError("Email is required.");
       return false;
     }
+
     if (!password) {
       setError("Password is required.");
       return false;
     }
+
     return true;
-  }
+  }, [email, password]);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  const handleSubmit = useCallback(
+    async (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
 
-    if (loading) return;
-
-    setError("");
-
-    if (!validate()) {
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const user = await login(email, password);
-      router.replace(getDashboardRoute(user.role));
-    } catch (err) {
-      if (err instanceof AppError) {
-        switch (err.type) {
-          case "AUTH":
-          case "FORBIDDEN":
-          case "VALIDATION":
-            setError(err.message);
-            return;
-        }
+      if (loading || !validate()) {
+        return;
       }
-      handleError(err);
-    } finally {
-      setLoading(false);
-    }
-  }
+
+      setError("");
+      setLoading(true);
+
+      try {
+        const user = await login({
+          email,
+          password,
+        });
+
+        router.replace(getDashboardRoute(user.role));
+      } catch (err) {
+        if (err instanceof AppError) {
+          switch (err.type) {
+            case "AUTH":
+            case "FORBIDDEN":
+            case "VALIDATION":
+              setError(err.message);
+              return;
+          }
+        }
+
+        handleError(err);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [email, password, loading, validate, login, router, handleError],
+  );
 
   return {
     email,

@@ -1,52 +1,18 @@
 "use client";
 
-import { FormEvent, useState } from "react";
-
-import { AppError, Button, FormError, Field, UI_USER_ROLE_OPTIONS } from "@/shared";
+import { Button, Field, FormError, UI_USER_ROLE_OPTIONS } from "@/shared";
 
 import { DetailsFormProps } from "./types";
+import { useUserDetailsForm } from "./useDetailsFormState";
 
 export function DetailsForm({ user, onSubmit }: DetailsFormProps) {
-  const [firstName, setFirstName] = useState(user.firstName);
-  const [lastName, setLastName] = useState(user.lastName ?? "");
-  const [email, setEmail] = useState(user.email);
-  const [role, setRole] = useState(user.role);
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    if (loading) return;
-
-    setError("");
-
-    try {
-      setLoading(true);
-
-      await onSubmit({
-        id: user.id,
-        firstName: firstName,
-        lastName: lastName,
-        email,
-        role,
-      });
-    } catch (err) {
-      console.error(err);
-
-      if (err instanceof AppError) {
-        setError(err.message);
-      } else {
-        setError("Unable to update user. Please try again.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
+  const { values, loading, error, setValue, handleSubmit } = useUserDetailsForm({
+    user,
+    onSubmit,
+  });
 
   return (
-    <form className="space-y-5" onSubmit={handleSubmit} aria-busy={loading}>
+    <form className="space-y-5" onSubmit={handleSubmit} aria-busy={loading} noValidate>
       <fieldset disabled={loading} className="space-y-5">
         {error && <FormError message={error} />}
 
@@ -54,27 +20,40 @@ export function DetailsForm({ user, onSubmit }: DetailsFormProps) {
           <Field label="First Name" required>
             <Field.Input
               placeholder="Enter first name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              value={values.firstName}
+              onChange={(e) => setValue("firstName", e.target.value)}
+              autoComplete="given-name"
             />
           </Field>
+
           <Field label="Last Name">
-            <Field.Input placeholder="Enter last name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+            <Field.Input
+              placeholder="Enter last name"
+              value={values.lastName}
+              onChange={(e) => setValue("lastName", e.target.value)}
+              autoComplete="family-name"
+            />
           </Field>
         </div>
+
         <Field label="Email" required>
           <Field.Input
             type="email"
             autoComplete="email"
             placeholder="Enter email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={values.email}
+            onChange={(e) => setValue("email", e.target.value)}
           />
         </Field>
-        <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">Role</label>
-          <Field.Select value={role} onChange={setRole} options={UI_USER_ROLE_OPTIONS} />
-        </div>
+
+        <Field label="Role" required>
+          <Field.Select
+            value={values.role}
+            onChange={(value) => setValue("role", value)}
+            options={UI_USER_ROLE_OPTIONS}
+          />
+        </Field>
+
         <Button type="submit" fullWidth loading={loading}>
           {loading ? "Saving Changes..." : "Save Changes"}
         </Button>

@@ -30,12 +30,11 @@ export default function CourseManagement() {
 
   const debouncedQuery = useDebounce(query, 400);
 
-  const { courses, pagination, loading, isFetching, error, refresh, hasLoadedCurrentQuery } =
-    useCourses(debouncedQuery);
+  const { courses, pagination, loading, isFetching, error, refresh } = useCourses(debouncedQuery);
 
   const { createCourse } = useCourseMutation(refresh);
 
-  if (loading) {
+  if (loading && !error) {
     return <PageLoader />;
   }
 
@@ -50,14 +49,11 @@ export default function CourseManagement() {
       />
     );
   }
-  const hasFilters = query.search.trim() !== "" || query.status !== "ALL";
 
   const hasResults = pagination.total > 0;
-
-  const hasAnyCourses = !hasFilters ? pagination.total > 0 : true;
-
-  const showEmptyState = hasLoadedCurrentQuery && !hasAnyCourses;
-  const showNoResults = hasLoadedCurrentQuery && hasAnyCourses && !hasResults;
+  const hasData = pagination.hasData;
+  const showEmptyState = !isFetching && !hasData;
+  const showNoResults = !isFetching && hasData && !hasResults;
 
   return (
     <>
@@ -65,7 +61,7 @@ export default function CourseManagement() {
         title="Course Management"
         subtitle="Manage courses, sessions and lecturers."
         action={
-          hasAnyCourses ? (
+          hasData ? (
             <Button
               type="button"
               size="lg"
@@ -94,7 +90,7 @@ export default function CourseManagement() {
           />
         )}
 
-        {hasAnyCourses && (
+        {hasData && (
           <>
             <CourseToolbar filters={query} onFiltersChange={setQuery} />
 
@@ -108,6 +104,8 @@ export default function CourseManagement() {
                 }}
               />
             )}
+
+            {isFetching && !hasResults && <Loader message="Loading courses..." />}
 
             {hasResults && (
               <>

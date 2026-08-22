@@ -35,6 +35,7 @@ export class CourseRepository {
       params.push(query.status === "ACTIVE");
     }
 
+    // Total matching the current filters
     const [countRows] = await db.execute<RowDataPacket[]>(
       `
       SELECT COUNT(*) AS total
@@ -47,6 +48,14 @@ export class CourseRepository {
     const total = Number(countRows[0]?.total ?? 0);
     const totalPages = Math.ceil(total / limit);
 
+    const [dataCountRows] = await db.execute<RowDataPacket[]>(
+      `
+    SELECT COUNT(*) AS total
+    FROM courses
+  `,
+    );
+
+    const dataCount = Number(dataCountRows[0]?.total ?? 0);
     const [rows] = await db.execute<RowDataPacket[]>(
       `
       SELECT
@@ -66,6 +75,7 @@ export class CourseRepository {
         limit,
         total,
         totalPages,
+        hasData: dataCount > 0,
       },
     };
   }

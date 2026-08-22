@@ -6,16 +6,6 @@ import { type CourseOfferingQuery, OfferingService } from "@/features/courses";
 import { DEFAULT_PAGINATION_META, useError } from "@/shared";
 import type { CourseOffering, PaginationMeta } from "@/shared";
 
-function getQueryKey(query: CourseOfferingQuery) {
-  return JSON.stringify({
-    search: query.search,
-    session: query.session,
-    status: query.status,
-    page: query.page,
-    limit: query.limit,
-  });
-}
-
 export function useOfferings(query: CourseOfferingQuery) {
   const isInitialLoad = useRef(true);
   const { handleError } = useError();
@@ -27,11 +17,7 @@ export function useOfferings(query: CourseOfferingQuery) {
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [loadedQueryKey, setLoadedQueryKey] = useState<string | null>(null);
-
   const loadOfferings = useCallback(async () => {
-    const queryKey = getQueryKey(query);
-
     try {
       if (isInitialLoad.current) {
         setLoading(true);
@@ -45,8 +31,6 @@ export function useOfferings(query: CourseOfferingQuery) {
 
       setOfferings(response.data.items ?? []);
       setPagination(response.data.meta ?? DEFAULT_PAGINATION_META);
-
-      setLoadedQueryKey(queryKey);
     } catch (err) {
       setOfferings([]);
       setPagination(DEFAULT_PAGINATION_META);
@@ -74,10 +58,6 @@ export function useOfferings(query: CourseOfferingQuery) {
     };
   }, [loadOfferings]);
 
-  const currentQueryKey = getQueryKey(query);
-
-  const hasLoadedCurrentQuery = loadedQueryKey === currentQueryKey;
-
   return {
     offerings,
     pagination,
@@ -86,8 +66,6 @@ export function useOfferings(query: CourseOfferingQuery) {
     isFetching,
 
     error,
-
-    hasLoadedCurrentQuery,
 
     refresh: loadOfferings,
   };

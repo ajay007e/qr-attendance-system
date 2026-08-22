@@ -1,6 +1,6 @@
 import { Pencil } from "lucide-react";
 
-import { Badge, Button, getSessionLabel } from "@/shared";
+import { Badge, Button, getOfferingStatusLabel, getSessionLabel } from "@/shared";
 
 import type { OfferingActionProps } from "./types";
 
@@ -26,7 +26,7 @@ export function OfferingTableRow({ offering, onEdit }: OfferingActionProps) {
       </td>
 
       <td className="px-6 py-4">
-        <Badge variant="blue">{offering.status}</Badge>
+        <Badge variant="blue">{getOfferingStatusLabel(offering.status)}</Badge>
       </td>
 
       <td className="px-6 py-4">

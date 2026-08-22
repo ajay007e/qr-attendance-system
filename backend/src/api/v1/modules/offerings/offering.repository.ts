@@ -26,11 +26,11 @@ export class OfferingRepository {
 
     if (query.search) {
       where += `
-        AND (
-          c.course_code LIKE ?
-          OR c.course_name LIKE ?
-        )
-      `;
+      AND (
+        c.course_code LIKE ?
+        OR c.course_name LIKE ?
+      )
+    `;
 
       const keyword = `%${query.search}%`;
 
@@ -47,41 +47,52 @@ export class OfferingRepository {
       params.push(query.status);
     }
 
+    // Total records matching the current filters
     const [countRows] = await db.execute<RowDataPacket[]>(
       `
-        SELECT COUNT(*) AS total
-        FROM course_offerings co
-        INNER JOIN courses c
-          ON c.id = co.course_id
-        ${where}
-      `,
+      SELECT COUNT(*) AS total
+      FROM course_offerings co
+      INNER JOIN courses c
+        ON c.id = co.course_id
+      ${where}
+    `,
       params,
     );
 
     const total = Number(countRows[0]?.total ?? 0);
     const totalPages = Math.ceil(total / limit);
 
+    // Total records without filters, used for hasData
+    const [dataCountRows] = await db.execute<RowDataPacket[]>(
+      `
+      SELECT COUNT(*) AS total
+      FROM course_offerings
+    `,
+    );
+
+    const dataCount = Number(dataCountRows[0]?.total ?? 0);
+
     const [rows] = await db.execute<RowDataPacket[]>(
       `
-        SELECT
-          co.id,
-          co.course_id,
-          c.course_code,
-          c.course_name,
-          co.academic_year,
-          co.session,
-          co.start_date,
-          co.end_date,
-          co.status,
-          co.created_at,
-          co.updated_at
-        FROM course_offerings co
-        INNER JOIN courses c
-          ON c.id = co.course_id
-        ${where}
-        ORDER BY co.created_at DESC
-        LIMIT ${limit} OFFSET ${offset}
-      `,
+      SELECT
+        co.id,
+        co.course_id,
+        c.course_code,
+        c.course_name,
+        co.academic_year,
+        co.session,
+        co.start_date,
+        co.end_date,
+        co.status,
+        co.created_at,
+        co.updated_at
+      FROM course_offerings co
+      INNER JOIN courses c
+        ON c.id = co.course_id
+      ${where}
+      ORDER BY co.created_at DESC
+      LIMIT ${limit} OFFSET ${offset}
+    `,
       params,
     );
 
@@ -92,6 +103,7 @@ export class OfferingRepository {
         limit,
         total,
         totalPages,
+        hasData: dataCount > 0,
       },
     };
   }

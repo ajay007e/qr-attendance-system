@@ -293,75 +293,85 @@ export class EnrolmentRepository {
 
   async getStudents(courseOfferingId: number, query: EnrolmentQuery): Promise<PaginatedData<DatabaseStudent>> {
     const page = Math.max(1, query.page ?? DEFAULT_PAGE);
-
     const limit = Math.min(DEFAULT_MAX_LIMIT, Math.max(1, query.limit ?? DEFAULT_LIMIT));
 
     const offset = (page - 1) * limit;
 
-    let where = `
-      WHERE ce.course_offering_id = ?
-        AND ce.status <> 'withdrawn'
-    `;
+    const baseWhere = `
+    WHERE ce.course_offering_id = ?
+      AND ce.status <> 'withdrawn'
+  `;
 
+    let where = baseWhere;
     const params: ExecuteValues[] = [courseOfferingId];
 
     if (query.search?.trim()) {
       where += `
-        AND (
-          u.first_name LIKE ?
-          OR u.last_name LIKE ?
-          OR u.email LIKE ?
-        )
-      `;
+      AND (
+        u.first_name LIKE ?
+        OR u.last_name LIKE ?
+        OR u.email LIKE ?
+      )
+    `;
 
       const keyword = `%${query.search.trim()}%`;
 
       params.push(keyword, keyword, keyword);
     }
 
+    // Filtered total
     const [countRows] = await db.execute<RowDataPacket[]>(
       `
-        SELECT COUNT(*) AS total
-
-        FROM course_enrolments ce
-
-        INNER JOIN users u
-          ON u.id = ce.user_id
-
-        ${where}
-      `,
+      SELECT COUNT(*) AS total
+      FROM course_enrolments ce
+      INNER JOIN users u
+        ON u.id = ce.user_id
+      ${where}
+    `,
       params,
     );
 
     const total = Number(countRows[0]?.total ?? 0);
     const totalPages = Math.ceil(total / limit);
 
+    // Unfiltered total for hasData
+    const [dataCountRows] = await db.execute<RowDataPacket[]>(
+      `
+      SELECT COUNT(*) AS total
+      FROM course_enrolments ce
+      ${baseWhere}
+    `,
+      [courseOfferingId],
+    );
+
+    const dataCount = Number(dataCountRows[0]?.total ?? 0);
+
     const [rows] = await db.execute<RowDataPacket[]>(
       `
-        SELECT
-          u.id,
-          u.first_name,
-          u.last_name,
-          u.email,
-          u.role,
+      SELECT
+        u.id,
+        u.first_name,
+        u.last_name,
+        u.email,
+        u.role,
 
-          ce.status AS enrolment_status,
-          ce.created_at AS enrolled_at
+        ce.status AS enrolment_status,
+        ce.created_at AS enrolled_at
 
-        FROM course_enrolments ce
+      FROM course_enrolments ce
 
-        INNER JOIN users u
-          ON u.id = ce.user_id
+      INNER JOIN users u
+        ON u.id = ce.user_id
 
-        ${where}
+      ${where}
 
-        ORDER BY
-          u.first_name ASC,
-          u.last_name ASC
+      ORDER BY
+        u.first_name ASC,
+        u.last_name ASC
 
-        LIMIT ${limit}
-        OFFSET ${offset}
-      `,
+      LIMIT ${limit}
+      OFFSET ${offset}
+    `,
       params,
     );
 
@@ -372,6 +382,7 @@ export class EnrolmentRepository {
         limit,
         total,
         totalPages,
+        hasData: dataCount > 0,
       },
     };
   }
