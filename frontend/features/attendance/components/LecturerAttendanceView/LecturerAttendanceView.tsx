@@ -23,24 +23,26 @@ const ATTENDANCE_TABS = [
 
 type AttendanceTab = (typeof ATTENDANCE_TABS)[number]["key"];
 
-export function LecturerAttendanceView({ offeringId }: LecturerAttendanceViewProps) {
+export function LecturerAttendanceView({ offeringId, sessionControls }: LecturerAttendanceViewProps) {
   const [activeTab, setActiveTab] = useState<AttendanceTab>("sessions");
 
-  // Mock for now.
-  // Later this will come from the session feature.
-  const activeSession = false;
+  // Feature flag
+  const liveAttendanceEnabled = false;
+
+  if (liveAttendanceEnabled) {
+    return <LiveAttendance sessionControls={sessionControls} />;
+  }
 
   return (
     <div className="space-y-5">
-      {/* Live attendance */}
-      {activeSession && <LiveAttendance />}
-
-      {/* Attendance history */}
       <Section>
-        <SectionHeader title="Attendance" subtitle="Manage attendance sessions and monitor student participation." />
+        <SectionHeader
+          action={sessionControls}
+          title="Attendance"
+          subtitle="Manage attendance sessions and monitor student participation."
+        />
 
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-          {/* Tabs */}
           <div className="border-b border-gray-200 bg-gray-50/70 px-4 py-3">
             <Tabs
               tabs={ATTENDANCE_TABS}
@@ -54,7 +56,6 @@ export function LecturerAttendanceView({ offeringId }: LecturerAttendanceViewPro
             />
           </div>
 
-          {/* Tab content */}
           <div className="px-5 py-6">
             {activeTab === "sessions" && <SessionsTab />}
 
