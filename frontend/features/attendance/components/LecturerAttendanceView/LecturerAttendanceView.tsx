@@ -1,35 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { CalendarDays, ClipboardCheck } from "lucide-react";
 
 import { Section, SectionHeader, Tabs } from "@/shared";
 
 import { LiveAttendance } from "../LiveAttendance";
-import type { LecturerAttendanceViewProps } from "./types";
+import type { AttendanceTab, LecturerAttendanceViewProps } from "./types";
+import { ATTENDANCE_TABS } from "@/features/attendance";
 
-const ATTENDANCE_TABS = [
-  {
-    key: "sessions",
-    label: "Session Details",
-    icon: <CalendarDays size={17} strokeWidth={1.8} />,
-  },
-  {
-    key: "student-attendance",
-    label: "Student Attendance",
-    icon: <ClipboardCheck size={17} strokeWidth={1.8} />,
-  },
-] as const;
-
-type AttendanceTab = (typeof ATTENDANCE_TABS)[number]["key"];
-
-export function LecturerAttendanceView({ offeringId, sessionControls }: LecturerAttendanceViewProps) {
+export function LecturerAttendanceView({ offeringId, sessionControls, isSessionOpen }: LecturerAttendanceViewProps) {
   const [activeTab, setActiveTab] = useState<AttendanceTab>("sessions");
 
-  // Feature flag
-  const liveAttendanceEnabled = false;
-
-  if (liveAttendanceEnabled) {
+  if (isSessionOpen) {
     return <LiveAttendance sessionControls={sessionControls} />;
   }
 

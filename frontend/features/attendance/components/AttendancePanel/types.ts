@@ -5,6 +5,7 @@ export type AttendanceRole = Extract<UserRole, "lecturer" | "student">;
 
 export interface AttendancePanelProps {
   offeringId: number;
+  isSessionOpen: boolean;
   role: AttendanceRole;
 
   /**
