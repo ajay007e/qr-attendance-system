@@ -6,9 +6,11 @@ export const sessionConfig: session.SessionOptions = {
   secret: env.sessionSecret,
   resave: false,
   saveUninitialized: false,
+
   cookie: {
     httpOnly: true,
-    secure: false,
+    secure: env.sessionSecure,
+    sameSite: env.sessionSecure ? "none" : "lax",
     maxAge: SESSION_COOKIE_MAX_AGE,
   },
 };

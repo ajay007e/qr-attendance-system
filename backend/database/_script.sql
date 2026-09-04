@@ -1,46 +1,4 @@
 -- ==========================================
--- Course Enrolments
--- ==========================================
-
-CREATE TABLE IF NOT EXISTS course_enrolments (
-    course_offering_id BIGINT UNSIGNED NOT NULL,
-    user_id BIGINT UNSIGNED NOT NULL,
-
-    status ENUM(
-        'ENROLLED',
-        'DROPPED',
-        'COMPLETED',
-        'WITHDRAWN'
-    ) NOT NULL DEFAULT 'ENROLLED',
-
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    PRIMARY KEY (
-        course_offering_id,
-        user_id
-    ),
-
-    CONSTRAINT fk_course_enrolments_offering
-        FOREIGN KEY (course_offering_id)
-        REFERENCES course_offerings(id)
-        ON DELETE CASCADE,
-
-    CONSTRAINT fk_course_enrolments_user
-        FOREIGN KEY (user_id)
-        REFERENCES users(id)
-        ON DELETE CASCADE,
-
-    INDEX idx_course_enrolments_user (
-        user_id
-    ),
-
-    INDEX idx_course_enrolments_status (
-        status
-    )
-);
-
-
--- ==========================================
 -- Attendance Sessions
 -- ==========================================
 -- Represents one actual attendance/class
@@ -61,28 +19,31 @@ CREATE TABLE IF NOT EXISTS attendance_sessions (
 
     course_offering_id BIGINT UNSIGNED NOT NULL,
 
-    title VARCHAR(255) DEFAULT NULL,
+    -- Academic week supplied when the session is created.
+    week_number SMALLINT UNSIGNED NOT NULL,
 
-    session_date DATE NOT NULL,
+    -- Type of class this session represents.
+    class_type ENUM(
+        'LECTURE',
+        'LABORATORY',
+        'TUTORIAL',
+        'WORKSHOP',
+        'SEMINAR',
+        'OTHER'
+    ) NOT NULL,
 
-    start_time TIME NOT NULL,
-    end_time TIME DEFAULT NULL,
+    -- The actual time window of the class/session.
+    session_start_at TIMESTAMP NOT NULL,
+    session_end_at TIMESTAMP NOT NULL,
 
-    qr_token VARCHAR(255) DEFAULT NULL,
-
-    qr_generated_at TIMESTAMP NULL DEFAULT NULL,
-    qr_expires_at TIMESTAMP NULL DEFAULT NULL,
-
-    status ENUM(
-        'SCHEDULED',
+    -- Whether students can currently record attendance.
+    attendance_status ENUM(
         'OPEN',
-        'CLOSED',
-        'CANCELLED'
-    ) NOT NULL DEFAULT 'SCHEDULED',
-
-    created_by BIGINT UNSIGNED NOT NULL,
+        'CLOSED'
+    ) NOT NULL DEFAULT 'CLOSED',
 
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
 
@@ -91,30 +52,25 @@ CREATE TABLE IF NOT EXISTS attendance_sessions (
         REFERENCES course_offerings(id)
         ON DELETE CASCADE,
 
-    CONSTRAINT fk_attendance_sessions_creator
-        FOREIGN KEY (created_by)
-        REFERENCES users(id)
-        ON DELETE RESTRICT,
+    CONSTRAINT chk_attendance_sessions_week
+        CHECK (week_number > 0),
 
-    UNIQUE KEY uq_attendance_qr_token (
-        qr_token
-    ),
+    CONSTRAINT chk_attendance_sessions_time
+        CHECK (session_end_at > session_start_at),
 
-    INDEX idx_attendance_sessions_offering (
-        course_offering_id
-    ),
-
-    INDEX idx_attendance_sessions_date (
-        session_date
-    ),
-
-    INDEX idx_attendance_sessions_status (
-        status
-    ),
-
-    INDEX idx_attendance_sessions_offering_date (
+    INDEX idx_attendance_sessions_offering_week (
         course_offering_id,
-        session_date
+        week_number
+    ),
+
+    INDEX idx_attendance_sessions_offering_start (
+        course_offering_id,
+        session_start_at
+    ),
+
+    INDEX idx_attendance_sessions_offering_status (
+        course_offering_id,
+        attendance_status
     )
 );
 
@@ -140,24 +96,36 @@ CREATE TABLE IF NOT EXISTS attendance_records (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
     attendance_session_id BIGINT UNSIGNED NOT NULL,
-    user_id BIGINT UNSIGNED NOT NULL,
+
+    student_id BIGINT UNSIGNED NOT NULL,
 
     status ENUM(
         'PRESENT',
-        'LATE',
         'ABSENT',
         'EXCUSED'
     ) NOT NULL DEFAULT 'PRESENT',
 
-    check_in_at TIMESTAMP NULL DEFAULT NULL,
-    check_out_at TIMESTAMP NULL DEFAULT NULL,
-
-    method ENUM(
+    attendance_method ENUM(
         'QR',
         'MANUAL'
-    ) NOT NULL DEFAULT 'QR',
+    ) NOT NULL,
+
+    location_status ENUM(
+        'VERIFIED',
+        'SUSPICIOUS',
+        'NOT_CHECKED'
+    ) NOT NULL DEFAULT 'NOT_CHECKED',
+
+    marked_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    -- NULL when attendance was recorded automatically via QR.
+    -- Contains the lecturer's user ID when manually recorded/changed.
+    marked_by BIGINT UNSIGNED NULL,
+
+    lecturer_note VARCHAR(500) DEFAULT NULL,
 
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         ON UPDATE CURRENT_TIMESTAMP,
 
@@ -166,25 +134,33 @@ CREATE TABLE IF NOT EXISTS attendance_records (
         REFERENCES attendance_sessions(id)
         ON DELETE CASCADE,
 
-    CONSTRAINT fk_attendance_records_user
-        FOREIGN KEY (user_id)
+    CONSTRAINT fk_attendance_records_student
+        FOREIGN KEY (student_id)
         REFERENCES users(id)
-        ON DELETE CASCADE,
+        ON DELETE RESTRICT,
 
-    UNIQUE KEY uq_attendance_session_user (
-        attendance_session_id,
-        user_id
+    CONSTRAINT fk_attendance_records_marked_by
+        FOREIGN KEY (marked_by)
+        REFERENCES users(id)
+        ON DELETE RESTRICT,
+
+    -- A student can only have one attendance record per session.
+    CONSTRAINT uq_attendance_session_student
+        UNIQUE (
+            attendance_session_id,
+            student_id
+        ),
+
+    INDEX idx_attendance_records_student (
+        student_id
     ),
 
-    INDEX idx_attendance_records_user (
-        user_id
+    INDEX idx_attendance_records_session (
+        attendance_session_id
     ),
 
-    INDEX idx_attendance_records_status (
+    INDEX idx_attendance_records_student_status (
+        student_id,
         status
-    ),
-
-    INDEX idx_attendance_records_check_in (
-        check_in_at
     )
 );

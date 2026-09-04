@@ -2,15 +2,27 @@ import cors from "cors";
 import express from "express";
 import session from "express-session";
 
-import { sessionConfig } from "@/config";
+import { env, sessionConfig } from "@/config";
 import { router } from "@/routes";
 import { notFound, errorHandler } from "@/middleware";
 
 export const app = express();
 
+app.set("trust proxy", env.sessionSecure);
+
 app.use(
   cors({
-    origin: true,
+    origin: (origin, callback) => {
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (env.allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`CORS: Origin ${origin} not allowed`));
+    },
     credentials: true,
   }),
 );

@@ -38,6 +38,7 @@ export class OfferingService {
   }
 
   async get(id: number): Promise<CourseOffering> {
+    //TODO: validate user has access to this course
     validateCourseOfferingId(id);
 
     const offering = await this.repository.findById(id);

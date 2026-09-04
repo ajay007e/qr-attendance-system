@@ -26,9 +26,27 @@ function parseNumber(name: string, value: string | undefined, defaultValue?: num
   return parsed;
 }
 
+function parseBoolean(name: string, value: string | undefined, defaultValue: boolean): boolean {
+  if (value === undefined) {
+    return defaultValue;
+  }
+  if (value === "true") {
+    return true;
+  }
+  if (value === "false") {
+    return false;
+  }
+  throw new Error(`Environment variable ${name} must be true or false`);
+}
+
 export const env = {
   port: parseNumber("PORT", process.env.PORT, DEFAULT_PORT),
   sessionSecret: requireEnv("SESSION_SECRET"),
+  sessionSecure: parseBoolean("SESSION_SECURE", process.env.SESSION_SECURE, false),
+  allowedOrigins: (process.env.ALLOWED_ORIGINS ?? "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
   adminApiKey: requireEnv("ADMIN_API_KEY"),
   db: {
     host: process.env.DB_HOST ?? DEFAULT_DB_HOST,

@@ -188,3 +188,57 @@ CREATE TABLE IF NOT EXISTS course_enrolments (
         status
     )
 );
+
+
+-- ==========================================================
+-- Attendance Sessions
+-- ==========================================================
+
+CREATE TABLE IF NOT EXISTS attendance_sessions (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    course_offering_id BIGINT UNSIGNED NOT NULL,
+    lecturer_id BIGINT UNSIGNED NOT NULL,
+
+    week_number TINYINT UNSIGNED NOT NULL,
+
+    class_type VARCHAR(30) NOT NULL,
+
+    session_start_at DATETIME NOT NULL,
+    session_end_at DATETIME NOT NULL,
+
+    latitude DECIMAL(10, 7) NOT NULL,
+    longitude DECIMAL(10, 7) NOT NULL,
+
+    session_status VARCHAR(30) NOT NULL DEFAULT 'open',
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_attendance_sessions_course
+        FOREIGN KEY (course_offering_id)
+        REFERENCES courses(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_attendance_sessions_lecturer
+        FOREIGN KEY (lecturer_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT chk_session_times
+        CHECK (session_end_at > session_start_at),
+
+    CONSTRAINT chk_latitude_range
+        CHECK (latitude BETWEEN -90 AND 90),
+
+    CONSTRAINT chk_longitude_range
+        CHECK (longitude BETWEEN -180 AND 180),
+
+    INDEX idx_attendance_sessions_course (course_offering_id),
+    INDEX idx_attendance_sessions_lecturer (lecturer_id),
+    INDEX idx_attendance_sessions_status (session_status)
+);
+
+CREATE UNIQUE INDEX ux_attendance_sessions_one_open_per_course
+    ON attendance_sessions ((CASE WHEN session_status = 'open' THEN course_offering_id END));

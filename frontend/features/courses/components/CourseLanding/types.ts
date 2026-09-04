@@ -8,6 +8,7 @@ export interface CourseLandingProps {
   offeringId: number;
   backHref: string;
   participantsTab: ReactNode;
+  attendanceTab: ReactNode;
 }
 
 type CourseComponentProps = {
