@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 
+import { ATTENDANCE_TABS } from "@/features/attendance";
 import { Section, SectionHeader, Tabs } from "@/shared";
 
 import { LiveAttendance } from "../LiveAttendance";
+
 import type { AttendanceTab, LecturerAttendanceViewProps } from "./types";
-import { ATTENDANCE_TABS } from "@/features/attendance";
 
 export function LecturerAttendanceView({ offeringId, sessionControls, isSessionOpen }: LecturerAttendanceViewProps) {
+  console.log(offeringId);
   const [activeTab, setActiveTab] = useState<AttendanceTab>("sessions");
 
   if (isSessionOpen) {

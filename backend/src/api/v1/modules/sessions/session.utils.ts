@@ -75,10 +75,10 @@ export function validateLocation(latitude: number, longitude: number): { latitud
 }
 
 export function validateStartRequest(data: StartAttendanceSessionRequest) {
-  const courseOfferingId = validateCourseOfferingId(data.course_offering_id);
-  const weekNumber = validateWeekNumber(data.week_number);
-  const classType = validateClassType(data.class_type);
-  const { sessionStartAt, sessionEndAt } = validateSessionTimes(data.session_start_at, data.session_end_at);
+  const courseOfferingId = validateCourseOfferingId(data.courseOfferingId);
+  const weekNumber = validateWeekNumber(data.weekNumber);
+  const classType = validateClassType(data.classType);
+  const { sessionStartAt, sessionEndAt } = validateSessionTimes(data.startTime, data.endTime);
   const { latitude, longitude } = validateLocation(data.latitude, data.longitude);
 
   return { courseOfferingId, weekNumber, classType, sessionStartAt, sessionEndAt, latitude, longitude };
@@ -95,11 +95,11 @@ export function validateEditRequest(data: EditAttendanceSessionRequest) {
 export function validateWithinEditableWindow(session: AttendanceSession): void {
   const now = new Date();
 
-  if (now < session.sessionStartAt) {
+  if (now < session.startTime) {
     throw new AppError("Session cannot be edited before it starts", 400);
   }
 
-  if (now > session.sessionEndAt) {
+  if (now > session.endTime) {
     throw new AppError("Session cannot be edited after its end time", 400);
   }
 }

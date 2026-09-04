@@ -1,1 +1,1 @@
-export { default as LiveAttendance } from "./LiveAttendanceTable";
+export { default as LiveAttendance } from "./LiveAttendance";

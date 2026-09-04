@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import {
   CalendarDays,
   CheckCircle2,
@@ -10,6 +9,7 @@ import {
   UserRound,
   XCircle,
 } from "lucide-react";
+import { useMemo, useState } from "react";
 
 import { Badge, Field, Section, SectionHeader } from "@/shared";
 
@@ -208,7 +208,8 @@ const LOCATION_STATUS_CONFIG: Record<
   },
 };
 
-export function StudentAttendanceView({ courseId }: StudentAttendanceViewProps) {
+export function StudentAttendanceView({ offeringId }: StudentAttendanceViewProps) {
+  console.log(offeringId);
   const [statusFilter, setStatusFilter] = useState<AttendanceStatusFilter>("ALL");
 
   const [classTypeFilter, setClassTypeFilter] = useState<AttendanceClassTypeFilter>("ALL");

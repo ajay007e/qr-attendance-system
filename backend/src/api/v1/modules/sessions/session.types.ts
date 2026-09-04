@@ -1,6 +1,6 @@
 import { ATTENDANCE_SESSION_STATUSES, CLASS_TYPES } from "./session.constants";
 
-export type AttendanceStatus = (typeof ATTENDANCE_SESSION_STATUSES)[number];
+export type SessionStatus = (typeof ATTENDANCE_SESSION_STATUSES)[number];
 
 export type ClassType = (typeof CLASS_TYPES)[number];
 
@@ -10,11 +10,11 @@ export interface AttendanceSession {
   lecturerId: number;
   weekNumber: number;
   classType: ClassType;
-  sessionStartAt: Date;
-  sessionEndAt: Date;
+  startTime: Date;
+  endTime: Date;
   latitude: number;
   longitude: number;
-  attendanceStatus: AttendanceStatus;
+  sessionStatus: SessionStatus;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -25,9 +25,9 @@ export type DatabaseAttendanceSession = Omit<
   | "lecturerId"
   | "weekNumber"
   | "classType"
-  | "sessionStartAt"
-  | "sessionEndAt"
-  | "attendanceStatus"
+  | "startTime"
+  | "endTime"
+  | "sessionStatus"
   | "createdAt"
   | "updatedAt"
 > & {
@@ -37,14 +37,14 @@ export type DatabaseAttendanceSession = Omit<
   class_type: ClassType;
   session_start_at: Date;
   session_end_at: Date;
-  attendance_status: AttendanceStatus;
+  session_status: SessionStatus;
   created_at: Date;
   updated_at: Date;
 };
 
 export type CreateAttendanceSessionData = Omit<
   DatabaseAttendanceSession,
-  "id" | "attendance_status" | "created_at" | "updated_at"
+  "id" | "session_status" | "created_at" | "updated_at"
 >;
 
 export type UpdateAttendanceSessionData = Pick<
@@ -53,11 +53,11 @@ export type UpdateAttendanceSessionData = Pick<
 >;
 
 export interface StartAttendanceSessionRequest {
-  course_offering_id: number;
-  week_number: number;
-  class_type: string;
-  session_start_at: string;
-  session_end_at: string;
+  courseOfferingId: number;
+  weekNumber: number;
+  classType: string;
+  startTime: string;
+  endTime: string;
   latitude: number;
   longitude: number;
 }

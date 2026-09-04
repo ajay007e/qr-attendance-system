@@ -4,7 +4,7 @@ import type { AttendanceSession, SessionForm } from "../../types";
 
 export interface SessionControlProps {
   offeringId: number;
-  session: AttendanceSession;
+  session: AttendanceSession | null;
   onSessionChange: () => Promise<void>;
 }
 
@@ -25,5 +25,5 @@ export interface SessionQRCodeProps {
 export interface SessionQRCodeModalProps {
   open: boolean;
   onClose: () => void;
-  id?: number;
+  id: number;
 }

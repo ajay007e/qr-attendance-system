@@ -2,8 +2,9 @@
 
 import { Button, Field, Modal } from "@/shared";
 
-import type { AttendanceSessionClassType } from "../../types";
 import { CLASS_TYPE_OPTIONS } from "../../constants";
+import type { AttendanceSessionClassType } from "../../types";
+
 import { SessionStartModalProps } from "./types";
 
 export function SessionStartModal({
@@ -44,8 +45,8 @@ export function SessionStartModal({
             <Field label="End Time" required>
               <Field.Input
                 type="time"
-                value={form.endTime}
                 step={1800}
+                value={form.endTime}
                 onChange={(event) => updateField("endTime", event.target.value)}
               />
             </Field>

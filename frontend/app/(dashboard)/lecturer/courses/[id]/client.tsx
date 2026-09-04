@@ -6,7 +6,7 @@ import { PageLoader } from "@/shared";
 
 export function LecturerCourseAttendance({ offeringId }: { offeringId: number }) {
   const { session, loading, refresh } = useSession(offeringId);
-  const isSessionOpen = session?.status === "open";
+  const isSessionOpen = session?.sessionStatus === "open";
 
   if (loading) {
     <PageLoader message="Loading..." />;

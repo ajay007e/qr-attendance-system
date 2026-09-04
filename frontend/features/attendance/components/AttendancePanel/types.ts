@@ -1,11 +1,12 @@
-import type { UserRole } from "@/shared";
 import type { ReactNode } from "react";
+
+import type { UserRole } from "@/shared";
 
 export type AttendanceRole = Extract<UserRole, "lecturer" | "student">;
 
 export interface AttendancePanelProps {
   offeringId: number;
-  isSessionOpen: boolean;
+  isSessionOpen?: boolean;
   role: AttendanceRole;
 
   /**

@@ -1,6 +1,6 @@
-export const ATTENDANCE_SESSION_STATUSES = ["OPEN", "CLOSED", "EXPIRED"] as const;
+export const ATTENDANCE_SESSION_STATUSES = ["open", "closed", "expired"] as const;
 
-export const CLASS_TYPES = ["LECTURE", "LABORATORY", "TUTORIAL", "WORKSHOP", "SEMINAR", "OTHER"] as const;
+export const CLASS_TYPES = ["lecture", "laboratory", "tutorial", "workshop", "seminar", "other"] as const;
 
 export const ATTENDANCE_SESSION_COLUMNS = `
   id,
@@ -12,14 +12,14 @@ export const ATTENDANCE_SESSION_COLUMNS = `
   session_end_at,
   latitude,
   longitude,
-  attendance_status,
+  session_status,
   created_at,
   updated_at
 `;
 
 export const ACTIVE_SESSION_CONDITION = `
   (
-    attendance_status = 'OPEN'
-    OR (attendance_status = 'CLOSED' AND session_end_at > NOW())
+    session_status = 'open'
+    OR (session_status = 'closed' AND session_end_at > NOW())
   )
 `;

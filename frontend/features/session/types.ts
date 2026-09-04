@@ -13,16 +13,18 @@ export interface AttendanceSession {
   sessionStartAt: string;
   sessionEndAt: string;
 
-  status: AttendanceSessionStatus;
+  sessionStatus: AttendanceSessionStatus;
 }
 
-export interface SessionForm {
+export type SessionForm = {
   title: string;
   startTime: string;
   endTime: string;
   weekNumber: number;
   classType: AttendanceSessionClassType;
-}
+  latitude: number | null;
+  longitude: number | null;
+};
 
 export interface CreateSessionRequest extends SessionForm {
   courseOfferingId: number;

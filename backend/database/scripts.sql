@@ -194,12 +194,6 @@ CREATE TABLE IF NOT EXISTS course_enrolments (
 -- Attendance Sessions
 -- ==========================================================
 
--- ==========================================================
--- Attendance Sessions (v2 — replaces earlier version)
--- ==========================================================
-
-DROP TABLE IF EXISTS attendance_sessions;
-
 CREATE TABLE IF NOT EXISTS attendance_sessions (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
@@ -208,14 +202,7 @@ CREATE TABLE IF NOT EXISTS attendance_sessions (
 
     week_number TINYINT UNSIGNED NOT NULL,
 
-    class_type ENUM(
-        'LECTURE',
-        'LABORATORY',
-        'TUTORIAL',
-        'WORKSHOP',
-        'SEMINAR',
-        'OTHER'
-    ) NOT NULL,
+    class_type VARCHAR(30) NOT NULL,
 
     session_start_at DATETIME NOT NULL,
     session_end_at DATETIME NOT NULL,
@@ -223,7 +210,7 @@ CREATE TABLE IF NOT EXISTS attendance_sessions (
     latitude DECIMAL(10, 7) NOT NULL,
     longitude DECIMAL(10, 7) NOT NULL,
 
-    attendance_status ENUM('OPEN', 'CLOSED', 'EXPIRED') NOT NULL DEFAULT 'OPEN',
+    session_status VARCHAR(30) NOT NULL DEFAULT 'open',
 
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -250,8 +237,8 @@ CREATE TABLE IF NOT EXISTS attendance_sessions (
 
     INDEX idx_attendance_sessions_course (course_offering_id),
     INDEX idx_attendance_sessions_lecturer (lecturer_id),
-    INDEX idx_attendance_sessions_status (attendance_status)
+    INDEX idx_attendance_sessions_status (session_status)
 );
 
 CREATE UNIQUE INDEX ux_attendance_sessions_one_open_per_course
-    ON attendance_sessions ((CASE WHEN attendance_status = 'OPEN' THEN course_offering_id END));
+    ON attendance_sessions ((CASE WHEN session_status = 'open' THEN course_offering_id END));

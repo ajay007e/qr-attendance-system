@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+
 import { ATTENDANCE_TABS } from "@/features/attendance";
 
 export interface LecturerAttendanceViewProps {

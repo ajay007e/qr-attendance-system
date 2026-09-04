@@ -47,7 +47,7 @@ export class AttendanceSessionService {
 
     // TODO: reinstate the "lecturer must be assigned to this course" check.
 
-    if (existing.attendance_status !== "OPEN") {
+    if (existing.session_status !== "open") {
       throw new AppError("Only an open session can be closed", 400);
     }
 
@@ -71,7 +71,7 @@ export class AttendanceSessionService {
 
     // TODO: reinstate the "lecturer must be assigned to this course" check.
 
-    if (existing.attendance_status !== "CLOSED") {
+    if (existing.session_status !== "closed") {
       throw new AppError("Only a closed session can be reopened", 400);
     }
 
@@ -93,7 +93,7 @@ export class AttendanceSessionService {
 
     // TODO: reinstate the "lecturer must be assigned to this course" check.
 
-    if (existing.attendance_status !== "OPEN") {
+    if (existing.session_status !== "open") {
       throw new AppError("Only an open session can be edited", 400);
     }
 

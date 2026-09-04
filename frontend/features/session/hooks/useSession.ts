@@ -10,13 +10,12 @@ export function useSession(offeringId: number) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const loadSession = useCallback(async () => {
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
     try {
-      setLoading(true);
-      setError(null);
-
       const response = await SessionService.getActiveSession(offeringId);
-
       setSession(response.data);
     } catch (err) {
       setError(err instanceof Error ? err : new Error("Unable to load attendance session"));
@@ -26,13 +25,24 @@ export function useSession(offeringId: number) {
   }, [offeringId]);
 
   useEffect(() => {
-    loadSession();
-  }, [loadSession]);
+    const load = async () => {
+      try {
+        const response = await SessionService.getActiveSession(offeringId);
+        setSession(response.data);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error("Unable to load attendance session"));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, [offeringId]);
 
   return {
     session,
     loading,
     error,
-    refresh: loadSession,
+    refresh,
   };
 }

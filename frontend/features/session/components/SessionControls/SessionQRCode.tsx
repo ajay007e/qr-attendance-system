@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
 import { Loader2, QrCode } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
+import { useEffect } from "react";
 
 import { useSessionQRCode } from "@/features/session";
 

@@ -136,9 +136,9 @@ export class AttendanceSessionRepository {
     const [result] = await db.execute<ResultSetHeader>(
       `
         UPDATE attendance_sessions
-        SET attendance_status = 'CLOSED'
+        SET session_status = 'closed'
         WHERE id = ?
-          AND attendance_status = 'OPEN'
+          AND session_status = 'open'
       `,
       [sessionId],
     );
@@ -182,9 +182,9 @@ export class AttendanceSessionRepository {
       const [result] = await connection.execute<ResultSetHeader>(
         `
           UPDATE attendance_sessions
-          SET attendance_status = 'OPEN'
+          SET session_status = 'open'
           WHERE id = ?
-            AND attendance_status = 'CLOSED'
+            AND session_status = 'closed'
         `,
         [sessionId],
       );

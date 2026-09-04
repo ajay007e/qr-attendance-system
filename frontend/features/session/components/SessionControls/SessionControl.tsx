@@ -1,19 +1,13 @@
 "use client";
 
-import { FormEvent, useState } from "react";
 import { CircleStop, Play, QrCode, RotateCcw } from "lucide-react";
+import { FormEvent, useState } from "react";
 
-import {
-  createDateTime,
-  formatTimeInput,
-  roundToPrevious30Minutes,
-  useSession,
-  useSessionMutation,
-} from "@/features/session";
+import { createDateTime, formatTimeInput, roundToPrevious30Minutes, useSessionMutation } from "@/features/session";
 import { Button } from "@/shared";
 
-import type { SessionForm } from "../../types";
 import { INITIAL_SESSION_FORM } from "../../constants";
+import type { SessionForm } from "../../types";
 
 import { SessionQRCodeModal } from "./SessionQRCodeModal";
 import { SessionStartModal } from "./SessionStartModal";
@@ -28,6 +22,7 @@ export function SessionControl({ offeringId, session, onSessionChange }: Session
 
   const [form, setForm] = useState<SessionForm>(INITIAL_SESSION_FORM);
   const [formError, setFormError] = useState("");
+  const [gettingLocation, setGettingLocation] = useState(false);
 
   const updateField = <K extends keyof SessionForm>(key: K, value: SessionForm[K]) => {
     setForm((previous) => ({
@@ -41,7 +36,51 @@ export function SessionControl({ offeringId, session, onSessionChange }: Session
     setFormError("");
   };
 
-  const handleOpenStartModal = () => {
+  const getUserLocation = (): Promise<{
+    latitude: number;
+    longitude: number;
+  }> => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error("Geolocation is not supported by this browser."));
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        (error) => {
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              reject(new Error("Location permission was denied. Please allow location access to start a session."));
+              break;
+
+            case error.POSITION_UNAVAILABLE:
+              reject(new Error("Your current location could not be determined."));
+              break;
+
+            case error.TIMEOUT:
+              reject(new Error("Getting your location timed out. Please try again."));
+              break;
+
+            default:
+              reject(new Error("Unable to get your current location."));
+          }
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        },
+      );
+    });
+  };
+
+  const handleOpenStartModal = async () => {
     resetForm();
 
     const now = roundToPrevious30Minutes(new Date());
@@ -52,15 +91,32 @@ export function SessionControl({ offeringId, session, onSessionChange }: Session
       ...INITIAL_SESSION_FORM,
       startTime: start,
       endTime: formatTimeInput(end),
+      latitude: null,
+      longitude: null,
     });
 
     setStartModalOpen(true);
+    setGettingLocation(true);
+
+    try {
+      const location = await getUserLocation();
+
+      setForm((previous) => ({
+        ...previous,
+        latitude: location.latitude,
+        longitude: location.longitude,
+      }));
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : "Unable to get your location.");
+    } finally {
+      setGettingLocation(false);
+    }
   };
 
   const handleStartSession = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (creating) {
+    if (creating || gettingLocation) {
       return;
     }
 
@@ -91,6 +147,13 @@ export function SessionControl({ offeringId, session, onSessionChange }: Session
       return;
     }
 
+    if (form.latitude === null || form.longitude === null) {
+      setFormError(
+        "Your location is required to start an attendance session. Please allow location access and try again.",
+      );
+      return;
+    }
+
     try {
       await createSession({
         courseOfferingId: offeringId,
@@ -99,6 +162,10 @@ export function SessionControl({ offeringId, session, onSessionChange }: Session
         classType: form.classType,
         startTime: createDateTime(form.startTime),
         endTime: createDateTime(form.endTime),
+
+        // Location
+        latitude: form.latitude,
+        longitude: form.longitude,
       });
 
       setStartModalOpen(false);
@@ -131,19 +198,25 @@ export function SessionControl({ offeringId, session, onSessionChange }: Session
   if (!session) {
     return (
       <>
-        <Button variant="primary" size="md" leftIcon={<Play size={16} />} onClick={handleOpenStartModal}>
-          Start Session
+        <Button
+          variant="primary"
+          size="md"
+          leftIcon={<Play size={16} />}
+          onClick={handleOpenStartModal}
+          loading={gettingLocation}
+        >
+          {gettingLocation ? "Getting Location..." : "Start Session"}
         </Button>
 
         <SessionStartModal
           open={startModalOpen}
           onClose={() => {
-            if (!creating) {
+            if (!creating && !gettingLocation) {
               setStartModalOpen(false);
             }
           }}
           form={form}
-          loading={creating}
+          loading={creating || gettingLocation}
           error={formError}
           updateField={updateField}
           onSubmit={handleStartSession}
@@ -152,7 +225,7 @@ export function SessionControl({ offeringId, session, onSessionChange }: Session
     );
   }
 
-  if (session.status === "closed") {
+  if (session.sessionStatus === "closed") {
     return (
       <Button
         variant="primary"
