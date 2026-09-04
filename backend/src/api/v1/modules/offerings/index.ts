@@ -1,4 +1,5 @@
 import { repository as userRepository } from "../users";
+import { repository as enrolmentRepository } from "../enrolments";
 import { CourseRepository } from "../courses";
 
 import { OfferingController } from "./offering.controller";
@@ -8,7 +9,7 @@ import { OfferingService } from "./offering.service";
 const repository = new OfferingRepository();
 const courseRepository = new CourseRepository();
 
-const service = new OfferingService(repository, courseRepository, userRepository);
+const service = new OfferingService(repository, courseRepository, userRepository, enrolmentRepository);
 
 const controller = new OfferingController(service);
 

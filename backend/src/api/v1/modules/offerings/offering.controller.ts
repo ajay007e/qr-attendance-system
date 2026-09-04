@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { DEFAULT_LIMIT, DEFAULT_PAGE, parseQueryNumber, parseQueryString } from "@/utils";
+import { currentUserId, DEFAULT_LIMIT, DEFAULT_PAGE, parseQueryNumber, parseQueryString } from "@/utils";
 
 import { OfferingService } from "./offering.service";
 import type {
@@ -9,6 +9,7 @@ import type {
   CreateCourseOfferingRequest,
   UpdateCourseOfferingRequest,
 } from "./offering.types";
+import { currentUserRole } from "@/utils/user";
 
 export class OfferingController {
   constructor(private readonly service: OfferingService) {}
@@ -36,7 +37,7 @@ export class OfferingController {
 
   get: RequestHandler = async (req, res, next) => {
     try {
-      const offering = await this.service.get(Number(req.params.id));
+      const offering = await this.service.get(Number(req.params.id), currentUserId(req), currentUserRole(req));
 
       res.json({
         success: true,
@@ -74,6 +75,7 @@ export class OfferingController {
       next(error);
     }
   };
+
   getLecturers: RequestHandler = async (req, res, next) => {
     try {
       const lecturers = await this.service.getLecturers(Number(req.params.id));
@@ -86,6 +88,7 @@ export class OfferingController {
       next(error);
     }
   };
+
   assignLecturer: RequestHandler = async (req, res, next) => {
     try {
       const body = req.body as AssignLecturerRequest;
@@ -100,6 +103,7 @@ export class OfferingController {
       next(error);
     }
   };
+
   removeLecturer: RequestHandler = async (req, res, next) => {
     try {
       await this.service.removeLecturer(Number(req.params.id), Number(req.params.userId));

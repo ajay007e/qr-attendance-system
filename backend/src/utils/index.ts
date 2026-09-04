@@ -2,6 +2,8 @@ export { AppError } from "./app.error";
 
 export { comparePassword, hashPassword } from "./bcrypt";
 
+export { currentUserId } from "./user";
+
 export { parseQueryNumber, parseQueryString } from "./query";
 
 export { isAdmin, isValidRole } from "./roles";
