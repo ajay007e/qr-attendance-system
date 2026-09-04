@@ -96,4 +96,19 @@ export class AttendanceSessionController {
       next(error);
     }
   };
+
+  getQRCode: RequestHandler = async (req, res, next) => {
+    try {
+      const sessionId = validateSessionId(Number(req.params.sessionId));
+
+      const qrCode = await this.service.generateQRCode(sessionId, this.currentUserId(req));
+
+      res.status(200).json({
+        success: true,
+        data: qrCode,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

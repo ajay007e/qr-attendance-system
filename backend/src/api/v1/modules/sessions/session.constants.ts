@@ -23,3 +23,5 @@ export const ACTIVE_SESSION_CONDITION = `
     OR (session_status = 'closed' AND session_end_at > NOW())
   )
 `;
+
+export const QR_TOKEN_EXPIRATION_SECONDS = 15;

@@ -42,6 +42,7 @@ function parseBoolean(name: string, value: string | undefined, defaultValue: boo
 export const env = {
   port: parseNumber("PORT", process.env.PORT, DEFAULT_PORT),
   sessionSecret: requireEnv("SESSION_SECRET"),
+  attendanceQrSecret: requireEnv("ATTENDANCE_QR_SECRET"),
   sessionSecure: parseBoolean("SESSION_SECURE", process.env.SESSION_SECURE, false),
   allowedOrigins: (process.env.ALLOWED_ORIGINS ?? "")
     .split(",")

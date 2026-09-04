@@ -4,15 +4,23 @@ import { AttendanceSessionRepository } from "./session.repository";
 import { toAttendanceSession } from "./session.mapper";
 import type { AttendanceSession, EditSessionInput, StartSessionInput } from "./session.types";
 import { validateWithinEditableWindow } from "./session.utils";
+import { QR_TOKEN_EXPIRATION_SECONDS } from "./session.constants";
+import { randomBytes } from "crypto";
+import { createAttendanceQrToken } from "./session.qr";
+import { OfferingRepository } from "../offerings";
 
 export class AttendanceSessionService {
-  constructor(private readonly repository: AttendanceSessionRepository) {}
+  constructor(
+    private readonly repository: AttendanceSessionRepository,
+    private readonly offeringRepository: OfferingRepository,
+  ) {}
 
   async startSession(input: StartSessionInput, lecturerId: number): Promise<AttendanceSession> {
-    // TODO: reinstate the "lecturer must be assigned to this course" check
-    // (courseRepository.isLecturerAssigned) once that rule is confirmed for
-    // this version of the story. Currently any lecturer may start a session
-    // for any course.
+    const assigned = await this.offeringRepository.isLecturerAssigned(input.courseOfferingId, lecturerId);
+
+    if (!assigned) {
+      throw new AppError("You are not assigned to this course offering", 403);
+    }
 
     const session = await this.repository.create({
       course_offering_id: input.courseOfferingId,
@@ -38,14 +46,18 @@ export class AttendanceSessionService {
     return session ? toAttendanceSession(session) : null;
   }
 
-  async closeSession(sessionId: number, _lecturerId: number): Promise<AttendanceSession> {
+  async closeSession(sessionId: number, lecturerId: number): Promise<AttendanceSession> {
     const existing = await this.repository.findById(sessionId);
 
     if (!existing) {
       throw new AppError("Attendance session not found", 404);
     }
 
-    // TODO: reinstate the "lecturer must be assigned to this course" check.
+    const assigned = await this.offeringRepository.isLecturerAssigned(existing.course_offering_id, lecturerId);
+
+    if (!assigned) {
+      throw new AppError("You are not assigned to this course offering", 403);
+    }
 
     if (existing.session_status !== "open") {
       throw new AppError("Only an open session can be closed", 400);
@@ -62,14 +74,18 @@ export class AttendanceSessionService {
     return toAttendanceSession(updated!);
   }
 
-  async reopenSession(sessionId: number, _lecturerId: number): Promise<AttendanceSession> {
+  async reopenSession(sessionId: number, lecturerId: number): Promise<AttendanceSession> {
     const existing = await this.repository.findById(sessionId);
 
     if (!existing) {
       throw new AppError("Attendance session not found", 404);
     }
 
-    // TODO: reinstate the "lecturer must be assigned to this course" check.
+    const assigned = await this.offeringRepository.isLecturerAssigned(existing.course_offering_id, lecturerId);
+
+    if (!assigned) {
+      throw new AppError("You are not assigned to this course offering", 403);
+    }
 
     if (existing.session_status !== "closed") {
       throw new AppError("Only a closed session can be reopened", 400);
@@ -84,14 +100,18 @@ export class AttendanceSessionService {
     return toAttendanceSession(reopened);
   }
 
-  async editSession(sessionId: number, input: EditSessionInput, _lecturerId: number): Promise<AttendanceSession> {
+  async editSession(sessionId: number, input: EditSessionInput, lecturerId: number): Promise<AttendanceSession> {
     const existing = await this.repository.findById(sessionId);
 
     if (!existing) {
       throw new AppError("Attendance session not found", 404);
     }
 
-    // TODO: reinstate the "lecturer must be assigned to this course" check.
+    const assigned = await this.offeringRepository.isLecturerAssigned(existing.course_offering_id, lecturerId);
+
+    if (!assigned) {
+      throw new AppError("You are not assigned to this course offering", 403);
+    }
 
     if (existing.session_status !== "open") {
       throw new AppError("Only an open session can be edited", 400);
@@ -107,5 +127,40 @@ export class AttendanceSessionService {
     });
 
     return toAttendanceSession(updated!);
+  }
+
+  async generateQRCode(sessionId: number, lecturerId: number): Promise<{ token: string; expiresAt: string }> {
+    const session = await this.repository.findById(sessionId);
+
+    if (!session) {
+      throw new AppError("Attendance session not found", 404);
+    }
+
+    const assigned = await this.offeringRepository.isLecturerAssigned(session.course_offering_id, lecturerId);
+
+    if (!assigned) {
+      throw new AppError("You are not assigned to this course offering", 403);
+    }
+
+    if (session.session_status !== "open") {
+      throw new AppError("QR code can only be generated for an open session", 400);
+    }
+
+    const expiresAt = new Date(Date.now() + QR_TOKEN_EXPIRATION_SECONDS * 1000);
+
+    const nonce = randomBytes(32).toString("hex");
+
+    const payload = {
+      sid: session.id,
+      exp: Math.floor(expiresAt.getTime() / 1000),
+      nonce,
+    };
+
+    const token = createAttendanceQrToken(payload);
+
+    return {
+      token,
+      expiresAt: expiresAt.toISOString(),
+    };
   }
 }
