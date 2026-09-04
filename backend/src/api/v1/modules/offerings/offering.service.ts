@@ -1,10 +1,12 @@
 import { AppError, ROLES } from "@/utils";
+import type { Role } from "@/types";
 
 import { CourseRepository } from "../courses";
+import { EnrolmentRepository } from "../enrolments";
 import { UserRepository } from "../users";
 
 import { OfferingRepository } from "./offering.repository";
-import { toCourseOffering, toCourseOfferingListItem } from "./offering.mapper";
+import { toCourseOffering, toCourseOfferingListItem, toLecturer } from "./offering.mapper";
 import type {
   CourseLecturerRole,
   CourseOffering,
@@ -14,18 +16,18 @@ import type {
   UpdateCourseOfferingRequest,
 } from "./offering.types";
 import {
+  validateAssignLecturerRequest,
   validateCreateCourseOfferingRequest,
   validateCourseOfferingId,
   validateUpdateCourseOfferingRequest,
-  validateAssignLecturerRequest,
 } from "./offering.utils";
-import { toLecturer } from "./offering.mapper";
 
 export class OfferingService {
   constructor(
     private readonly repository: OfferingRepository,
     private readonly courses: CourseRepository,
     private readonly users: UserRepository,
+    private readonly enrolments: EnrolmentRepository,
   ) {}
 
   async list(query: CourseOfferingQuery) {
@@ -37,8 +39,13 @@ export class OfferingService {
     };
   }
 
-  async get(id: number): Promise<CourseOffering> {
-    //TODO: validate user has access to this course
+  /**
+   * Get an offering without checking user access.
+   *
+   * Used internally by service methods that have already
+   * been authorized by their controller/middleware.
+   */
+  private async findOffering(id: number): Promise<CourseOffering> {
     validateCourseOfferingId(id);
 
     const offering = await this.repository.findById(id);
@@ -48,6 +55,31 @@ export class OfferingService {
     }
 
     return toCourseOffering(offering);
+  }
+
+  /**
+   * Get an offering with student/lecturer access validation.
+   */
+  async get(id: number, userId: number, userRole: Role): Promise<CourseOffering> {
+    const offering = await this.findOffering(id);
+
+    if (userRole === ROLES.LECTURER) {
+      const assigned = await this.repository.isLecturerAssigned(id, userId);
+
+      if (!assigned) {
+        throw new AppError("You do not have access to this course offering", 403);
+      }
+    }
+
+    if (userRole === ROLES.STUDENT) {
+      const enrolled = await this.enrolments.isEnrolled(id, userId);
+
+      if (!enrolled) {
+        throw new AppError("You do not have access to this course offering", 403);
+      }
+    }
+
+    return offering;
   }
 
   async create(data: CreateCourseOfferingRequest): Promise<CourseOffering> {
@@ -81,7 +113,7 @@ export class OfferingService {
       end_date: validated.endDate ? new Date(validated.endDate) : null,
     });
 
-    return this.get(id);
+    return this.findOffering(id);
   }
 
   async update(id: number, data: UpdateCourseOfferingRequest): Promise<CourseOffering> {
@@ -130,17 +162,19 @@ export class OfferingService {
       status: validated.status,
     });
 
-    return this.get(id);
+    return this.findOffering(id);
   }
+
   async getLecturers(offeringId: number): Promise<Lecturer[]> {
-    await this.get(offeringId);
+    await this.findOffering(offeringId);
 
     const lecturers = await this.repository.getLecturers(offeringId);
 
     return lecturers.map(toLecturer);
   }
+
   async assignLecturer(offeringId: number, userId: number, role: CourseLecturerRole): Promise<void> {
-    await this.get(offeringId);
+    await this.findOffering(offeringId);
 
     const validated = validateAssignLecturerRequest(userId, role);
 
@@ -162,8 +196,9 @@ export class OfferingService {
 
     await this.repository.assignLecturer(offeringId, validated.userId, validated.role);
   }
+
   async removeLecturer(offeringId: number, userId: number): Promise<void> {
-    await this.get(offeringId);
+    await this.findOffering(offeringId);
 
     if (!Number.isInteger(userId) || userId <= 0) {
       throw new AppError("Invalid user id", 400);

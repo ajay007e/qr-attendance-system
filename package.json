@@ -4,6 +4,13 @@
   "scripts": {
     "backend": "pnpm --dir backend dev",
     "frontend": "pnpm --dir frontend dev",
-    "install:all": "pnpm install --recursive"
+    "install:all": "pnpm install --recursive",
+    "hooks": "git config core.hooksPath .githooks",
+    "verify": "pnpm verify:backend && pnpm verify:frontend",
+    "verify:backend": "pnpm --dir backend lint && pnpm --dir backend typecheck && pnpm --dir backend format:check",
+    "verify:frontend": "pnpm --dir frontend lint && pnpm --dir frontend typecheck && pnpm --dir frontend format:check",
+    "fix": "pnpm fix:backend && pnpm fix:frontend",
+    "fix:backend": "pnpm --dir backend lint:fix && pnpm --dir backend format",
+    "fix:frontend": "pnpm --dir frontend lint:fix && pnpm --dir frontend format"
   }
 }

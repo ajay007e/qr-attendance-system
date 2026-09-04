@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 
-import { AppError, parseQueryNumber, parseQueryString } from "@/utils";
+import { currentUserId, parseQueryNumber, parseQueryString } from "@/utils";
 
 import { EnrolmentService } from "./enrolment.service";
 import { validateCourseOfferingId, validateEnrolRequest } from "./enrolment.utils";
@@ -8,21 +8,13 @@ import { validateCourseOfferingId, validateEnrolRequest } from "./enrolment.util
 export class EnrolmentController {
   constructor(private readonly service: EnrolmentService) {}
 
-  private currentUserId = (req: Parameters<RequestHandler>[0]): number => {
-    if (!req.user) {
-      throw new AppError("Not authenticated", 401);
-    }
-
-    return req.user.id;
-  };
-
   // =====================================================
   // Student Enrolment
   // =====================================================
 
   listEnrolled: RequestHandler = async (req, res, next) => {
     try {
-      const offerings = await this.service.getEnrolledCourses(this.currentUserId(req));
+      const offerings = await this.service.getEnrolledCourses(currentUserId(req));
 
       res.json({
         success: true,
@@ -39,7 +31,7 @@ export class EnrolmentController {
       const limit = parseQueryNumber(req.query.limit, 20);
       const search = parseQueryString(req.query.search);
 
-      const offerings = await this.service.getAvailableCourses(this.currentUserId(req), {
+      const offerings = await this.service.getAvailableCourses(currentUserId(req), {
         search,
         page,
         limit,
@@ -58,7 +50,7 @@ export class EnrolmentController {
     try {
       const { courseOfferingId } = validateEnrolRequest(req.body);
 
-      await this.service.enrol(courseOfferingId, this.currentUserId(req));
+      await this.service.enrol(courseOfferingId, currentUserId(req));
 
       res.status(201).json({
         success: true,
@@ -73,7 +65,7 @@ export class EnrolmentController {
     try {
       const courseOfferingId = validateCourseOfferingId(Number(req.params.courseOfferingId));
 
-      await this.service.unenrol(courseOfferingId, this.currentUserId(req));
+      await this.service.unenrol(courseOfferingId, currentUserId(req));
 
       res.json({
         success: true,
@@ -90,7 +82,7 @@ export class EnrolmentController {
 
   listAssigned: RequestHandler = async (req, res, next) => {
     try {
-      const offerings = await this.service.getAssignedCourses(this.currentUserId(req));
+      const offerings = await this.service.getAssignedCourses(currentUserId(req));
 
       res.json({
         success: true,
