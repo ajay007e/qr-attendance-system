@@ -2,9 +2,9 @@ import "../helpers/test-env";
 
 import assert from "node:assert/strict";
 import { createHmac } from "node:crypto";
-import test from "node:test";
+import test, { TestContext } from "node:test";
 
-import type { OfferingRepository } from "../../src/api/v1/modules/offerings/offering.repository";
+import { db } from "../../src/config/database";
 import type { AttendanceSessionRepository } from "../../src/api/v1/modules/sessions/session.repository";
 import { AttendanceSessionService } from "../../src/api/v1/modules/sessions/session.service";
 import type { DatabaseAttendanceSession, EditSessionInput } from "../../src/api/v1/modules/sessions/session.types";
@@ -12,7 +12,7 @@ import type { DatabaseAttendanceSession, EditSessionInput } from "../../src/api/
 import { isAppError } from "../helpers/assertions";
 import { databaseSession, mappedSession, sessionInput, sessionNow } from "../helpers/session-fixtures";
 
-function createService() {
+function createService(t: TestContext) {
   const state = {
     session: { ...databaseSession } as DatabaseAttendanceSession | null,
     assigned: true,
@@ -23,6 +23,18 @@ function createService() {
     accessCalls: [] as Array<[number, number]>,
     writes: [] as unknown[][],
   };
+
+  t.mock.method(db, "execute", async (query: string, params?: unknown[]) => {
+    if (query.includes("FROM course_lecturers")) {
+      const [offeringId, lecturerId] = params as [number, number];
+
+      state.accessCalls.push([offeringId, lecturerId]);
+
+      return state.assigned ? [[{ 1: 1 }], []] : [[], []];
+    }
+
+    return [[], []];
+  });
 
   const repository = {
     async create(data) {
@@ -35,8 +47,12 @@ function createService() {
     },
     async findActiveByCourse(id) {
       state.activeReads.push(id);
+      if (!state.session || state.session.session_status !== "open") {
+        return null;
+      }
       return state.session;
     },
+
     async close(id) {
       state.writes.push(["close", id]);
       if (state.closeResult && state.session) state.session = { ...state.session, session_status: "closed" };
@@ -55,30 +71,25 @@ function createService() {
     "create" | "findById" | "findActiveByCourse" | "close" | "reopen" | "update"
   >;
 
-  const offerings = {
-    async isLecturerAssigned(offeringId, lecturerId) {
-      state.accessCalls.push([offeringId, lecturerId]);
-      return state.assigned;
-    },
-  } satisfies Pick<OfferingRepository, "isLecturerAssigned">;
-
   return {
-    service: new AttendanceSessionService(repository as AttendanceSessionRepository, offerings as OfferingRepository),
+    service: new AttendanceSessionService(repository as AttendanceSessionRepository),
     state,
   };
 }
 
-test("starts a session with the assigned lecturer and maps all returned fields", async () => {
-  const { service, state } = createService();
+test("starts a session with the assigned lecturer and maps all returned fields", async (t) => {
+  const { service, state } = createService(t);
   assert.deepEqual(await service.startSession(sessionInput, 31), mappedSession);
   assert.deepEqual(state.accessCalls, [[11, 31]]);
   assert.deepEqual(state.writes, [
     [
       "create",
       {
+        title: sessionInput.title,
         course_offering_id: 11,
         lecturer_id: 31,
         week_number: 6,
+        class_number: sessionInput.classNumber,
         class_type: "lecture",
         session_start_at: sessionInput.sessionStartAt,
         session_end_at: sessionInput.sessionEndAt,
@@ -89,19 +100,19 @@ test("starts a session with the assigned lecturer and maps all returned fields",
   ]);
 });
 
-test("prevents an unassigned lecturer from starting a session", async () => {
-  const { service, state } = createService();
+test("prevents an unassigned lecturer from starting a session", async (t) => {
+  const { service, state } = createService(t);
   state.assigned = false;
   await assert.rejects(
     service.startSession(sessionInput, 99),
-    isAppError(403, "You are not assigned to this course offering"),
+    isAppError(403, "You do not have access to this course offering"),
   );
   assert.deepEqual(state.accessCalls, [[11, 99]]);
   assert.deepEqual(state.writes, []);
 });
 
-test("reports an active-session conflict without returning a session", async () => {
-  const { service, state } = createService();
+test("reports an active-session conflict without returning a session", async (t) => {
+  const { service, state } = createService(t);
   state.conflict = true;
   await assert.rejects(
     service.startSession(sessionInput, 31),
@@ -109,20 +120,22 @@ test("reports an active-session conflict without returning a session", async () 
   );
 });
 
-test("returns the mapped active session for the requested offering", async () => {
-  const { service, state } = createService();
+test("returns the mapped active session for the requested offering", async (t) => {
+  const { service, state } = createService(t);
   assert.deepEqual(await service.getActiveSession(11), mappedSession);
   assert.deepEqual(state.activeReads, [11]);
 });
 
-test("returns null when an offering has no active session", async () => {
-  const { service, state } = createService();
+test("returns null when an offering has no active session", async (t) => {
+  const { service, state } = createService(t);
   state.session = null;
   assert.equal(await service.getActiveSession(11), null);
 });
 
 const editInput: EditSessionInput = {
+  title: "edit-title",
   weekNumber: 7,
+  classNumber: 2,
   classType: "tutorial",
   sessionStartAt: sessionInput.sessionStartAt,
   sessionEndAt: new Date("2026-09-05T03:30:00.000Z"),
@@ -136,8 +149,8 @@ const operations = {
 };
 
 for (const [name, invoke] of Object.entries(operations)) {
-  test(`${name}: rejects a missing session before checking assignment`, async () => {
-    const { service, state } = createService();
+  test(`${name}: rejects a missing session before checking assignment`, async (t) => {
+    const { service, state } = createService(t);
     state.session = null;
     await assert.rejects(invoke(service, 31), isAppError(404, "Attendance session not found"));
     assert.deepEqual(state.reads, [41]);
@@ -145,17 +158,17 @@ for (const [name, invoke] of Object.entries(operations)) {
     assert.deepEqual(state.writes, []);
   });
 
-  test(`${name}: denies an unassigned lecturer without a write`, async () => {
-    const { service, state } = createService();
+  test(`${name}: denies an unassigned lecturer without a write`, async (t) => {
+    const { service, state } = createService(t);
     state.assigned = false;
-    await assert.rejects(invoke(service, 99), isAppError(403, "You are not assigned to this course offering"));
+    await assert.rejects(invoke(service, 99), isAppError(403, "You do not have access to this course offering"));
     assert.deepEqual(state.accessCalls, [[11, 99]]);
     assert.deepEqual(state.writes, []);
   });
 }
 
-test("another assigned lecturer may close a session and receives the refreshed state", async () => {
-  const { service, state } = createService();
+test("another assigned lecturer may close a session and receives the refreshed state", async (t) => {
+  const { service, state } = createService(t);
   assert.deepEqual(await service.closeSession(41, 99), { ...mappedSession, sessionStatus: "closed" });
   assert.deepEqual(state.accessCalls, [[11, 99]]);
   assert.deepEqual(state.reads, [41, 41]);
@@ -163,39 +176,39 @@ test("another assigned lecturer may close a session and receives the refreshed s
 });
 
 for (const status of ["closed", "expired"] as const) {
-  test(`does not close a ${status} session`, async () => {
-    const { service, state } = createService();
+  test(`does not close a ${status} session`, async (t) => {
+    const { service, state } = createService(t);
     state.session!.session_status = status;
     await assert.rejects(service.closeSession(41, 31), isAppError(400, "Only an open session can be closed"));
     assert.deepEqual(state.writes, []);
   });
 }
 
-test("handles a concurrent close that changes the session before the write", async () => {
-  const { service, state } = createService();
+test("handles a concurrent close that changes the session before the write", async (t) => {
+  const { service, state } = createService(t);
   state.closeResult = false;
   await assert.rejects(service.closeSession(41, 31), isAppError(400, "Only an open session can be closed"));
   assert.deepEqual(state.reads, [41]);
 });
 
-test("reopens a closed session for its offering", async () => {
-  const { service, state } = createService();
+test("reopens a closed session for its offering", async (t) => {
+  const { service, state } = createService(t);
   state.session!.session_status = "closed";
   assert.deepEqual(await service.reopenSession(41, 31), mappedSession);
   assert.deepEqual(state.writes, [["reopen", 41, 11]]);
 });
 
 for (const status of ["open", "expired"] as const) {
-  test(`does not reopen a ${status} session`, async () => {
-    const { service, state } = createService();
+  test(`does not reopen a ${status} session`, async (t) => {
+    const { service, state } = createService(t);
     state.session!.session_status = status;
     await assert.rejects(service.reopenSession(41, 31), isAppError(400, "Only a closed session can be reopened"));
     assert.deepEqual(state.writes, []);
   });
 }
 
-test("rejects reopening when another session is active", async () => {
-  const { service, state } = createService();
+test("rejects reopening when another session is active", async (t) => {
+  const { service, state } = createService(t);
   state.session!.session_status = "closed";
   state.conflict = true;
   await assert.rejects(
@@ -206,15 +219,24 @@ test("rejects reopening when another session is active", async () => {
 
 test("edits an open session within its time window without changing offering, lecturer or location", async (t) => {
   t.mock.timers.enable({ apis: ["Date"], now: sessionNow });
-  const { service, state } = createService();
+  const { service, state } = createService(t);
   const result = await service.editSession(41, editInput, 31);
-  assert.deepEqual(result, { ...mappedSession, weekNumber: 7, classType: "tutorial", endTime: editInput.sessionEndAt });
+  assert.deepEqual(result, {
+    ...mappedSession,
+    title: editInput.title,
+    classNumber: editInput.classNumber,
+    weekNumber: 7,
+    classType: "tutorial",
+    endTime: editInput.sessionEndAt,
+  });
   assert.deepEqual(state.writes, [
     [
       "update",
       41,
       {
+        title: "edit-title",
         week_number: 7,
+        class_number: 2,
         class_type: "tutorial",
         session_start_at: editInput.sessionStartAt,
         session_end_at: editInput.sessionEndAt,
@@ -225,14 +247,17 @@ test("edits an open session within its time window without changing offering, le
 
 for (const status of ["closed", "expired"] as const) {
   for (const operation of ["edit", "qr"] as const) {
-    test(`${operation}: rejects a ${status} session`, async () => {
-      const { service, state } = createService();
+    test(`${operation}: rejects a ${status} session`, async (t) => {
+      const { service, state } = createService(t);
       state.session!.session_status = status;
+
       const message =
         operation === "edit"
-          ? "Only an open session can be edited"
-          : "QR code can only be generated for an open session";
+          ? "Only an active session can be edited"
+          : "QR code can only be generated for an active session";
+
       await assert.rejects(operations[operation](service, 31), isAppError(400, message));
+
       assert.deepEqual(state.writes, []);
     });
   }
@@ -244,7 +269,7 @@ for (const [time, message] of [
 ]) {
   test(`does not persist an edit outside the window: ${message}`, async (t) => {
     t.mock.timers.enable({ apis: ["Date"], now: new Date(time!) });
-    const { service, state } = createService();
+    const { service, state } = createService(t);
     await assert.rejects(service.editSession(41, editInput, 31), isAppError(400, message!));
     assert.deepEqual(state.writes, []);
   });
@@ -252,7 +277,7 @@ for (const [time, message] of [
 
 test("generates signed QR tokens with a 15-second expiry and a fresh nonce", async (t) => {
   t.mock.timers.enable({ apis: ["Date"], now: sessionNow });
-  const { service, state } = createService();
+  const { service, state } = createService(t);
   const first = await service.generateQRCode(41, 31);
   const second = await service.generateQRCode(41, 31);
   assert.equal(first.expiresAt, "2026-09-05T02:30:15.000Z");

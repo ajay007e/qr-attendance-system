@@ -7,8 +7,10 @@ import type {
 export const sessionNow = new Date("2026-09-05T02:30:00.000Z");
 
 export const sessionInput: StartSessionInput = {
+  title: "test-title",
   courseOfferingId: 11,
   weekNumber: 6,
+  classNumber: 1,
   classType: "lecture",
   sessionStartAt: new Date("2026-09-05T02:00:00.000Z"),
   sessionEndAt: new Date("2026-09-05T03:00:00.000Z"),
@@ -18,9 +20,11 @@ export const sessionInput: StartSessionInput = {
 
 export const databaseSession: DatabaseAttendanceSession = {
   id: 41,
+  title: "test-title",
   course_offering_id: sessionInput.courseOfferingId,
   lecturer_id: 31,
   week_number: sessionInput.weekNumber,
+  class_number: sessionInput.classNumber,
   class_type: sessionInput.classType,
   session_start_at: sessionInput.sessionStartAt,
   session_end_at: sessionInput.sessionEndAt,
@@ -33,9 +37,11 @@ export const databaseSession: DatabaseAttendanceSession = {
 
 export const mappedSession: AttendanceSession = {
   id: 41,
+  title: "test-title",
   courseOfferingId: 11,
   lecturerId: 31,
   weekNumber: 6,
+  classNumber: 1,
   classType: "lecture",
   startTime: sessionInput.sessionStartAt,
   endTime: sessionInput.sessionEndAt,

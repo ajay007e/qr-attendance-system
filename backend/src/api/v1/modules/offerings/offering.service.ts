@@ -19,8 +19,8 @@ import {
   validateCreateCourseOfferingRequest,
   validateCourseOfferingId,
   validateUpdateCourseOfferingRequest,
-  validateOfferingAccess,
 } from "./offering.utils";
+import { validateOfferingAccess } from "./offering.access";
 
 export class OfferingService {
   constructor(
