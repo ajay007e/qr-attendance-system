@@ -1,4 +1,5 @@
-import { UserRepository, toCreateUserData, toUser } from "../users";
+import { toCreateUserData, toUser } from "../users/user.mapper";
+import type { UserRepository } from "../users/user.repository";
 
 import type { BootstrapRequest, LoginRequest, LoginResponse } from "./auth.types";
 
