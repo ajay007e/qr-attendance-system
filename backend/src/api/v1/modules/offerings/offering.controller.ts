@@ -1,6 +1,13 @@
 import type { RequestHandler } from "express";
 
-import { currentUserId, DEFAULT_LIMIT, DEFAULT_PAGE, parseQueryNumber, parseQueryString } from "@/utils";
+import {
+  currentUserId,
+  currentUserRole,
+  DEFAULT_LIMIT,
+  DEFAULT_PAGE,
+  parseQueryNumber,
+  parseQueryString,
+} from "@/utils";
 
 import { OfferingService } from "./offering.service";
 import type {
@@ -9,7 +16,6 @@ import type {
   CreateCourseOfferingRequest,
   UpdateCourseOfferingRequest,
 } from "./offering.types";
-import { currentUserRole } from "@/utils/user";
 
 export class OfferingController {
   constructor(private readonly service: OfferingService) {}

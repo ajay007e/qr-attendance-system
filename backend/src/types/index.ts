@@ -8,3 +8,5 @@ export type {
 } from "./api.types";
 
 export type { SessionUser, BaseUser, Role } from "./user.types";
+
+export type { QrPayload } from "./qr.types";

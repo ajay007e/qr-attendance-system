@@ -6,6 +6,7 @@ import { courseRouter } from "./modules/courses/course.routes";
 import { offeringRouter } from "./modules/offerings/offering.routes";
 import { enrolmentRouter } from "./modules/enrolments/enrolment.routes";
 import { sessionRouter } from "./modules/sessions/session.routes";
+import { attendanceRouter } from "./modules/attendance/attendance.routes";
 
 export const v1Router = Router();
 
@@ -22,3 +23,4 @@ v1Router.use("/courses", courseRouter);
 v1Router.use("/enrolments", enrolmentRouter);
 v1Router.use("/offerings", offeringRouter);
 v1Router.use("/sessions", sessionRouter);
+v1Router.use("/attendance", attendanceRouter);

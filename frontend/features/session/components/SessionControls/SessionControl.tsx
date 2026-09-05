@@ -4,7 +4,7 @@ import { CircleStop, Play, QrCode, RotateCcw } from "lucide-react";
 import { FormEvent, useState } from "react";
 
 import { createDateTime, formatTimeInput, roundToPrevious30Minutes, useSessionMutation } from "@/features/session";
-import { Button } from "@/shared";
+import { Button, getUserLocation } from "@/shared";
 
 import { INITIAL_SESSION_FORM } from "../../constants";
 import type { SessionForm } from "../../types";
@@ -34,50 +34,6 @@ export function SessionControl({ offeringId, session, onSessionChange }: Session
   const resetForm = () => {
     setForm(INITIAL_SESSION_FORM);
     setFormError("");
-  };
-
-  const getUserLocation = (): Promise<{
-    latitude: number;
-    longitude: number;
-  }> => {
-    return new Promise((resolve, reject) => {
-      if (!navigator.geolocation) {
-        reject(new Error("Geolocation is not supported by this browser."));
-        return;
-      }
-
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          resolve({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-          });
-        },
-        (error) => {
-          switch (error.code) {
-            case error.PERMISSION_DENIED:
-              reject(new Error("Location permission was denied. Please allow location access to start a session."));
-              break;
-
-            case error.POSITION_UNAVAILABLE:
-              reject(new Error("Your current location could not be determined."));
-              break;
-
-            case error.TIMEOUT:
-              reject(new Error("Getting your location timed out. Please try again."));
-              break;
-
-            default:
-              reject(new Error("Unable to get your current location."));
-          }
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0,
-        },
-      );
-    });
   };
 
   const handleOpenStartModal = async () => {

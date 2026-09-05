@@ -11,7 +11,7 @@ import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import type { DashboardShellProps } from "./types";
 
-export default function DashboardShell({ children, user, items, onLogout }: DashboardShellProps) {
+export default function DashboardShell({ children, user, items, onLogout, topbarActions }: DashboardShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function DashboardShell({ children, user, items, onLogout }: Dash
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-gray-50">
       <div className="shrink-0">
-        <Topbar onMenuClick={() => setSidebarOpen(true)} />
+        <Topbar actions={topbarActions} user={user} onMenuClick={() => setSidebarOpen(true)} />
       </div>
 
       <div className="flex min-h-0 flex-1 overflow-hidden">

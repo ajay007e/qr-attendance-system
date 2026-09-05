@@ -2,9 +2,15 @@ export { AppError } from "./app.error";
 
 export { comparePassword, hashPassword } from "./bcrypt";
 
-export { currentUserId } from "./user";
+export { isDuplicateEntryError } from "./db";
+
+export { currentUserId, currentUserRole } from "./user";
 
 export { parseQueryNumber, parseQueryString } from "./query";
+
+export { createQrSignature, encodeQrPayload, decodeQrPayload, verifyQrSignature } from "./qr";
+
+export { calculateDistance } from "./location";
 
 export { isAdmin, isValidRole } from "./roles";
 

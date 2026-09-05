@@ -1,16 +1,11 @@
-import { createHmac } from "crypto";
-
 import { env } from "@/config";
-import type { AttendanceQrPayload } from "./session.types";
+import type { QrPayload } from "@/types";
+import { createQrSignature, encodeQrPayload } from "@/utils";
 
-function encode(value: string): string {
-  return Buffer.from(value).toString("base64url");
-}
+export function createAttendanceQrToken(payload: QrPayload): string {
+  const encodedPayload = encodeQrPayload(JSON.stringify(payload));
 
-export function createAttendanceQrToken(payload: AttendanceQrPayload): string {
-  const encodedPayload = encode(JSON.stringify(payload));
-
-  const signature = createHmac("sha256", env.attendanceQrSecret).update(encodedPayload).digest("base64url");
+  const signature = createQrSignature(encodedPayload, env.attendanceQrSecret);
 
   return `${encodedPayload}.${signature}`;
 }

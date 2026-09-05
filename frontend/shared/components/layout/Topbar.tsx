@@ -4,12 +4,10 @@ import { Button } from "@/shared";
 
 import { TopbarProps } from "./types";
 
-export default function Topbar({ onMenuClick }: TopbarProps) {
+export default function Topbar({ onMenuClick, actions }: TopbarProps) {
   return (
     <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm sm:px-6">
-      {/* Left */}
       <div className="flex items-center gap-3">
-        {/* Mobile Menu */}
         <Button
           type="button"
           variant="ghost"
@@ -24,8 +22,9 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
         <h1 className="truncate text-base font-bold text-gray-900 sm:text-lg">Attendance System</h1>
       </div>
 
-      {/* Right */}
       <div className="flex items-center gap-2">
+        {actions}
+
         <Button type="button" variant="ghost" size="icon" aria-label="Notifications" className="hover:text-blue-600">
           <Bell size={21} />
         </Button>

@@ -2,7 +2,7 @@ import type { ExecuteValues, ResultSetHeader, RowDataPacket } from "mysql2";
 
 import { db } from "@/config";
 import type { PaginatedData } from "@/types";
-import { DEFAULT_LIMIT, DEFAULT_MAX_LIMIT, DEFAULT_PAGE } from "@/utils";
+import { DEFAULT_LIMIT, DEFAULT_MAX_LIMIT, DEFAULT_PAGE, isDuplicateEntryError } from "@/utils";
 
 import type {
   DatabaseAssignedCourse,
@@ -10,12 +10,6 @@ import type {
   DatabaseStudent,
   EnrolmentQuery,
 } from "./enrolment.types";
-
-const DUPLICATE_ENTRY = "ER_DUP_ENTRY";
-
-function isDuplicateEntryError(error: unknown): boolean {
-  return typeof error === "object" && error !== null && (error as { code?: string }).code === DUPLICATE_ENTRY;
-}
 
 export class EnrolmentRepository {
   /* =====================================================
