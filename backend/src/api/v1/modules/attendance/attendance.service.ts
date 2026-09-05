@@ -6,6 +6,7 @@ import { verifyAttendanceQrToken } from "./attendance.qr";
 import { EnrolmentRepository } from "../enrolments";
 import { env } from "@/config";
 import type { MarkAttendanceQrRequest } from "./attendance.types";
+import { mapAttendanceRecord } from "./attendance.mapper";
 
 export class AttendanceService {
   constructor(
@@ -71,12 +72,14 @@ export class AttendanceService {
 
     const locationStatus = distance <= env.attendanceLocationRadius ? "verified" : "suspicious";
 
-    return this.repository.create({
-      session_id: payload.sid,
-      student_id: studentId,
-      status: "present",
-      attendance_method: "qr",
-      location_status: locationStatus,
-    });
+    return mapAttendanceRecord(
+      await this.repository.create({
+        session_id: payload.sid,
+        student_id: studentId,
+        status: "present",
+        attendance_method: "qr",
+        location_status: locationStatus,
+      }),
+    );
   }
 }

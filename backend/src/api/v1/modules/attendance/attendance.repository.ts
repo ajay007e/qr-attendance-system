@@ -7,7 +7,7 @@ import { AppError, isDuplicateEntryError } from "@/utils";
 
 const ATTENDANCE_RECORD_COLUMNS = `
   id,
-  attendance_session_id,
+  session_id,
   student_id,
   status,
   attendance_method,
@@ -41,7 +41,7 @@ export class AttendanceRepository {
         SELECT
           ${ATTENDANCE_RECORD_COLUMNS}
         FROM attendance_records
-        WHERE attendance_session_id = ?
+        WHERE session_id = ?
           AND student_id = ?
         LIMIT 1
       `,
@@ -56,7 +56,7 @@ export class AttendanceRepository {
       const [result] = await db.execute<ResultSetHeader>(
         `
           INSERT INTO attendance_records (
-            attendance_session_id,
+            session_id,
             student_id,
             status,
             attendance_method,

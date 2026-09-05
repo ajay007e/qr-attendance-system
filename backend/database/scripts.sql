@@ -269,7 +269,7 @@ CREATE TABLE IF NOT EXISTS attendance_records (
         ON UPDATE CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_attendance_records_session
-        FOREIGN KEY (attendance_session_id)
+        FOREIGN KEY (session_id)
         REFERENCES attendance_sessions(id)
         ON DELETE CASCADE,
 
@@ -285,7 +285,7 @@ CREATE TABLE IF NOT EXISTS attendance_records (
 
     CONSTRAINT uq_attendance_session_student
         UNIQUE (
-            attendance_session_id,
+            session_id,
             student_id
         ),
 
@@ -294,7 +294,7 @@ CREATE TABLE IF NOT EXISTS attendance_records (
     ),
 
     INDEX idx_attendance_records_session (
-        attendance_session_id
+        session_id
     ),
 
     INDEX idx_attendance_records_student_status (

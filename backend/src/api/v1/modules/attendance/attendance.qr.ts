@@ -7,6 +7,7 @@ export function verifyAttendanceQrToken(token: string): QrPayload | null {
     const [encodedPayload, signature] = token.split(".");
 
     if (!encodedPayload || !signature) {
+      console.log(encodedPayload, signature);
       return null;
     }
 
@@ -18,11 +19,13 @@ export function verifyAttendanceQrToken(token: string): QrPayload | null {
 
     const payload = JSON.parse(decodeQrPayload(encodedPayload)) as QrPayload;
 
+    const now = Math.floor(Date.now() / 1000);
+
     if (
       !Number.isInteger(payload.sid) ||
       payload.sid <= 0 ||
       !Number.isInteger(payload.exp) ||
-      payload.exp <= Date.now() ||
+      payload.exp <= now ||
       typeof payload.nonce !== "string" ||
       payload.nonce.length === 0
     ) {

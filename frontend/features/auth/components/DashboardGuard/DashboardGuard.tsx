@@ -6,7 +6,13 @@ import { useEffect } from "react";
 import { useAuth } from "@/features/auth";
 import { DashboardShell, getDashboardRoute, PageLoader, MENUS } from "@/shared";
 
-export function DashboardGuard({ children }: { children: React.ReactNode }) {
+export function DashboardGuard({
+  children,
+  renderTopbarActions,
+}: {
+  children: React.ReactNode;
+  renderTopbarActions?: React.ReactNode;
+}) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -40,7 +46,12 @@ export function DashboardGuard({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <DashboardShell user={user} items={items} onLogout={logout}>
+    <DashboardShell
+      user={user}
+      items={items}
+      onLogout={logout}
+      topbarActions={user.role === "student" ? renderTopbarActions : null}
+    >
       {children}
     </DashboardShell>
   );

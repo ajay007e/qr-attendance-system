@@ -12,6 +12,20 @@ export interface CreateAttendanceRecordData {
   location_status: AttendanceLocationStatus;
 }
 
+export interface AttendanceRecord {
+  id: number;
+  sessionId: number;
+  studentId: number;
+  status: AttendanceRecordStatus;
+  attendanceMethod: AttendanceMethod;
+  locationStatus: AttendanceLocationStatus;
+  markedAt: Date;
+  markedBy: number | null;
+  lecturerNote: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface DatabaseAttendanceRecord {
   id: number;
   session_id: number;

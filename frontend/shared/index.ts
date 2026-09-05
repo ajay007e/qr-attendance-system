@@ -3,6 +3,7 @@ export * from "./types";
 export * from "./lib/api";
 export * from "./lib/routes";
 export * from "./lib/utils";
+export * from "./lib/location";
 
 export * from "./components";
 

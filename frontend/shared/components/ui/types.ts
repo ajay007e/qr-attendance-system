@@ -12,6 +12,7 @@ export interface ModalProps {
   children: ReactNode;
   footer?: ReactNode;
   size?: "sm" | "md" | "lg";
+  fullscreen?: boolean;
 }
 
 export type BadgeVariant =

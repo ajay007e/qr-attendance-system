@@ -9,10 +9,11 @@ export interface PageHeaderProps {
 }
 
 export type DashboardShellProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   user: SessionUser;
   items: readonly SidebarItem[];
   onLogout: () => void;
+  topbarActions?: ReactNode;
 };
 
 export type SidebarItem = {
@@ -28,7 +29,9 @@ export type SidebarProps = {
 };
 
 export interface TopbarProps {
+  user: SessionUser;
   onMenuClick?: () => void;
+  actions?: ReactNode;
 }
 
 export interface SectionHeaderProps {

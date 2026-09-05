@@ -7,7 +7,7 @@ import { Button } from "@/shared";
 
 import { ModalProps } from "./types";
 
-export default function Modal({ open, onClose, title, children, footer, size = "md" }: ModalProps) {
+export default function Modal({ open, onClose, title, children, footer, size = "md", fullscreen = false }: ModalProps) {
   useEffect(() => {
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -30,36 +30,31 @@ export default function Modal({ open, onClose, title, children, footer, size = "
 
   return (
     <div
-      className="
+      className={`
         fixed
         inset-0
         z-50
         flex
-        items-end
         justify-center
         bg-black/40
-        p-0
-        sm:items-center
-        sm:p-4
-      "
+        ${fullscreen ? "items-center p-0" : "items-end p-0 sm:items-center sm:p-4"}
+      `}
       onMouseDown={onClose}
     >
       <div
         onMouseDown={(e) => e.stopPropagation()}
         className={`
           flex
-          max-h-[90vh]
           w-full
           flex-col
-          rounded-t-2xl
           bg-white
           shadow-xl
 
-          sm:rounded-2xl
+          ${fullscreen ? "h-full max-h-full rounded-none" : "max-h-[90vh] rounded-t-2xl sm:rounded-2xl"}
 
-          ${size === "sm" ? "sm:max-w-md" : ""}
-          ${size === "md" ? "sm:max-w-xl" : ""}
-          ${size === "lg" ? "sm:max-w-3xl" : ""}
+          ${!fullscreen && size === "sm" ? "sm:max-w-md" : ""}
+          ${!fullscreen && size === "md" ? "sm:max-w-xl" : ""}
+          ${!fullscreen && size === "lg" ? "sm:max-w-3xl" : ""}
         `}
       >
         {title && (
@@ -72,7 +67,7 @@ export default function Modal({ open, onClose, title, children, footer, size = "
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6">{children}</div>
+        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6">{children}</div>
 
         {footer && <div className="shrink-0 border-t border-gray-100 px-5 py-4 sm:px-6">{footer}</div>}
       </div>
