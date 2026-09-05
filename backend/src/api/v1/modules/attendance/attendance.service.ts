@@ -1,18 +1,17 @@
-import { AppError, calculateDistance } from "@/utils";
+import { AppError, calculateDistance, ROLES } from "@/utils";
 
 import { AttendanceSessionRepository } from "../sessions/session.repository";
 import { AttendanceRepository } from "./attendance.repository";
 import { verifyAttendanceQrToken } from "./attendance.qr";
-import { EnrolmentRepository } from "../enrolments";
 import { env } from "@/config";
 import type { MarkAttendanceQrRequest } from "./attendance.types";
 import { mapAttendanceRecord } from "./attendance.mapper";
+import { validateOfferingAccess } from "../offerings";
 
 export class AttendanceService {
   constructor(
     private readonly repository: AttendanceRepository,
     private readonly sessionRepository: AttendanceSessionRepository,
-    private readonly enrolmentRepository: EnrolmentRepository,
   ) {}
 
   async markQrAttendance(data: MarkAttendanceQrRequest, studentId: number) {
@@ -56,11 +55,7 @@ export class AttendanceService {
       throw new AppError("This attendance session has ended", 400);
     }
 
-    const isEnrolled = await this.enrolmentRepository.isEnrolled(session.course_offering_id, studentId);
-
-    if (!isEnrolled) {
-      throw new AppError("You are not enrolled in this course", 403);
-    }
+    await validateOfferingAccess(session.course_offering_id, studentId, ROLES.STUDENT);
 
     const existingAttendance = await this.repository.findBySessionAndStudent(payload.sid, studentId);
 

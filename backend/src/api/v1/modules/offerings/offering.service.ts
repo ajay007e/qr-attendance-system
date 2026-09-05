@@ -2,7 +2,6 @@ import { AppError, ROLES } from "@/utils";
 import type { Role } from "@/types";
 
 import { CourseRepository } from "../courses";
-import { EnrolmentRepository } from "../enrolments";
 import { UserRepository } from "../users";
 
 import { OfferingRepository } from "./offering.repository";
@@ -20,6 +19,7 @@ import {
   validateCreateCourseOfferingRequest,
   validateCourseOfferingId,
   validateUpdateCourseOfferingRequest,
+  validateOfferingAccess,
 } from "./offering.utils";
 
 export class OfferingService {
@@ -27,7 +27,6 @@ export class OfferingService {
     private readonly repository: OfferingRepository,
     private readonly courses: CourseRepository,
     private readonly users: UserRepository,
-    private readonly enrolments: EnrolmentRepository,
   ) {}
 
   async list(query: CourseOfferingQuery) {
@@ -63,21 +62,7 @@ export class OfferingService {
   async get(id: number, userId: number, userRole: Role): Promise<CourseOffering> {
     const offering = await this.findOffering(id);
 
-    if (userRole === ROLES.LECTURER) {
-      const assigned = await this.repository.isLecturerAssigned(id, userId);
-
-      if (!assigned) {
-        throw new AppError("You do not have access to this course offering", 403);
-      }
-    }
-
-    if (userRole === ROLES.STUDENT) {
-      const enrolled = await this.enrolments.isEnrolled(id, userId);
-
-      if (!enrolled) {
-        throw new AppError("You do not have access to this course offering", 403);
-      }
-    }
+    await validateOfferingAccess(id, userId, userRole);
 
     return offering;
   }

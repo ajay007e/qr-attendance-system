@@ -1,5 +1,4 @@
 import { repository as userRepository } from "../users";
-import { repository as enrolmentRepository } from "../enrolments";
 import { CourseRepository } from "../courses";
 
 import { OfferingController } from "./offering.controller";
@@ -9,10 +8,14 @@ import { OfferingService } from "./offering.service";
 const repository = new OfferingRepository();
 const courseRepository = new CourseRepository();
 
-const service = new OfferingService(repository, courseRepository, userRepository, enrolmentRepository);
+const service = new OfferingService(repository, courseRepository, userRepository);
 
 const controller = new OfferingController(service);
 
-export { OfferingRepository, repository, service, controller };
+const isAssigned = repository.isLecturerAssigned.bind(repository);
+
+export { OfferingRepository, repository, service, controller, isAssigned };
+
+export { validateOfferingAccess } from "./offering.utils";
 
 export { CourseLecturerRole, CourseOfferingStatus, CourseSession } from "./offering.types";

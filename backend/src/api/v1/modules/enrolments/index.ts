@@ -11,4 +11,6 @@ const service = new EnrolmentService(repository, offeringRepository);
 
 const controller = new EnrolmentController(service);
 
-export { EnrolmentRepository, repository, service, controller };
+const isEnrolled = repository.isEnrolled.bind(repository);
+
+export { EnrolmentRepository, repository, service, controller, isEnrolled };
