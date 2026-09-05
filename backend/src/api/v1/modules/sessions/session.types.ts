@@ -85,9 +85,3 @@ export interface EditSessionInput {
   sessionStartAt: Date;
   sessionEndAt: Date;
 }
-
-export interface AttendanceQrPayload {
-  sid: number;
-  exp: number;
-  nonce: string;
-}

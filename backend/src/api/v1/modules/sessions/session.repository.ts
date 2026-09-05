@@ -8,12 +8,7 @@ import type {
   DatabaseAttendanceSession,
   UpdateAttendanceSessionData,
 } from "./session.types";
-
-const DUPLICATE_ENTRY = "ER_DUP_ENTRY";
-
-function isDuplicateEntryError(error: unknown): boolean {
-  return typeof error === "object" && error !== null && (error as { code?: string }).code === DUPLICATE_ENTRY;
-}
+import { isDuplicateEntryError } from "@/utils";
 
 export class AttendanceSessionRepository {
   async findById(sessionId: number): Promise<DatabaseAttendanceSession | null> {

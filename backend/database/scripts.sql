@@ -242,3 +242,63 @@ CREATE TABLE IF NOT EXISTS attendance_sessions (
 
 CREATE UNIQUE INDEX ux_attendance_sessions_one_open_per_course
     ON attendance_sessions ((CASE WHEN session_status = 'open' THEN course_offering_id END));
+
+
+CREATE TABLE IF NOT EXISTS attendance_records (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    session_id BIGINT UNSIGNED NOT NULL,
+
+    student_id BIGINT UNSIGNED NOT NULL,
+
+    status VARCHAR(30) NOT NULL DEFAULT 'present',
+
+    attendance_method VARCHAR(30) NOT NULL,
+
+    location_status VARCHAR(30) NOT NULL DEFAULT 'not_checked',
+
+    marked_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    marked_by BIGINT UNSIGNED NULL,
+
+    lecturer_note VARCHAR(500) DEFAULT NULL,
+
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_attendance_records_session
+        FOREIGN KEY (attendance_session_id)
+        REFERENCES attendance_sessions(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_attendance_records_student
+        FOREIGN KEY (student_id)
+        REFERENCES users(id)
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_attendance_records_marked_by
+        FOREIGN KEY (marked_by)
+        REFERENCES users(id)
+        ON DELETE RESTRICT,
+
+    CONSTRAINT uq_attendance_session_student
+        UNIQUE (
+            attendance_session_id,
+            student_id
+        ),
+
+    INDEX idx_attendance_records_student (
+        student_id
+    ),
+
+    INDEX idx_attendance_records_session (
+        attendance_session_id
+    ),
+
+    INDEX idx_attendance_records_student_status (
+        student_id,
+        status
+    )
+);
