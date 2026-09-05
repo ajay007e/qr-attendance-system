@@ -32,6 +32,7 @@ export const INITIAL_SESSION_FORM: SessionForm = {
   startTime: "10:00",
   endTime: "11:00",
   weekNumber: 1,
+  classNumber: 1,
   classType: "tutorial",
   longitude: null,
   latitude: null,

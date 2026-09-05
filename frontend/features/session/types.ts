@@ -8,6 +8,7 @@ export interface AttendanceSession {
 
   title: string;
   weekNumber: number;
+  classNumber: number;
   classType: AttendanceSessionClassType;
 
   sessionStartAt: string;
@@ -21,6 +22,7 @@ export type SessionForm = {
   startTime: string;
   endTime: string;
   weekNumber: number;
+  classNumber: number;
   classType: AttendanceSessionClassType;
   latitude: number | null;
   longitude: number | null;

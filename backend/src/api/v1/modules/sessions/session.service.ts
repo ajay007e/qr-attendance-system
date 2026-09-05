@@ -16,9 +16,11 @@ export class AttendanceSessionService {
     await validateOfferingAccess(input.courseOfferingId, lecturerId, ROLES.LECTURER);
 
     const session = await this.repository.create({
+      title: input.title,
       course_offering_id: input.courseOfferingId,
       lecturer_id: lecturerId,
       week_number: input.weekNumber,
+      class_number: input.classNumber,
       class_type: input.classType,
       session_start_at: input.sessionStartAt,
       session_end_at: input.sessionEndAt,
@@ -94,14 +96,18 @@ export class AttendanceSessionService {
 
     await validateOfferingAccess(existing.course_offering_id, lecturerId, ROLES.LECTURER);
 
-    if (existing.session_status !== "open") {
-      throw new AppError("Only an open session can be edited", 400);
+    const isActive = await this.repository.findActiveByCourse(existing.course_offering_id);
+
+    if (!isActive) {
+      throw new AppError("Only an active session can be edited", 400);
     }
 
     validateWithinEditableWindow(toAttendanceSession(existing));
 
     const updated = await this.repository.update(sessionId, {
+      title: input.title,
       week_number: input.weekNumber,
+      class_number: input.classNumber,
       class_type: input.classType,
       session_start_at: input.sessionStartAt,
       session_end_at: input.sessionEndAt,
@@ -119,8 +125,10 @@ export class AttendanceSessionService {
 
     await validateOfferingAccess(session.course_offering_id, lecturerId, ROLES.LECTURER);
 
-    if (session.session_status !== "open") {
-      throw new AppError("QR code can only be generated for an open session", 400);
+    const isActive = await this.repository.findActiveByCourse(session.course_offering_id);
+
+    if (!isActive) {
+      throw new AppError("QR code can only be generated for an active session", 400);
     }
 
     const expiresAt = new Date(Date.now() + QR_TOKEN_EXPIRATION_SECONDS * 1000);

@@ -197,10 +197,13 @@ CREATE TABLE IF NOT EXISTS course_enrolments (
 CREATE TABLE IF NOT EXISTS attendance_sessions (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
+    title VARCHAR(100) NOT NULL,
+
     course_offering_id BIGINT UNSIGNED NOT NULL,
     lecturer_id BIGINT UNSIGNED NOT NULL,
 
     week_number TINYINT UNSIGNED NOT NULL,
+    class_number TINYINT UNSIGNED NOT NULL,
 
     class_type VARCHAR(30) NOT NULL,
 
@@ -246,6 +249,7 @@ CREATE UNIQUE INDEX ux_attendance_sessions_one_open_per_course
 
 CREATE TABLE IF NOT EXISTS attendance_records (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
 
     session_id BIGINT UNSIGNED NOT NULL,
 
