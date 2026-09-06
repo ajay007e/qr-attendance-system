@@ -8,9 +8,12 @@ export interface SessionControlProps {
   onSessionChange: () => Promise<void>;
 }
 
+export type SessionModalMode = "create" | "edit";
+
 export interface SessionStartModalProps {
   open: boolean;
   onClose: () => void;
+  mode: SessionModalMode;
   form: SessionForm;
   loading: boolean;
   error: string;

@@ -117,10 +117,10 @@ export function validateStartRequest(data: StartAttendanceSessionRequest) {
 
 export function validateEditRequest(data: EditAttendanceSessionRequest) {
   const title = validateTitle(data.title);
-  const weekNumber = validateWeekNumber(data.week_number);
-  const classNumber = validateClassNumber(data.class_number);
-  const classType = validateClassType(data.class_type);
-  const { sessionStartAt, sessionEndAt } = validateSessionTimes(data.session_start_at, data.session_end_at);
+  const weekNumber = validateWeekNumber(data.weekNumber);
+  const classNumber = validateClassNumber(data.classNumber);
+  const classType = validateClassType(data.classType);
+  const { sessionStartAt, sessionEndAt } = validateSessionTimes(data.startTime, data.endTime);
 
   return { title, weekNumber, classNumber, classType, sessionStartAt, sessionEndAt };
 }
