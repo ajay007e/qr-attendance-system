@@ -1,4 +1,4 @@
-import { AppError } from "@/utils";
+import { AppError, ROLES } from "@/utils";
 
 import { AttendanceSessionRepository } from "./session.repository";
 import { toAttendanceSession } from "./session.mapper";
@@ -7,25 +7,20 @@ import { validateWithinEditableWindow } from "./session.utils";
 import { QR_TOKEN_EXPIRATION_SECONDS } from "./session.constants";
 import { randomBytes } from "crypto";
 import { createAttendanceQrToken } from "./session.qr";
-import { OfferingRepository } from "../offerings";
+import { validateOfferingAccess } from "../offerings";
 
 export class AttendanceSessionService {
-  constructor(
-    private readonly repository: AttendanceSessionRepository,
-    private readonly offeringRepository: OfferingRepository,
-  ) {}
+  constructor(private readonly repository: AttendanceSessionRepository) {}
 
   async startSession(input: StartSessionInput, lecturerId: number): Promise<AttendanceSession> {
-    const assigned = await this.offeringRepository.isLecturerAssigned(input.courseOfferingId, lecturerId);
-
-    if (!assigned) {
-      throw new AppError("You are not assigned to this course offering", 403);
-    }
+    await validateOfferingAccess(input.courseOfferingId, lecturerId, ROLES.LECTURER);
 
     const session = await this.repository.create({
+      title: input.title,
       course_offering_id: input.courseOfferingId,
       lecturer_id: lecturerId,
       week_number: input.weekNumber,
+      class_number: input.classNumber,
       class_type: input.classType,
       session_start_at: input.sessionStartAt,
       session_end_at: input.sessionEndAt,
@@ -53,11 +48,7 @@ export class AttendanceSessionService {
       throw new AppError("Attendance session not found", 404);
     }
 
-    const assigned = await this.offeringRepository.isLecturerAssigned(existing.course_offering_id, lecturerId);
-
-    if (!assigned) {
-      throw new AppError("You are not assigned to this course offering", 403);
-    }
+    await validateOfferingAccess(existing.course_offering_id, lecturerId, ROLES.LECTURER);
 
     if (existing.session_status !== "open") {
       throw new AppError("Only an open session can be closed", 400);
@@ -81,11 +72,7 @@ export class AttendanceSessionService {
       throw new AppError("Attendance session not found", 404);
     }
 
-    const assigned = await this.offeringRepository.isLecturerAssigned(existing.course_offering_id, lecturerId);
-
-    if (!assigned) {
-      throw new AppError("You are not assigned to this course offering", 403);
-    }
+    await validateOfferingAccess(existing.course_offering_id, lecturerId, ROLES.LECTURER);
 
     if (existing.session_status !== "closed") {
       throw new AppError("Only a closed session can be reopened", 400);
@@ -107,20 +94,20 @@ export class AttendanceSessionService {
       throw new AppError("Attendance session not found", 404);
     }
 
-    const assigned = await this.offeringRepository.isLecturerAssigned(existing.course_offering_id, lecturerId);
+    await validateOfferingAccess(existing.course_offering_id, lecturerId, ROLES.LECTURER);
 
-    if (!assigned) {
-      throw new AppError("You are not assigned to this course offering", 403);
-    }
+    const isActive = await this.repository.findActiveByCourse(existing.course_offering_id);
 
-    if (existing.session_status !== "open") {
-      throw new AppError("Only an open session can be edited", 400);
+    if (!isActive) {
+      throw new AppError("Only an active session can be edited", 400);
     }
 
     validateWithinEditableWindow(toAttendanceSession(existing));
 
     const updated = await this.repository.update(sessionId, {
+      title: input.title,
       week_number: input.weekNumber,
+      class_number: input.classNumber,
       class_type: input.classType,
       session_start_at: input.sessionStartAt,
       session_end_at: input.sessionEndAt,
@@ -136,14 +123,12 @@ export class AttendanceSessionService {
       throw new AppError("Attendance session not found", 404);
     }
 
-    const assigned = await this.offeringRepository.isLecturerAssigned(session.course_offering_id, lecturerId);
+    await validateOfferingAccess(session.course_offering_id, lecturerId, ROLES.LECTURER);
 
-    if (!assigned) {
-      throw new AppError("You are not assigned to this course offering", 403);
-    }
+    const isActive = await this.repository.findActiveByCourse(session.course_offering_id);
 
-    if (session.session_status !== "open") {
-      throw new AppError("QR code can only be generated for an open session", 400);
+    if (!isActive) {
+      throw new AppError("QR code can only be generated for an active session", 400);
     }
 
     const expiresAt = new Date(Date.now() + QR_TOKEN_EXPIRATION_SECONDS * 1000);

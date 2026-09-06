@@ -32,6 +32,25 @@ export function validateWeekNumber(weekNumber: number): number {
   return weekNumber;
 }
 
+export function validateClassNumber(classNumber: number): number {
+  if (!Number.isInteger(classNumber) || classNumber < 1) {
+    throw new AppError("Class number must be a positive integer", 400);
+  }
+
+  return classNumber;
+}
+
+export function validateTitle(title: string): string {
+  const trimmedTitle = title.trim();
+  if (!trimmedTitle) {
+    throw new AppError("Title is required", 400);
+  }
+  if (trimmedTitle.length > 255) {
+    throw new AppError("Title must not exceed 255 characters", 400);
+  }
+  return trimmedTitle;
+}
+
 export function validateClassType(classType: string): ClassType {
   if (!CLASS_TYPES.includes(classType as ClassType)) {
     throw new AppError(`Class type must be one of: ${CLASS_TYPES.join(", ")}`, 400);
@@ -75,21 +94,35 @@ export function validateLocation(latitude: number, longitude: number): { latitud
 }
 
 export function validateStartRequest(data: StartAttendanceSessionRequest) {
+  const title = validateTitle(data.title);
   const courseOfferingId = validateCourseOfferingId(data.courseOfferingId);
   const weekNumber = validateWeekNumber(data.weekNumber);
+  const classNumber = validateClassNumber(data.classNumber);
   const classType = validateClassType(data.classType);
   const { sessionStartAt, sessionEndAt } = validateSessionTimes(data.startTime, data.endTime);
   const { latitude, longitude } = validateLocation(data.latitude, data.longitude);
 
-  return { courseOfferingId, weekNumber, classType, sessionStartAt, sessionEndAt, latitude, longitude };
+  return {
+    title,
+    courseOfferingId,
+    weekNumber,
+    classNumber,
+    classType,
+    sessionStartAt,
+    sessionEndAt,
+    latitude,
+    longitude,
+  };
 }
 
 export function validateEditRequest(data: EditAttendanceSessionRequest) {
+  const title = validateTitle(data.title);
   const weekNumber = validateWeekNumber(data.week_number);
+  const classNumber = validateClassNumber(data.class_number);
   const classType = validateClassType(data.class_type);
   const { sessionStartAt, sessionEndAt } = validateSessionTimes(data.session_start_at, data.session_end_at);
 
-  return { weekNumber, classType, sessionStartAt, sessionEndAt };
+  return { title, weekNumber, classNumber, classType, sessionStartAt, sessionEndAt };
 }
 
 export function validateWithinEditableWindow(session: AttendanceSession): void {

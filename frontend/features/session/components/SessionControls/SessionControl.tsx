@@ -98,6 +98,11 @@ export function SessionControl({ offeringId, session, onSessionChange }: Session
       return;
     }
 
+    if (form.classNumber < 1) {
+      setFormError("Class number must be at least 1.");
+      return;
+    }
+
     if (form.startTime >= form.endTime) {
       setFormError("End time must be later than the start time.");
       return;
@@ -115,6 +120,7 @@ export function SessionControl({ offeringId, session, onSessionChange }: Session
         courseOfferingId: offeringId,
         title: form.title.trim(),
         weekNumber: form.weekNumber,
+        classNumber: form.classNumber,
         classType: form.classType,
         startTime: createDateTime(form.startTime),
         endTime: createDateTime(form.endTime),

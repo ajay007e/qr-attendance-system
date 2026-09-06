@@ -62,14 +62,23 @@ export function SessionStartModal({
               />
             </Field>
 
-            <Field label="Class Type" required>
-              <Field.Select
-                value={form.classType}
-                onChange={(value) => updateField("classType", value as AttendanceSessionClassType)}
-                options={CLASS_TYPE_OPTIONS}
+            <Field label="Class Number" required>
+              <Field.Input
+                type="number"
+                min={1}
+                value={form.classNumber}
+                onChange={(event) => updateField("classNumber", Number(event.target.value))}
               />
             </Field>
           </div>
+
+          <Field label="Class Type" required>
+            <Field.Select
+              value={form.classType}
+              onChange={(value) => updateField("classType", value as AttendanceSessionClassType)}
+              options={CLASS_TYPE_OPTIONS}
+            />
+          </Field>
 
           <Button type="submit" size="lg" fullWidth loading={loading} className="mt-2">
             {loading ? "Starting Session..." : "Start Session"}

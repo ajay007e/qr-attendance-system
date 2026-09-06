@@ -96,8 +96,10 @@ test("rejects invalid latitude and longitude including unparsed request values",
 });
 
 const startRequest = {
+  title: "test-title",
   courseOfferingId: 11,
   weekNumber: 6,
+  classNumber: 1,
   classType: "lecture",
   startTime: sessionInput.sessionStartAt.toISOString(),
   endTime: sessionInput.sessionEndAt.toISOString(),
@@ -125,7 +127,9 @@ test("start request validation rejects each invalid input field", () => {
 });
 
 const editRequest = {
+  title: "edit-validation-title",
   week_number: 6,
+  class_number: 2,
   class_type: "lecture",
   session_start_at: startRequest.startTime,
   session_end_at: startRequest.endTime,
@@ -133,7 +137,9 @@ const editRequest = {
 
 test("maps the edit request's snake_case fields to service input", () => {
   assert.deepEqual(validateEditRequest(editRequest), {
+    title: "edit-validation-title",
     weekNumber: 6,
+    classNumber: 2,
     classType: "lecture",
     sessionStartAt: sessionInput.sessionStartAt,
     sessionEndAt: sessionInput.sessionEndAt,

@@ -4,20 +4,7 @@ import { db } from "@/config";
 
 import type { CreateAttendanceRecordData, DatabaseAttendanceRecord } from "./attendance.types";
 import { AppError, isDuplicateEntryError } from "@/utils";
-
-const ATTENDANCE_RECORD_COLUMNS = `
-  id,
-  session_id,
-  student_id,
-  status,
-  attendance_method,
-  location_status,
-  marked_at,
-  marked_by,
-  lecturer_note,
-  created_at,
-  updated_at
-`;
+import { ATTENDANCE_RECORD_COLUMNS } from "./attendance.constants";
 
 export class AttendanceRepository {
   async findById(id: number): Promise<DatabaseAttendanceRecord | null> {

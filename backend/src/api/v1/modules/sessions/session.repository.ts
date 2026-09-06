@@ -78,21 +78,25 @@ export class AttendanceSessionRepository {
       const [result] = await connection.execute<ResultSetHeader>(
         `
           INSERT INTO attendance_sessions (
+            title,
             course_offering_id,
             lecturer_id,
             week_number,
+            class_number,
             class_type,
             session_start_at,
             session_end_at,
             latitude,
             longitude
           )
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `,
         [
+          data.title,
           data.course_offering_id,
           data.lecturer_id,
           data.week_number,
+          data.class_number,
           data.class_type,
           data.session_start_at,
           data.session_end_at,
@@ -215,13 +219,23 @@ export class AttendanceSessionRepository {
       `
         UPDATE attendance_sessions
         SET
+          title = ?,
           week_number = ?,
+          class_number = ?,
           class_type = ?,
           session_start_at = ?,
           session_end_at = ?
         WHERE id = ?
       `,
-      [data.week_number, data.class_type, data.session_start_at, data.session_end_at, sessionId],
+      [
+        data.title,
+        data.week_number,
+        data.class_number,
+        data.class_type,
+        data.session_start_at,
+        data.session_end_at,
+        sessionId,
+      ],
     );
 
     return this.findById(sessionId);

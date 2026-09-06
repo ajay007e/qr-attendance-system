@@ -4,9 +4,11 @@ export const CLASS_TYPES = ["lecture", "laboratory", "tutorial", "workshop", "se
 
 export const ATTENDANCE_SESSION_COLUMNS = `
   id,
+  title,
   course_offering_id,
   lecturer_id,
   week_number,
+  class_number,
   class_type,
   session_start_at,
   session_end_at,

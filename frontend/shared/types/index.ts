@@ -3,3 +3,4 @@ export * from "./users";
 export * from "./course";
 export * from "./errors";
 export * from "./hooks";
+export * from "./location";

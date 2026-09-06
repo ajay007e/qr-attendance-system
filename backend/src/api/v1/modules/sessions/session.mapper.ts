@@ -3,9 +3,11 @@ import type { AttendanceSession, DatabaseAttendanceSession } from "./session.typ
 export function toAttendanceSession(session: DatabaseAttendanceSession): AttendanceSession {
   return {
     id: session.id,
+    title: session.title,
     courseOfferingId: session.course_offering_id,
     lecturerId: session.lecturer_id,
     weekNumber: session.week_number,
+    classNumber: session.class_number,
     classType: session.class_type,
     startTime: session.session_start_at,
     endTime: session.session_end_at,

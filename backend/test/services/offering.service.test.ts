@@ -2,9 +2,10 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { CourseRepository } from "../../src/api/v1/modules/courses/course.repository";
-import type { EnrolmentRepository } from "../../src/api/v1/modules/enrolments/enrolment.repository";
 import type { DatabaseCourse } from "../../src/api/v1/modules/courses/course.types";
 import { OfferingRepository } from "../../src/api/v1/modules/offerings/offering.repository";
+import { offeringRepository } from "../../src/api/v1/modules/offerings/offering.dependencies";
+import { enrolmentRepository } from "../../src/api/v1/modules/enrolments/enrolment.dependencies";
 import { OfferingService } from "../../src/api/v1/modules/offerings/offering.service";
 import type { DatabaseCourseOffering } from "../../src/api/v1/modules/offerings/offering.types";
 import { UserRepository } from "../../src/api/v1/modules/users/user.repository";
@@ -67,6 +68,13 @@ function createService() {
     },
   } as unknown as OfferingRepository;
 
+  Object.assign(offeringRepository, repository);
+  Object.assign(enrolmentRepository, {
+    async isEnrolled(offeringId: number, userId: number) {
+      state.accessCalls.push(["student", offeringId, userId]);
+      return state.enrolled;
+    },
+  });
   const courses = {
     async findById() {
       return state.course;
@@ -78,15 +86,7 @@ function createService() {
       return state.user;
     },
   } as unknown as UserRepository;
-
-  const enrolments = {
-    async isEnrolled(offeringId: number, userId: number) {
-      state.accessCalls.push(["student", offeringId, userId]);
-      return state.enrolled;
-    },
-  } satisfies Pick<EnrolmentRepository, "isEnrolled">;
-
-  return { service: new OfferingService(repository, courses, users, enrolments as EnrolmentRepository), state };
+  return { service: new OfferingService(repository, courses, users), state };
 }
 
 test("lists mapped course offerings with pagination", async () => {

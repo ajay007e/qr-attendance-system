@@ -1,8 +1,4 @@
-export type UserLocation = {
-  latitude: number;
-  longitude: number;
-  accuracy: number;
-};
+import { UserLocation } from "../types";
 
 export async function getUserLocation(): Promise<UserLocation> {
   if (!("geolocation" in navigator)) {
