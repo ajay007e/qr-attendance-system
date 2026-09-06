@@ -11,8 +11,8 @@ export interface AttendanceSession {
   classNumber: number;
   classType: AttendanceSessionClassType;
 
-  sessionStartAt: string;
-  sessionEndAt: string;
+  startTime: string;
+  endTime: string;
 
   sessionStatus: AttendanceSessionStatus;
 }
@@ -32,4 +32,4 @@ export interface CreateSessionRequest extends SessionForm {
   courseOfferingId: number;
 }
 
-export type UpdateSessionRequest = SessionForm;
+export type UpdateSessionRequest = CreateSessionRequest;

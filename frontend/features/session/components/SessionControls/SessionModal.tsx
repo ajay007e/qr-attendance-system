@@ -7,17 +7,24 @@ import type { AttendanceSessionClassType } from "../../types";
 
 import { SessionStartModalProps } from "./types";
 
-export function SessionStartModal({
+export function SessionModal({
   open,
   onClose,
+  mode,
   form,
   loading,
   error,
   updateField,
   onSubmit,
 }: SessionStartModalProps) {
+  const isEdit = mode === "edit";
+
+  const title = isEdit ? "Edit Session" : "Start Session";
+  const submitLabel = isEdit ? "Save Changes" : "Start Session";
+  const loadingLabel = isEdit ? "Saving Changes..." : "Starting Session...";
+
   return (
-    <Modal open={open} onClose={onClose} title="Start Attendance Session" size="md">
+    <Modal open={open} onClose={onClose} title={title} size="md">
       <form onSubmit={onSubmit} className="space-y-5" aria-busy={loading}>
         <fieldset disabled={loading} className="space-y-5">
           {error && (
@@ -81,7 +88,7 @@ export function SessionStartModal({
           </Field>
 
           <Button type="submit" size="lg" fullWidth loading={loading} className="mt-2">
-            {loading ? "Starting Session..." : "Start Session"}
+            {loading ? loadingLabel : submitLabel}
           </Button>
         </fieldset>
       </form>

@@ -1,6 +1,6 @@
 "use client";
 
-import { CircleStop, Play, QrCode, RotateCcw } from "lucide-react";
+import { CircleStop, Edit, Play, QrCode, RotateCcw } from "lucide-react";
 import { FormEvent, useState } from "react";
 
 import { createDateTime, formatTimeInput, roundToPrevious30Minutes, useSessionMutation } from "@/features/session";
@@ -9,15 +9,16 @@ import { Button, getUserLocation } from "@/shared";
 import { INITIAL_SESSION_FORM } from "../../constants";
 import type { SessionForm } from "../../types";
 
+import { SessionModal } from "./SessionModal";
 import { SessionQRCodeModal } from "./SessionQRCodeModal";
-import { SessionStartModal } from "./SessionStartModal";
 import type { SessionControlProps } from "./types";
 
 export function SessionControl({ offeringId, session, onSessionChange }: SessionControlProps) {
-  const { creating, closing, reopening, createSession, closeSession, reopenSession } =
+  const { creating, closing, reopening, updating, createSession, closeSession, reopenSession, updateSession } =
     useSessionMutation(onSessionChange);
 
   const [startModalOpen, setStartModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [qrModalOpen, setQrModalOpen] = useState(false);
 
   const [form, setForm] = useState<SessionForm>(INITIAL_SESSION_FORM);
@@ -67,6 +68,24 @@ export function SessionControl({ offeringId, session, onSessionChange }: Session
     } finally {
       setGettingLocation(false);
     }
+  };
+
+  const handleOpenEditModal = () => {
+    if (!session) {
+      return;
+    }
+    setFormError("");
+    setForm({
+      title: session.title,
+      startTime: formatTimeInput(new Date(session.startTime)),
+      endTime: formatTimeInput(new Date(session.endTime)),
+      weekNumber: session.weekNumber,
+      classNumber: session.classNumber,
+      classType: session.classType,
+      latitude: null,
+      longitude: null,
+    });
+    setEditModalOpen(true);
   };
 
   const handleStartSession = async (event: FormEvent<HTMLFormElement>) => {
@@ -137,6 +156,55 @@ export function SessionControl({ offeringId, session, onSessionChange }: Session
     }
   };
 
+  const handleEditSession = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!session || updating) {
+      return;
+    }
+    setFormError("");
+    if (!form.title.trim()) {
+      setFormError("Please enter a session title.");
+      return;
+    }
+    if (!form.startTime) {
+      setFormError("Please select a start time.");
+      return;
+    }
+    if (!form.endTime) {
+      setFormError("Please select an end time.");
+      return;
+    }
+    if (form.weekNumber < 1) {
+      setFormError("Week number must be at least 1.");
+      return;
+    }
+    if (form.classNumber < 1) {
+      setFormError("Class number must be at least 1.");
+      return;
+    }
+    if (form.startTime >= form.endTime) {
+      setFormError("End time must be later than the start time.");
+      return;
+    }
+    try {
+      await updateSession(session.id, {
+        courseOfferingId: offeringId,
+        title: form.title.trim(),
+        weekNumber: form.weekNumber,
+        classNumber: form.classNumber,
+        classType: form.classType,
+        startTime: createDateTime(form.startTime),
+        endTime: createDateTime(form.endTime),
+        latitude: form.latitude,
+        longitude: form.longitude,
+      });
+      setEditModalOpen(false);
+      resetForm();
+    } catch {
+      setFormError("Unable to update the attendance session. Please try again.");
+    }
+  };
+
   const handleCloseSession = async () => {
     if (!session || closing) {
       return;
@@ -170,13 +238,14 @@ export function SessionControl({ offeringId, session, onSessionChange }: Session
           {gettingLocation ? "Getting Location..." : "Start Session"}
         </Button>
 
-        <SessionStartModal
+        <SessionModal
           open={startModalOpen}
           onClose={() => {
             if (!creating && !gettingLocation) {
               setStartModalOpen(false);
             }
           }}
+          mode="create"
           form={form}
           loading={creating || gettingLocation}
           error={formError}
@@ -205,6 +274,17 @@ export function SessionControl({ offeringId, session, onSessionChange }: Session
     <>
       <div className="flex items-center gap-2">
         <Button
+          variant="outline"
+          size="icon"
+          aria-label="Edit attendance session"
+          title="Edit attendance session"
+          onClick={handleOpenEditModal}
+          disabled={closing || updating}
+        >
+          <Edit size={18} />
+        </Button>
+
+        <Button
           variant="primary"
           size="md"
           loading={closing}
@@ -225,7 +305,20 @@ export function SessionControl({ offeringId, session, onSessionChange }: Session
           <QrCode size={18} />
         </Button>
       </div>
-
+      <SessionModal
+        open={editModalOpen}
+        onClose={() => {
+          if (!updating) {
+            setEditModalOpen(false);
+          }
+        }}
+        mode="edit"
+        form={form}
+        loading={updating}
+        error={formError}
+        updateField={updateField}
+        onSubmit={handleEditSession}
+      />
       <SessionQRCodeModal open={qrModalOpen} onClose={() => setQrModalOpen(false)} id={session.id} />
     </>
   );

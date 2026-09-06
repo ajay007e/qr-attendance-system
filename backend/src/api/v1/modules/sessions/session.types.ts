@@ -70,11 +70,11 @@ export interface StartAttendanceSessionRequest {
 
 export interface EditAttendanceSessionRequest {
   title: string;
-  week_number: number;
-  class_number: number;
-  class_type: string;
-  session_start_at: string;
-  session_end_at: string;
+  weekNumber: number;
+  classNumber: number;
+  classType: string;
+  startTime: string;
+  endTime: string;
 }
 
 export interface StartSessionInput {

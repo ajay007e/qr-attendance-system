@@ -128,11 +128,11 @@ test("start request validation rejects each invalid input field", () => {
 
 const editRequest = {
   title: "edit-validation-title",
-  week_number: 6,
-  class_number: 2,
-  class_type: "lecture",
-  session_start_at: startRequest.startTime,
-  session_end_at: startRequest.endTime,
+  weekNumber: 6,
+  classNumber: 2,
+  classType: "lecture",
+  startTime: startRequest.startTime,
+  endTime: startRequest.endTime,
 };
 
 test("maps the edit request's snake_case fields to service input", () => {
@@ -148,10 +148,10 @@ test("maps the edit request's snake_case fields to service input", () => {
 
 test("edit request validation rejects invalid week, class and dates", () => {
   for (const [invalid, message] of [
-    [{ week_number: 0 }, "Week number must be an integer between 1 and 52"],
-    [{ class_type: "exam" }, "Class type must be one of: lecture, laboratory, tutorial, workshop, seminar, other"],
-    [{ session_start_at: "bad" }, "Invalid session start time"],
-    [{ session_end_at: "bad" }, "Invalid session end time"],
+    [{ weekNumber: 0 }, "Week number must be an integer between 1 and 52"],
+    [{ classType: "exam" }, "Class type must be one of: lecture, laboratory, tutorial, workshop, seminar, other"],
+    [{ startTime: "bad" }, "Invalid session start time"],
+    [{ endTime: "bad" }, "Invalid session end time"],
   ] as const) {
     assert.throws(() => validateEditRequest({ ...editRequest, ...invalid }), isAppError(400, message));
   }
