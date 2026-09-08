@@ -11,11 +11,13 @@ import type { MarkAttendanceQrRequest, SessionAttendance, SessionAttendanceQuery
 
 import { mapAttendanceRecord, mapSessionAttendances } from "./attendance.mapper";
 import { validateOfferingAccess } from "../offerings";
+import { AttendanceWebSocket } from "@/web-socket";
 
 export class AttendanceService {
   constructor(
     private readonly repository: AttendanceRepository,
     private readonly sessionRepository: AttendanceSessionRepository,
+    private readonly websocket: AttendanceWebSocket,
   ) {}
 
   async markQrAttendance(data: MarkAttendanceQrRequest, studentId: number) {
@@ -71,15 +73,15 @@ export class AttendanceService {
 
     const locationStatus = distance <= env.attendanceLocationRadius ? "verified" : "suspicious";
 
-    return mapAttendanceRecord(
-      await this.repository.create({
-        session_id: payload.sid,
-        student_id: studentId,
-        status: "present",
-        attendance_method: "qr",
-        location_status: locationStatus,
-      }),
-    );
+    const record = await this.repository.create({
+      session_id: payload.sid,
+      student_id: studentId,
+      status: "present",
+      attendance_method: "qr",
+      location_status: locationStatus,
+    });
+    this.websocket.notifyAttendanceMarked(payload.sid);
+    return mapAttendanceRecord(record);
   }
 
   async getSessionAttendance(

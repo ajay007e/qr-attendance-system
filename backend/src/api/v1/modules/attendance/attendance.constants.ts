@@ -19,3 +19,7 @@ export const ATTENDANCE_STATUSES: AttendanceRecordStatus[] = ["present", "absent
 export const ATTENDANCE_METHODS: AttendanceMethod[] = ["qr", "manual"];
 
 export const ATTENDANCE_LOCATION_STATUSES: AttendanceLocationStatus[] = ["verified", "suspicious", "not_checked"];
+
+export const ATTENDANCE_EVENTS = {
+  ATTENDANCE_MARKED: "attendance.marked",
+} as const;

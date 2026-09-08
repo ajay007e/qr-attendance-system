@@ -28,7 +28,10 @@ app.use(
 );
 
 app.use(express.json());
-app.use(session(sessionConfig));
+
+export const sessionMiddleware = session(sessionConfig);
+
+app.use(sessionMiddleware);
 
 app.get("/", (_req, res) => {
   res.json({
