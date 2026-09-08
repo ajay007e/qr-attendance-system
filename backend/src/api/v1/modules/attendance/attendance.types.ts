@@ -1,3 +1,5 @@
+import type { PaginationQuery } from "@/types";
+
 export type AttendanceRecordStatus = "present" | "absent" | "excused" | "late";
 
 export type AttendanceMethod = "qr" | "manual";
@@ -44,4 +46,41 @@ export interface MarkAttendanceQrRequest {
   qrToken: string;
   latitude: number;
   longitude: number;
+}
+
+export interface SessionAttendanceQuery extends PaginationQuery {
+  search?: string;
+  status?: AttendanceRecordStatus;
+  attendanceMethod?: AttendanceMethod;
+  locationStatus?: AttendanceLocationStatus;
+}
+
+export interface SessionAttendance {
+  student: {
+    id: number;
+    firstName: string;
+    lastName: string | null;
+    email: string;
+  };
+
+  attendance: AttendanceRecord | null;
+}
+
+export interface DatabaseSessionAttendance {
+  student_id: number;
+  student_first_name: string;
+  student_last_name: string | null;
+  student_email: string;
+
+  attendance_id: number | null;
+  attendance_session_id: number | null;
+  attendance_student_id: number | null;
+  attendance_status: AttendanceRecordStatus | null;
+  attendance_method: AttendanceMethod | null;
+  attendance_location_status: AttendanceLocationStatus | null;
+  attendance_marked_at: Date | null;
+  attendance_marked_by: number | null;
+  attendance_lecturer_note: string | null;
+  attendance_created_at: Date | null;
+  attendance_updated_at: Date | null;
 }

@@ -8,6 +8,7 @@ import { controller } from ".";
 export const attendanceRouter = Router();
 
 attendanceRouter.use(isAuthenticated);
-attendanceRouter.use(authorize(ROLES.STUDENT));
 
-attendanceRouter.post("/scan", controller.markAttendance);
+attendanceRouter.post("/scan", authorize(ROLES.STUDENT), controller.markAttendance);
+
+attendanceRouter.get("/:sessionId", authorize(ROLES.LECTURER), controller.getSessionAttendance);

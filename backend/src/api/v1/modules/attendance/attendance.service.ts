@@ -4,8 +4,12 @@ import { AttendanceSessionRepository } from "../sessions/session.repository";
 import { AttendanceRepository } from "./attendance.repository";
 import { verifyAttendanceQrToken } from "./attendance.qr";
 import { env } from "@/config";
-import type { MarkAttendanceQrRequest } from "./attendance.types";
-import { mapAttendanceRecord } from "./attendance.mapper";
+
+import type { PaginatedData } from "@/types";
+
+import type { MarkAttendanceQrRequest, SessionAttendance, SessionAttendanceQuery } from "./attendance.types";
+
+import { mapAttendanceRecord, mapSessionAttendances } from "./attendance.mapper";
 import { validateOfferingAccess } from "../offerings";
 
 export class AttendanceService {
@@ -76,5 +80,26 @@ export class AttendanceService {
         location_status: locationStatus,
       }),
     );
+  }
+
+  async getSessionAttendance(
+    sessionId: number,
+    query: SessionAttendanceQuery,
+    lecturerId: number,
+  ): Promise<PaginatedData<SessionAttendance>> {
+    const session = await this.sessionRepository.findById(sessionId);
+
+    if (!session) {
+      throw new AppError("Attendance session not found", 404);
+    }
+
+    await validateOfferingAccess(session.course_offering_id, lecturerId, ROLES.LECTURER);
+
+    const result = await this.repository.getSessionAttendance(sessionId, session.course_offering_id, query);
+
+    return {
+      items: mapSessionAttendances(result.items),
+      meta: result.meta,
+    };
   }
 }
