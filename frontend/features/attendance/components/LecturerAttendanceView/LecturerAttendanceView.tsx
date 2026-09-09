@@ -9,12 +9,11 @@ import { LiveAttendance } from "../LiveAttendance";
 
 import type { AttendanceTab, LecturerAttendanceViewProps } from "./types";
 
-export function LecturerAttendanceView({ offeringId, sessionControls, isSessionOpen }: LecturerAttendanceViewProps) {
-  console.log(offeringId);
+export function LecturerAttendanceView({ sessionId, sessionControls, isSessionOpen }: LecturerAttendanceViewProps) {
   const [activeTab, setActiveTab] = useState<AttendanceTab>("sessions");
 
   if (isSessionOpen) {
-    return <LiveAttendance sessionControls={sessionControls} />;
+    return <LiveAttendance sessionId={sessionId} sessionControls={sessionControls} />;
   }
 
   return (

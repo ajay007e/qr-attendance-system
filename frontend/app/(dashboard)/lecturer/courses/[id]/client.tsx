@@ -14,6 +14,7 @@ export function LecturerCourseAttendance({ offeringId }: { offeringId: number })
 
   return (
     <AttendancePanel
+      sessionId={session?.id}
       offeringId={offeringId}
       isSessionOpen={isSessionOpen}
       sessionControls={<SessionControl offeringId={offeringId} session={session} onSessionChange={refresh} />}

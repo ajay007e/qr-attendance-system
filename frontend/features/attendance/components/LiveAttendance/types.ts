@@ -1,27 +1,15 @@
+import { SessionAttendance, SessionAttendanceQuery } from "../../types";
+
 export interface LiveAttendanceProps {
-  courseId: number;
+  sessionId: number;
+  sessionControls?: React.ReactNode;
 }
 
-export type AttendanceStatus = "present" | "absent";
-
-export interface LiveAttendanceRecord {
-  id: number;
-  studentId: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  status: AttendanceStatus;
-  markedAt?: string;
+export interface AttendanceTableProps {
+  records: SessionAttendance[];
 }
 
-export interface LiveAttendanceTableProps {
-  records: LiveAttendanceRecord[];
-}
-
-export interface LiveAttendanceTableRowProps {
-  record: LiveAttendanceRecord;
-}
-
-export interface LiveAttendanceCardProps {
-  record: LiveAttendanceRecord;
+export interface AttendanceToolbarProps {
+  filters: SessionAttendanceQuery;
+  onFiltersChange: (filters: SessionAttendanceQuery) => void;
 }

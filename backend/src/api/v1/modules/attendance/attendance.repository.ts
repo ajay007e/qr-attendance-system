@@ -210,6 +210,7 @@ export class AttendanceRepository {
         limit,
         total,
         totalPages,
+        hasData: true,
       },
     };
   }

@@ -4,6 +4,7 @@ export * from "./lib/api";
 export * from "./lib/routes";
 export * from "./lib/utils";
 export * from "./lib/location";
+export * from "./lib/websocket";
 
 export * from "./components";
 

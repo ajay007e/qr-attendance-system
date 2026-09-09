@@ -6,6 +6,7 @@ import { env } from "@/config";
 
 import { authenticateSocket } from "./auth";
 import { registerWebsocketHandlers } from "./handlers";
+import { websocket } from "./attendance";
 
 export function createRealtimeServer(httpServer: HttpServer, sessionMiddleware: RequestHandler): Server {
   const io = new Server(httpServer, {
@@ -18,7 +19,10 @@ export function createRealtimeServer(httpServer: HttpServer, sessionMiddleware: 
   io.engine.use(sessionMiddleware);
   io.use(authenticateSocket);
 
+  websocket.initialize(io);
+
   io.on("connection", (socket) => {
+    console.log(`WebSocket connected: ${socket.id}`);
     registerWebsocketHandlers(io, socket);
   });
 
