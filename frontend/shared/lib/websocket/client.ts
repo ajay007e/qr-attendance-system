@@ -1,4 +1,5 @@
 import { io, type Socket } from "socket.io-client";
+import { api } from "@/shared";
 
 const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
 
@@ -8,12 +9,14 @@ if (!websocketUrl) {
 
 let socket: Socket | null = null;
 
-export function getWebsocket(): Socket {
+export async function getWebsocket(): Promise<Socket> {
   if (!socket) {
+    const { data } = await api.get<{ token: string }>("/auth/socket-token");
+
     socket = io(websocketUrl, {
       path: "/socket.io/",
       transports: ["websocket"],
-      withCredentials: true,
+      auth: { token: data.token },
       autoConnect: false,
     });
   }

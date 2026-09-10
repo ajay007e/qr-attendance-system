@@ -8,7 +8,7 @@ import { notFound, errorHandler } from "@/middleware";
 
 export const app = express();
 
-app.set("trust proxy", env.sessionSecure);
+app.set("trust proxy", 1);
 
 app.use(
   cors({

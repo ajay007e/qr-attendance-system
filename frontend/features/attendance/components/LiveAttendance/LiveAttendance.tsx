@@ -20,6 +20,7 @@ import { DEFAULT_SESSION_ATTENDANCE_QUERY } from "../../constants";
 import useSessionAttendance from "../../hooks/useSessionAttendance";
 import AttendanceToolbar from "./AttendanceToolbar";
 import { AttendanceTable } from "./AttendanceTable";
+import { Socket } from "socket.io-client";
 
 export default function LiveAttendance({ sessionId, sessionControls }: LiveAttendanceProps) {
   const [query, setQuery] = useState<SessionAttendanceQuery>(DEFAULT_SESSION_ATTENDANCE_QUERY);
@@ -33,10 +34,11 @@ export default function LiveAttendance({ sessionId, sessionControls }: LiveAtten
    * real-time attendance changes.
    */
   useEffect(() => {
-    const socket = getWebsocket();
+    let cancelled = false;
+    let socket: Socket | null = null;
 
     const handleConnect = () => {
-      socket.emit("session:join", sessionId, (response) => {
+      socket?.emit("session:join", sessionId, (response) => {
         if (!response.success) {
           console.error("Failed to join attendance session:", response.message);
           return;
@@ -58,25 +60,43 @@ export default function LiveAttendance({ sessionId, sessionControls }: LiveAtten
       }, 2000);
     };
 
-    socket.on("connect", handleConnect);
-    socket.on("attendance.marked", handleAttendanceMarked);
+    const setup = async () => {
+      const sock = await getWebsocket();
 
-    if (socket.connected) {
-      handleConnect();
-    } else {
-      socket.connect();
-    }
+      if (cancelled) {
+        // effect was cleaned up while the token fetch was in flight — bail out
+        return;
+      }
+
+      socket = sock;
+      socket.on("connect", handleConnect);
+      socket.on("attendance.marked", handleAttendanceMarked);
+
+      if (socket.connected) {
+        handleConnect();
+      } else {
+        socket.connect();
+      }
+    };
+
+    void setup();
 
     return () => {
-      socket.emit("session:leave", sessionId);
+      cancelled = true;
 
-      socket.off("connect", handleConnect);
-      socket.off("attendance.marked", handleAttendanceMarked);
+      if (refreshTimer) {
+        clearTimeout(refreshTimer);
+      }
+
+      if (socket) {
+        socket.emit("session:leave", sessionId);
+        socket.off("connect", handleConnect);
+        socket.off("attendance.marked", handleAttendanceMarked);
+      }
 
       disconnectWebsocket();
     };
   }, [sessionId, refresh]);
-
   /*
    * Initial loading
    */

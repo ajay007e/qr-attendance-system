@@ -84,31 +84,10 @@ export default function AttendanceQrScanner({ onClose }: AttendanceQrScannerProp
 
           <p className="mt-2 text-sm text-white/60">Your attendance has been successfully recorded.</p>
 
-          <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-4 text-left">
-            <div>
-              <p className="text-xs text-white/40">Status</p>
-
-              <p className="mt-1 text-sm font-medium capitalize text-white">{result.status}</p>
-            </div>
-
-            <div className="mt-4">
-              <p className="text-xs text-white/40">Attendance method</p>
-
-              <p className="mt-1 text-sm font-medium uppercase text-white">{result.attendanceMethod}</p>
-            </div>
-
-            <div className="mt-4">
-              <p className="text-xs text-white/40">Location</p>
-
-              <p className="mt-1 text-sm font-medium capitalize text-white">{result.locationStatus}</p>
-            </div>
-
-            <div className="mt-4">
-              <p className="text-xs text-white/40">Marked at</p>
-
-              <p className="mt-1 text-sm text-white">{new Date(result.markedAt).toLocaleString()}</p>
-            </div>
-          </div>
+          <p className="mt-8 text-sm text-white/70">
+            Marked at <span className="font-medium text-white">{new Date(result.markedAt).toLocaleString()}</span> with
+            location status <span className="font-medium capitalize text-white">{result.locationStatus}</span>.
+          </p>
 
           <Button type="button" onClick={onClose} className="mt-8 w-full">
             Done
