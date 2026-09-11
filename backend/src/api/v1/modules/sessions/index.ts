@@ -8,4 +8,4 @@ const service = new AttendanceSessionService(repository);
 
 const controller = new AttendanceSessionController(service);
 
-export { repository, service, controller };
+export { AttendanceSessionRepository, repository, service, controller };

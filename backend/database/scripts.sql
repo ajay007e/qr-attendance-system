@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS attendance_sessions (
     session_status VARCHAR(30) NOT NULL DEFAULT 'open',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_attendance_sessions_course FOREIGN KEY (course_offering_id) REFERENCES courses(id) ON DELETE CASCADE,
+    CONSTRAINT fk_attendance_sessions_course FOREIGN KEY (course_offering_id) REFERENCES course_offerings(id) ON DELETE CASCADE,
     CONSTRAINT fk_attendance_sessions_lecturer FOREIGN KEY (lecturer_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT chk_session_times CHECK (session_end_at > session_start_at),
     CONSTRAINT chk_latitude_range CHECK (latitude BETWEEN -90 AND 90),

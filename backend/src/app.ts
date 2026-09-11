@@ -8,7 +8,7 @@ import { notFound, errorHandler } from "@/middleware";
 
 export const app = express();
 
-app.set("trust proxy", env.sessionSecure);
+app.set("trust proxy", 1);
 
 app.use(
   cors({
@@ -28,7 +28,10 @@ app.use(
 );
 
 app.use(express.json());
-app.use(session(sessionConfig));
+
+export const sessionMiddleware = session(sessionConfig);
+
+app.use(sessionMiddleware);
 
 app.get("/", (_req, res) => {
   res.json({

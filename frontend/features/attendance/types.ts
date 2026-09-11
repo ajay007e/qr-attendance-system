@@ -1,3 +1,5 @@
+import { PaginationQuery } from "@/shared";
+
 export type ScanAttendanceRequest = {
   qrToken: string;
   latitude: number;
@@ -22,4 +24,21 @@ export interface AttendanceRecord {
   lecturerNote: string | null;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface SessionAttendanceQuery extends PaginationQuery {
+  search?: string;
+  status?: AttendanceRecordStatus;
+  attendanceMethod?: AttendanceMethod;
+  locationStatus?: AttendanceLocationStatus;
+}
+
+export interface SessionAttendance {
+  student: {
+    id: number;
+    firstName: string;
+    lastName: string | null;
+    email: string;
+  };
+  attendance: AttendanceRecord | null;
 }

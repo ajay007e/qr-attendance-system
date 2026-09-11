@@ -3,7 +3,8 @@ import type { ReactNode } from "react";
 import { ATTENDANCE_TABS } from "@/features/attendance";
 
 export interface LecturerAttendanceViewProps {
-  offeringId: number;
+  offeringId?: number;
+  sessionId?: number;
   isSessionOpen: boolean;
   sessionControls: ReactNode;
 }

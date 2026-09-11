@@ -4,14 +4,20 @@ import { AttendanceSessionRepository } from "../sessions/session.repository";
 import { AttendanceRepository } from "./attendance.repository";
 import { verifyAttendanceQrToken } from "./attendance.qr";
 import { env } from "@/config";
-import type { MarkAttendanceQrRequest } from "./attendance.types";
-import { mapAttendanceRecord } from "./attendance.mapper";
+
+import type { PaginatedData } from "@/types";
+
+import type { MarkAttendanceQrRequest, SessionAttendance, SessionAttendanceQuery } from "./attendance.types";
+
+import { mapAttendanceRecord, mapSessionAttendances } from "./attendance.mapper";
 import { validateOfferingAccess } from "../offerings";
+import { AttendanceWebSocket } from "../web-socket";
 
 export class AttendanceService {
   constructor(
     private readonly repository: AttendanceRepository,
     private readonly sessionRepository: AttendanceSessionRepository,
+    private readonly websocket: AttendanceWebSocket,
   ) {}
 
   async markQrAttendance(data: MarkAttendanceQrRequest, studentId: number) {
@@ -67,14 +73,31 @@ export class AttendanceService {
 
     const locationStatus = distance <= env.attendanceLocationRadius ? "verified" : "suspicious";
 
-    return mapAttendanceRecord(
-      await this.repository.create({
-        session_id: payload.sid,
-        student_id: studentId,
-        status: "present",
-        attendance_method: "qr",
-        location_status: locationStatus,
-      }),
-    );
+    const record = await this.repository.create({
+      session_id: payload.sid,
+      student_id: studentId,
+      status: "present",
+      attendance_method: "qr",
+      location_status: locationStatus,
+    });
+    this.websocket.notifyAttendanceMarked(payload.sid);
+    return mapAttendanceRecord(record);
+  }
+
+  async getSessionAttendance(
+    sessionId: number,
+    query: SessionAttendanceQuery,
+    lecturerId: number,
+  ): Promise<PaginatedData<SessionAttendance>> {
+    const session = await this.sessionRepository.findById(sessionId);
+    if (!session) {
+      throw new AppError("Attendance session not found", 404);
+    }
+    await validateOfferingAccess(session.course_offering_id, lecturerId, ROLES.LECTURER);
+    const result = await this.repository.getSessionAttendance(sessionId, session.course_offering_id, query);
+    return {
+      items: mapSessionAttendances(result.items),
+      meta: result.meta,
+    };
   }
 }

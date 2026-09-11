@@ -1,5 +1,8 @@
-import { app } from "@/app";
+import { createServer } from "http";
+
+import { app, sessionMiddleware } from "@/app";
 import { connectDatabase, env } from "@/config";
+import { createRealtimeServer } from "@/api/v1";
 
 async function start(): Promise<void> {
   try {
@@ -7,7 +10,11 @@ async function start(): Promise<void> {
 
     console.log("Connected to MySQL");
 
-    app.listen(env.port, () => {
+    const httpServer = createServer(app);
+
+    createRealtimeServer(httpServer, sessionMiddleware);
+
+    httpServer.listen(env.port, () => {
       console.log(`Server running on port ${env.port}`);
     });
   } catch (error) {
