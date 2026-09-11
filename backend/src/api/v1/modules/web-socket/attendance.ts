@@ -13,7 +13,6 @@ export class AttendanceWebSocket {
     if (!this.io) {
       return;
     }
-    console.log(sessionId);
     this.io.to(WEBSOCKET_ROOMS.attendanceSession(sessionId)).emit("attendance.marked");
   }
 }

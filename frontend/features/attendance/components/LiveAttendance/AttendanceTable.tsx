@@ -1,6 +1,8 @@
 import { Badge } from "@/shared";
+
+import { AttendanceRecord, SessionAttendance } from "../../types";
+
 import { AttendanceTableProps } from "./types";
-import { SessionAttendance } from "../../types";
 
 export function AttendanceTable({ records }: AttendanceTableProps) {
   return (

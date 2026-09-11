@@ -26,7 +26,7 @@ export interface PaginationMeta {
   limit: number;
   total: number;
   totalPages: number;
-  hasData: boolean;
+  hasData?: boolean;
 }
 
 export interface PaginatedData<T> {

@@ -1,9 +1,7 @@
 import type { PaginationQuery } from "@/types";
 
 export type AttendanceRecordStatus = "present" | "absent" | "excused" | "late";
-
 export type AttendanceMethod = "qr" | "manual";
-
 export type AttendanceLocationStatus = "verified" | "suspicious" | "not_checked";
 
 export interface CreateAttendanceRecordData {

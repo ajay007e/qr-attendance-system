@@ -7,6 +7,7 @@ import { offeringRouter } from "./modules/offerings/offering.routes";
 import { enrolmentRouter } from "./modules/enrolments/enrolment.routes";
 import { sessionRouter } from "./modules/sessions/session.routes";
 import { attendanceRouter } from "./modules/attendance/attendance.routes";
+import { webSocketRouter } from "./modules/web-socket/routes";
 
 export const v1Router = Router();
 
@@ -24,3 +25,4 @@ v1Router.use("/enrolments", enrolmentRouter);
 v1Router.use("/offerings", offeringRouter);
 v1Router.use("/sessions", sessionRouter);
 v1Router.use("/attendance", attendanceRouter);
+v1Router.use("/ws", webSocketRouter);

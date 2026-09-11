@@ -11,7 +11,7 @@ import type { MarkAttendanceQrRequest, SessionAttendance, SessionAttendanceQuery
 
 import { mapAttendanceRecord, mapSessionAttendances } from "./attendance.mapper";
 import { validateOfferingAccess } from "../offerings";
-import { AttendanceWebSocket } from "@/web-socket";
+import { AttendanceWebSocket } from "../web-socket";
 
 export class AttendanceService {
   constructor(
@@ -90,15 +90,11 @@ export class AttendanceService {
     lecturerId: number,
   ): Promise<PaginatedData<SessionAttendance>> {
     const session = await this.sessionRepository.findById(sessionId);
-
     if (!session) {
       throw new AppError("Attendance session not found", 404);
     }
-
     await validateOfferingAccess(session.course_offering_id, lecturerId, ROLES.LECTURER);
-
     const result = await this.repository.getSessionAttendance(sessionId, session.course_offering_id, query);
-
     return {
       items: mapSessionAttendances(result.items),
       meta: result.meta,

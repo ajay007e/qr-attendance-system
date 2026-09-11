@@ -2,10 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { AppError, DEFAULT_PAGINATION_META, useError, type PaginationMeta } from "@/shared";
+
 import { AttendanceService } from "../api/attendance.service";
 import type { SessionAttendance, SessionAttendanceQuery } from "../types";
-
-import { AppError, DEFAULT_PAGINATION_META, useError, type PaginationMeta } from "@/shared";
 
 export default function useSessionAttendance(sessionId: number, query: SessionAttendanceQuery) {
   const { handleError } = useError();

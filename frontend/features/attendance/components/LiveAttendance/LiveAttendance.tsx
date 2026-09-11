@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Socket } from "socket.io-client";
+
 import {
   EmptyState,
   ErrorFallback,
@@ -14,13 +16,13 @@ import {
   useDebounce,
 } from "@/shared";
 
-import type { LiveAttendanceProps } from "./types";
-import { SessionAttendanceQuery } from "../../types";
 import { DEFAULT_SESSION_ATTENDANCE_QUERY } from "../../constants";
 import useSessionAttendance from "../../hooks/useSessionAttendance";
-import AttendanceToolbar from "./AttendanceToolbar";
+import { SessionAttendanceQuery } from "../../types";
+
 import { AttendanceTable } from "./AttendanceTable";
-import { Socket } from "socket.io-client";
+import AttendanceToolbar from "./AttendanceToolbar";
+import type { LiveAttendanceProps } from "./types";
 
 export default function LiveAttendance({ sessionId, sessionControls }: LiveAttendanceProps) {
   const [query, setQuery] = useState<SessionAttendanceQuery>(DEFAULT_SESSION_ATTENDANCE_QUERY);
@@ -29,16 +31,12 @@ export default function LiveAttendance({ sessionId, sessionControls }: LiveAtten
 
   const { records, pagination, loading, isFetching, error, refresh } = useSessionAttendance(sessionId, debouncedQuery);
 
-  /*
-   * Join the attendance session and listen for
-   * real-time attendance changes.
-   */
   useEffect(() => {
     let cancelled = false;
     let socket: Socket | null = null;
 
     const handleConnect = () => {
-      socket?.emit("session:join", sessionId, (response) => {
+      socket?.emit("session:join", sessionId, (response: { success: boolean; message?: string }) => {
         if (!response.success) {
           console.error("Failed to join attendance session:", response.message);
           return;

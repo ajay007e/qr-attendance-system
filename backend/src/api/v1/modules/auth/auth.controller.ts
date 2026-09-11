@@ -2,7 +2,6 @@ import type { RequestHandler } from "express";
 import type { SessionUser } from "@/types";
 import { AuthService } from "./auth.service";
 import { SESSION_COOKIE_NAME } from "@/utils";
-import { issueSocketToken } from "./auth.token";
 
 export class AuthController {
   constructor(private readonly service: AuthService) {}
@@ -54,17 +53,5 @@ export class AuthController {
       success: true,
       data: req.user,
     });
-  };
-
-  token: RequestHandler = (req, res) => {
-    const user = req.session.user;
-
-    if (!user) {
-      res.status(401).json({ message: "Not authenticated" });
-      return;
-    }
-
-    const token = issueSocketToken(user.id.toString());
-    res.json({ token });
   };
 }

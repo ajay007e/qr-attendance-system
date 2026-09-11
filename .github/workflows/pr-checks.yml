@@ -115,6 +115,8 @@ jobs:
 
       - name: Build frontend
         run: pnpm --dir frontend build
+        env:
+          NEXT_PUBLIC_WEBSOCKET_URL: http://localhost:5000
 
   backend-lint:
     name: Backend - Lint

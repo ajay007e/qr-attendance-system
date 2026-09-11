@@ -1,11 +1,11 @@
-import type { Server, Socket } from "socket.io";
+import type { Socket } from "socket.io";
 
 import { ROLES } from "@/utils";
 import type { SessionUser } from "@/types";
-import { AttendanceSessionRepository } from "@/api/v1/modules/sessions/session.repository";
-import { validateOfferingAccess } from "@/api/v1/modules/offerings";
 
 import { WEBSOCKET_ROOMS } from "./constants";
+import { AttendanceSessionRepository } from "../sessions";
+import { validateOfferingAccess } from "../offerings";
 
 const attendanceSessionRepository = new AttendanceSessionRepository();
 
@@ -13,7 +13,7 @@ function getSessionRoom(sessionId: number): string {
   return WEBSOCKET_ROOMS.attendanceSession(sessionId);
 }
 
-export function registerWebsocketHandlers(io: Server, socket: Socket): void {
+export function registerWebsocketHandlers(socket: Socket): void {
   const user = socket.data.user as SessionUser;
 
   socket.on("session:join", async (sessionId: number, callback) => {

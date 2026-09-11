@@ -23,7 +23,7 @@ export function createRealtimeServer(httpServer: HttpServer, sessionMiddleware: 
 
   io.on("connection", (socket) => {
     console.log(`WebSocket connected: ${socket.id}`);
-    registerWebsocketHandlers(io, socket);
+    registerWebsocketHandlers(socket);
   });
 
   return io;

@@ -2,7 +2,7 @@ import { createServer } from "http";
 
 import { app, sessionMiddleware } from "@/app";
 import { connectDatabase, env } from "@/config";
-import { createRealtimeServer } from "@/web-socket";
+import { createRealtimeServer } from "@/api/v1";
 
 async function start(): Promise<void> {
   try {

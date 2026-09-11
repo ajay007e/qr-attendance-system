@@ -6,7 +6,14 @@ import {
   ATTENDANCE_STATUS_FILTER_OPTIONS,
 } from "@/features/attendance";
 import { Field } from "@/shared";
-import { SessionAttendanceQuery } from "../../types";
+
+import {
+  AttendanceLocationStatus,
+  AttendanceMethod,
+  AttendanceRecordStatus,
+  SessionAttendanceQuery,
+} from "../../types";
+
 import { AttendanceToolbarProps } from "./types";
 
 export default function AttendanceToolbar({ filters, onFiltersChange }: AttendanceToolbarProps) {
@@ -63,7 +70,7 @@ export default function AttendanceToolbar({ filters, onFiltersChange }: Attendan
           <div className="min-w-[180px]">
             <Field.Select
               value={filters.status ?? ""}
-              onChange={(value) => updateFilter("status", value === "" ? undefined : value)}
+              onChange={(value) => updateFilter("status", value as AttendanceRecordStatus)}
               options={ATTENDANCE_STATUS_FILTER_OPTIONS}
             />
           </div>
@@ -71,7 +78,7 @@ export default function AttendanceToolbar({ filters, onFiltersChange }: Attendan
           <div className="min-w-[180px]">
             <Field.Select
               value={filters.attendanceMethod ?? ""}
-              onChange={(value) => updateFilter("attendanceMethod", value === "" ? undefined : value)}
+              onChange={(value) => updateFilter("attendanceMethod", value as AttendanceMethod)}
               options={ATTENDANCE_METHOD_FILTER_OPTIONS}
             />
           </div>
@@ -79,7 +86,7 @@ export default function AttendanceToolbar({ filters, onFiltersChange }: Attendan
           <div className="min-w-[180px]">
             <Field.Select
               value={filters.locationStatus ?? ""}
-              onChange={(value) => updateFilter("locationStatus", value === "" ? undefined : value)}
+              onChange={(value) => updateFilter("locationStatus", value as AttendanceLocationStatus)}
               options={ATTENDANCE_LOCATION_FILTER_OPTIONS}
             />
           </div>

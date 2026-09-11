@@ -13,8 +13,3 @@ export interface LoginResponse extends BaseUser {
   firstName: string;
   lastName: string | null;
 }
-
-export interface TokenEntry {
-  userId: string;
-  expiresAt: number;
-}

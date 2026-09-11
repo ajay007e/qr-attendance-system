@@ -33,15 +33,11 @@ export class AttendanceController {
       const query = validateSessionAttendanceQuery({
         page: parseQueryNumber(req.query.page, 1),
         limit: parseQueryNumber(req.query.limit, 10),
-
         search: parseQueryString(req.query.search),
-
         status: parseQueryString(req.query.status) as SessionAttendanceQuery["status"] | undefined,
-
-        attendanceMethod: parseQueryString(req.query.attendance_method) as
+        attendanceMethod: parseQueryString(req.query.attendanceMethod) as
           SessionAttendanceQuery["attendanceMethod"] | undefined,
-
-        locationStatus: parseQueryString(req.query.location_status) as
+        locationStatus: parseQueryString(req.query.locationStatus) as
           SessionAttendanceQuery["locationStatus"] | undefined,
       });
 

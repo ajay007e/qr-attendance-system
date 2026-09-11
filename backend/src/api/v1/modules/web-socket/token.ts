@@ -1,6 +1,5 @@
-// modules/auth/socket-token.store.ts
 import { randomUUID } from "crypto";
-import { TokenEntry } from "./auth.types";
+import { TokenEntry } from "./types";
 
 const tokenStore = new Map<string, TokenEntry>();
 const TOKEN_TTL_MS = 5 * 60 * 1000;

@@ -1,8 +1,7 @@
 import type { Socket } from "socket.io";
 import type { SessionUser } from "@/types";
-
-import { consumeSocketToken } from "@/api/v1/modules/auth/auth.token";
-import { UserRepository } from "@/api/v1/modules/users/user.repository"; // adjust to your actual path/class name
+import { UserRepository } from "../users";
+import { consumeSocketToken } from "./token";
 
 const userRepository = new UserRepository();
 
@@ -20,7 +19,7 @@ export async function authenticateSocket(socket: Socket, next: (error?: Error) =
     return;
   }
 
-  const user = await userRepository.findById(Number(userId)); // returns SessionUser shape, or null
+  const user = await userRepository.findById(Number(userId));
 
   if (!user) {
     next(new Error("Not authenticated"));

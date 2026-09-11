@@ -16,63 +16,35 @@ import { ATTENDANCE_RECORD_COLUMNS } from "./attendance.constants";
 export class AttendanceRepository {
   async findById(id: number): Promise<DatabaseAttendanceRecord | null> {
     const [rows] = await db.execute<RowDataPacket[]>(
-      `
-        SELECT
-          ${ATTENDANCE_RECORD_COLUMNS}
-        FROM attendance_records
-        WHERE id = ?
-        LIMIT 1
-      `,
+      `SELECT ${ATTENDANCE_RECORD_COLUMNS} FROM attendance_records WHERE id = ? LIMIT 1`,
       [id],
     );
-
     return (rows[0] as DatabaseAttendanceRecord) ?? null;
   }
 
   async findBySessionAndStudent(sessionId: number, studentId: number): Promise<DatabaseAttendanceRecord | null> {
     const [rows] = await db.execute<RowDataPacket[]>(
-      `
-        SELECT
-          ${ATTENDANCE_RECORD_COLUMNS}
-        FROM attendance_records
-        WHERE session_id = ?
-          AND student_id = ?
-        LIMIT 1
-      `,
+      `SELECT ${ATTENDANCE_RECORD_COLUMNS} FROM attendance_records WHERE session_id = ? AND student_id = ? LIMIT 1`,
       [sessionId, studentId],
     );
-
     return (rows[0] as DatabaseAttendanceRecord) ?? null;
   }
 
   async create(data: CreateAttendanceRecordData): Promise<DatabaseAttendanceRecord> {
     try {
       const [result] = await db.execute<ResultSetHeader>(
-        `
-          INSERT INTO attendance_records (
-            session_id,
-            student_id,
-            status,
-            attendance_method,
-            location_status
-          )
-          VALUES (?, ?, ?, ?, ?)
-        `,
+        `INSERT INTO attendance_records (session_id, student_id, status, attendance_method, location_status) VALUES (?, ?, ?, ?, ?)`,
         [data.session_id, data.student_id, data.status, data.attendance_method, data.location_status],
       );
-
       const record = await this.findById(result.insertId);
-
       if (!record) {
         throw new Error("Attendance record was created but could not be retrieved");
       }
-
       return record;
     } catch (error) {
       if (isDuplicateEntryError(error)) {
         throw new AppError("You have already marked attendance for this session", 409);
       }
-
       throw error;
     }
   }
@@ -86,85 +58,43 @@ export class AttendanceRepository {
     const limit = Math.min(DEFAULT_MAX_LIMIT, Math.max(1, query.limit ?? DEFAULT_LIMIT));
     const offset = (page - 1) * limit;
 
-    let where = `
-    WHERE ce.course_offering_id = ?
-      AND ce.status <> 'withdrawn'
-  `;
-
+    let where = `WHERE ce.course_offering_id = ? AND ce.status <> 'withdrawn'`;
     const params: ExecuteValues[] = [courseOfferingId];
 
-    // Search student
     if (query.search?.trim()) {
-      where += `
-      AND (
-        u.first_name LIKE ?
-        OR u.last_name LIKE ?
-        OR u.email LIKE ?
-      )
-    `;
-
+      where += ` AND (u.first_name LIKE ? OR u.last_name LIKE ? OR u.email LIKE ?)`;
       const keyword = `%${query.search.trim()}%`;
-
       params.push(keyword, keyword, keyword);
     }
 
-    // Attendance status
     if (query.status === "absent") {
-      where += `
-      AND ar.id IS NULL
-    `;
+      where += ` AND ar.id IS NULL`;
     } else if (query.status) {
-      where += `
-      AND ar.status = ?
-    `;
-
+      where += ` AND ar.status = ?`;
       params.push(query.status);
     }
 
-    // Attendance method
     if (query.attendanceMethod) {
-      where += `
-      AND ar.attendance_method = ?
-    `;
-
+      where += ` AND ar.attendance_method = ?`;
       params.push(query.attendanceMethod);
     }
 
-    // Location status
     if (query.locationStatus) {
-      where += `
-      AND ar.location_status = ?
-    `;
-
+      where += ` AND ar.location_status = ?`;
       params.push(query.locationStatus);
     }
 
-    // Count
     const [countRows] = await db.execute<RowDataPacket[]>(
-      `
-      SELECT COUNT(*) AS total
-
-      FROM course_enrolments ce
-
-      INNER JOIN users u
-        ON u.id = ce.user_id
-
-      LEFT JOIN attendance_records ar
-        ON ar.session_id = ?
-        AND ar.student_id = ce.user_id
-
-      ${where}
-    `,
+      `SELECT COUNT(*) AS total FROM course_enrolments ce INNER JOIN users u ON u.id = ce.user_id
+        LEFT JOIN attendance_records ar ON ar.session_id = ? AND ar.student_id = ce.user_id ${where}`,
       [sessionId, ...params],
     );
 
     const total = Number(countRows[0]?.total ?? 0);
     const totalPages = Math.ceil(total / limit);
 
-    // Data
     const [rows] = await db.execute<RowDataPacket[]>(
-      `
-      SELECT
+      `SELECT
         u.id AS student_id,
         u.first_name AS student_first_name,
         u.last_name AS student_last_name,
@@ -184,18 +114,13 @@ export class AttendanceRepository {
 
       FROM course_enrolments ce
 
-      INNER JOIN users u
-        ON u.id = ce.user_id
+      INNER JOIN users u ON u.id = ce.user_id
 
-      LEFT JOIN attendance_records ar
-        ON ar.session_id = ?
-        AND ar.student_id = ce.user_id
+      LEFT JOIN attendance_records ar ON ar.session_id = ? AND ar.student_id = ce.user_id
 
       ${where}
 
-      ORDER BY
-        u.first_name ASC,
-        u.last_name ASC
+      ORDER BY u.first_name ASC, u.last_name ASC
 
       LIMIT ${limit}
       OFFSET ${offset}
