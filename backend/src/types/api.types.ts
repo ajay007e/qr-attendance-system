@@ -33,3 +33,14 @@ export interface PaginatedData<T> {
   items: T[];
   meta: PaginationMeta;
 }
+
+export interface CursorPaginationMeta {
+  limit: number;
+  nextCursor: string | null;
+  hasMore: boolean;
+}
+
+export interface CursorPaginatedData<T> {
+  items: T[];
+  meta: CursorPaginationMeta;
+}

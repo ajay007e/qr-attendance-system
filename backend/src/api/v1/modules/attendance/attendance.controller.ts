@@ -2,8 +2,12 @@ import type { RequestHandler } from "express";
 
 import { AttendanceService } from "./attendance.service";
 import { AppError, currentUserId, parseQueryNumber, parseQueryString } from "@/utils";
-import { validateMarkAttendanceRequest, validateSessionAttendanceQuery } from "./attendance.utils";
-import type { SessionAttendanceQuery } from "./attendance.types";
+import {
+  validateMarkAttendanceRequest,
+  validateSessionAttendanceQuery,
+  validateStudentAttendanceQuery,
+} from "./attendance.utils";
+import type { SessionAttendanceQuery, StudentAttendanceQuery } from "./attendance.types";
 
 export class AttendanceController {
   constructor(private readonly service: AttendanceService) {}
@@ -42,6 +46,52 @@ export class AttendanceController {
       });
 
       const result = await this.service.getSessionAttendance(sessionId, query, currentUserId(req));
+
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getMyAttendance: RequestHandler = async (req, res, next) => {
+    try {
+      const courseOfferingId = Number(req.params.courseOfferingId);
+
+      if (!Number.isInteger(courseOfferingId) || courseOfferingId <= 0) {
+        throw new AppError("Invalid course offering ID", 400);
+      }
+
+      const query = validateStudentAttendanceQuery({
+        limit: parseQueryNumber(req.query.limit, 10),
+        cursor: parseQueryString(req.query.cursor),
+        status: parseQueryString(req.query.status) as StudentAttendanceQuery["status"] | undefined,
+        classType: parseQueryString(req.query.classType),
+      });
+
+      const result = await this.service.getMyAttendance(query, currentUserId(req), courseOfferingId);
+
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+  getMySummary: RequestHandler = async (req, res, next) => {
+    try {
+      const courseOfferingId = Number(req.params.courseOfferingId);
+
+      if (!Number.isInteger(courseOfferingId) || courseOfferingId <= 0) {
+        throw new AppError("Invalid course offering ID", 400);
+      }
+
+      const classType = parseQueryString(req.query.classType);
+
+      const result = await this.service.getMySummary(currentUserId(req), courseOfferingId, classType);
 
       res.status(200).json({
         success: true,

@@ -6,12 +6,16 @@ import type {
   CreateAttendanceRecordData,
   DatabaseAttendanceRecord,
   DatabaseSessionAttendance,
+  DatabaseStudentAttendance,
   SessionAttendanceQuery,
+  StudentAttendanceQuery,
+  StudentAttendanceSummary,
 } from "./attendance.types";
 
 import type { PaginatedData } from "@/types";
 import { AppError, DEFAULT_LIMIT, DEFAULT_MAX_LIMIT, DEFAULT_PAGE, isDuplicateEntryError } from "@/utils";
 import { ATTENDANCE_RECORD_COLUMNS } from "./attendance.constants";
+import { decodeStudentAttendanceCursor, encodeStudentAttendanceCursor } from "./attendance.utils";
 
 export class AttendanceRepository {
   async findById(id: number): Promise<DatabaseAttendanceRecord | null> {
@@ -137,6 +141,382 @@ export class AttendanceRepository {
         totalPages,
         hasData: true,
       },
+    };
+  }
+
+  async getStudentAttendance(
+    studentId: number,
+    courseOfferingId: number,
+    query: StudentAttendanceQuery,
+  ): Promise<{
+    items: DatabaseStudentAttendance[];
+    nextCursor: string | null;
+    hasMore: boolean;
+  }> {
+    const limit = Math.min(DEFAULT_MAX_LIMIT, Math.max(1, query.limit ?? DEFAULT_LIMIT));
+    const params: ExecuteValues[] = [studentId, courseOfferingId];
+
+    let sessionWhere = `
+    WHERE ats.course_offering_id = ?
+  `;
+
+    if (query.classType) {
+      sessionWhere += ` AND ats.class_type = ?`;
+      params.push(query.classType);
+    }
+
+    let finalWhere = `WHERE 1 = 1`;
+
+    if (query.status === "present") {
+      finalWhere += ` AND attendance_id IS NOT NULL`;
+    }
+
+    if (query.status === "absent") {
+      finalWhere += ` AND attendance_id IS NULL`;
+    }
+
+    if (query.cursor) {
+      const cursor = decodeStudentAttendanceCursor(query.cursor);
+
+      finalWhere += `
+      AND (
+        week_number < ?
+
+        OR (
+          week_number = ?
+          AND class_type > ?
+        )
+
+        OR (
+          week_number = ?
+          AND class_type = ?
+          AND class_number < ?
+        )
+
+        OR (
+          week_number = ?
+          AND class_type = ?
+          AND class_number = ?
+          AND session_start_at < ?
+        )
+
+        OR (
+          week_number = ?
+          AND class_type = ?
+          AND class_number = ?
+          AND session_start_at = ?
+          AND session_id < ?
+        )
+      )
+    `;
+
+      params.push(
+        cursor.weekNumber,
+
+        cursor.weekNumber,
+        cursor.classType,
+
+        cursor.weekNumber,
+        cursor.classType,
+        cursor.classNumber,
+
+        cursor.weekNumber,
+        cursor.classType,
+        cursor.classNumber,
+        new Date(cursor.sessionStartAt),
+
+        cursor.weekNumber,
+        cursor.classType,
+        cursor.classNumber,
+        new Date(cursor.sessionStartAt),
+        cursor.sessionId,
+      );
+    }
+
+    const sql = `
+    WITH session_data AS (
+      SELECT
+        ats.id AS session_id,
+        ats.course_offering_id,
+        ats.week_number,
+        ats.class_number,
+        ats.class_type,
+        ats.title,
+        ats.session_start_at,
+
+        ar.id AS attendance_id,
+        ar.status AS attendance_status,
+        ar.attendance_method,
+        ar.location_status,
+        ar.marked_at,
+        ar.lecturer_note,
+
+        u.first_name AS marked_by_first_name,
+        u.last_name AS marked_by_last_name,
+
+        COUNT(ar.id) OVER (
+          PARTITION BY
+            ats.week_number,
+            ats.class_type,
+            ats.class_number
+        ) AS attendance_count,
+
+        ROW_NUMBER() OVER (
+          PARTITION BY
+            ats.week_number,
+            ats.class_type,
+            ats.class_number
+          ORDER BY
+            ats.session_start_at ASC,
+            ats.id ASC
+        ) AS session_rank
+
+      FROM attendance_sessions ats
+
+      LEFT JOIN attendance_records ar
+        ON ar.session_id = ats.id
+        AND ar.student_id = ?
+
+      LEFT JOIN users u
+        ON u.id = ar.marked_by
+
+      ${sessionWhere}
+    ),
+
+    final_attendance AS (
+      SELECT
+        session_id AS result_id,
+
+        week_number,
+        class_number,
+        class_type,
+
+        session_id,
+        session_start_at,
+        title,
+
+        attendance_id,
+        attendance_status,
+        attendance_method,
+        location_status,
+        marked_at AS attendance_marked_at,
+        lecturer_note AS attendance_lecturer_note,
+
+        marked_by_first_name,
+        marked_by_last_name
+
+      FROM session_data
+
+      WHERE attendance_count > 0
+        AND attendance_id IS NOT NULL
+
+      UNION ALL
+
+      SELECT
+        session_id AS result_id,
+
+        week_number,
+        class_number,
+        class_type,
+
+        session_id,
+        session_start_at,
+        title,
+
+        NULL AS attendance_id,
+        NULL AS attendance_status,
+        NULL AS attendance_method,
+        NULL AS location_status,
+        NULL AS attendance_marked_at,
+        NULL AS attendance_lecturer_note,
+
+        NULL AS marked_by_first_name,
+        NULL AS marked_by_last_name
+
+      FROM session_data
+
+      WHERE attendance_count = 0
+        AND session_rank = 1
+    )
+
+    SELECT
+      result_id,
+
+      week_number,
+      class_number,
+      class_type,
+
+      session_id,
+      session_start_at,
+      title,
+
+      attendance_id,
+      attendance_status,
+      attendance_method,
+      location_status,
+      attendance_marked_at,
+      attendance_lecturer_note,
+
+      marked_by_first_name,
+      marked_by_last_name,
+
+      CASE
+        WHEN attendance_id IS NULL THEN 0
+        ELSE 1
+      END AS attendance_exists
+
+    FROM final_attendance
+
+    ${finalWhere}
+
+    ORDER BY
+      week_number DESC,
+      class_type ASC,
+      class_number ASC,
+      session_start_at DESC,
+      session_id DESC
+
+    LIMIT ${limit + 1}
+  `;
+
+    const [rows] = await db.execute<RowDataPacket[]>(sql, params);
+
+    const typedRows = rows as DatabaseStudentAttendance[];
+
+    const hasMore = typedRows.length > limit;
+
+    const items = hasMore ? typedRows.slice(0, limit) : typedRows;
+
+    let nextCursor: string | null = null;
+
+    if (hasMore && items.length > 0) {
+      const last = items[items.length - 1];
+
+      nextCursor = encodeStudentAttendanceCursor({
+        weekNumber: last.week_number,
+        classType: last.class_type,
+        classNumber: last.class_number,
+        sessionStartAt: last.session_start_at.toISOString(),
+        sessionId: last.session_id,
+      });
+    }
+
+    return {
+      items,
+      nextCursor,
+      hasMore,
+    };
+  }
+
+  async getStudentAttendanceSummary(
+    studentId: number,
+    courseOfferingId: number,
+    classType?: string,
+  ): Promise<StudentAttendanceSummary> {
+    const params: ExecuteValues[] = [courseOfferingId];
+
+    let sessionWhere = `
+    WHERE course_offering_id = ?
+  `;
+
+    if (classType) {
+      sessionWhere += ` AND class_type = ?`;
+      params.push(classType);
+    }
+
+    params.push(courseOfferingId, studentId);
+
+    const sql = `
+    SELECT
+      COUNT(*) AS totalSession,
+
+      COALESCE(
+        SUM(
+          CASE
+            WHEN ar.status = 'present' THEN 1
+            ELSE 0
+          END
+        ),
+        0
+      ) AS present,
+
+      COALESCE(
+        SUM(
+          CASE
+            WHEN ar.status = 'late' THEN 1
+            ELSE 0
+          END
+        ),
+        0
+      ) AS late,
+
+      COALESCE(
+        SUM(
+          CASE
+            WHEN ar.status = 'excused' THEN 1
+            ELSE 0
+          END
+        ),
+        0
+      ) AS excused,
+
+      COALESCE(
+        SUM(
+          CASE
+            WHEN ar.id IS NULL THEN 1
+            ELSE 0
+          END
+        ),
+        0
+      ) AS absent,
+
+      CASE
+        WHEN COUNT(*) = 0 THEN 0
+        ELSE ROUND(
+          (
+            COUNT(*) -
+            SUM(
+              CASE
+                WHEN ar.id IS NULL THEN 1
+                ELSE 0
+              END
+            )
+          ) / COUNT(*) * 100,
+          2
+        )
+      END AS percentage
+
+    FROM (
+      SELECT DISTINCT
+        week_number,
+        class_number,
+        class_type
+      FROM attendance_sessions
+      ${sessionWhere}
+    ) sessions
+
+    LEFT JOIN attendance_sessions ats
+      ON ats.course_offering_id = ?
+      AND ats.week_number = sessions.week_number
+      AND ats.class_number = sessions.class_number
+      AND ats.class_type = sessions.class_type
+
+    LEFT JOIN attendance_records ar
+      ON ar.session_id = ats.id
+      AND ar.student_id = ?
+  `;
+
+    const [rows] = await db.execute<RowDataPacket[]>(sql, params);
+
+    const row = rows[0];
+
+    return {
+      totalSession: Number(row.totalSession),
+      present: Number(row.present),
+      absent: Number(row.absent),
+      late: Number(row.late),
+      excused: Number(row.excused),
+      percentage: Number(row.percentage),
     };
   }
 }

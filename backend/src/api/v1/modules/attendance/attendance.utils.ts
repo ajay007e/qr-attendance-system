@@ -1,6 +1,11 @@
 import { AppError } from "@/utils";
 
-import type { MarkAttendanceQrRequest, SessionAttendanceQuery } from "./attendance.types";
+import type {
+  MarkAttendanceQrRequest,
+  SessionAttendanceQuery,
+  StudentAttendanceCursor,
+  StudentAttendanceQuery,
+} from "./attendance.types";
 import { ATTENDANCE_LOCATION_STATUSES, ATTENDANCE_METHODS, ATTENDANCE_STATUSES } from "./attendance.constants";
 
 export function validateMarkAttendanceRequest(data: MarkAttendanceQrRequest) {
@@ -67,4 +72,61 @@ export function validateSessionAttendanceQuery(query: SessionAttendanceQuery): S
   }
 
   return result;
+}
+
+export function validateStudentAttendanceQuery(query: StudentAttendanceQuery): StudentAttendanceQuery {
+  const result: StudentAttendanceQuery = {
+    limit: query.limit,
+  };
+
+  if (query.limit !== undefined) {
+    if (!Number.isInteger(query.limit) || query.limit <= 0) {
+      throw new AppError("Invalid attendance limit", 400);
+    }
+  }
+
+  if (query.status) {
+    if (query.status !== "present" && query.status !== "absent") {
+      throw new AppError("Invalid attendance status", 400);
+    }
+
+    result.status = query.status;
+  }
+
+  if (query.classType?.trim()) {
+    result.classType = query.classType.trim();
+  }
+
+  if (query.cursor) {
+    result.cursor = query.cursor.trim();
+
+    // Validate the cursor now instead of failing inside the repository.
+    decodeStudentAttendanceCursor(result.cursor);
+  }
+
+  return result;
+}
+
+export function encodeStudentAttendanceCursor(cursor: StudentAttendanceCursor): string {
+  return Buffer.from(JSON.stringify(cursor), "utf8").toString("base64url");
+}
+
+export function decodeStudentAttendanceCursor(cursor: string): StudentAttendanceCursor {
+  try {
+    const decoded = JSON.parse(Buffer.from(cursor, "base64url").toString("utf8")) as StudentAttendanceCursor;
+
+    if (
+      !Number.isInteger(decoded.weekNumber) ||
+      !Number.isInteger(decoded.classNumber) ||
+      !Number.isInteger(decoded.sessionId) ||
+      typeof decoded.classType !== "string" ||
+      typeof decoded.sessionStartAt !== "string"
+    ) {
+      throw new Error("Invalid cursor");
+    }
+
+    return decoded;
+  } catch {
+    throw new AppError("Invalid attendance cursor", 400);
+  }
 }

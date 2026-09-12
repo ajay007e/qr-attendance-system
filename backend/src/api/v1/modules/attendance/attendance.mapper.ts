@@ -2,7 +2,9 @@ import type {
   AttendanceRecord,
   DatabaseAttendanceRecord,
   DatabaseSessionAttendance,
+  DatabaseStudentAttendance,
   SessionAttendance,
+  StudentAttendanceRecord,
 } from "./attendance.types";
 
 export const mapAttendanceRecord = (record: DatabaseAttendanceRecord): AttendanceRecord => ({
@@ -62,3 +64,32 @@ export const mapSessionAttendance = (record: DatabaseSessionAttendance): Session
 
 export const mapSessionAttendances = (records: DatabaseSessionAttendance[]): SessionAttendance[] =>
   records.map(mapSessionAttendance);
+
+export const mapStudentAttendance = (record: DatabaseStudentAttendance): StudentAttendanceRecord => {
+  const isPresent = record.attendance_id !== null;
+
+  return {
+    id: record.result_id,
+    weekNumber: record.week_number,
+    classNumber: record.class_number,
+    date: record.session_start_at,
+    classType: record.class_type,
+    className: record.title,
+
+    status: isPresent ? "present" : "absent",
+
+    attendanceMethod: record.attendance_method,
+    locationStatus: record.location_status,
+    markedAt: record.attendance_marked_at,
+
+    markedBy:
+      record.marked_by_first_name !== null
+        ? `${record.marked_by_first_name} ${record.marked_by_last_name ?? ""}`.trim()
+        : null,
+
+    lecturerNote: record.attendance_lecturer_note,
+  };
+};
+
+export const mapStudentAttendances = (records: DatabaseStudentAttendance[]): StudentAttendanceRecord[] =>
+  records.map(mapStudentAttendance);
