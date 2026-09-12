@@ -5,6 +5,7 @@ export type {
   PaginatedData,
   PaginationMeta,
   PaginationQuery,
+  CursorPaginatedData,
 } from "./api.types";
 
 export type { SessionUser, BaseUser, Role } from "./user.types";

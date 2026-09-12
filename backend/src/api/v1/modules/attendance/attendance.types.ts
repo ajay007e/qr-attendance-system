@@ -82,3 +82,59 @@ export interface DatabaseSessionAttendance {
   attendance_created_at: Date | null;
   attendance_updated_at: Date | null;
 }
+
+export type StudentAttendanceStatus = "present" | "absent";
+
+export interface StudentAttendanceCursor {
+  weekNumber: number;
+  classType: string;
+  classNumber: number;
+  sessionStartAt: string;
+  sessionId: number;
+}
+
+export interface StudentAttendanceQuery {
+  limit?: number;
+  cursor?: string;
+  status?: StudentAttendanceStatus;
+  classType?: string;
+}
+
+export interface StudentAttendanceRecord {
+  id: number;
+  weekNumber: number;
+  classNumber: number;
+  date: Date;
+  classType: string;
+  className: string;
+  status: StudentAttendanceStatus;
+  attendanceMethod: AttendanceMethod | null;
+  locationStatus: AttendanceLocationStatus | null;
+  markedAt: Date | null;
+  markedBy: string | null;
+  lecturerNote: string | null;
+}
+
+export interface DatabaseStudentAttendance {
+  result_id: number;
+
+  week_number: number;
+  class_number: number;
+  class_type: string;
+
+  session_id: number;
+  session_start_at: Date;
+  title: string;
+
+  attendance_id: number | null;
+  attendance_status: AttendanceRecordStatus | null;
+  attendance_method: AttendanceMethod | null;
+  attendance_location_status: AttendanceLocationStatus | null;
+  attendance_marked_at: Date | null;
+  attendance_lecturer_note: string | null;
+
+  marked_by_first_name: string | null;
+  marked_by_last_name: string | null;
+
+  attendance_exists: number;
+}

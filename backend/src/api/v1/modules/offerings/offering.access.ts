@@ -4,6 +4,12 @@ import { AppError, ROLES } from "@/utils";
 import { offeringRepository, isEnrolled } from "./offering.dependencies";
 
 export async function validateOfferingAccess(offeringId: number, userId: number, userRole: Role): Promise<void> {
+  const offering = await offeringRepository.findById(offeringId);
+
+  if (!offering) {
+    throw new AppError("Course offering not found", 404);
+  }
+
   if (userRole === ROLES.LECTURER) {
     const assigned = await offeringRepository.isLecturerAssigned(offeringId, userId);
 

@@ -5,11 +5,17 @@ import { AttendanceRepository } from "./attendance.repository";
 import { verifyAttendanceQrToken } from "./attendance.qr";
 import { env } from "@/config";
 
-import type { PaginatedData } from "@/types";
+import type { CursorPaginatedData, PaginatedData } from "@/types";
 
-import type { MarkAttendanceQrRequest, SessionAttendance, SessionAttendanceQuery } from "./attendance.types";
+import type {
+  MarkAttendanceQrRequest,
+  SessionAttendance,
+  SessionAttendanceQuery,
+  StudentAttendanceQuery,
+  StudentAttendanceRecord,
+} from "./attendance.types";
 
-import { mapAttendanceRecord, mapSessionAttendances } from "./attendance.mapper";
+import { mapAttendanceRecord, mapSessionAttendances, mapStudentAttendances } from "./attendance.mapper";
 import { validateOfferingAccess } from "../offerings";
 import { AttendanceWebSocket } from "../web-socket";
 
@@ -98,6 +104,24 @@ export class AttendanceService {
     return {
       items: mapSessionAttendances(result.items),
       meta: result.meta,
+    };
+  }
+
+  async getMyAttendance(
+    query: StudentAttendanceQuery,
+    studentId: number,
+    courseOfferingId: number,
+  ): Promise<CursorPaginatedData<StudentAttendanceRecord>> {
+    await validateOfferingAccess(courseOfferingId, studentId, ROLES.STUDENT);
+    const result = await this.repository.getStudentAttendance(studentId, courseOfferingId, query);
+
+    return {
+      items: mapStudentAttendances(result.items),
+      meta: {
+        limit: query.limit ?? 20,
+        nextCursor: result.nextCursor,
+        hasMore: result.hasMore,
+      },
     };
   }
 }
