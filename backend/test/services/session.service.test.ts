@@ -25,6 +25,27 @@ function createService(t: TestContext) {
   };
 
   t.mock.method(db, "execute", async (query: string, params?: unknown[]) => {
+    if (query.includes("FROM course_offerings")) {
+      const [offeringId] = params as [number];
+
+      return offeringId === 11
+        ? [
+            [
+              {
+                id: 11,
+                course_id: 1,
+                academic_year: 2026,
+                session: "S1",
+                start_date: "2026-01-01",
+                end_date: "2026-12-31",
+                status: "enrol",
+              },
+            ],
+            [],
+          ]
+        : [[], []];
+    }
+
     if (query.includes("FROM course_lecturers")) {
       const [offeringId, lecturerId] = params as [number, number];
 

@@ -138,3 +138,12 @@ export interface DatabaseStudentAttendance {
 
   attendance_exists: number;
 }
+
+export interface StudentAttendanceSummary {
+  percentage: number;
+  present: number;
+  absent: number;
+  late?: number;
+  excused?: number;
+  totalSession: number;
+}

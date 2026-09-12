@@ -93,3 +93,16 @@ export interface StudentAttendanceResponse {
   records: StudentAttendanceRecord[];
   statistics: StudentAttendanceStatistics;
 }
+
+export interface StudentAttendanceSummary {
+  totalSession: number;
+  present: number;
+  absent: number;
+  late: number;
+  excused: number;
+  percentage: number;
+}
+
+export interface StudentAttendanceSummaryQuery {
+  classType?: AttendanceClassTypeFilter;
+}

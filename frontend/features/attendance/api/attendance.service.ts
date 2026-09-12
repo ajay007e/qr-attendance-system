@@ -8,6 +8,8 @@ import type {
   SessionAttendanceQuery,
   StudentAttendanceQuery,
   StudentAttendanceRecord,
+  StudentAttendanceSummary,
+  StudentAttendanceSummaryQuery,
 } from "../types";
 
 export const AttendanceService = {
@@ -42,6 +44,19 @@ export const AttendanceService = {
         signal,
       },
     );
+
+    return response.data;
+  },
+
+  async getStudentAttendanceSummary(offeringId: number, query?: StudentAttendanceSummaryQuery, signal?: AbortSignal) {
+    const params = Object.fromEntries(
+      Object.entries(query ?? {}).filter(([, value]) => value !== undefined && value !== "" && value !== "ALL"),
+    );
+
+    const response = await api.get<ApiResponse<StudentAttendanceSummary>>(`/attendance/student/summary/${offeringId}`, {
+      params,
+      signal,
+    });
 
     return response.data;
   },

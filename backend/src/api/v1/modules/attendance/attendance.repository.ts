@@ -9,6 +9,7 @@ import type {
   DatabaseStudentAttendance,
   SessionAttendanceQuery,
   StudentAttendanceQuery,
+  StudentAttendanceSummary,
 } from "./attendance.types";
 
 import type { PaginatedData } from "@/types";
@@ -404,6 +405,118 @@ export class AttendanceRepository {
       items,
       nextCursor,
       hasMore,
+    };
+  }
+
+  async getStudentAttendanceSummary(
+    studentId: number,
+    courseOfferingId: number,
+    classType?: string,
+  ): Promise<StudentAttendanceSummary> {
+    const params: ExecuteValues[] = [courseOfferingId];
+
+    let sessionWhere = `
+    WHERE course_offering_id = ?
+  `;
+
+    if (classType) {
+      sessionWhere += ` AND class_type = ?`;
+      params.push(classType);
+    }
+
+    params.push(courseOfferingId, studentId);
+
+    const sql = `
+    SELECT
+      COUNT(*) AS totalSession,
+
+      COALESCE(
+        SUM(
+          CASE
+            WHEN ar.status = 'present' THEN 1
+            ELSE 0
+          END
+        ),
+        0
+      ) AS present,
+
+      COALESCE(
+        SUM(
+          CASE
+            WHEN ar.status = 'late' THEN 1
+            ELSE 0
+          END
+        ),
+        0
+      ) AS late,
+
+      COALESCE(
+        SUM(
+          CASE
+            WHEN ar.status = 'excused' THEN 1
+            ELSE 0
+          END
+        ),
+        0
+      ) AS excused,
+
+      COALESCE(
+        SUM(
+          CASE
+            WHEN ar.id IS NULL THEN 1
+            ELSE 0
+          END
+        ),
+        0
+      ) AS absent,
+
+      CASE
+        WHEN COUNT(*) = 0 THEN 0
+        ELSE ROUND(
+          (
+            COUNT(*) -
+            SUM(
+              CASE
+                WHEN ar.id IS NULL THEN 1
+                ELSE 0
+              END
+            )
+          ) / COUNT(*) * 100,
+          2
+        )
+      END AS percentage
+
+    FROM (
+      SELECT DISTINCT
+        week_number,
+        class_number,
+        class_type
+      FROM attendance_sessions
+      ${sessionWhere}
+    ) sessions
+
+    LEFT JOIN attendance_sessions ats
+      ON ats.course_offering_id = ?
+      AND ats.week_number = sessions.week_number
+      AND ats.class_number = sessions.class_number
+      AND ats.class_type = sessions.class_type
+
+    LEFT JOIN attendance_records ar
+      ON ar.session_id = ats.id
+      AND ar.student_id = ?
+  `;
+
+    const [rows] = await db.execute<RowDataPacket[]>(sql, params);
+
+    const row = rows[0];
+
+    return {
+      totalSession: Number(row.totalSession),
+      present: Number(row.present),
+      absent: Number(row.absent),
+      late: Number(row.late),
+      excused: Number(row.excused),
+      percentage: Number(row.percentage),
     };
   }
 }

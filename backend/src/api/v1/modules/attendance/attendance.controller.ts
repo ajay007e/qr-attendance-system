@@ -81,4 +81,24 @@ export class AttendanceController {
       next(error);
     }
   };
+  getMySummary: RequestHandler = async (req, res, next) => {
+    try {
+      const courseOfferingId = Number(req.params.courseOfferingId);
+
+      if (!Number.isInteger(courseOfferingId) || courseOfferingId <= 0) {
+        throw new AppError("Invalid course offering ID", 400);
+      }
+
+      const classType = parseQueryString(req.query.classType);
+
+      const result = await this.service.getMySummary(currentUserId(req), courseOfferingId, classType);
+
+      res.status(200).json({
+        success: true,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

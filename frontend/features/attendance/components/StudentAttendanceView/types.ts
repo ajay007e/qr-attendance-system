@@ -1,16 +1,13 @@
-import useStudentAttendance from "../../hooks/useStudentAttendance";
-import { AttendanceClassTypeFilter, AttendanceStatusFilter } from "../../types";
+import type {
+  AttendanceClassTypeFilter,
+  AttendanceStatusFilter,
+  StudentAttendanceRecord,
+  StudentAttendanceSummary,
+} from "../../types";
 
 export interface StudentAttendanceViewProps {
   offeringId: number;
 }
-
-export type AttendanceSummaryProps = {
-  attendancePercentage: number;
-  presentCount: number;
-  absentCount: number;
-  totalSessions: number;
-};
 
 export type SummaryCardProps = {
   label: string;
@@ -27,9 +24,29 @@ export type AttendanceFiltersProps = {
   onClassTypeChange: (value: AttendanceClassTypeFilter) => void;
 };
 
-export type AttendanceTimelineProps = {
-  records: ReturnType<typeof useStudentAttendance>["records"];
-};
+export interface AttendanceSummaryProps {
+  summary: StudentAttendanceSummary | null;
+  loading: boolean;
+  error: string | null;
+  onRetry: () => void | Promise<void>;
+  classType: AttendanceClassTypeFilter;
+  onClassTypeChange: (value: AttendanceClassTypeFilter) => void;
+}
+
+export interface AttendanceTimelineProps {
+  offeringId: number;
+
+  statusFilter: AttendanceStatusFilter;
+  classTypeFilter: AttendanceClassTypeFilter;
+
+  onStatusChange: (value: AttendanceStatusFilter) => void;
+  onClassTypeChange: (value: AttendanceClassTypeFilter) => void;
+}
+
+export interface TimelineRecordsProps {
+  records: StudentAttendanceRecord[];
+  now: number;
+}
 
 export type AttendanceDetailProps = {
   icon: React.ReactNode;

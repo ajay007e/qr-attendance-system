@@ -13,6 +13,7 @@ import type {
   SessionAttendanceQuery,
   StudentAttendanceQuery,
   StudentAttendanceRecord,
+  StudentAttendanceSummary,
 } from "./attendance.types";
 
 import { mapAttendanceRecord, mapSessionAttendances, mapStudentAttendances } from "./attendance.mapper";
@@ -123,5 +124,15 @@ export class AttendanceService {
         hasMore: result.hasMore,
       },
     };
+  }
+
+  async getMySummary(
+    studentId: number,
+    courseOfferingId: number,
+    classType?: string,
+  ): Promise<StudentAttendanceSummary> {
+    await validateOfferingAccess(courseOfferingId, studentId, ROLES.STUDENT);
+    const result = await this.repository.getStudentAttendanceSummary(studentId, courseOfferingId, classType);
+    return result;
   }
 }
