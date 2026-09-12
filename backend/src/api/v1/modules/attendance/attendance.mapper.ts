@@ -79,7 +79,7 @@ export const mapStudentAttendance = (record: DatabaseStudentAttendance): Student
     status: isPresent ? "present" : "absent",
 
     attendanceMethod: record.attendance_method,
-    locationStatus: record.attendance_location_status,
+    locationStatus: record.location_status,
     markedAt: record.attendance_marked_at,
 
     markedBy:

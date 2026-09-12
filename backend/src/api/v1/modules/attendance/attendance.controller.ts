@@ -65,7 +65,7 @@ export class AttendanceController {
       }
 
       const query = validateStudentAttendanceQuery({
-        limit: parseQueryNumber(req.query.limit, 20),
+        limit: parseQueryNumber(req.query.limit, 10),
         cursor: parseQueryString(req.query.cursor),
         status: parseQueryString(req.query.status) as StudentAttendanceQuery["status"] | undefined,
         classType: parseQueryString(req.query.classType),

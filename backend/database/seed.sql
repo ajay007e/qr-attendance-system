@@ -576,15 +576,10 @@ WHERE u.email = 'student@test.com'
 
 START TRANSACTION;
 
--- ==========================================================
--- 1. GET CS404 OFFERING
--- ==========================================================
-
 SET @cs404_offering_id = (
     SELECT co.id
     FROM course_offerings co
-    INNER JOIN courses c
-        ON c.id = co.course_id
+    INNER JOIN courses c ON c.id = co.course_id
     WHERE c.course_code = 'CS404'
       AND co.academic_year = 2026
       AND co.session = 'annual'
@@ -607,341 +602,98 @@ SET @test_lecturer_id = (
     LIMIT 1
 );
 
-
--- ==========================================================
--- 2. CREATE 10 LECTURE + 10 TUTORIAL SESSIONS
--- ==========================================================
---
--- Week 1:
---   Lecture 1
---   Lecture 2
---   Tutorial 1
---   Tutorial 2
---
--- ...
---
--- Week 5:
---   Lecture 1
---   Lecture 2
---   Tutorial 1
---   Tutorial 2
---
--- Dates are based on CS404 start date:
--- 2026-02-23
---
--- Each week:
---   Monday    = Lecture 1
---   Wednesday = Lecture 2
---   Tuesday   = Tutorial 1
---   Thursday  = Tutorial 2
---
--- All sessions are closed because they are historical seed data.
--- ==========================================================
-
-
 INSERT INTO attendance_sessions (
-    title,
-    course_offering_id,
-    lecturer_id,
-    week_number,
-    class_number,
-    class_type,
-    session_start_at,
-    session_end_at,
-    latitude,
-    longitude,
+    title, course_offering_id, lecturer_id, week_number, class_number,
+    class_type, session_start_at, session_end_at, latitude, longitude,
     session_status
 )
-
 SELECT
-    CONCAT(
-        'CS404 Week ',
-        weeks.week_number,
-        ' ',
-        sessions.class_type,
-        ' ',
-        sessions.class_number
-    ) AS title,
-
+    CONCAT('CS404 Week ', w.week_number, ' ', s.class_type, ' ', s.session_number),
     @cs404_offering_id,
-
     @test_lecturer_id,
-
-    weeks.week_number,
-
-    sessions.class_number,
-
-    sessions.class_type,
-
+    w.week_number,
+    s.class_number,
+    s.class_type,
     CASE
-        WHEN sessions.class_type = 'lecture'
-             AND sessions.class_number = 1
-            THEN TIMESTAMP(
-                DATE_ADD('2026-02-23', INTERVAL (weeks.week_number - 1) WEEK),
-                '09:00:00'
-            )
-
-        WHEN sessions.class_type = 'lecture'
-             AND sessions.class_number = 2
-            THEN TIMESTAMP(
-                DATE_ADD('2026-02-23', INTERVAL (weeks.week_number - 1) WEEK),
-                '14:00:00'
-            )
-
-        WHEN sessions.class_type = 'tutorial'
-             AND sessions.class_number = 1
-            THEN TIMESTAMP(
-                DATE_ADD(
-                    '2026-02-23',
-                    INTERVAL ((weeks.week_number - 1) * 7 + 1) DAY
-                ),
-                '10:00:00'
-            )
-
-        WHEN sessions.class_type = 'tutorial'
-             AND sessions.class_number = 2
-            THEN TIMESTAMP(
-                DATE_ADD(
-                    '2026-02-23',
-                    INTERVAL ((weeks.week_number - 1) * 7 + 3) DAY
-                ),
-                '15:00:00'
-            )
-    END AS session_start_at,
-
+        WHEN s.class_type = 'lecture' AND s.session_number = 1
+            THEN TIMESTAMP(DATE_ADD('2026-02-23', INTERVAL (w.week_number - 1) WEEK), '09:00:00')
+        WHEN s.class_type = 'lecture' AND s.session_number = 2
+            THEN TIMESTAMP(DATE_ADD('2026-02-23', INTERVAL (w.week_number - 1) WEEK), '14:00:00')
+        WHEN s.class_type = 'tutorial' AND s.session_number = 1
+            THEN TIMESTAMP(DATE_ADD('2026-02-23', INTERVAL (((w.week_number - 1) * 7) + 1) DAY), '10:00:00')
+        WHEN s.class_type = 'tutorial' AND s.session_number = 2
+            THEN TIMESTAMP(DATE_ADD('2026-02-23', INTERVAL (((w.week_number - 1) * 7) + 3) DAY), '15:00:00')
+    END,
     CASE
-        WHEN sessions.class_type = 'lecture'
-             AND sessions.class_number = 1
-            THEN TIMESTAMP(
-                DATE_ADD('2026-02-23', INTERVAL (weeks.week_number - 1) WEEK),
-                '11:00:00'
-            )
-
-        WHEN sessions.class_type = 'lecture'
-             AND sessions.class_number = 2
-            THEN TIMESTAMP(
-                DATE_ADD('2026-02-23', INTERVAL (weeks.week_number - 1) WEEK),
-                '16:00:00'
-            )
-
-        WHEN sessions.class_type = 'tutorial'
-             AND sessions.class_number = 1
-            THEN TIMESTAMP(
-                DATE_ADD(
-                    '2026-02-23',
-                    INTERVAL ((weeks.week_number - 1) * 7 + 1) DAY
-                ),
-                '12:00:00'
-            )
-
-        WHEN sessions.class_type = 'tutorial'
-             AND sessions.class_number = 2
-            THEN TIMESTAMP(
-                DATE_ADD(
-                    '2026-02-23',
-                    INTERVAL ((weeks.week_number - 1) * 7 + 3) DAY
-                ),
-                '17:00:00'
-            )
-    END AS session_end_at,
-
+        WHEN s.class_type = 'lecture' AND s.session_number = 1
+            THEN TIMESTAMP(DATE_ADD('2026-02-23', INTERVAL (w.week_number - 1) WEEK), '11:00:00')
+        WHEN s.class_type = 'lecture' AND s.session_number = 2
+            THEN TIMESTAMP(DATE_ADD('2026-02-23', INTERVAL (w.week_number - 1) WEEK), '16:00:00')
+        WHEN s.class_type = 'tutorial' AND s.session_number = 1
+            THEN TIMESTAMP(DATE_ADD('2026-02-23', INTERVAL (((w.week_number - 1) * 7) + 1) DAY), '12:00:00')
+        WHEN s.class_type = 'tutorial' AND s.session_number = 2
+            THEN TIMESTAMP(DATE_ADD('2026-02-23', INTERVAL (((w.week_number - 1) * 7) + 3) DAY), '17:00:00')
+    END,
     -33.8688200,
     151.2092900,
-
     'closed'
-
-FROM
-(
-    SELECT 1 AS week_number
-    UNION ALL SELECT 2
-    UNION ALL SELECT 3
-    UNION ALL SELECT 4
-    UNION ALL SELECT 5
-) weeks
-
-CROSS JOIN
-(
-    SELECT 1 AS class_number, 'lecture' AS class_type
-    UNION ALL
-    SELECT 2, 'lecture'
-    UNION ALL
-    SELECT 1, 'tutorial'
-    UNION ALL
-    SELECT 2, 'tutorial'
-) sessions
-
+FROM (
+    SELECT 1 week_number UNION ALL SELECT 2 UNION ALL SELECT 3
+    UNION ALL SELECT 4 UNION ALL SELECT 5
+) w
+CROSS JOIN (
+    SELECT 1 session_number, 1 class_number, 'lecture' class_type
+    UNION ALL SELECT 2, 2, 'lecture'
+    UNION ALL SELECT 1, 1, 'tutorial'
+    UNION ALL SELECT 2, 1, 'tutorial'
+) s
 WHERE @cs404_offering_id IS NOT NULL
   AND @test_lecturer_id IS NOT NULL;
 
--- ==========================================================
--- 4. CREATE ATTENDANCE FOR OTHER STUDENTS
--- ==========================================================
---
--- Lectures:
---   Approximately 60-80% attendance
---
--- Tutorials:
---   Approximately 90-100% attendance
---
--- Test student is excluded here because we create their
--- attendance explicitly below.
---
--- We use deterministic pseudo-randomness based on IDs so
--- rerunning the script gives reasonably distributed data.
--- ==========================================================
-
-
--- ----------------------------------------------------------
--- 4A. LECTURE ATTENDANCE
--- ----------------------------------------------------------
-
 INSERT INTO attendance_records (
-    session_id,
-    student_id,
-    status,
-    attendance_method,
-    location_status,
-    marked_at,
-    marked_by
+    session_id, student_id, status, attendance_method,
+    location_status, marked_at, marked_by
 )
-
 SELECT
-    s.id AS session_id,
-    e.user_id AS student_id,
-
-    'present' AS status,
-
-    CASE
-        WHEN MOD(e.user_id + s.id, 10) < 8
-            THEN 'qr'
-        ELSE 'manual'
-    END AS attendance_method,
-
-    CASE
-        WHEN MOD(e.user_id + s.id, 10) < 7
-            THEN 'verified'
-        ELSE 'suspicious'
-    END AS location_status,
-
-    s.session_end_at - INTERVAL
-        (10 + MOD(e.user_id + s.id, 25)) MINUTE,
-
+    s.id,
+    e.user_id,
+    'present',
+    CASE WHEN MOD(e.user_id + s.id, 10) < 8 THEN 'qr' ELSE 'manual' END,
+    CASE WHEN MOD(e.user_id + s.id, 10) < 7 THEN 'verified' ELSE 'suspicious' END,
+    s.session_end_at - INTERVAL (10 + MOD(e.user_id + s.id, 25)) MINUTE,
     s.lecturer_id
-
 FROM attendance_sessions s
-
-INNER JOIN course_enrolments e
-    ON e.course_offering_id = s.course_offering_id
-
+INNER JOIN course_enrolments e ON e.course_offering_id = s.course_offering_id
 WHERE s.course_offering_id = @cs404_offering_id
   AND s.class_type = 'lecture'
   AND e.status <> 'withdrawn'
   AND e.user_id <> @test_student_id
-
-  -- approximately 70% attendance
-  AND MOD(
-        e.user_id * 17
-        + s.id * 13,
-        100
-      ) < 70;
-
-
--- ----------------------------------------------------------
--- 4B. TUTORIAL ATTENDANCE
--- ----------------------------------------------------------
---
--- Around 95% attendance for normal students.
--- ==========================================================
+  AND MOD(e.user_id * 17 + s.id * 13, 100) < 70;
 
 INSERT INTO attendance_records (
-    session_id,
-    student_id,
-    status,
-    attendance_method,
-    location_status,
-    marked_at,
-    marked_by
+    session_id, student_id, status, attendance_method,
+    location_status, marked_at, marked_by
 )
-
 SELECT
-    s.id AS session_id,
-    e.user_id AS student_id,
-
-    'present' AS status,
-
-    CASE
-        WHEN MOD(e.user_id + s.id, 10) < 9
-            THEN 'qr'
-        ELSE 'manual'
-    END AS attendance_method,
-
-    'verified' AS location_status,
-
-    s.session_end_at - INTERVAL
-        (8 + MOD(e.user_id + s.id, 20)) MINUTE,
-
+    s.id,
+    e.user_id,
+    'present',
+    CASE WHEN MOD(e.user_id + s.id, 10) < 9 THEN 'qr' ELSE 'manual' END,
+    'verified',
+    s.session_end_at - INTERVAL (8 + MOD(e.user_id + s.id, 20)) MINUTE,
     s.lecturer_id
-
 FROM attendance_sessions s
-
-INNER JOIN course_enrolments e
-    ON e.course_offering_id = s.course_offering_id
-
+INNER JOIN course_enrolments e ON e.course_offering_id = s.course_offering_id
 WHERE s.course_offering_id = @cs404_offering_id
   AND s.class_type = 'tutorial'
   AND e.status <> 'withdrawn'
   AND e.user_id <> @test_student_id
-
-  -- approximately 95% attendance
-  AND MOD(
-        e.user_id * 19
-        + s.id * 11,
-        100
-      ) < 95;
-
-
--- ==========================================================
--- 5. TEST STUDENT — LECTURE ATTENDANCE
--- ==========================================================
---
--- Test student:
---
--- Week 1:
---   Lecture 1 = Present
---   Lecture 2 = Present
---
--- Week 2:
---   Lecture 1 = Present
---   Lecture 2 = Absent
---
--- Week 3:
---   Lecture 1 = Present
---   Lecture 2 = Present
---
--- Week 4:
---   Lecture 1 = Absent
---   Lecture 2 = Present
---
--- Week 5:
---   Lecture 1 = Present
---   Lecture 2 = Present
---
--- Total:
---   8 / 10 = 80%
---
--- We ONLY insert the 8 present records.
--- ==========================================================
+  AND MOD(e.user_id * 19 + s.id * 11, 100) < 95;
 
 INSERT INTO attendance_records (
-    session_id,
-    student_id,
-    status,
-    attendance_method,
-    location_status,
-    marked_at,
-    marked_by
+    session_id, student_id, status, attendance_method,
+    location_status, marked_at, marked_by
 )
-
 SELECT
     s.id,
     @test_student_id,
@@ -950,60 +702,18 @@ SELECT
     'verified',
     s.session_end_at - INTERVAL 12 MINUTE,
     s.lecturer_id
-
 FROM attendance_sessions s
-
 WHERE s.course_offering_id = @cs404_offering_id
   AND s.class_type = 'lecture'
   AND NOT (
       (s.week_number = 2 AND s.class_number = 2)
-      OR
-      (s.week_number = 4 AND s.class_number = 1)
+      OR (s.week_number = 4 AND s.class_number = 1)
   );
 
-
--- ==========================================================
--- 6. TEST STUDENT — TUTORIAL ATTENDANCE
--- ==========================================================
---
--- Test student:
---
--- Week 1:
---   Tutorial 1 = ABSENT
---   Tutorial 2 = ABSENT
---
--- Week 2:
---   Tutorial 1 = PRESENT
---   Tutorial 2 = PRESENT
---
--- Week 3:
---   Tutorial 1 = ABSENT
---   Tutorial 2 = PRESENT
---
--- Week 4:
---   Tutorial 1 = ABSENT
---   Tutorial 2 = PRESENT
---
--- Week 5:
---   Tutorial 1 = PRESENT
---   Tutorial 2 = PRESENT
---
--- Total:
---   6 / 10 = 60%
---
--- Again, only the 6 PRESENT records are inserted.
--- ==========================================================
-
 INSERT INTO attendance_records (
-    session_id,
-    student_id,
-    status,
-    attendance_method,
-    location_status,
-    marked_at,
-    marked_by
+    session_id, student_id, status, attendance_method,
+    location_status, marked_at, marked_by
 )
-
 SELECT
     s.id,
     @test_student_id,
@@ -1012,25 +722,18 @@ SELECT
     'verified',
     s.session_end_at - INTERVAL 10 MINUTE,
     s.lecturer_id
-
 FROM attendance_sessions s
-
 WHERE s.course_offering_id = @cs404_offering_id
   AND s.class_type = 'tutorial'
-
+  AND s.week_number <> 1
   AND NOT (
-      -- Week 1: both tutorials absent
-      s.week_number = 1
-
-      OR
-
-      -- Week 3: Tutorial 1 absent
-      (s.week_number = 3 AND s.class_number = 1)
-
-      OR
-
-      -- Week 4: Tutorial 1 absent
-      (s.week_number = 4 AND s.class_number = 1)
+      s.week_number = 3
+      AND DAYOFWEEK(s.session_start_at) = 3
+  )
+  AND NOT (
+      s.week_number = 4
+      AND DAYOFWEEK(s.session_start_at) = 3
   );
 
 COMMIT;
+

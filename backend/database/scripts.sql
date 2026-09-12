@@ -159,6 +159,3 @@ CREATE TABLE IF NOT EXISTS attendance_records (
     INDEX idx_attendance_records_session (session_id),
     INDEX idx_attendance_records_student_status (student_id, status)
 );
-
-
-CREATE UNIQUE INDEX ux_attendance_sessions_course_week_class_type ON attendance_sessions (course_offering_id, week_number, class_number, class_type);

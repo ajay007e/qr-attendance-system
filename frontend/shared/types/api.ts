@@ -22,6 +22,17 @@ export interface PaginatedData<T> {
   meta: PaginationMeta;
 }
 
+export interface CursorPaginationMeta {
+  limit: number;
+  nextCursor: string | null;
+  hasMore: boolean;
+}
+
+export interface CursorPaginatedData<T> {
+  items: T[];
+  meta: CursorPaginationMeta;
+}
+
 export type Status = "ACTIVE" | "INACTIVE";
 export type WithAll<T> = T | "ALL";
 export type StatusFilter = WithAll<Status>;

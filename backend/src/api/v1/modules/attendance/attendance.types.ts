@@ -129,7 +129,7 @@ export interface DatabaseStudentAttendance {
   attendance_id: number | null;
   attendance_status: AttendanceRecordStatus | null;
   attendance_method: AttendanceMethod | null;
-  attendance_location_status: AttendanceLocationStatus | null;
+  location_status: AttendanceLocationStatus | null;
   attendance_marked_at: Date | null;
   attendance_lecturer_note: string | null;
 
