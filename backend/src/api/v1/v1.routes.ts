@@ -23,9 +23,9 @@ v1Router.use("/auth", authRouter);
 v1Router.use("/users", userRouter);
 v1Router.use("/courses", courseRouter);
 v1Router.use("/enrolments", enrolmentRouter);
-v1Router.use("/offerings", offeringRouter);
-v1Router.use("/offerings", offeringRouter);
 v1Router.use("/offerings", attendanceSummaryRouter);
+v1Router.use("/offerings", offeringRouter);
 v1Router.use("/sessions", sessionRouter);
 v1Router.use("/attendance", attendanceRouter);
 v1Router.use("/ws", webSocketRouter);
+
