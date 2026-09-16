@@ -19,12 +19,14 @@ import type {
 import { mapAttendanceRecord, mapSessionAttendances, mapStudentAttendances } from "./attendance.mapper";
 import { validateOfferingAccess } from "../offerings";
 import { AttendanceWebSocket } from "../web-socket";
+import { NOTIFICATION_TYPES, NotificationService } from "../notifications";
 
 export class AttendanceService {
   constructor(
     private readonly repository: AttendanceRepository,
     private readonly sessionRepository: AttendanceSessionRepository,
     private readonly websocket: AttendanceWebSocket,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async markQrAttendance(data: MarkAttendanceQrRequest, studentId: number) {
@@ -88,7 +90,25 @@ export class AttendanceService {
       location_status: locationStatus,
     });
     this.websocket.notifyAttendanceMarked(payload.sid);
+    // Check the student's attendance after the new attendance
+    // record has been successfully created.
+    await this.checkLowAttendance(studentId, session.course_offering_id, session.class_type);
     return mapAttendanceRecord(record);
+  }
+
+  private async checkLowAttendance(studentId: number, courseOfferingId: number, classType: string): Promise<void> {
+    const summary = await this.repository.getStudentAttendanceSummary(studentId, courseOfferingId, classType);
+
+    const threshold = env.attendanceLowThreashold;
+
+    if (summary.totalSession >= 5 && summary.percentage < threshold) {
+      await this.notificationService.create({
+        userId: studentId,
+        type: NOTIFICATION_TYPES.LOW_ATTENDANCE,
+        referenceType: "attendance",
+        referenceId: courseOfferingId,
+      });
+    }
   }
 
   async getSessionAttendance(

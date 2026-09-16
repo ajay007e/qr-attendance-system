@@ -46,12 +46,7 @@ export function DashboardGuard({
   }
 
   return (
-    <DashboardShell
-      user={user}
-      items={items}
-      onLogout={logout}
-      topbarActions={user.role === "student" ? renderTopbarActions : null}
-    >
+    <DashboardShell user={user} items={items} onLogout={logout} topbarActions={renderTopbarActions}>
       {children}
     </DashboardShell>
   );

@@ -4,10 +4,14 @@ import { ScanQrCode } from "lucide-react";
 import { useState } from "react";
 
 import { AttendanceQrScanner } from "@/features/attendance";
+import { useAuth } from "@/features/auth";
 import { Button } from "@/shared";
 
-export function DashboardTopbarActions() {
+export function AttendanceScanAction() {
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
+
+  if (user?.role !== "student") return null;
 
   if (open) {
     return <AttendanceQrScanner onClose={() => setOpen(false)} />;
