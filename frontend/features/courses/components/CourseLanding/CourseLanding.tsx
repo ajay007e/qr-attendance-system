@@ -12,7 +12,7 @@ import { SiteTab } from "./components/SitePanel/SitePanel";
 import { COURSE_TABS } from "./constants";
 import type { CourseLandingProps, CourseTab } from "./types";
 
-export default function CourseLanding({ offeringId, backHref, participantsTab, attendanceTab }: CourseLandingProps) {
+export default function CourseLanding({ offeringId, backHref, participantsTab, attendanceTab, summaryTab, }: CourseLandingProps) {
   const [activeTab, setActiveTab] = useState<CourseTab>("attendance");
 
   const { course, loading, error, refresh } = useOffering(offeringId);
@@ -57,6 +57,7 @@ export default function CourseLanding({ offeringId, backHref, participantsTab, a
       {activeTab === "site" && <SiteTab offering={course} />}
       {activeTab === "participants" && participantsTab}
       {activeTab === "attendance" && attendanceTab}
+      {activeTab === "summary" && summaryTab}
     </Section>
   );
 }

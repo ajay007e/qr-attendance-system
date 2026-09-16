@@ -7,6 +7,7 @@ import {
   GraduationCap,
   LayoutList,
   PlayCircle,
+  BarChart3,
 } from "lucide-react";
 
 import type { TabItem } from "@/shared/components/navigation/tabs/tabs.types";
@@ -24,13 +25,18 @@ export const COURSE_TABS = [
     label: "Participants",
     icon: <Users size={17} strokeWidth={1.8} />,
   },
-
   {
     key: "attendance",
     label: "Attendance",
     icon: <ClipboardList size={17} strokeWidth={1.8} />,
   },
+  {
+    key: "summary",
+    label: "Summary",
+    icon: <BarChart3 size={17} strokeWidth={1.8} />,
+  },
 ] satisfies readonly TabItem<CourseTab>[];
+
 
 export const SITE_SECTIONS = [
   {
@@ -74,3 +80,4 @@ export const SITE_SECTIONS = [
     icon: GraduationCap,
   },
 ];
+
