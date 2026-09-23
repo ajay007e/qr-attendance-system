@@ -1,3 +1,9 @@
+import type { PaginationQuery } from "@/types";
+
+export interface SummaryQuery extends PaginationQuery {
+  search?: string;
+}
+
 export interface StudentAttendanceSummary {
   studentId: number;
   firstName: string;

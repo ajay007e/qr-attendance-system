@@ -1,10 +1,11 @@
 import type { Role } from "@/types";
+import type { PaginatedData } from "@/types";
 
 import { validateOfferingAccess } from "../offerings";
 
 import { AttendanceSummaryRepository } from "./summary.repository";
 import { toStudentAttendanceSummary } from "./summary.mapper";
-import type { StudentAttendanceSummary } from "./summary.types";
+import type { StudentAttendanceSummary, SummaryQuery } from "./summary.types";
 
 export class AttendanceSummaryService {
   constructor(private readonly repository: AttendanceSummaryRepository) {}
@@ -13,12 +14,16 @@ export class AttendanceSummaryService {
     courseOfferingId: number,
     userId: number,
     userRole: Role,
-  ): Promise<StudentAttendanceSummary[]> {
+    query: SummaryQuery,
+  ): Promise<PaginatedData<StudentAttendanceSummary>> {
     await validateOfferingAccess(courseOfferingId, userId, userRole);
 
     const totalSessions = await this.repository.countEndedSessions(courseOfferingId);
-    const rows = await this.repository.getStudentAttendanceRows(courseOfferingId);
+    const { items, meta } = await this.repository.getStudentAttendanceRows(courseOfferingId, query);
 
-    return rows.map((row) => toStudentAttendanceSummary(row, totalSessions));
+    return {
+      items: items.map((row) => toStudentAttendanceSummary(row, totalSessions)),
+      meta,
+    };
   }
 }
