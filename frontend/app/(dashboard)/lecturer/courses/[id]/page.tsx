@@ -1,6 +1,6 @@
 import { CourseLanding } from "@/features/courses";
 import { ParticipantsTab } from "@/features/enrolments";
-import { AttendanceSummaryTable } from "@/features/summary";
+
 
 import { LecturerCourseAttendance } from "./client";
 
@@ -14,7 +14,6 @@ export default async function LecturerCoursePage({ params }: { params: Promise<{
       backHref="/lecturer"
       participantsTab={<ParticipantsTab offeringId={offeringId} />}
       attendanceTab={<LecturerCourseAttendance offeringId={offeringId} />}
-      summaryTab={<AttendanceSummaryTable offeringId={offeringId} />}
     />
   );
 }
