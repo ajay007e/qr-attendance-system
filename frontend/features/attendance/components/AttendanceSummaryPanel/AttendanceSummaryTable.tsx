@@ -1,7 +1,7 @@
-import type { StudentAttendanceSummary } from "../types";
+import type { AttendanceSummaryRecord } from "../../types";
 
 interface AttendanceSummaryTableProps {
-  students: StudentAttendanceSummary[];
+  students: AttendanceSummaryRecord[];
 }
 
 export function AttendanceSummaryTable({ students }: AttendanceSummaryTableProps) {

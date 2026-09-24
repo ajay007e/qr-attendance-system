@@ -3,9 +3,9 @@
 import { useState } from "react";
 
 import { ATTENDANCE_TABS } from "@/features/attendance";
-import { AttendanceSummaryPanel } from "@/features/attendanceSummary";
 import { Section, SectionHeader, Tabs } from "@/shared";
 
+import { AttendanceSummaryPanel } from "../AttendanceSummaryPanel";
 import { LiveAttendance } from "../LiveAttendance";
 
 import type { AttendanceTab, LecturerAttendanceViewProps } from "./types";

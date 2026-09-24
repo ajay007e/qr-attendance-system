@@ -1,5 +1,5 @@
-import { PERCENTAGE_DECIMAL_PLACES } from "./summary.constants";
-import type { DatabaseStudentAttendanceRow, StudentAttendanceSummary } from "./summary.types";
+import { PERCENTAGE_DECIMAL_PLACES } from "./attendanceSummary.constants";
+import type { DatabaseStudentAttendanceRow, StudentAttendanceSummary } from "./attendanceSummary.types";
 
 export function toStudentAttendanceSummary(
   row: DatabaseStudentAttendanceRow,

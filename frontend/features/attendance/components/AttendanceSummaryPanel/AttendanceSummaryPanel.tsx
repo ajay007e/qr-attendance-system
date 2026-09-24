@@ -1,8 +1,9 @@
 "use client";
 
-import { useAttendanceSummary } from "../hooks/useAttendanceSummary";
-import { useSummaryQuery } from "../hooks/useSummaryQuery";
 import { EmptyState, ErrorFallback, Loader, NoResults, PageLoader, Pagination, useDebounce } from "@/shared";
+
+import { useAttendanceSummary } from "../../hooks/useAttendanceSummary";
+import { useSummaryQuery } from "../../hooks/useSummaryQuery";
 
 import { AttendanceSummaryTable } from "./AttendanceSummaryTable";
 import AttendanceSummaryToolbar from "./AttendanceSummaryToolbar";

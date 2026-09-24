@@ -4,7 +4,7 @@ import { authRouter } from "./modules/auth/auth.routes";
 import { userRouter } from "./modules/users/user.routes";
 import { courseRouter } from "./modules/courses/course.routes";
 import { offeringRouter } from "./modules/offerings/offering.routes";
-import { attendanceSummaryRouter } from "./modules/summary/summary.routes";
+import { attendanceSummaryRouter } from "./modules/attendanceSummary/attendanceSummary.routes";
 import { enrolmentRouter } from "./modules/enrolments/enrolment.routes";
 import { sessionRouter } from "./modules/sessions/session.routes";
 import { attendanceRouter } from "./modules/attendance/attendance.routes";

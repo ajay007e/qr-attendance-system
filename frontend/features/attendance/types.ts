@@ -106,3 +106,19 @@ export interface StudentAttendanceSummary {
 export interface StudentAttendanceSummaryQuery {
   classType?: AttendanceClassTypeFilter;
 }
+
+export interface SummaryQuery {
+  search?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface AttendanceSummaryRecord {
+  studentId: number;
+  firstName: string;
+  lastName: string | null;
+  totalSessions: number;
+  attendedSessions: number;
+  missedSessions: number;
+  attendancePercentage: number;
+}

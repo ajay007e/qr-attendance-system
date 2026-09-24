@@ -1,6 +1,6 @@
-import { AttendanceSummaryRepository } from "./summary.repository";
-import { AttendanceSummaryService } from "./summary.service";
-import { AttendanceSummaryController } from "./summary.controller";
+import { AttendanceSummaryRepository } from "./attendanceSummary.repository";
+import { AttendanceSummaryService } from "./attendanceSummary.service";
+import { AttendanceSummaryController } from "./attendanceSummary.controller";
 
 const repository = new AttendanceSummaryRepository();
 

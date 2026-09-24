@@ -7,7 +7,6 @@ import {
   GraduationCap,
   LayoutList,
   PlayCircle,
-  BarChart3,
 } from "lucide-react";
 
 import type { TabItem } from "@/shared/components/navigation/tabs/tabs.types";

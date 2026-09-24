@@ -3,9 +3,9 @@ import type { PaginatedData } from "@/types";
 
 import { validateOfferingAccess } from "../offerings";
 
-import { AttendanceSummaryRepository } from "./summary.repository";
-import { toStudentAttendanceSummary } from "./summary.mapper";
-import type { StudentAttendanceSummary, SummaryQuery } from "./summary.types";
+import { AttendanceSummaryRepository } from "./attendanceSummary.repository";
+import { toStudentAttendanceSummary } from "./attendanceSummary.mapper";
+import type { StudentAttendanceSummary, SummaryQuery } from "./attendanceSummary.types";
 
 export class AttendanceSummaryService {
   constructor(private readonly repository: AttendanceSummaryRepository) {}
