@@ -10,4 +10,4 @@ export const attendanceSummaryRouter = Router();
 attendanceSummaryRouter.use(isAuthenticated);
 attendanceSummaryRouter.use(authorize(ROLES.LECTURER));
 
-attendanceSummaryRouter.get("/:id/attendance-summary", controller.getSummary);
+attendanceSummaryRouter.get("/:id", controller.getSummary);
