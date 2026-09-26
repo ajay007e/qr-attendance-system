@@ -24,7 +24,6 @@ export const COURSE_TABS = [
     label: "Participants",
     icon: <Users size={17} strokeWidth={1.8} />,
   },
-
   {
     key: "attendance",
     label: "Attendance",

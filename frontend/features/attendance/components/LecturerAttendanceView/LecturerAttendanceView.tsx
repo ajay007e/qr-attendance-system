@@ -5,15 +5,25 @@ import { useState } from "react";
 import { ATTENDANCE_TABS } from "@/features/attendance";
 import { Section, SectionHeader, Tabs } from "@/shared";
 
+import { AttendanceSummaryPanel } from "../AttendanceSummaryPanel";
 import { LiveAttendance } from "../LiveAttendance";
 
 import type { AttendanceTab, LecturerAttendanceViewProps } from "./types";
 
-export function LecturerAttendanceView({ sessionId, sessionControls, isSessionOpen }: LecturerAttendanceViewProps) {
-  const [activeTab, setActiveTab] = useState<AttendanceTab>("sessions");
+export function LecturerAttendanceView({
+  offeringId,
+  sessionId,
+  sessionControls,
+  isSessionOpen,
+}: LecturerAttendanceViewProps) {
+  const [activeTab, setActiveTab] = useState<AttendanceTab>("student-attendance");
 
   if (isSessionOpen && sessionId) {
     return <LiveAttendance sessionId={sessionId} sessionControls={sessionControls} />;
+  }
+
+  if (!offeringId) {
+    return null;
   }
 
   return (
@@ -42,7 +52,7 @@ export function LecturerAttendanceView({ sessionId, sessionControls, isSessionOp
           <div className="px-5 py-6">
             {activeTab === "sessions" && <SessionsTab />}
 
-            {activeTab === "student-attendance" && <StudentAttendanceTab />}
+            {activeTab === "student-attendance" && <StudentAttendanceTab offeringId={offeringId} />}
           </div>
         </div>
       </Section>
@@ -63,15 +73,10 @@ function SessionsTab() {
   );
 }
 
-function StudentAttendanceTab() {
+function StudentAttendanceTab({ offeringId }: { offeringId: number }) {
   return (
     <div>
-      <SectionHeader
-        title="Student Attendance"
-        subtitle="Review student attendance and participation throughout the semester."
-      />
-
-      {/* Student attendance table will go here */}
+      <AttendanceSummaryPanel offeringId={offeringId} />
     </div>
   );
 }
