@@ -8,7 +8,6 @@ import { DEFAULT_PAGINATION_META } from "@/shared";
 import { AttendanceSummaryService } from "../api/attendanceSummary.service";
 import type { AttendanceSummaryRecord, SummaryQuery } from "../types";
 
-
 export function useAttendanceSummary(offeringId: number, query: SummaryQuery) {
   const [students, setStudents] = useState<AttendanceSummaryRecord[]>([]);
   const [pagination, setPagination] = useState<PaginationMeta>(DEFAULT_PAGINATION_META);

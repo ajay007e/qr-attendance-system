@@ -16,15 +16,15 @@ export function LecturerAttendanceView({
   sessionControls,
   isSessionOpen,
 }: LecturerAttendanceViewProps) {
-  const [activeTab, setActiveTab] = useState<AttendanceTab>("sessions");
+  const [activeTab, setActiveTab] = useState<AttendanceTab>("student-attendance");
 
   if (isSessionOpen && sessionId) {
-  return <LiveAttendance sessionId={sessionId} sessionControls={sessionControls} />;
-}
+    return <LiveAttendance sessionId={sessionId} sessionControls={sessionControls} />;
+  }
 
-if (!offeringId) {
-  return null;
-}
+  if (!offeringId) {
+    return null;
+  }
 
   return (
     <div className="space-y-5">
@@ -76,14 +76,7 @@ function SessionsTab() {
 function StudentAttendanceTab({ offeringId }: { offeringId: number }) {
   return (
     <div>
-      <SectionHeader
-        title="Student Attendance"
-        subtitle="Review student attendance and participation throughout the semester."
-      />
-
-      <div className="mt-5">
-        <AttendanceSummaryPanel offeringId={offeringId} />
-      </div>
+      <AttendanceSummaryPanel offeringId={offeringId} />
     </div>
   );
 }

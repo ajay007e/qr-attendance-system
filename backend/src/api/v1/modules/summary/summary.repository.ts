@@ -2,10 +2,10 @@ import type { RowDataPacket } from "mysql2";
 
 import { db } from "@/config/database";
 import type { PaginatedData } from "@/types";
-import { DEFAULT_LIMIT, DEFAULT_MAX_LIMIT, DEFAULT_PAGE } from "@/utils/constants/pagination.constants";
+import { DEFAULT_LIMIT, DEFAULT_MAX_LIMIT, DEFAULT_PAGE } from "@/utils";
 
-import { ATTENDED_STATUSES } from "./attendanceSummary.constants";
-import type { DatabaseStudentAttendanceRow, SummaryQuery } from "./attendanceSummary.types";
+import { ATTENDED_STATUSES } from "./summary.constants";
+import type { DatabaseStudentAttendanceRow, SummaryQuery } from "./summary.types";
 
 export class AttendanceSummaryRepository {
   async countEndedSessions(courseOfferingId: number): Promise<number> {

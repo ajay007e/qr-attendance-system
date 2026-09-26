@@ -29,9 +29,7 @@ export const COURSE_TABS = [
     label: "Attendance",
     icon: <ClipboardList size={17} strokeWidth={1.8} />,
   },
-  
 ] satisfies readonly TabItem<CourseTab>[];
-
 
 export const SITE_SECTIONS = [
   {
@@ -75,4 +73,3 @@ export const SITE_SECTIONS = [
     icon: GraduationCap,
   },
 ];
-

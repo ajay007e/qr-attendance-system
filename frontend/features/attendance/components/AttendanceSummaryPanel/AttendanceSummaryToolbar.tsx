@@ -13,7 +13,10 @@ export default function AttendanceSummaryToolbar({ search, onSearchChange }: Att
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <SectionHeader title="Student Attendance" subtitle="Review attendance for every enrolled student" />
+        <SectionHeader
+          title="Student Attendance"
+          subtitle="Review student attendance and participation throughout the semester."
+        />
         <div className="w-full lg:w-72">
           <Field.Input
             value={search}

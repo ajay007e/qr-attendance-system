@@ -2,8 +2,8 @@ import type { RequestHandler } from "express";
 
 import { currentUserId, parseQueryNumber, parseQueryString } from "@/utils";
 
-import { AttendanceSummaryService } from "./attendanceSummary.service";
-import { validateCourseOfferingId } from "./attendanceSummary.utils";
+import { AttendanceSummaryService } from "./summary.service";
+import { validateCourseOfferingId } from "./summary.utils";
 
 export class AttendanceSummaryController {
   constructor(private readonly service: AttendanceSummaryService) {}
