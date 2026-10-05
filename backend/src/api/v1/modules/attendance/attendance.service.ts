@@ -3,6 +3,7 @@ import { AppError, calculateDistance, ROLES } from "@/utils";
 import { AttendanceSessionRepository } from "../sessions/session.repository";
 import { AttendanceRepository } from "./attendance.repository";
 import { verifyAttendanceQrToken } from "./attendance.qr";
+import { isEnrolled } from "../enrolments";
 import { env } from "@/config";
 
 import type { CursorPaginatedData, PaginatedData } from "@/types";
@@ -125,6 +126,47 @@ export class AttendanceService {
       },
     };
   }
+
+async markManualAttendance(sessionId: number, studentId: number, lecturerId: number) {
+  const session = await this.sessionRepository.findById(sessionId);
+
+  if (!session) {
+    throw new AppError("Attendance session not found", 404);
+  }
+
+  // Lecturer must be assigned to this session's course offering.
+  await validateOfferingAccess(session.course_offering_id, lecturerId, ROLES.LECTURER);
+
+  if (session.session_status !== "open") {
+    throw new AppError("This attendance session is not currently active", 400);
+  }
+
+  // Student must be enrolled in the same course offering.
+  const enrolled = await isEnrolled(session.course_offering_id, studentId);
+
+  if (!enrolled) {
+    throw new AppError("Student is not enrolled in this course", 403);
+  }
+
+  const existingAttendance = await this.repository.findBySessionAndStudent(sessionId, studentId);
+
+  if (existingAttendance) {
+    throw new AppError("Attendance has already been recorded for this student in this session", 409);
+  }
+
+  const record = await this.repository.create({
+    session_id: sessionId,
+    student_id: studentId,
+    status: "present",
+    attendance_method: "manual",
+    location_status: "not_checked",
+    marked_by: lecturerId,
+  });
+
+  this.websocket.notifyAttendanceMarked(sessionId);
+
+  return mapAttendanceRecord(record);
+}
 
   async getMySummary(
     studentId: number,

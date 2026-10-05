@@ -1,6 +1,7 @@
 import { AppError } from "@/utils";
 
 import type {
+  MarkAttendanceManualRequest,
   MarkAttendanceQrRequest,
   SessionAttendanceQuery,
   StudentAttendanceCursor,
@@ -34,6 +35,20 @@ export function validateMarkAttendanceRequest(data: MarkAttendanceQrRequest) {
     qrToken: data.qrToken.trim(),
     latitude: data.latitude,
     longitude: data.longitude,
+  };
+}
+
+export function validateMarkAttendanceManualRequest(data: MarkAttendanceManualRequest) {
+  if (!data || typeof data !== "object") {
+    throw new AppError("Attendance request is required", 400);
+  }
+
+  if (!Number.isInteger(data.studentId) || data.studentId <= 0) {
+    throw new AppError("A valid studentId is required", 400);
+  }
+
+  return {
+    studentId: data.studentId,
   };
 }
 

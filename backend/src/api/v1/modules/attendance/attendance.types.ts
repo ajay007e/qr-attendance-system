@@ -10,6 +10,11 @@ export interface CreateAttendanceRecordData {
   status: AttendanceRecordStatus;
   attendance_method: AttendanceMethod;
   location_status: AttendanceLocationStatus;
+  marked_by?: number | null;
+}
+
+export interface MarkAttendanceManualRequest {
+  studentId: number;
 }
 
 export interface AttendanceRecord {

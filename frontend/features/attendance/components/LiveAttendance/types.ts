@@ -7,6 +7,8 @@ export interface LiveAttendanceProps {
 
 export interface AttendanceTableProps {
   records: SessionAttendance[];
+ onMarkPresent?: (studentId: number) => void | Promise<void>;
+  markingStudentId?: number | null;
 }
 
 export interface AttendanceToolbarProps {

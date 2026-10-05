@@ -37,8 +37,8 @@ export class AttendanceRepository {
   async create(data: CreateAttendanceRecordData): Promise<DatabaseAttendanceRecord> {
     try {
       const [result] = await db.execute<ResultSetHeader>(
-        `INSERT INTO attendance_records (session_id, student_id, status, attendance_method, location_status) VALUES (?, ?, ?, ?, ?)`,
-        [data.session_id, data.student_id, data.status, data.attendance_method, data.location_status],
+        `INSERT INTO attendance_records (session_id, student_id, status, attendance_method, location_status, marked_by) VALUES (?, ?, ?, ?, ?, ?)`,
+        [data.session_id, data.student_id, data.status, data.attendance_method, data.location_status, data.marked_by ?? null],
       );
       const record = await this.findById(result.insertId);
       if (!record) {

@@ -3,6 +3,7 @@ import type { RequestHandler } from "express";
 import { AttendanceService } from "./attendance.service";
 import { AppError, currentUserId, parseQueryNumber, parseQueryString } from "@/utils";
 import {
+  validateMarkAttendanceManualRequest,
   validateMarkAttendanceRequest,
   validateSessionAttendanceQuery,
   validateStudentAttendanceQuery,
@@ -81,6 +82,26 @@ export class AttendanceController {
       next(error);
     }
   };
+
+  markAttendanceManually: RequestHandler = async (req, res, next) => {
+  try {
+    const sessionId = Number(req.params.sessionId);
+
+    if (!Number.isInteger(sessionId) || sessionId <= 0) {
+      throw new AppError("Invalid session ID", 400);
+    }
+
+    const input = validateMarkAttendanceManualRequest(req.body);
+    const result = await this.service.markManualAttendance(sessionId, input.studentId, currentUserId(req));
+
+    res.status(201).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
   getMySummary: RequestHandler = async (req, res, next) => {
     try {
       const courseOfferingId = Number(req.params.courseOfferingId);

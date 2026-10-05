@@ -1,16 +1,17 @@
-import { Badge } from "@/shared";
+import { Badge,Button } from "@/shared";
 
 import { AttendanceRecord, SessionAttendance } from "../../types";
 
 import { AttendanceTableProps } from "./types";
 
-export function AttendanceTable({ records }: AttendanceTableProps) {
+export function AttendanceTable({ records, onMarkPresent, markingStudentId }: AttendanceTableProps) {
   return (
     <>
       {/* Mobile */}
       <div className="space-y-4 md:hidden">
         {records.map((record) => (
-          <AttendanceCard key={record.student.id} record={record} />
+          <AttendanceCard key={record.student.id} record={record} onMarkPresent={onMarkPresent}
+            isMarking={markingStudentId === record.student.id}/>
         ))}
       </div>
 
@@ -26,12 +27,14 @@ export function AttendanceTable({ records }: AttendanceTableProps) {
                 <th className="px-6 py-4 text-left text-sm font-semibold">Method</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold">Location</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold">Marked At</th>
+                {onMarkPresent && <th className="px-6 py-4 text-left text-sm font-semibold">Actions</th>}
               </tr>
             </thead>
 
             <tbody className="divide-y divide-gray-100">
               {records.map((record) => (
-                <AttendanceTableRow key={record.student.id} record={record} />
+                <AttendanceTableRow key={record.student.id} record={record} onMarkPresent={onMarkPresent}
+                  isMarking={markingStudentId === record.student.id}/>
               ))}
             </tbody>
           </table>
@@ -41,7 +44,7 @@ export function AttendanceTable({ records }: AttendanceTableProps) {
   );
 }
 
-function AttendanceCard({ record }: { record: SessionAttendance }) {
+function AttendanceCard({ record, onMarkPresent, isMarking }: { record: SessionAttendance; onMarkPresent?: (studentId: number) => void | Promise<void>; isMarking: boolean }) {
   const { student, attendance } = record;
 
   return (
@@ -84,12 +87,23 @@ function AttendanceCard({ record }: { record: SessionAttendance }) {
             </div>
           </>
         )}
+        {!attendance && onMarkPresent && (
+          <Button
+            variant="primary"
+            size="sm"
+            fullWidth
+            loading={isMarking}
+            onClick={() => onMarkPresent(student.id)}
+          >
+            Mark Present
+          </Button>
+        )}
       </div>
     </div>
   );
 }
 
-function AttendanceTableRow({ record }: { record: SessionAttendance }) {
+function AttendanceTableRow({ record, onMarkPresent, isMarking }: { record: SessionAttendance; onMarkPresent?: (studentId: number) => void | Promise<void>; isMarking: boolean }) {
   const { student, attendance } = record;
 
   return (
@@ -121,6 +135,17 @@ function AttendanceTableRow({ record }: { record: SessionAttendance }) {
       </td>
 
       <td className="px-6 py-4 text-sm text-gray-600">{attendance ? formatDate(attendance.markedAt) : "—"}</td>
+      {onMarkPresent && (
+        <td className="px-6 py-4">
+          {!attendance ? (
+            <Button variant="primary" size="xs" loading={isMarking} onClick={() => onMarkPresent(student.id)}>
+              Mark Present
+            </Button>
+          ) : (
+            <span className="text-sm text-gray-400">—</span>
+          )}
+        </td>
+      )}
     </tr>
   );
 }

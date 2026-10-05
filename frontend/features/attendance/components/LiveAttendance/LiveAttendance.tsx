@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 
 import {
+  AppError,
+  Button,
   EmptyState,
   ErrorFallback,
   Loader,
+  Modal,
   NoResults,
   Pagination,
   Section,
@@ -14,8 +17,10 @@ import {
   disconnectWebsocket,
   getWebsocket,
   useDebounce,
+  useToast,
 } from "@/shared";
 
+import { AttendanceService } from "../../api/attendance.service";
 import { DEFAULT_SESSION_ATTENDANCE_QUERY } from "../../constants";
 import useSessionAttendance from "../../hooks/useSessionAttendance";
 import { SessionAttendanceQuery } from "../../types";
@@ -26,11 +31,45 @@ import type { LiveAttendanceProps } from "./types";
 
 export default function LiveAttendance({ sessionId, sessionControls }: LiveAttendanceProps) {
   const [query, setQuery] = useState<SessionAttendanceQuery>(DEFAULT_SESSION_ATTENDANCE_QUERY);
-
+  const [markingStudentId, setMarkingStudentId] = useState<number | null>(null);
+  const [pendingStudentId, setPendingStudentId] = useState<number | null>(null);
+ 
+  const toast = useToast();
   const debouncedQuery = useDebounce(query, 400);
 
   const { records, pagination, loading, isFetching, error, refresh } = useSessionAttendance(sessionId, debouncedQuery);
 
+   const pendingRecord = records.find((record) => record.student.id === pendingStudentId) ?? null;
+
+  const requestMarkPresent = (studentId: number) => {
+    setPendingStudentId(studentId);
+  };
+
+  const cancelMarkPresent = () => {
+    setPendingStudentId(null);
+  };
+
+  const confirmMarkPresent = async () => {
+    if (pendingStudentId === null) {
+      return;
+    }
+
+    const studentId = pendingStudentId;
+    setMarkingStudentId(studentId);
+
+    try {
+      await AttendanceService.markManualAttendance(sessionId, { studentId });
+      toast.success("Attendance marked as present.");
+      await refresh();
+      setPendingStudentId(null);
+    } catch (err) {
+      const message = err instanceof AppError ? err.message : "Unable to mark attendance. Please try again.";
+      toast.error(message);
+      setPendingStudentId(null);
+    } finally {
+      setMarkingStudentId(null);
+    }
+  };
   useEffect(() => {
     let cancelled = false;
     let socket: Socket | null = null;
@@ -200,7 +239,8 @@ export default function LiveAttendance({ sessionId, sessionControls }: LiveAtten
                 <div className="relative">
                   {isFetching && <Loader overlay message="Updating attendance..." />}
 
-                  <AttendanceTable records={records} />
+                  <AttendanceTable records={records} onMarkPresent={requestMarkPresent}
+  markingStudentId={markingStudentId}/>
                 </div>
 
                 {/*
@@ -231,6 +271,32 @@ export default function LiveAttendance({ sessionId, sessionControls }: LiveAtten
           </div>
         )}
       </div>
+
+      <Modal
+        open={pendingStudentId !== null}
+        onClose={cancelMarkPresent}
+        title="Mark Attendance"
+        size="sm"
+        footer={
+          <div className="flex justify-end gap-3">
+            <Button variant="outline" onClick={cancelMarkPresent} disabled={markingStudentId !== null}>
+              Cancel
+            </Button>
+            <Button variant="primary" loading={markingStudentId !== null} onClick={() => void confirmMarkPresent()}>
+              Mark Present
+            </Button>
+          </div>
+        }
+      >
+        <p className="text-sm text-gray-600">
+          Mark{" "}
+          <span className="font-semibold text-gray-900">
+            {pendingRecord ? `${pendingRecord.student.firstName} ${pendingRecord.student.lastName ?? ""}`.trim() : "this student"}
+          </span>{" "}
+          as present for this session?
+        </p>
+      </Modal>
+            
     </Section>
   );
 }
