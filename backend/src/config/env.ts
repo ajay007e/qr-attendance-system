@@ -57,4 +57,5 @@ export const env = {
     password: requireEnv("DB_PASSWORD"),
   },
   attendanceLocationRadius: parseNumber("ATTENDANCE_LOCATION_RADIUS", process.env.ATTENDANCE_LOCATION_RADIUS, 100),
+  attendanceLowThreashold: parseNumber("ATTENDANCE_LOW_THRESHOLD", process.env.ATTENDANCE_LOW_THRESHOLD, 80),
 };

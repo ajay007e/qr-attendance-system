@@ -159,3 +159,73 @@ CREATE TABLE IF NOT EXISTS attendance_records (
     INDEX idx_attendance_records_session (session_id),
     INDEX idx_attendance_records_student_status (student_id, status)
 );
+
+
+-- ==========================================
+-- Notifications
+-- Stores in-app notifications for users
+-- ==========================================
+
+CREATE TABLE IF NOT EXISTS notifications (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    -- User receiving the notification
+    user_id BIGINT UNSIGNED NOT NULL,
+
+    -- Notification content
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+
+    -- Notification type
+    -- low_attendance
+    -- attendance_session_started
+    -- attendance_session_closed
+    type VARCHAR(50) NOT NULL,
+
+    -- Priority
+    -- low, medium, high
+    priority VARCHAR(20) NOT NULL DEFAULT 'medium',
+
+    -- Optional frontend redirect
+    redirect_url VARCHAR(500) DEFAULT NULL,
+
+    -- Related entity
+    -- Currently:
+    -- reference_type = 'attendance'
+    -- reference_id = attendance record/session ID
+    reference_type VARCHAR(50) DEFAULT NULL,
+    reference_id BIGINT UNSIGNED DEFAULT NULL,
+
+    -- Read state
+    is_read BOOLEAN NOT NULL DEFAULT FALSE,
+    read_at TIMESTAMP NULL DEFAULT NULL,
+
+    -- Soft delete
+    is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+
+    -- Creation timestamp
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    -- User relationship
+    CONSTRAINT fk_notifications_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    -- Index for retrieving a user's notifications
+    INDEX idx_notifications_user (user_id),
+
+    -- Index for unread/read filtering
+    INDEX idx_notifications_read (user_id, is_read),
+
+    -- Index for notification type
+    INDEX idx_notifications_type (type),
+
+    -- Index for cursor pagination
+    INDEX idx_notifications_user_created (
+        user_id,
+        is_deleted,
+        created_at,
+        id
+    )
+);
