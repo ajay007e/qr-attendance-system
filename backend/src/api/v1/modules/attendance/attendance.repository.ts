@@ -547,4 +547,26 @@ export class AttendanceRepository {
       percentage: Number(row.percentage),
     };
   }
+
+  async updateQrLocationStatus(
+    id: number,
+    locationStatus: "verified" | "suspicious",
+  ): Promise<DatabaseAttendanceRecord> {
+    await db.execute(
+      `UPDATE attendance_records
+     SET location_status = ?,
+         marked_at = CURRENT_TIMESTAMP,
+         updated_at = CURRENT_TIMESTAMP
+     WHERE id = ?`,
+      [locationStatus, id],
+    );
+
+    const record = await this.findById(id);
+
+    if (!record) {
+      throw new Error("Attendance record was updated but could not be retrieved");
+    }
+
+    return record;
+  }
 }
