@@ -7,6 +7,7 @@ export interface LiveAttendanceProps {
 
 export interface AttendanceTableProps {
   records: SessionAttendance[];
+  onUpdateStatus?: (studentId: number) => void;
 }
 
 export interface AttendanceToolbarProps {
