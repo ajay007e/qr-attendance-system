@@ -75,15 +75,32 @@ export class AttendanceService {
 
     await validateOfferingAccess(session.course_offering_id, studentId, ROLES.STUDENT);
 
-    const existingAttendance = await this.repository.findBySessionAndStudent(payload.sid, studentId);
-
-    if (existingAttendance) {
-      throw new AppError("You have already marked attendance for this session", 409);
-    }
-
     const distance = calculateDistance(latitude, longitude, Number(session.latitude), Number(session.longitude));
 
     const locationStatus = distance <= env.attendanceLocationRadius ? "verified" : "suspicious";
+
+    const existingAttendance = await this.repository.findBySessionAndStudent(payload.sid, studentId);
+
+    if (existingAttendance) {
+      if (existingAttendance.location_status !== "suspicious") {
+        throw new AppError("You have already marked attendance for this session", 409);
+      }
+
+      if (locationStatus === "verified") {
+        const updated = await this.repository.updateQrLocationStatus(existingAttendance.id, "verified");
+
+        this.websocket.notifyAttendanceMarked(payload.sid);
+
+        await this.checkLowAttendance(studentId, session.course_offering_id, session.class_type);
+
+        return mapAttendanceRecord(updated);
+      }
+
+      throw new AppError(
+        "Your location is still outside the allowed attendance area. Please move closer and scan again.",
+        400,
+      );
+    }
 
     const record = await this.repository.create({
       session_id: payload.sid,

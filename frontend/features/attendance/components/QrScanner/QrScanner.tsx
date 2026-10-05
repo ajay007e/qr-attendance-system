@@ -1,7 +1,7 @@
 "use client";
 
 import { Scanner } from "@yudiel/react-qr-scanner";
-import { Check, Loader2, X } from "lucide-react";
+import { Check, Loader2, MapPin, X } from "lucide-react";
 
 import { Button } from "@/shared";
 
@@ -72,6 +72,50 @@ export default function AttendanceQrScanner({ onClose }: AttendanceQrScannerProp
     );
   }
 
+  // Attendance was recorded, but the location is suspicious.
+  // The user should scan again so the backend can verify the location.
+  if (status === "success" && result?.locationStatus === "suspicious") {
+    return (
+      <div className="fixed inset-0 z-[100] flex h-dvh w-full items-center justify-center bg-black/95 px-6">
+        <div className="w-full max-w-sm text-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-amber-500/10">
+            <MapPin className="h-8 w-8 text-amber-400" />
+          </div>
+
+          <h2 className="mt-6 text-2xl font-semibold text-white">Attendance recorded</h2>
+
+          <p className="mt-2 text-sm leading-6 text-white/60">
+            Your attendance has been recorded, but your location could not be verified.
+          </p>
+
+          <div className="mt-5 rounded-xl border border-amber-400/20 bg-amber-400/10 px-4 py-3">
+            <p className="text-sm font-medium text-amber-300">Scan again to verify your location</p>
+
+            <p className="mt-1 text-xs leading-5 text-amber-200/70">
+              Move closer to the attendance location and scan the QR code again.
+            </p>
+          </div>
+
+          <div className="mt-7 flex flex-col gap-3">
+            <Button type="button" onClick={reset}>
+              Scan again
+            </Button>
+
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onClose}
+              className="text-white/70 hover:bg-white/10 hover:text-white"
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Normal successful / verified attendance.
   if (status === "success" && result) {
     return (
       <div className="fixed inset-0 z-[100] flex h-dvh w-full items-center justify-center bg-black/95 px-6">
@@ -80,9 +124,9 @@ export default function AttendanceQrScanner({ onClose }: AttendanceQrScannerProp
             <Check className="h-8 w-8 text-white" strokeWidth={2.5} />
           </div>
 
-          <h2 className="mt-6 text-2xl font-semibold text-white">Attendance recorded</h2>
+          <h2 className="mt-6 text-2xl font-semibold text-white">Attendance verified</h2>
 
-          <p className="mt-2 text-sm text-white/60">Your attendance has been successfully recorded.</p>
+          <p className="mt-2 text-sm text-white/60">Your attendance and location have been successfully verified.</p>
 
           <p className="mt-8 text-sm text-white/70">
             Marked at <span className="font-medium text-white">{new Date(result.markedAt).toLocaleString()}</span> with
