@@ -9,6 +9,8 @@ import { env } from "@/config";
 import type { CursorPaginatedData, PaginatedData } from "@/types";
 
 import type {
+  AttendanceRecordStatus,
+  ManualAttendanceResult,
   MarkAttendanceQrRequest,
   SessionAttendance,
   SessionAttendanceQuery,
@@ -127,7 +129,7 @@ export class AttendanceService {
     };
   }
 
-async markManualAttendance(sessionId: number, studentId: number, lecturerId: number) {
+async markManualAttendance(sessionId: number, studentId: number,status: AttendanceRecordStatus,lecturerNote: string | null, lecturerId: number) : Promise<ManualAttendanceResult> {
   const session = await this.sessionRepository.findById(sessionId);
 
   if (!session) {
@@ -151,21 +153,26 @@ async markManualAttendance(sessionId: number, studentId: number, lecturerId: num
   const existingAttendance = await this.repository.findBySessionAndStudent(sessionId, studentId);
 
   if (existingAttendance) {
-    throw new AppError("Attendance has already been recorded for this student in this session", 409);
-  }
+    const updated = await this.repository.updateManual(existingAttendance.id, status,lecturerNote, lecturerId);
+
+      this.websocket.notifyAttendanceMarked(sessionId);
+
+      return { record: mapAttendanceRecord(updated), created: false };
+    }
 
   const record = await this.repository.create({
     session_id: sessionId,
     student_id: studentId,
-    status: "present",
+    status,
     attendance_method: "manual",
     location_status: "not_checked",
     marked_by: lecturerId,
+    lecturer_note: lecturerNote,
   });
 
   this.websocket.notifyAttendanceMarked(sessionId);
 
-  return mapAttendanceRecord(record);
+    return { record: mapAttendanceRecord(record), created: true };
 }
 
   async getMySummary(

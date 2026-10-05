@@ -55,6 +55,26 @@ export const ATTENDANCE_STATUS_FILTER_OPTIONS = [
   { label: "Absent", value: "absent" },
 ] as const;
 
+export const SESSION_ATTENDANCE_STATUS_FILTER_OPTIONS = [
+  { label: "All Statuses", value: "all" },
+  { label: "Present", value: "present" },
+  { label: "Absent", value: "absent" },
+  { label: "Late", value: "late" },
+  { label: "Excused", value: "excused" },
+] as const;
+
+export const LECTURER_NOTE_MAX_LENGTH = 500;
+
+export const MANUAL_ATTENDANCE_STATUS_OPTIONS = [
+  { label: "Present", value: "present" },
+  { label: "Absent", value: "absent" },
+  { label: "Late", value: "late" },
+  { label: "Excused", value: "excused" },
+] satisfies {
+  label: string;
+  value: AttendanceRecordStatus;
+}[];
+
 export const ATTENDANCE_CLASS_TYPE_FILTER_OPTIONS = [
   { label: "All Class Types", value: "all" },
   { label: "Lecture", value: "lecture" },

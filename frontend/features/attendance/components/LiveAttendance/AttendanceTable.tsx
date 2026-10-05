@@ -1,17 +1,18 @@
+import { Pencil } from "lucide-react";
+
 import { Badge,Button } from "@/shared";
 
 import { AttendanceRecord, SessionAttendance } from "../../types";
 
 import { AttendanceTableProps } from "./types";
 
-export function AttendanceTable({ records, onMarkPresent, markingStudentId }: AttendanceTableProps) {
+export function AttendanceTable({ records, onUpdateStatus }: AttendanceTableProps) {
   return (
     <>
       {/* Mobile */}
       <div className="space-y-4 md:hidden">
         {records.map((record) => (
-          <AttendanceCard key={record.student.id} record={record} onMarkPresent={onMarkPresent}
-            isMarking={markingStudentId === record.student.id}/>
+          <AttendanceCard key={record.student.id} record={record} onUpdateStatus={onUpdateStatus} />
         ))}
       </div>
 
@@ -27,14 +28,14 @@ export function AttendanceTable({ records, onMarkPresent, markingStudentId }: At
                 <th className="px-6 py-4 text-left text-sm font-semibold">Method</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold">Location</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold">Marked At</th>
-                {onMarkPresent && <th className="px-6 py-4 text-left text-sm font-semibold">Actions</th>}
+                {onUpdateStatus && <th className="px-6 py-4 text-left text-sm font-semibold">Actions</th>}
               </tr>
             </thead>
 
             <tbody className="divide-y divide-gray-100">
               {records.map((record) => (
-                <AttendanceTableRow key={record.student.id} record={record} onMarkPresent={onMarkPresent}
-                  isMarking={markingStudentId === record.student.id}/>
+                <AttendanceTableRow key={record.student.id} record={record} onUpdateStatus={onUpdateStatus}
+                 />
               ))}
             </tbody>
           </table>
@@ -44,7 +45,7 @@ export function AttendanceTable({ records, onMarkPresent, markingStudentId }: At
   );
 }
 
-function AttendanceCard({ record, onMarkPresent, isMarking }: { record: SessionAttendance; onMarkPresent?: (studentId: number) => void | Promise<void>; isMarking: boolean }) {
+function AttendanceCard({ record, onUpdateStatus }: { record: SessionAttendance; onUpdateStatus?: (studentId: number) => void | Promise<void> }) {
   const { student, attendance } = record;
 
   return (
@@ -87,15 +88,15 @@ function AttendanceCard({ record, onMarkPresent, isMarking }: { record: SessionA
             </div>
           </>
         )}
-        {!attendance && onMarkPresent && (
+                {onUpdateStatus && (
           <Button
-            variant="primary"
+            variant="outline"
             size="sm"
             fullWidth
-            loading={isMarking}
-            onClick={() => onMarkPresent(student.id)}
+            leftIcon={<Pencil size={16} />}
+            onClick={() => onUpdateStatus(student.id)}
           >
-            Mark Present
+            Update Attendance
           </Button>
         )}
       </div>
@@ -103,7 +104,7 @@ function AttendanceCard({ record, onMarkPresent, isMarking }: { record: SessionA
   );
 }
 
-function AttendanceTableRow({ record, onMarkPresent, isMarking }: { record: SessionAttendance; onMarkPresent?: (studentId: number) => void | Promise<void>; isMarking: boolean }) {
+function AttendanceTableRow({ record, onUpdateStatus, }: { record: SessionAttendance; onUpdateStatus?: (studentId: number) => void | Promise<void> }) {
   const { student, attendance } = record;
 
   return (
@@ -135,15 +136,17 @@ function AttendanceTableRow({ record, onMarkPresent, isMarking }: { record: Sess
       </td>
 
       <td className="px-6 py-4 text-sm text-gray-600">{attendance ? formatDate(attendance.markedAt) : "—"}</td>
-      {onMarkPresent && (
+      {onUpdateStatus && (
         <td className="px-6 py-4">
-          {!attendance ? (
-            <Button variant="primary" size="xs" loading={isMarking} onClick={() => onMarkPresent(student.id)}>
-              Mark Present
-            </Button>
-          ) : (
-            <span className="text-sm text-gray-400">—</span>
-          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label={`Update attendance for ${student.firstName} ${student.lastName ?? ""}`.trim()}
+            title="Update attendance"
+            onClick={() => onUpdateStatus(student.id)}
+          >
+            <Pencil size={18} />
+          </Button>
         </td>
       )}
     </tr>

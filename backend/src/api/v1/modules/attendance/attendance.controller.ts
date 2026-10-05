@@ -92,11 +92,11 @@ export class AttendanceController {
     }
 
     const input = validateMarkAttendanceManualRequest(req.body);
-    const result = await this.service.markManualAttendance(sessionId, input.studentId, currentUserId(req));
+    const result = await this.service.markManualAttendance(sessionId, input.studentId,input.status,input.lecturerNote, currentUserId(req));
 
-    res.status(201).json({
+    res.status(result.created ? 201 : 200).json({
       success: true,
-      data: result,
+      data: result.record,
     });
   } catch (error) {
     next(error);

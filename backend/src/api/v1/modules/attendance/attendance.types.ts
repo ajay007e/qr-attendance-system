@@ -11,10 +11,18 @@ export interface CreateAttendanceRecordData {
   attendance_method: AttendanceMethod;
   location_status: AttendanceLocationStatus;
   marked_by?: number | null;
+  lecturer_note?: string | null;
 }
 
 export interface MarkAttendanceManualRequest {
   studentId: number;
+  status?: AttendanceRecordStatus;
+  lecturerNote?: string | null;
+}
+
+export interface ManualAttendanceResult {
+  record: AttendanceRecord | null;
+  created: boolean;
 }
 
 export interface AttendanceRecord {
