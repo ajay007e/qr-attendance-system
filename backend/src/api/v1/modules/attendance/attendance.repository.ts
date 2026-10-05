@@ -39,7 +39,15 @@ export class AttendanceRepository {
     try {
       const [result] = await db.execute<ResultSetHeader>(
         `INSERT INTO attendance_records (session_id, student_id, status, attendance_method, location_status, marked_by, lecturer_note) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [data.session_id, data.student_id, data.status, data.attendance_method, data.location_status, data.marked_by ?? null, data.lecturer_note ?? null],
+        [
+          data.session_id,
+          data.student_id,
+          data.status,
+          data.attendance_method,
+          data.location_status,
+          data.marked_by ?? null,
+          data.lecturer_note ?? null,
+        ],
       );
       const record = await this.findById(result.insertId);
       if (!record) {
@@ -73,7 +81,6 @@ export class AttendanceRepository {
     return record;
   }
 
-  
   async getSessionAttendance(
     sessionId: number,
     courseOfferingId: number,

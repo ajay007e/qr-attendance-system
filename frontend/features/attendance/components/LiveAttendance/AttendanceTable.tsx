@@ -1,6 +1,6 @@
 import { Pencil } from "lucide-react";
 
-import { Badge,Button } from "@/shared";
+import { Badge, Button } from "@/shared";
 
 import { AttendanceRecord, SessionAttendance } from "../../types";
 
@@ -34,8 +34,7 @@ export function AttendanceTable({ records, onUpdateStatus }: AttendanceTableProp
 
             <tbody className="divide-y divide-gray-100">
               {records.map((record) => (
-                <AttendanceTableRow key={record.student.id} record={record} onUpdateStatus={onUpdateStatus}
-                 />
+                <AttendanceTableRow key={record.student.id} record={record} onUpdateStatus={onUpdateStatus} />
               ))}
             </tbody>
           </table>
@@ -45,7 +44,13 @@ export function AttendanceTable({ records, onUpdateStatus }: AttendanceTableProp
   );
 }
 
-function AttendanceCard({ record, onUpdateStatus }: { record: SessionAttendance; onUpdateStatus?: (studentId: number) => void | Promise<void> }) {
+function AttendanceCard({
+  record,
+  onUpdateStatus,
+}: {
+  record: SessionAttendance;
+  onUpdateStatus?: (studentId: number) => void | Promise<void>;
+}) {
   const { student, attendance } = record;
 
   return (
@@ -88,7 +93,7 @@ function AttendanceCard({ record, onUpdateStatus }: { record: SessionAttendance;
             </div>
           </>
         )}
-                {onUpdateStatus && (
+        {onUpdateStatus && (
           <Button
             variant="outline"
             size="sm"
@@ -104,7 +109,13 @@ function AttendanceCard({ record, onUpdateStatus }: { record: SessionAttendance;
   );
 }
 
-function AttendanceTableRow({ record, onUpdateStatus, }: { record: SessionAttendance; onUpdateStatus?: (studentId: number) => void | Promise<void> }) {
+function AttendanceTableRow({
+  record,
+  onUpdateStatus,
+}: {
+  record: SessionAttendance;
+  onUpdateStatus?: (studentId: number) => void | Promise<void>;
+}) {
   const { student, attendance } = record;
 
   return (

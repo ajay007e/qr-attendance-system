@@ -6,14 +6,12 @@ export type ScanAttendanceRequest = {
   longitude: number;
 };
 
-
-
 export type AttendanceRecordStatus = "present" | "absent" | "excused" | "late";
 
 export type MarkManualAttendanceRequest = {
   studentId: number;
   status: AttendanceRecordStatus;
-   lecturerNote?: string;
+  lecturerNote?: string;
 };
 
 export type AttendanceMethod = "qr" | "manual";

@@ -84,24 +84,30 @@ export class AttendanceController {
   };
 
   markAttendanceManually: RequestHandler = async (req, res, next) => {
-  try {
-    const sessionId = Number(req.params.sessionId);
+    try {
+      const sessionId = Number(req.params.sessionId);
 
-    if (!Number.isInteger(sessionId) || sessionId <= 0) {
-      throw new AppError("Invalid session ID", 400);
+      if (!Number.isInteger(sessionId) || sessionId <= 0) {
+        throw new AppError("Invalid session ID", 400);
+      }
+
+      const input = validateMarkAttendanceManualRequest(req.body);
+      const result = await this.service.markManualAttendance(
+        sessionId,
+        input.studentId,
+        input.status,
+        input.lecturerNote,
+        currentUserId(req),
+      );
+
+      res.status(result.created ? 201 : 200).json({
+        success: true,
+        data: result.record,
+      });
+    } catch (error) {
+      next(error);
     }
-
-    const input = validateMarkAttendanceManualRequest(req.body);
-    const result = await this.service.markManualAttendance(sessionId, input.studentId,input.status,input.lecturerNote, currentUserId(req));
-
-    res.status(result.created ? 201 : 200).json({
-      success: true,
-      data: result.record,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+  };
   getMySummary: RequestHandler = async (req, res, next) => {
     try {
       const courseOfferingId = Number(req.params.courseOfferingId);

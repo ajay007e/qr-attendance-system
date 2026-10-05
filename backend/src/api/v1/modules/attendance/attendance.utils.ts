@@ -7,7 +7,12 @@ import type {
   StudentAttendanceCursor,
   StudentAttendanceQuery,
 } from "./attendance.types";
-import { ATTENDANCE_LOCATION_STATUSES, ATTENDANCE_METHODS, ATTENDANCE_STATUSES, LECTURER_NOTE_MAX_LENGTH,} from "./attendance.constants";
+import {
+  ATTENDANCE_LOCATION_STATUSES,
+  ATTENDANCE_METHODS,
+  ATTENDANCE_STATUSES,
+  LECTURER_NOTE_MAX_LENGTH,
+} from "./attendance.constants";
 
 export function validateMarkAttendanceRequest(data: MarkAttendanceQrRequest) {
   if (!data || typeof data !== "object") {
@@ -47,7 +52,7 @@ export function validateMarkAttendanceManualRequest(data: MarkAttendanceManualRe
     throw new AppError("A valid studentId is required", 400);
   }
 
-    const status = data.status ?? "present";
+  const status = data.status ?? "present";
 
   if (!ATTENDANCE_STATUSES.includes(status)) {
     throw new AppError("Invalid attendance status", 400);
@@ -68,7 +73,6 @@ export function validateMarkAttendanceManualRequest(data: MarkAttendanceManualRe
     status,
     lecturerNote,
   };
-
 }
 
 export function validateSessionAttendanceQuery(query: SessionAttendanceQuery): SessionAttendanceQuery {

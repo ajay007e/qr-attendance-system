@@ -1,6 +1,6 @@
 "use client";
 
-import {FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 
 import {
@@ -22,7 +22,11 @@ import {
 } from "@/shared";
 
 import { AttendanceService } from "../../api/attendance.service";
-import { DEFAULT_SESSION_ATTENDANCE_QUERY,LECTURER_NOTE_MAX_LENGTH, MANUAL_ATTENDANCE_STATUS_OPTIONS} from "../../constants";
+import {
+  DEFAULT_SESSION_ATTENDANCE_QUERY,
+  LECTURER_NOTE_MAX_LENGTH,
+  MANUAL_ATTENDANCE_STATUS_OPTIONS,
+} from "../../constants";
 import useSessionAttendance from "../../hooks/useSessionAttendance";
 import { AttendanceRecordStatus, SessionAttendance, SessionAttendanceQuery } from "../../types";
 
@@ -32,7 +36,7 @@ import type { LiveAttendanceProps } from "./types";
 
 export default function LiveAttendance({ sessionId, sessionControls }: LiveAttendanceProps) {
   const [query, setQuery] = useState<SessionAttendanceQuery>(DEFAULT_SESSION_ATTENDANCE_QUERY);
-    const [editing, setEditing] = useState<{
+  const [editing, setEditing] = useState<{
     student: SessionAttendance["student"];
     currentStatus: AttendanceRecordStatus;
     currentNote: string | null;
@@ -265,7 +269,7 @@ export default function LiveAttendance({ sessionId, sessionControls }: LiveAtten
                 <div className="relative">
                   {isFetching && <Loader overlay message="Updating attendance..." />}
 
-                                    <AttendanceTable records={records} onUpdateStatus={openStatusForm} />
+                  <AttendanceTable records={records} onUpdateStatus={openStatusForm} />
                 </div>
 
                 {/*
@@ -297,7 +301,7 @@ export default function LiveAttendance({ sessionId, sessionControls }: LiveAtten
         )}
       </div>
 
-            <Modal
+      <Modal
         open={editing !== null}
         onClose={closeStatusForm}
         title="Update Attendance"
@@ -360,7 +364,7 @@ export default function LiveAttendance({ sessionId, sessionControls }: LiveAtten
                 </label>
               ))}
             </fieldset>
-                        <Field
+            <Field
               label="Lecturer note"
               optional
               disabled={saving}
@@ -379,7 +383,6 @@ export default function LiveAttendance({ sessionId, sessionControls }: LiveAtten
           </form>
         )}
       </Modal>
-            
     </Section>
   );
 }

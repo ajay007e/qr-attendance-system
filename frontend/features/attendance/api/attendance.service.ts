@@ -50,14 +50,16 @@ export const AttendanceService = {
   },
 
   async markManualAttendance(sessionId: number, data: MarkManualAttendanceRequest) {
-  const response = await api.post<ApiResponse<AttendanceRecord>>(`/attendance/${sessionId}/manual`, data);
+    const response = await api.post<ApiResponse<AttendanceRecord>>(`/attendance/${sessionId}/manual`, data);
 
-  return response.data;
-},
+    return response.data;
+  },
 
   async getStudentAttendanceSummary(offeringId: number, query?: StudentAttendanceSummaryQuery, signal?: AbortSignal) {
     const params = Object.fromEntries(
-      Object.entries(query ?? {}).filter(([, value]) => value !== undefined && value !== "" && String(value).toLowerCase() !== "all"),
+      Object.entries(query ?? {}).filter(
+        ([, value]) => value !== undefined && value !== "" && String(value).toLowerCase() !== "all",
+      ),
     );
 
     const response = await api.get<ApiResponse<StudentAttendanceSummary>>(`/attendance/student/summary/${offeringId}`, {
