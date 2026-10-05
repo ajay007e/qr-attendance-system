@@ -8,6 +8,12 @@ export type ScanAttendanceRequest = {
 
 export type AttendanceRecordStatus = "present" | "absent" | "excused" | "late";
 
+export type MarkManualAttendanceRequest = {
+  studentId: number;
+  status: AttendanceRecordStatus;
+  lecturerNote?: string;
+};
+
 export type AttendanceMethod = "qr" | "manual";
 
 export type AttendanceLocationStatus = "verified" | "suspicious" | "not_checked";

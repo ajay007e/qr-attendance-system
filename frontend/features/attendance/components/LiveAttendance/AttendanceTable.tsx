@@ -1,16 +1,18 @@
-import { Badge } from "@/shared";
+import { Pencil } from "lucide-react";
+
+import { Badge, Button } from "@/shared";
 
 import { AttendanceRecord, SessionAttendance } from "../../types";
 
 import { AttendanceTableProps } from "./types";
 
-export function AttendanceTable({ records }: AttendanceTableProps) {
+export function AttendanceTable({ records, onUpdateStatus }: AttendanceTableProps) {
   return (
     <>
       {/* Mobile */}
       <div className="space-y-4 md:hidden">
         {records.map((record) => (
-          <AttendanceCard key={record.student.id} record={record} />
+          <AttendanceCard key={record.student.id} record={record} onUpdateStatus={onUpdateStatus} />
         ))}
       </div>
 
@@ -26,12 +28,13 @@ export function AttendanceTable({ records }: AttendanceTableProps) {
                 <th className="px-6 py-4 text-left text-sm font-semibold">Method</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold">Location</th>
                 <th className="px-6 py-4 text-left text-sm font-semibold">Marked At</th>
+                {onUpdateStatus && <th className="px-6 py-4 text-left text-sm font-semibold">Actions</th>}
               </tr>
             </thead>
 
             <tbody className="divide-y divide-gray-100">
               {records.map((record) => (
-                <AttendanceTableRow key={record.student.id} record={record} />
+                <AttendanceTableRow key={record.student.id} record={record} onUpdateStatus={onUpdateStatus} />
               ))}
             </tbody>
           </table>
@@ -41,7 +44,13 @@ export function AttendanceTable({ records }: AttendanceTableProps) {
   );
 }
 
-function AttendanceCard({ record }: { record: SessionAttendance }) {
+function AttendanceCard({
+  record,
+  onUpdateStatus,
+}: {
+  record: SessionAttendance;
+  onUpdateStatus?: (studentId: number) => void | Promise<void>;
+}) {
   const { student, attendance } = record;
 
   return (
@@ -84,12 +93,29 @@ function AttendanceCard({ record }: { record: SessionAttendance }) {
             </div>
           </>
         )}
+        {onUpdateStatus && (
+          <Button
+            variant="outline"
+            size="sm"
+            fullWidth
+            leftIcon={<Pencil size={16} />}
+            onClick={() => onUpdateStatus(student.id)}
+          >
+            Update Attendance
+          </Button>
+        )}
       </div>
     </div>
   );
 }
 
-function AttendanceTableRow({ record }: { record: SessionAttendance }) {
+function AttendanceTableRow({
+  record,
+  onUpdateStatus,
+}: {
+  record: SessionAttendance;
+  onUpdateStatus?: (studentId: number) => void | Promise<void>;
+}) {
   const { student, attendance } = record;
 
   return (
@@ -121,6 +147,19 @@ function AttendanceTableRow({ record }: { record: SessionAttendance }) {
       </td>
 
       <td className="px-6 py-4 text-sm text-gray-600">{attendance ? formatDate(attendance.markedAt) : "—"}</td>
+      {onUpdateStatus && (
+        <td className="px-6 py-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label={`Update attendance for ${student.firstName} ${student.lastName ?? ""}`.trim()}
+            title="Update attendance"
+            onClick={() => onUpdateStatus(student.id)}
+          >
+            <Pencil size={18} />
+          </Button>
+        </td>
+      )}
     </tr>
   );
 }
