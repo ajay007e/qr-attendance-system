@@ -3,6 +3,7 @@ import type { ExecuteValues, ResultSetHeader, RowDataPacket } from "mysql2";
 import { db } from "@/config";
 
 import type {
+  AttendanceRecordStatus,
   CreateAttendanceRecordData,
   DatabaseAttendanceRecord,
   DatabaseSessionAttendance,
@@ -37,8 +38,16 @@ export class AttendanceRepository {
   async create(data: CreateAttendanceRecordData): Promise<DatabaseAttendanceRecord> {
     try {
       const [result] = await db.execute<ResultSetHeader>(
-        `INSERT INTO attendance_records (session_id, student_id, status, attendance_method, location_status) VALUES (?, ?, ?, ?, ?)`,
-        [data.session_id, data.student_id, data.status, data.attendance_method, data.location_status],
+        `INSERT INTO attendance_records (session_id, student_id, status, attendance_method, location_status, marked_by, lecturer_note) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+          data.session_id,
+          data.student_id,
+          data.status,
+          data.attendance_method,
+          data.location_status,
+          data.marked_by ?? null,
+          data.lecturer_note ?? null,
+        ],
       );
       const record = await this.findById(result.insertId);
       if (!record) {
@@ -51,6 +60,25 @@ export class AttendanceRepository {
       }
       throw error;
     }
+  }
+  async updateManual(
+    id: number,
+    status: AttendanceRecordStatus,
+    lecturerNote: string | null,
+    lecturerId: number,
+  ): Promise<DatabaseAttendanceRecord> {
+    await db.execute(
+      `UPDATE attendance_records
+         SET status = ?, attendance_method = 'manual', location_status = 'not_checked', marked_by = ?,lecturer_note = ?, marked_at = CURRENT_TIMESTAMP
+       WHERE id = ?`,
+      [status, lecturerId, lecturerNote, id],
+    );
+
+    const record = await this.findById(id);
+    if (!record) {
+      throw new Error("Attendance record was updated but could not be retrieved");
+    }
+    return record;
   }
 
   async getSessionAttendance(

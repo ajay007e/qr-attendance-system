@@ -16,6 +16,7 @@ export const ATTENDANCE_RECORD_COLUMNS = `
 
 export const ATTENDANCE_STATUSES: AttendanceRecordStatus[] = ["present", "absent", "excused", "late"];
 export const ATTENDANCE_METHODS: AttendanceMethod[] = ["qr", "manual"];
+export const LECTURER_NOTE_MAX_LENGTH = 500;
 export const ATTENDANCE_LOCATION_STATUSES: AttendanceLocationStatus[] = ["verified", "suspicious", "not_checked"];
 
 export const ATTENDANCE_EVENTS = {

@@ -3,11 +3,14 @@ import { AppError, calculateDistance, ROLES } from "@/utils";
 import { AttendanceSessionRepository } from "../sessions/session.repository";
 import { AttendanceRepository } from "./attendance.repository";
 import { verifyAttendanceQrToken } from "./attendance.qr";
+import { isEnrolled } from "../enrolments";
 import { env } from "@/config";
 
 import type { CursorPaginatedData, PaginatedData } from "@/types";
 
 import type {
+  AttendanceRecordStatus,
+  ManualAttendanceResult,
   MarkAttendanceQrRequest,
   SessionAttendance,
   SessionAttendanceQuery,
@@ -124,6 +127,58 @@ export class AttendanceService {
         hasMore: result.hasMore,
       },
     };
+  }
+
+  async markManualAttendance(
+    sessionId: number,
+    studentId: number,
+    status: AttendanceRecordStatus,
+    lecturerNote: string | null,
+    lecturerId: number,
+  ): Promise<ManualAttendanceResult> {
+    const session = await this.sessionRepository.findById(sessionId);
+
+    if (!session) {
+      throw new AppError("Attendance session not found", 404);
+    }
+
+    // Lecturer must be assigned to this session's course offering.
+    await validateOfferingAccess(session.course_offering_id, lecturerId, ROLES.LECTURER);
+
+    if (session.session_status !== "open") {
+      throw new AppError("This attendance session is not currently active", 400);
+    }
+
+    // Student must be enrolled in the same course offering.
+    const enrolled = await isEnrolled(session.course_offering_id, studentId);
+
+    if (!enrolled) {
+      throw new AppError("Student is not enrolled in this course", 403);
+    }
+
+    const existingAttendance = await this.repository.findBySessionAndStudent(sessionId, studentId);
+
+    if (existingAttendance) {
+      const updated = await this.repository.updateManual(existingAttendance.id, status, lecturerNote, lecturerId);
+
+      this.websocket.notifyAttendanceMarked(sessionId);
+
+      return { record: mapAttendanceRecord(updated), created: false };
+    }
+
+    const record = await this.repository.create({
+      session_id: sessionId,
+      student_id: studentId,
+      status,
+      attendance_method: "manual",
+      location_status: "not_checked",
+      marked_by: lecturerId,
+      lecturer_note: lecturerNote,
+    });
+
+    this.websocket.notifyAttendanceMarked(sessionId);
+
+    return { record: mapAttendanceRecord(record), created: true };
   }
 
   async getMySummary(

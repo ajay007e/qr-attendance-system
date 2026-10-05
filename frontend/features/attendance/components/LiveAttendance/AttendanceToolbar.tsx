@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import {
   ATTENDANCE_LOCATION_FILTER_OPTIONS,
   ATTENDANCE_METHOD_FILTER_OPTIONS,
-  ATTENDANCE_STATUS_FILTER_OPTIONS,
+  SESSION_ATTENDANCE_STATUS_FILTER_OPTIONS,
 } from "@/features/attendance";
 import { Field } from "@/shared";
 
@@ -71,7 +71,7 @@ export default function AttendanceToolbar({ filters, onFiltersChange }: Attendan
             <Field.Select
               value={filters.status ?? ""}
               onChange={(value) => updateFilter("status", value as AttendanceRecordStatus)}
-              options={ATTENDANCE_STATUS_FILTER_OPTIONS}
+              options={SESSION_ATTENDANCE_STATUS_FILTER_OPTIONS}
             />
           </div>
 

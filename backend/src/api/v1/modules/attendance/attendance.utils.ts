@@ -1,12 +1,18 @@
 import { AppError } from "@/utils";
 
 import type {
+  MarkAttendanceManualRequest,
   MarkAttendanceQrRequest,
   SessionAttendanceQuery,
   StudentAttendanceCursor,
   StudentAttendanceQuery,
 } from "./attendance.types";
-import { ATTENDANCE_LOCATION_STATUSES, ATTENDANCE_METHODS, ATTENDANCE_STATUSES } from "./attendance.constants";
+import {
+  ATTENDANCE_LOCATION_STATUSES,
+  ATTENDANCE_METHODS,
+  ATTENDANCE_STATUSES,
+  LECTURER_NOTE_MAX_LENGTH,
+} from "./attendance.constants";
 
 export function validateMarkAttendanceRequest(data: MarkAttendanceQrRequest) {
   if (!data || typeof data !== "object") {
@@ -34,6 +40,38 @@ export function validateMarkAttendanceRequest(data: MarkAttendanceQrRequest) {
     qrToken: data.qrToken.trim(),
     latitude: data.latitude,
     longitude: data.longitude,
+  };
+}
+
+export function validateMarkAttendanceManualRequest(data: MarkAttendanceManualRequest) {
+  if (!data || typeof data !== "object") {
+    throw new AppError("Attendance request is required", 400);
+  }
+
+  if (!Number.isInteger(data.studentId) || data.studentId <= 0) {
+    throw new AppError("A valid studentId is required", 400);
+  }
+
+  const status = data.status ?? "present";
+
+  if (!ATTENDANCE_STATUSES.includes(status)) {
+    throw new AppError("Invalid attendance status", 400);
+  }
+
+  if (data.lecturerNote !== undefined && data.lecturerNote !== null && typeof data.lecturerNote !== "string") {
+    throw new AppError("Lecturer note must be text", 400);
+  }
+
+  const lecturerNote = data.lecturerNote?.trim() || null;
+
+  if (lecturerNote && lecturerNote.length > LECTURER_NOTE_MAX_LENGTH) {
+    throw new AppError(`Lecturer note must be ${LECTURER_NOTE_MAX_LENGTH} characters or fewer`, 400);
+  }
+
+  return {
+    studentId: data.studentId,
+    status,
+    lecturerNote,
   };
 }
 

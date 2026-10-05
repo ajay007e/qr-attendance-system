@@ -10,6 +10,7 @@ import type {
   StudentAttendanceRecord,
   StudentAttendanceSummary,
   StudentAttendanceSummaryQuery,
+  MarkManualAttendanceRequest,
 } from "../types";
 
 export const AttendanceService = {
@@ -48,9 +49,17 @@ export const AttendanceService = {
     return response.data;
   },
 
+  async markManualAttendance(sessionId: number, data: MarkManualAttendanceRequest) {
+    const response = await api.post<ApiResponse<AttendanceRecord>>(`/attendance/${sessionId}/manual`, data);
+
+    return response.data;
+  },
+
   async getStudentAttendanceSummary(offeringId: number, query?: StudentAttendanceSummaryQuery, signal?: AbortSignal) {
     const params = Object.fromEntries(
-      Object.entries(query ?? {}).filter(([, value]) => value !== undefined && value !== "" && value !== "ALL"),
+      Object.entries(query ?? {}).filter(
+        ([, value]) => value !== undefined && value !== "" && String(value).toLowerCase() !== "all",
+      ),
     );
 
     const response = await api.get<ApiResponse<StudentAttendanceSummary>>(`/attendance/student/summary/${offeringId}`, {
