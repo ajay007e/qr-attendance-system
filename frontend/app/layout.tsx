@@ -3,8 +3,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 import { AuthProvider } from "@/features/auth";
-import { ErrorProvider, GlobalError, ToastProvider } from "@/shared";
-import { ServiceWorker } from "@/shared/components/ServiceWorker/ServiceWorker";
+import { ErrorProvider, GlobalError, ServiceWorker, ToastProvider } from "@/shared";
 
 export const metadata: Metadata = {
   title: "QR Attendance System",
