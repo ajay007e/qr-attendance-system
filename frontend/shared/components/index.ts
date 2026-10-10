@@ -28,3 +28,4 @@ export type * from "./navigation/tabs/tabs.types";
 export { default as Tabs } from "./navigation/tabs/Tabs";
 
 export { default as CourseCard } from "./feature/CourseCard";
+export { ServiceWorker } from "./ServiceWorker/ServiceWorker";
