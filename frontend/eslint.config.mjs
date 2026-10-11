@@ -16,7 +16,7 @@ export default defineConfig([
     },
 
     settings: {
-      "boundaries/ignore": ["eslint.config.mjs", "next.config.ts", "postcss.config.mjs", "next-env.d.ts"],
+      "boundaries/ignore": ["public/**", "eslint.config.mjs", "next.config.ts", "postcss.config.mjs", "next-env.d.ts"],
       "boundaries/elements": [
         {
           type: "app",
