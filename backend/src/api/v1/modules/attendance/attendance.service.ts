@@ -82,6 +82,10 @@ export class AttendanceService {
     const existingAttendance = await this.repository.findBySessionAndStudent(payload.sid, studentId);
 
     if (existingAttendance) {
+      if (existingAttendance.attendance_method === "manual") {
+        throw new AppError("Your attendance has already been marked manually by the lecturer", 409);
+      }
+
       if (existingAttendance.location_status !== "suspicious") {
         throw new AppError("You have already marked attendance for this session", 409);
       }
