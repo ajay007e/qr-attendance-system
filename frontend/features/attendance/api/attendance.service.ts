@@ -22,7 +22,9 @@ export const AttendanceService = {
 
   async getSessionAttendance(sessionId: number, query?: SessionAttendanceQuery, signal?: AbortSignal) {
     const params = Object.fromEntries(
-      Object.entries(query ?? {}).filter(([, value]) => value !== undefined && value !== "" && value !== "ALL"),
+      Object.entries(query ?? {}).filter(
+        ([, value]) => value !== undefined && value !== "" && value !== "ALL" && value !== "all",
+      ),
     );
 
     const response = await api.get<ApiResponse<PaginatedData<SessionAttendance>>>(`/attendance/${sessionId}`, {
