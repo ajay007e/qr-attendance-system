@@ -512,7 +512,7 @@ CROSS JOIN users u
 WHERE u.email = 'lecturer@test.com'
   AND (
       (
-          c.course_code IN ('CS101', 'CS201', 'CS301')
+          c.course_code IN ('CS101', 'CS202', 'CS301')
           AND co.session = 'spring'
       )
       OR (
@@ -734,6 +734,97 @@ WHERE s.course_offering_id = @cs404_offering_id
       s.week_number = 4
       AND DAYOFWEEK(s.session_start_at) = 3
   );
+
+-- ==========================================================
+-- 13. CS101 ATTENDANCE (spring)
+-- Course shared by test lecturer and test student.
+-- 5 weekly lecture sessions.
+-- For each session, ~80% of enrolled students are marked present.
+-- Test student (student@test.com) has NO attendance records,
+-- so they are absent for all 5 sessions.
+-- ==========================================================
+
+SET @cs101_offering_id = (
+    SELECT co.id
+    FROM course_offerings co
+    INNER JOIN courses c ON c.id = co.course_id
+    WHERE c.course_code = 'CS101'
+      AND co.academic_year = 2026
+      AND co.session = 'spring'
+    LIMIT 1
+);
+
+SET @empty_session_lecturer_id = (
+    SELECT id FROM users
+    WHERE email = 'lecturer@test.com' AND role = 'lecturer'
+    LIMIT 1
+);
+
+SET @test_student_id = (
+    SELECT id FROM users
+    WHERE email = 'student@test.com' AND role = 'student'
+    LIMIT 1
+);
+
+-- 13a. Sessions
+INSERT INTO attendance_sessions (
+    title, course_offering_id, lecturer_id, week_number, class_number,
+    class_type, session_start_at, session_end_at, latitude, longitude,
+    session_status
+)
+SELECT
+    CONCAT('CS101 Week ', w.week_number, ' tutorial 1'),
+    @cs101_offering_id,
+    @empty_session_lecturer_id,
+    w.week_number,
+    1,
+    'tutorial',
+    TIMESTAMP(DATE_ADD('2026-07-20', INTERVAL (w.week_number - 1) WEEK), '09:00:00'),
+    TIMESTAMP(DATE_ADD('2026-07-20', INTERVAL (w.week_number - 1) WEEK), '11:00:00'),
+    -33.8688200,
+    151.2092900,
+    'closed'
+FROM (
+    SELECT 1 AS week_number UNION ALL SELECT 2 UNION ALL SELECT 3
+    UNION ALL SELECT 4 UNION ALL SELECT 5
+) w
+WHERE @cs101_offering_id IS NOT NULL
+  AND @empty_session_lecturer_id IS NOT NULL;
+
+-- 13b. Attendance: 80% of enrolled students per session, excluding test student
+INSERT INTO attendance_records (
+    session_id, student_id, status, attendance_method,
+    location_status, marked_at, marked_by
+)
+SELECT
+    t.session_id,
+    t.user_id,
+    'present',
+    CASE WHEN MOD(t.user_id + t.session_id, 10) < 9 THEN 'qr' ELSE 'manual' END,
+    'verified',
+    t.session_end_at - INTERVAL (10 + MOD(t.user_id + t.session_id, 40)) MINUTE,
+    t.lecturer_id
+FROM (
+    SELECT
+        s.id AS session_id,
+        s.session_end_at,
+        s.lecturer_id,
+        e.user_id,
+        ROW_NUMBER() OVER (
+            PARTITION BY s.id
+            ORDER BY MOD(e.user_id * 17 + s.id * 13, 101), e.user_id
+        ) AS rn,
+        COUNT(*) OVER (PARTITION BY s.id) AS total_students
+    FROM attendance_sessions s
+    INNER JOIN course_enrolments e
+        ON e.course_offering_id = s.course_offering_id
+    WHERE s.course_offering_id = @cs101_offering_id
+      AND s.lecturer_id = @empty_session_lecturer_id
+      AND s.title LIKE 'CS101 Week % tutorial 1'
+      AND e.status <> 'withdrawn'
+      AND e.user_id <> @test_student_id
+) t
+WHERE t.rn <= ROUND(t.total_students * 0.8);
 
 COMMIT;
 

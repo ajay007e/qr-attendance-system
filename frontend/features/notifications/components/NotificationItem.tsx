@@ -2,6 +2,7 @@
 
 import { formatDistanceToNowStrict } from "date-fns";
 import { Bell, Check, Loader2, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
 import { SWIPE_COMPLETE_THRESHOLD, SWIPE_DRAG_ACTIVATION_DISTANCE, SWIPE_MAX_DRAG, TYPE_ICONS } from "./constants";
@@ -9,21 +10,33 @@ import type { NotificationItemProps } from "./types";
 
 type ProcessingState = "idle" | "marking" | "deleting";
 
+// Returns the in-app path for a notification, or null if it has no destination
+function getNotificationHref(notification: NotificationItemProps["notification"]): string | null {
+  if (notification.reference_type === "attendance" && notification.reference_id) {
+    return `/student/courses/${notification.reference_id}`;
+  }
+  return null;
+}
+
 export function NotificationItem({ notification, onMarkAsRead, onDelete }: NotificationItemProps) {
+  const router = useRouter();
   const [translateX, setTranslateX] = useState(0);
   const [processing, setProcessing] = useState<ProcessingState>("idle");
 
   const startX = useRef<number | null>(null);
   const dragging = useRef(false);
+  const didDrag = useRef(false);
   const pointerId = useRef<number | null>(null);
 
   const isBusy = processing !== "idle";
   const canMarkAsRead = !notification.is_read;
+  const href = getNotificationHref(notification);
 
   const handlePointerDown = (e: React.PointerEvent) => {
     if (isBusy) return;
     startX.current = e.clientX;
     dragging.current = true;
+    didDrag.current = false;
     pointerId.current = e.pointerId;
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   };
@@ -33,6 +46,8 @@ export function NotificationItem({ notification, onMarkAsRead, onDelete }: Notif
 
     const delta = e.clientX - startX.current;
     if (Math.abs(delta) < SWIPE_DRAG_ACTIVATION_DISTANCE) return;
+
+    didDrag.current = true;
 
     const maxDrag = canMarkAsRead ? SWIPE_MAX_DRAG : 0;
     setTranslateX(Math.min(maxDrag, Math.max(-SWIPE_MAX_DRAG, delta)));
@@ -73,6 +88,18 @@ export function NotificationItem({ notification, onMarkAsRead, onDelete }: Notif
     setTranslateX(0);
   };
 
+  const handleClick = () => {
+    // Ignore clicks that were really swipes, or while an action is running
+    if (didDrag.current || isBusy || !href) return;
+    router.push(href);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && href && !isBusy) {
+      router.push(href);
+    }
+  };
+
   const Icon = TYPE_ICONS[notification.type] ?? Bell;
   const showReadBg = canMarkAsRead && (translateX > 0 || processing === "marking");
   const showDeleteBg = translateX < 0 || processing === "deleting";
@@ -100,18 +127,22 @@ export function NotificationItem({ notification, onMarkAsRead, onDelete }: Notif
       </div>
 
       <div
+        role={href ? "link" : undefined}
+        tabIndex={href ? 0 : undefined}
         className={`relative flex gap-3 bg-white p-3.5 sm:p-4 ${
           processing === "idle" ? "transition-transform" : "transition-transform duration-300"
         } ${notification.is_read ? "" : "bg-blue-50"}`}
         style={{
           transform: `translateX(${translateX}px)`,
           touchAction: "pan-y",
-          cursor: isBusy ? "default" : "grab",
+          cursor: isBusy ? "default" : href ? "pointer" : "grab",
         }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
       >
         <div
           className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full sm:h-9 sm:w-9 ${
